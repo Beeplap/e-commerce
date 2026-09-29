@@ -1,0 +1,34 @@
+openapi: 3.0.3
+info:
+  title: Quick Commerce API
+  version: 1.0.0
+  description: Phase 0 infrastructure. Business endpoints are not yet implemented.
+paths:
+  /api/v1/health:
+    get:
+      operationId: api_v1_health_retrieve
+      description: Public liveness only; no database, dependency details, or user
+        information.
+      tags:
+      - Infrastructure
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Health'
+          description: ''
+components:
+  schemas:
+    Health:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/StatusEnum'
+      required:
+      - status
+    StatusEnum:
+      enum:
+      - ok
+      type: string
+      description: '* `ok` - ok'

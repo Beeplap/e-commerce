@@ -1,0 +1,27 @@
+{
+  "name": "quick-commerce",
+  "private": true,
+  "packageManager": "pnpm@11.1.1",
+  "engines": {
+    "node": ">=24.15.0 <25"
+  },
+  "scripts": {
+    "setup:env": "python scripts/init_env.py",
+    "dev:web": "pnpm --filter @quick-commerce/web dev",
+    "dev:api": "node scripts/tasks.mjs dev-api",
+    "db:migrate": "node scripts/tasks.mjs migrate",
+    "infra:up": "docker compose --env-file .env -f infra/compose.yaml up -d --wait",
+    "infra:down": "docker compose --env-file .env -f infra/compose.yaml down",
+    "lint": "pnpm --filter @quick-commerce/web lint",
+    "typecheck": "pnpm --filter @quick-commerce/web typecheck",
+    "test": "pnpm --filter @quick-commerce/web test",
+    "build": "pnpm --filter @quick-commerce/web build",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check:api": "node scripts/tasks.mjs check-api",
+    "check": "node scripts/tasks.mjs check"
+  },
+  "devDependencies": {
+    "prettier": "3.9.9"
+  }
+}

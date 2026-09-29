@@ -1,0 +1,9 @@
+pnpm-lock.yaml
+uv.lock
+.artifacts
+.next
+node_modules
+.venv
+instructions.md
+CURRENT_PHASE.md
+docs/openapi.yaml

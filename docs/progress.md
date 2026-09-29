@@ -24,10 +24,11 @@ Phase 1: secure identity workflows, Django session login/logout/current user/pas
 - `pnpm audit --prod`: no known vulnerabilities reported. This is not the comprehensive Phase 12 security audit.
 - Redis rejected unauthenticated commands. Local `.env`, virtualenv and build output are ignored by Git.
 - Production deployment checks return only the deliberate `security.W021` HSTS preload advisory; tests fail on any additional warning.
+- GitHub Actions repeated locked installation, Compose startup/migrations and the complete validation suite on Linux: [successful Phase 0 run](https://github.com/Beeplap/e-commerce/actions/runs/36590505157) for implementation commit `1014506`.
 
 ## Known issues
 
-- No failing Phase 0 checks remain. GitHub-hosted CI execution is separate from the locally completed suite.
+- No failing Phase 0 checks remain; both local Windows validation and GitHub-hosted Linux CI passed.
 - Docker was installed in the available Ubuntu WSL distribution. This environment needs a foreground Compose session to keep WSL and localhost forwarding alive; Docker Desktop or a normal persistent Linux daemon does not need that workaround.
 
 ## Technical debt

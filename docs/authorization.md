@@ -41,3 +41,9 @@ Every seller API independently establishes identity, seller context, active memb
 Use capability names such as `catalog.product.read`, `inventory.adjust`, `orders.update`, `finance.read`, and `staff.invite`. Prevent self-escalation, unauthorized delegation and owner-removal hazards. Validate list results and foreign-key submissions as strictly as detail endpoints.
 
 Tenant-scoped lookups should return the same 404 for missing and foreign resources. Use 403 for denied capabilities when it does not reveal private resource existence. DRF's standard `detail` error and field-validation shapes are the API convention. Phase 3's client handles them centrally. Explicit serializers, bounded pagination and allowlisted ordering/filtering remain mandatory.
+
+## Frontend authorization UX
+
+Phase 3 adds session lookup/login/logout, protected workspace layouts and permission utilities. Anonymous protected navigation goes to `/login`; inaccessible seller/admin workspaces show a 403 screen. Platform navigation is shown only for the explicit `platform.access` capability. Admin and seller layouts also call Django's respective access endpoint before rendering their children; a role label never grants UI authority. Memberships are fetched through the bounded user-scoped endpoint and every chosen seller ID is validated through `/seller/access`.
+
+Frontend capabilities are hints for rendering controls and are never sent as trusted grants. Seller permission utilities require active membership and ACTIVE sellers by default, with an explicit pending-context option matching backend policy. In-memory context/query state is isolated by user and seller; stale work is aborted and late results are discarded. Backend permissions remain mandatory on every subsequent operation. Do not expose sensitive Server Component/RSC data behind a client-only guard.

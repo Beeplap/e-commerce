@@ -5,11 +5,12 @@
 - Phase 0: monorepo, Next.js App Router/Tailwind and Django/DRF foundations, initial UUID/email user migration boundary, PostgreSQL/Redis development infrastructure, generated local environment, strict tooling, liveness endpoints and offline OpenAPI.
 - Phase 1: server-side Django session authentication, explicit CSRF-protected browser login/logout, current-user and password-change APIs, brute-force lockout, immutable security events, application platform roles/capabilities, bootstrap management commands, and a real Next.js proxy smoke test.
 - Phase 2: seller tenancy and UUID memberships, seven system seller roles, explicit capabilities and owner-delegation protection, per-request seller context, scoped selectors and service guards, read-only seller-access/platform-inspection endpoints, PostgreSQL cross-tenant/identity constraints and adversarial authorization tests.
+- Phase 3: Next.js login/session integration, protected seller/admin/workspace/account layouts, responsive navigation/account menu/breadcrumbs, 403/404 and retry/loading states, centralized typed/runtime-validated same-origin API client, cancellation and stale-result protection, accessible UI primitives and frontend security/interaction tests.
 - Architecture, security, authorization, data-model, stack, testing, deployment and progress guidance are maintained alongside the implementation.
 
 ## Current phase
 
-Phase 1 was committed as `56c1d72` and pushed; [its GitHub validation passed](https://github.com/Beeplap/e-commerce/actions/runs/36666039048). Phase 2 implementation, documentation and all local validation are complete. Its commit/push and GitHub validation gate remain before beginning Phase 3.
+Phase 1 was committed as `56c1d72` and pushed; [its GitHub validation passed](https://github.com/Beeplap/e-commerce/actions/runs/36666039048). Phase 2 was committed/pushed as `b563da6`; [its GitHub validation passed](https://github.com/Beeplap/e-commerce/actions/runs/36668437445). Phase 3 implementation, documentation and all required local validation are complete. Its commit/push and GitHub validation gate remain before beginning Phase 4.
 
 ## Phase 1 validation results
 
@@ -21,7 +22,8 @@ Phase 1 was committed as `56c1d72` and pushed; [its GitHub validation passed](ht
 
 ## Known issues
 
-- No known local validation failures remain. Phase 2 GitHub validation is pending its push.
+- No known required local validation failures remain. Phase 3 GitHub validation is pending its push; the preceding phases' local and GitHub validation passed.
+- Optional live visual/browser verification is unavailable here: the Browser integration references a missing cached support module, and automatic approval review rejected an isolated headless Chrome launch with “blocked by policy.” Required frontend unit/lint/types/build and real HTTP/proxy checks remain available. Do not claim a browser E2E pass; that suite belongs to Phase 13.
 - Local Compose runs through the Ubuntu WSL daemon; a foreground Compose session may be needed to keep WSL and localhost forwarding alive.
 
 ## Technical debt
@@ -38,7 +40,15 @@ Phase 1 was committed as `56c1d72` and pushed; [its GitHub validation passed](ht
 
 ## Next phase
 
-After Phase 2's completion gate, Phase 3 covers the Next.js session-authentication shell, typed API client, seller/admin layouts, accessible UI primitives and frontend permission UX. Seller onboarding/lifecycle remains Phase 4.
+After Phase 3's completion gate, Phase 4 covers seller onboarding, profiles/addresses/private verification documents/settings, explicit platform approval/suspension workflows and attributable audit history.
+
+## Phase 3 validation results
+
+- Final `pnpm check`: passed. PostgreSQL backend suite: **122 passed**; frontend suite: **49 passed** across five files. Ruff format/lint, strict mypy, Django checks, migration drift/OpenAPI validation, Prettier, ESLint, strict TypeScript and Next.js production build passed.
+- `pnpm smoke:auth`: passed against the actual Next.js/Django proxy, including CSRF denial, cookie attributes/rotation, password change, logout invalidation and replay denial. Compose configuration validation passed through WSL.
+- Live HTTP checks: home/login/workspaces/seller/admin/account/403 routes returned 200 with nosniff; unknown route returned the custom 404. Protected HTTP responses contain only the shell; client session/permission validation and Django APIs control access to data.
+- New tests caught and fixed cancellation handling for browser DOMException and ambiguous selectors; assertions were preserved. Async auth and tenant races are tested explicitly.
+- No application dependencies or migrations were added. Browser visual/E2E checks are not claimed due to the environment limitations above.
 
 ## Phase 0 validation history
 

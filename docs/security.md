@@ -36,6 +36,10 @@ Production settings require an external high-entropy secret, explicit hostnames 
 
 Both stacks send nosniff, DENY frame and same-origin referrer headers. Web disables the identifying header and restricts camera/microphone/geolocation. A nonce-compatible Content-Security-Policy is deferred to Phase 12. Same-origin production ingress must preserve cookies and browser Origin. Browser access tokens, localStorage/sessionStorage auth, permissive CORS and disabling CSRF are prohibited.
 
+The Phase 3 browser API client only accepts local `/api/v1/*` paths and rejects external URLs, fragments and path traversal. Requests include cookies, disable caching and reject redirects. Every unsafe request acquires a fresh CSRF token first so login rotation cannot leave a cached stale token. Responses are checked against the runtime contract; successful logout requires the expected HTTP 204. Authentication and authorization errors remain visible, with field errors/request references where available. Raw HTML and 5xx exception payloads are not shown or retained as error details. Login password fields are cleared after submission, and credentials/tokens are never written to browser storage.
+
+The auth provider distinguishes anonymous sessions from service failures, preserves identity on failed logout and rejects stale session lookup results. Seller queries are keyed by account/context/route, cancel obsolete work and discard delayed results, preventing a previous seller's data from appearing after a context change. Current guarded Server Components contain no private business data; any future SSR/RSC data source must authorize with Django before rendering.
+
 PostgreSQL and Redis bind locally, use generated credentials and persistent volumes; Redis requires authentication and PostgreSQL uses SCRAM host authentication. The local DB bootstrap role is privileged for migrations/tests; production must separate migration/runtime roles and provision secrets externally. No production launch is claimed by this foundation.
 
 ## Invariants for later phases

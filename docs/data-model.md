@@ -24,3 +24,5 @@ Django's content-types, auth compatibility and database-session tables are migra
 - Audit records are append-only through ordinary application code and contain safe attributable changes, not secrets.
 
 UUIDs are public business identifiers; human order numbers are separate. Foreign keys, unique/check constraints, indexes, atomic transactions and appropriate row locks enforce integrity in PostgreSQL. Each future migration must include its matching negative and concurrency tests where relevant. SQLite is not a test substitute.
+
+Phase 3 adds no database entities or migrations. The frontend runtime contracts mirror safe `CurrentUser`, seller summaries, membership/role capabilities and bounded pagination from OpenAPI. Seller selection and rendered permission hints are ephemeral browser memory, not persisted grants or an alternative identity store. Money components consume decimal strings without numeric coercion; dates carry explicit timezone/locale for deterministic display.

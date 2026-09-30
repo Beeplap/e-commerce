@@ -23,4 +23,6 @@ Official support pages and package registries were checked on 2026-09-29 before 
 
 Vitest 5.0.2, Testing Library React 16.3.3, jest-dom 7.0.1 and jsdom 30.1.1 test the foundation UI. Prettier 3.9.9 handles repository formatting. Native installation scripts are allowlisted for Tailwind oxide, esbuild, sharp and unrs-resolver; other dependency build scripts require deliberate review.
 
+Phase 3 uses the existing React/Next.js/Tailwind/testing stack without additional packages. Simple forms, bounded semantic tables and a native modal dialog do not yet require form/table/component-state libraries. Runtime API validation is explicit for the small current contract; reassess a schema library when complex forms arrive. The bundled Next.js 16.3.7 guides/types were inspected for route groups, layout/client boundaries and the current error-boundary `retry` API. Browser E2E dependencies remain deferred to Phase 13.
+
 No Celery, storage SDK, auth token package, CORS package, component library, TanStack, form library or client API abstraction is installed without a current use case. Their architectural locations are documented, and they should be introduced only in the relevant phase after maintenance/security checks. Django already provides sessions, CSRF, password hashing integration and validation.

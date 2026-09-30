@@ -29,7 +29,7 @@ pnpm dev:api
 pnpm dev:web
 ```
 
-Visit `http://127.0.0.1:3000`. Web liveness is `/health`; API liveness is `/api/v1/health` through the same origin, or directly at `http://127.0.0.1:8000/api/v1/health`. These endpoints report process liveness only. Browser auth endpoints are proxied on the same origin at `/api/v1/auth/*`; CSRF protection is required for every unsafe request.
+Visit `http://127.0.0.1:3000/login` to sign in, then choose a workspace at `/workspaces`. Seller and platform layouts are at `/seller` and `/admin`; `/account` shows the signed-in identity. Web liveness is `/health`; API liveness is `/api/v1/health` through the same origin, or directly at `http://127.0.0.1:8000/api/v1/health`. These endpoints report process liveness only. Browser auth endpoints are proxied on the same origin at `/api/v1/auth/*`; CSRF protection is required for every unsafe request.
 
 To stop infrastructure without removing local data, run `pnpm infra:down`. Do not delete the volumes unless intentionally resetting the database.
 
@@ -62,7 +62,7 @@ Discover your accessible sellers at `GET /api/v1/seller/memberships`, then send 
 ## Structure and security
 
 - `apps/api`: Django settings, accounts, platform access, seller tenancy/RBAC, API endpoints, services and tests.
-- `apps/web`: Next.js App Router, Tailwind, accessible landing page and health.
+- `apps/web`: Next.js App Router/Tailwind, session-authentication and seller/admin shells, typed API client, accessible UI primitives and frontend tests.
 - `infra`: authenticated PostgreSQL/Redis development Compose.
 - `scripts`: local secret generation and cross-platform validation tasks.
 - `docs`: architecture, security, authorization, schema, stack, testing, deployment and progress.

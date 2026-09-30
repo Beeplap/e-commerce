@@ -14,9 +14,10 @@ describe("platform foundation", () => {
         name: "Marketplace administration",
       }),
     ).toBeVisible();
-    expect(
-      screen.queryByRole("button", { name: /log in/i }),
-    ).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Sign in" })).toHaveAttribute(
+      "href",
+      "/login",
+    );
   });
 
   it("returns minimal, uncached web liveness", async () => {

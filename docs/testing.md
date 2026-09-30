@@ -18,6 +18,8 @@ Production deployment checks intentionally return exactly `security.W021`: HSTS 
 
 Frontend tests render the accessible foundation page, validate the health route, and ensure the development API rewrite is absent in production. To exercise the actual session flow through Next.js, start `pnpm dev:api` and `pnpm dev:web`, then run `python -m uv run --project apps/api --env-file .env python scripts/smoke_auth.py`. The script creates and deletes a disposable local account, proves anonymous login CSRF denial, cookie security flags and rotation, password change, logout invalidation and replay denial, and leaves the intentionally immutable security events in PostgreSQL. It refuses to run outside DEBUG development.
 
+Phase 3 frontend coverage includes login/rejection/logout and failed logout, required CSRF and cookie requests, strict origin/path/response/status validation, visible HTTP/validation/rate-limit/network errors, secret-safe 5xx/HTML error handling, cancellation and stale authentication/context races, regular/admin/revoked route access, seller switching/no-membership behavior, capability-based navigation, authoritative paginated membership data, labels/table semantics/pagination/modal focus/cancel/busy behavior, exact decimal money display and deterministic timezone dates. Native dialog methods are simulated in jsdom solely for component focus/lifecycle tests; actual browser-native focus trapping is reserved for browser/E2E validation.
+
 Validate infrastructure without printing expanded credentials:
 
 ```sh

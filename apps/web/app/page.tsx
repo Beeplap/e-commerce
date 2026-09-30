@@ -8,9 +8,18 @@ export default function Home() {
         Marketplace administration
       </h1>
       <p className="mt-6 max-w-xl text-lg leading-8 text-slate-600">
-        The platform foundation is in place. Seller and platform administration
-        will be available in upcoming releases.
+        Manage the seller and platform workspaces available to your account.
       </p>
+      <div className="mt-8 flex flex-wrap gap-3">
+        <Link href="/login" className={primaryButton}>
+          Sign in
+        </Link>
+        <Link href="/workspaces" className={secondaryButton}>
+          Your workspaces
+        </Link>
+      </div>
     </main>
   );
 }
+import Link from "next/link";
+import { primaryButton, secondaryButton } from "@/components/ui/styles";

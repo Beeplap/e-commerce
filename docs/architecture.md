@@ -4,7 +4,7 @@
 
 The repository is a modular monolith. `apps/api` owns the Django API and all eventual business authority; `apps/web` is a Next.js App Router application. PostgreSQL is the authoritative database. Redis is an authenticated local dependency reserved for future caching and workers. No marketplace business workflows or customer storefront are implemented yet.
 
-The `accounts` domain owns the custom swappable UUID/email user, session login/logout/password workflows and append-only security-event record. The separate `platform_access` domain owns platform roles and capability grants. Phase 1 intentionally provides only the `platform.access` capability and protected session-inspection endpoint; later business admin and seller resources remain unimplemented.
+The `accounts` domain owns the custom swappable UUID/email user, session login/logout/password workflows and append-only security-event record. The separate `platform_access` domain owns platform roles and capability grants. The `sellers` domain now owns tenants, memberships, seller roles/capabilities and tenant-scoped authorization. Read-only access endpoints expose the authenticated user's available seller contexts and one verified context; explicit platform inspection has its own capability.
 
 The web app currently has a semantic landing page and a dynamic `/health` endpoint. Django exposes `/api/v1/health`. Both return only `{"status":"ok"}` with `Cache-Control: no-store`. They prove process liveness and intentionally do not query PostgreSQL or Redis. Dependency-aware readiness belongs to Phase 14.
 
@@ -16,11 +16,15 @@ In development, the browser uses `http://127.0.0.1:3000`. Next.js rewrites `/api
 
 Production uses one HTTPS origin: ingress routes `/api/*` to Django and other paths to Next.js. The development rewrite is absent in production. No `NEXT_PUBLIC` secret configuration, browser bearer-token layer, or second Next.js identity store is permitted. The ingress must support cookies and preserve the browser origin; forwarded-header trust is not configured until a controlled ingress is chosen.
 
-## Future module boundaries (not implemented)
+Seller context is explicit on each seller operation through a UUID `X-Seller-ID` header. It selects a tenant after membership and capability validation, rather than granting access. There is no shared mutable session seller, so two tabs can work with different tenants. The frontend discovers contexts through `/api/v1/seller/memberships`, then inspects its selected context through `/api/v1/seller/access`. Membership, user, seller and permission revocation are checked against current PostgreSQL state. Internal services must independently use `require_seller_access` and tenant-scoped selectors, which require ACTIVE sellers by default. The read-only context view explicitly permits pending sellers for later onboarding.
+
+`SellerRole` holds system roles or one seller's custom role; PostgreSQL prevents cross-tenant role assignment and changing role/membership identity. The delegation guard rejects capabilities the actor does not hold and protects owner-role delegation. Staff mutation workflows and owner-transfer/last-owner rules remain Phase 10 work; the current guard performs no mutation. Onboarding, lifecycle transitions and profile/settings writes remain Phase 4 work.
+
+## Domain boundaries and later modules
 
 - `accounts`: identity, session/password workflows and security-event snapshots.
 - `platform_access`: application administrator roles and explicit capabilities (initially only `platform.access`).
-- `sellers`, `permissions`: tenancy, memberships, seller lifecycle and RBAC.
+- `sellers`: implemented tenancy/memberships/RBAC foundation; seller lifecycle and staff workflows follow later. Seller permissions live with this domain; no empty separate permissions app is needed.
 - `catalog`, `inventory`: products and attributable stock movements.
 - `orders`: parent Order and per-seller SellerOrder, snapshots and explicit state transitions.
 - `payments`, `payouts`: payment references, commission snapshots, immutable seller accounting.

@@ -19,6 +19,7 @@ INSTALLED_APPS = [
     "axes",
     "apps.accounts",
     "apps.platform_access",
+    "apps.sellers",
 ]
 
 MIDDLEWARE = [
@@ -117,6 +118,11 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "Session-authenticated marketplace administration API.",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
+    "ENUM_NAME_OVERRIDES": {
+        "SellerStatusEnum": "apps.sellers.models.Seller.Status",
+        "SellerVerificationStatusEnum": "apps.sellers.models.Seller.VerificationStatus",
+        "SellerMembershipStatusEnum": "apps.sellers.models.SellerMembership.Status",
+    },
 }
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"

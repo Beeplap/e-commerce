@@ -20,7 +20,15 @@ Axes admin and access-success logging are disabled. Its logger uses a fixed labe
 
 ## Platform access
 
-Application roles/capabilities live in `platform_access`. The database seeds one `SUPER_ADMIN` role and one `platform.access` capability. The protected admin test endpoint reads that capability from the database on each request; `is_superuser`, `is_staff`, role strings, client state and session claims grant nothing. Capabilities remain separate for future finance/catalog/operations/support access. Grant is a management-command bootstrap operation with an append-only security event. Only authorized infrastructure operators may execute it. Django admin is not installed or routed.
+Application roles/capabilities live in `platform_access`. The database seeds `SUPER_ADMIN` with `platform.access` and `platform.sellers.read`. The protected admin access and seller-inspection endpoints require their respective capabilities on each request; `is_superuser`, `is_staff`, role strings, client state and session claims grant nothing. Capabilities remain separate for future finance/catalog/operations/support access. Grant is a management-command bootstrap operation with an append-only security event. Only authorized infrastructure operators may execute it. Django admin is not installed or routed.
+
+## Seller tenancy and delegation
+
+Seller is the tenant. Requests carry an explicit UUID `X-Seller-ID`; membership discovery exposes only the current user's accessible memberships. Django validates current user activity, active membership, seller availability, valid role scope and the endpoint capability. Service guards require ACTIVE sellers by default; the read-only context endpoint explicitly allows pending sellers for onboarding. No platform privilege bypasses seller routes. Missing and foreign sellers both return the same 404; insufficient capability within a verified seller returns 403. Revocations take effect on the next request. Seller access responses are uncached, explicitly serialized and exclude private legal/contact/approval data; platform inspection has a separately allowlisted representation.
+
+Membership discovery uses fixed pages of 25, allowlists only `page`, rejects duplicate/invalid query arguments and caps the page number. All currently implemented seller endpoints are read-only; unsafe methods still enforce CSRF and cannot assign membership, change roles, approve sellers or modify profiles. Onboarding and staff operations are deferred to their authorized phases.
+
+PostgreSQL enforces membership uniqueness/status/join-time, role scope and cross-tenant role references. Triggers prevent moving role or membership identity after creation. Capability delegation is constrained to the actor's current capabilities; owner-role delegation also requires structural ownership and the ownership capability. This guard is a prerequisite for later transactional/audited staff workflows, not an invitation or role-change API. Tenant queryset filtering never grants authority to caller-provided creation or reassignment fields; later creation services must set tenant ownership from verified access.
 
 ## Production and browser hardening
 

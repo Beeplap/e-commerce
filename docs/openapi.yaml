@@ -20,6 +20,29 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
           description: ''
+  /api/v1/admin/sellers/{seller_id}/access:
+    get:
+      operationId: admin_sellers_access_retrieve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: seller_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform seller inspection
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SellerInspection'
+          description: ''
   /api/v1/auth/change-password:
     post:
       operationId: auth_change_password_create
@@ -156,6 +179,69 @@ paths:
               schema:
                 $ref: '#/components/schemas/Health'
           description: ''
+  /api/v1/seller/access:
+    get:
+      operationId: seller_access_retrieve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller access
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SellerMembership'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
+  /api/v1/seller/memberships:
+    get:
+      operationId: seller_memberships_retrieve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: 1 to 10000; 25 per page
+      tags:
+      - Seller access
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SellerPage'
+          description: ''
 components:
   schemas:
     CSRF:
@@ -176,9 +262,14 @@ components:
       type: object
       properties:
         status:
-          $ref: '#/components/schemas/StatusEnum'
+          $ref: '#/components/schemas/HealthStatusEnum'
       required:
       - status
+    HealthStatusEnum:
+      enum:
+      - ok
+      type: string
+      description: '* `ok` - ok'
     Login:
       type: object
       properties:
@@ -207,11 +298,216 @@ components:
       required:
       - new_password
       - old_password
-    StatusEnum:
+    SellerInspection:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        legal_name:
+          type: string
+          readOnly: true
+        display_name:
+          type: string
+          readOnly: true
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        status:
+          allOf:
+          - $ref: '#/components/schemas/SellerStatusEnum'
+          readOnly: true
+        verification_status:
+          allOf:
+          - $ref: '#/components/schemas/SellerVerificationStatusEnum'
+          readOnly: true
+        email:
+          type: string
+          format: email
+          readOnly: true
+        phone:
+          type: string
+          readOnly: true
+        default_currency:
+          type: string
+          readOnly: true
+        timezone:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        approved_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        approved_by:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
+      required:
+      - approved_at
+      - approved_by
+      - created_at
+      - default_currency
+      - display_name
+      - email
+      - id
+      - legal_name
+      - phone
+      - slug
+      - status
+      - timezone
+      - updated_at
+      - verification_status
+    SellerMembership:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        seller:
+          allOf:
+          - $ref: '#/components/schemas/SellerSummary'
+          readOnly: true
+        role:
+          allOf:
+          - $ref: '#/components/schemas/SellerRoleSummary'
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/SellerMembershipStatusEnum'
+          readOnly: true
+        permissions:
+          type: array
+          items:
+            type: string
+          readOnly: true
+      required:
+      - id
+      - permissions
+      - role
+      - seller
+      - status
+    SellerMembershipStatusEnum:
       enum:
-      - ok
+      - invited
+      - active
+      - suspended
       type: string
-      description: '* `ok` - ok'
+      description: |-
+        * `invited` - Invited
+        * `active` - Active
+        * `suspended` - Suspended
+    SellerPage:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          format: uri
+          nullable: true
+        previous:
+          type: string
+          format: uri
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SellerMembership'
+      required:
+      - count
+      - next
+      - previous
+      - results
+    SellerRoleSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        is_owner:
+          type: boolean
+          readOnly: true
+      required:
+      - id
+      - is_owner
+      - name
+    SellerStatusEnum:
+      enum:
+      - pending
+      - active
+      - suspended
+      - rejected
+      - closed
+      type: string
+      description: |-
+        * `pending` - Pending
+        * `active` - Active
+        * `suspended` - Suspended
+        * `rejected` - Rejected
+        * `closed` - Closed
+    SellerSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        display_name:
+          type: string
+          readOnly: true
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        status:
+          allOf:
+          - $ref: '#/components/schemas/SellerStatusEnum'
+          readOnly: true
+        verification_status:
+          allOf:
+          - $ref: '#/components/schemas/SellerVerificationStatusEnum'
+          readOnly: true
+        default_currency:
+          type: string
+          readOnly: true
+        timezone:
+          type: string
+          readOnly: true
+      required:
+      - default_currency
+      - display_name
+      - id
+      - slug
+      - status
+      - timezone
+      - verification_status
+    SellerVerificationStatusEnum:
+      enum:
+      - pending
+      - verified
+      - rejected
+      type: string
+      description: |-
+        * `pending` - Pending
+        * `verified` - Verified
+        * `rejected` - Rejected
     User:
       type: object
       properties:

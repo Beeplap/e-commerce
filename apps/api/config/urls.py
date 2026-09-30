@@ -2,6 +2,7 @@ from django.urls import path
 
 from apps.accounts.views import CSRFView, LoginView, LogoutView, MeView, PasswordChangeView
 from apps.platform_access.views import PlatformAccessView
+from apps.sellers.views import PlatformSellerAccessView, SellerAccessView, SellerMembershipListView
 from config.health import HealthView
 
 urlpatterns = [
@@ -12,4 +13,13 @@ urlpatterns = [
     path("api/v1/auth/me", MeView.as_view(), name="me"),
     path("api/v1/auth/change-password", PasswordChangeView.as_view(), name="change-password"),
     path("api/v1/admin/access", PlatformAccessView.as_view(), name="platform-access"),
+    path(
+        "api/v1/seller/memberships", SellerMembershipListView.as_view(), name="seller-memberships"
+    ),
+    path("api/v1/seller/access", SellerAccessView.as_view(), name="seller-access"),
+    path(
+        "api/v1/admin/sellers/<uuid:seller_id>/access",
+        PlatformSellerAccessView.as_view(),
+        name="platform-seller-access",
+    ),
 ]

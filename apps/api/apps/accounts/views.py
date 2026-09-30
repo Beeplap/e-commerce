@@ -28,11 +28,15 @@ from apps.accounts.serializers import (
 class BrowserAPIView(APIView):
     """CSRF applies even to anonymous unsafe browser requests, including login."""
 
+    allowed_query_parameters: frozenset[str] = frozenset()
+
     def initial(self, request: Request, *args: Any, **kwargs: Any) -> None:
         if request.method not in ("GET", "HEAD", "OPTIONS"):
             SessionAuthentication().enforce_csrf(request)
-        if request.query_params:
+        if set(request.query_params) - self.allowed_query_parameters:
             raise ValidationError({"detail": "Query parameters are not supported here."})
+        if any(len(request.query_params.getlist(key)) != 1 for key in request.query_params):
+            raise ValidationError({"detail": "Repeated query parameters are not supported."})
         super().initial(request, *args, **kwargs)
 
     def finalize_response(self, request: Request, response: Any, *args: Any, **kwargs: Any) -> Any:

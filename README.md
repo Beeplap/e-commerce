@@ -53,13 +53,15 @@ This runs backend formatting/lint/types, Django/migration/OpenAPI checks, Postgr
 
 ## Account and platform bootstrap
 
-Create the first account interactively with `python -m uv run --project apps/api --env-file .env python apps/api/manage.py create_account`. It prompts for the email and password without echoing the password. Accounts receive no platform capabilities by default. The `grant_platform_access` command is an explicit operator action for granting a seeded capability and records an immutable security event. Django superuser status is reserved for infrastructure break-glass access and does not grant application platform capabilities.
+Create the first account with `python -m uv run --project apps/api --env-file .env python apps/api/manage.py create_account <email>`. It prompts for the password and confirmation without echoing them. Accounts receive no platform capabilities by default. The `grant_platform_access <email>` command is an explicit operator action for granting the seeded platform role and records an immutable security event. Django superuser status is reserved for infrastructure break-glass access and does not grant application platform capabilities.
 
 For the proxied login, retrieve `/api/v1/auth/csrf`, then submit the returned CSRF cookie/header pair to `/api/v1/auth/login`. The browser session remains in an HttpOnly cookie. See `docs/security.md` and `docs/testing.md` for session, lockout and smoke-test details.
 
+Discover your accessible sellers at `GET /api/v1/seller/memberships`, then send that seller's UUID as `X-Seller-ID` to `GET /api/v1/seller/access`. Each request independently validates current membership and capabilities. The seller ID is a context selector, not a credential. Seller onboarding and staff-management APIs will be implemented in their roadmap phases. Platform seller inspection uses `GET /api/v1/admin/sellers/<uuid>/access` and requires the distinct `platform.sellers.read` capability.
+
 ## Structure and security
 
-- `apps/api`: Django settings, accounts and platform access, API endpoints, services and tests.
+- `apps/api`: Django settings, accounts, platform access, seller tenancy/RBAC, API endpoints, services and tests.
 - `apps/web`: Next.js App Router, Tailwind, accessible landing page and health.
 - `infra`: authenticated PostgreSQL/Redis development Compose.
 - `scripts`: local secret generation and cross-platform validation tasks.

@@ -180,7 +180,10 @@ def test_platform_role_grants_only_explicit_capabilities_and_revocation_is_immed
     call_command("grant_platform_access", user.email)
     assert login(browser).status_code == 200
     assert browser.get("/api/v1/admin/access").status_code == 200
-    assert browser.get("/api/v1/auth/me").data["platform_permissions"] == ["platform.access"]
+    assert browser.get("/api/v1/auth/me").data["platform_permissions"] == [
+        "platform.access",
+        "platform.sellers.read",
+    ]
     PlatformAccess.objects.filter(user=user).update(is_active=False)
     assert browser.get("/api/v1/admin/access").status_code == 403
     assert browser.get("/api/v1/auth/me").data["platform_permissions"] == []

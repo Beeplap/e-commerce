@@ -1,6 +1,6 @@
 # Quick Commerce
 
-A modular Django/Next.js foundation for multi-vendor seller and platform administration. Phase 0 implements development infrastructure and engineering standards; authentication and marketplace workflows follow the roadmap in `instructions.md` and the authorization in `CURRENT_PHASE.md`.
+A modular Django/Next.js foundation for multi-vendor seller and platform administration. The completed foundation and session-authentication phases provide development infrastructure, secure browser authentication, and capability-based platform access. Marketplace workflows follow `instructions.md` and the phase selected by `CURRENT_PHASE.md`.
 
 ## Prerequisites
 
@@ -29,7 +29,7 @@ pnpm dev:api
 pnpm dev:web
 ```
 
-Visit `http://127.0.0.1:3000`. Web liveness is `/health`; API liveness is `/api/v1/health` through the same origin, or directly at `http://127.0.0.1:8000/api/v1/health`. These endpoints report process liveness only. Use one hostname consistently for future cookie-based authentication.
+Visit `http://127.0.0.1:3000`. Web liveness is `/health`; API liveness is `/api/v1/health` through the same origin, or directly at `http://127.0.0.1:8000/api/v1/health`. These endpoints report process liveness only. Browser auth endpoints are proxied on the same origin at `/api/v1/auth/*`; CSRF protection is required for every unsafe request.
 
 To stop infrastructure without removing local data, run `pnpm infra:down`. Do not delete the volumes unless intentionally resetting the database.
 
@@ -51,14 +51,20 @@ pnpm check
 
 This runs backend formatting/lint/types, Django/migration/OpenAPI checks, PostgreSQL tests, repository formatting, frontend lint/types/component tests, and production build. See `docs/testing.md` for individual checks and future test requirements. `docs/openapi.yaml` is the generated contract.
 
+## Account and platform bootstrap
+
+Create the first account interactively with `python -m uv run --project apps/api --env-file .env python apps/api/manage.py create_account`. It prompts for the email and password without echoing the password. Accounts receive no platform capabilities by default. The `grant_platform_access` command is an explicit operator action for granting a seeded capability and records an immutable security event. Django superuser status is reserved for infrastructure break-glass access and does not grant application platform capabilities.
+
+For the proxied login, retrieve `/api/v1/auth/csrf`, then submit the returned CSRF cookie/header pair to `/api/v1/auth/login`. The browser session remains in an HttpOnly cookie. See `docs/security.md` and `docs/testing.md` for session, lockout and smoke-test details.
+
 ## Structure and security
 
-- `apps/api`: Django settings, minimal accounts migration foundation, API health and tests.
+- `apps/api`: Django settings, accounts and platform access, API endpoints, services and tests.
 - `apps/web`: Next.js App Router, Tailwind, accessible landing page and health.
 - `infra`: authenticated PostgreSQL/Redis development Compose.
 - `scripts`: local secret generation and cross-platform validation tasks.
 - `docs`: architecture, security, authorization, schema, stack, testing, deployment and progress.
 
-Django is the security authority. Sessions are server-side; APIs deny by default. Seller tenancy will be membership-based. No browser auth tokens, business superuser shortcuts, or SQLite test fallback are permitted. Production settings fail closed and require HTTPS; this scaffold is not a production launch.
+Django is the security authority. Sessions are server-side; APIs deny by default. Seller tenancy is membership-based as seller features are added. No browser auth tokens, business superuser shortcuts, or SQLite test fallback are permitted. Production settings fail closed and require HTTPS; this scaffold is not a production launch.
 
 Read `AGENTS.md` before making changes. Consult `docs/progress.md` for completion status and pending work.

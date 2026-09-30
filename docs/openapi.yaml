@@ -2,11 +2,149 @@ openapi: 3.0.3
 info:
   title: Quick Commerce API
   version: 1.0.0
-  description: Phase 0 infrastructure. Business endpoints are not yet implemented.
+  description: Session-authenticated marketplace administration API.
 paths:
+  /api/v1/admin/access:
+    get:
+      operationId: admin_access_retrieve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Platform access
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/v1/auth/change-password:
+    post:
+      operationId: auth_change_password_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordChange'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
+  /api/v1/auth/csrf:
+    get:
+      operationId: auth_csrf_retrieve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Authentication
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CSRF'
+          description: ''
+  /api/v1/auth/login:
+    post:
+      operationId: auth_login_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
+  /api/v1/auth/logout:
+    post:
+      operationId: auth_logout_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Authentication
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/auth/me:
+    get:
+      operationId: auth_me_retrieve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Authentication
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
   /api/v1/health:
     get:
-      operationId: api_v1_health_retrieve
+      operationId: health_retrieve
       description: Public liveness only; no database, dependency details, or user
         information.
       tags:
@@ -20,6 +158,20 @@ paths:
           description: ''
 components:
   schemas:
+    CSRF:
+      type: object
+      properties:
+        csrf_token:
+          type: string
+      required:
+      - csrf_token
+    Detail:
+      type: object
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
     Health:
       type: object
       properties:
@@ -27,8 +179,73 @@ components:
           $ref: '#/components/schemas/StatusEnum'
       required:
       - status
+    Login:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        password:
+          type: string
+          writeOnly: true
+          maxLength: 1024
+      required:
+      - email
+      - password
+    PasswordChange:
+      type: object
+      properties:
+        old_password:
+          type: string
+          writeOnly: true
+          maxLength: 1024
+        new_password:
+          type: string
+          writeOnly: true
+          maxLength: 1024
+      required:
+      - new_password
+      - old_password
     StatusEnum:
       enum:
       - ok
       type: string
       description: '* `ok` - ok'
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        email:
+          type: string
+          format: email
+          readOnly: true
+        first_name:
+          type: string
+          readOnly: true
+        last_name:
+          type: string
+          readOnly: true
+        is_email_verified:
+          type: boolean
+          readOnly: true
+        platform_permissions:
+          type: array
+          items:
+            type: string
+          readOnly: true
+      required:
+      - email
+      - first_name
+      - id
+      - is_email_verified
+      - last_name
+      - platform_permissions
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid

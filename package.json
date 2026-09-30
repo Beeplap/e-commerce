@@ -19,6 +19,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "check:api": "node scripts/tasks.mjs check-api",
+    "smoke:auth": "python -m uv run --project apps/api --env-file .env python scripts/smoke_auth.py",
     "check": "node scripts/tasks.mjs check"
   },
   "devDependencies": {

@@ -34,6 +34,20 @@ jobs:
       - name: Validate foundation
         run: |
           pnpm check
+      - name: Validate proxied session authentication
+        run: |
+          pnpm dev:api > api.log 2>&1 &
+          api_pid=$!
+          pnpm dev:web > web.log 2>&1 &
+          web_pid=$!
+          trap 'kill "$web_pid" "$api_pid" 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 60); do
+            if curl --fail --silent --output /dev/null http://127.0.0.1:3000/api/v1/auth/csrf; then
+              break
+            fi
+            sleep 1
+          done
+          python -m uv run --project apps/api --env-file .env python scripts/smoke_auth.py
           git diff --exit-code -- docs/openapi.yaml
       - name: Stop infrastructure
         if: always()

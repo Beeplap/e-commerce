@@ -9,6 +9,7 @@ dependencies = [
   "drf-spectacular==0.30.0",
   "psycopg[binary]==3.3.6",
   "argon2-cffi==25.1.0",
+  "django-axes==8.3.1",
 ]
 
 [dependency-groups]
@@ -39,6 +40,11 @@ plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
 strict = true
 exclude = ["migrations/"]
 
+[[tool.mypy.overrides]]
+module = ["axes.*"]
+# Axes 8.3.1 does not ship py.typed/stubs. Our integration remains strictly checked.
+ignore_missing_imports = true
+
 [tool.django-stubs]
 django_settings_module = "config.settings.development"
 
@@ -46,5 +52,5 @@ django_settings_module = "config.settings.development"
 DJANGO_SETTINGS_MODULE = "config.settings.testing"
 python_files = ["test_*.py"]
 testpaths = ["tests"]
-addopts = "-ra --strict-markers"
+addopts = "-ra --tb=short --strict-markers"
 filterwarnings = ["error"]

@@ -2,11 +2,13 @@
 
 ## Current foundation
 
-The repository is a modular monolith. `apps/api` owns the Django API and all eventual business authority; `apps/web` is a Next.js App Router application. PostgreSQL is the authoritative database. Redis is an authenticated local dependency reserved for future caching, throttling, and workers. No business workflows or customer storefront are implemented in Phase 0.
+The repository is a modular monolith. `apps/api` owns the Django API and all eventual business authority; `apps/web` is a Next.js App Router application. PostgreSQL is the authoritative database. Redis is an authenticated local dependency reserved for future caching and workers. No marketplace business workflows or customer storefront are implemented yet.
 
-The only domain app is `accounts`, because a custom swappable user must exist in the first migration. It provides the UUID/email model and a manager, without login endpoints, application roles, or account UI. This resolves the roadmap's requirement to start with a custom user without implementing Phase 1 workflows.
+The `accounts` domain owns the custom swappable UUID/email user, session login/logout/password workflows and append-only security-event record. The separate `platform_access` domain owns platform roles and capability grants. Phase 1 intentionally provides only the `platform.access` capability and protected session-inspection endpoint; later business admin and seller resources remain unimplemented.
 
 The web app currently has a semantic landing page and a dynamic `/health` endpoint. Django exposes `/api/v1/health`. Both return only `{"status":"ok"}` with `Cache-Control: no-store`. They prove process liveness and intentionally do not query PostgreSQL or Redis. Dependency-aware readiness belongs to Phase 14.
+
+The browser acquires `/api/v1/auth/csrf`, then uses same-origin JSON requests for login, current user, logout and password change. It holds an HttpOnly Django session cookie and a readable CSRF cookie/header pair, never a bearer token. Unsafe authentication endpoints explicitly enforce CSRF even for anonymous sessions. Successful login rotates both the session key and CSRF token. Password change rotates the current session and invalidates other sessions through Django's stored password-hash check.
 
 ## Request boundaries
 
@@ -16,8 +18,8 @@ Production uses one HTTPS origin: ingress routes `/api/*` to Django and other pa
 
 ## Future module boundaries (not implemented)
 
-- `accounts`: identity and session/password workflows.
-- `platform_access`: application administrator roles and capabilities.
+- `accounts`: identity, session/password workflows and security-event snapshots.
+- `platform_access`: application administrator roles and explicit capabilities (initially only `platform.access`).
 - `sellers`, `permissions`: tenancy, memberships, seller lifecycle and RBAC.
 - `catalog`, `inventory`: products and attributable stock movements.
 - `orders`: parent Order and per-seller SellerOrder, snapshots and explicit state transitions.

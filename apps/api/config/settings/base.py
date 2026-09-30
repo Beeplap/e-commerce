@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 from pathlib import Path
 
 from config.env import required
@@ -15,7 +16,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "drf_spectacular",
+    "axes",
     "apps.accounts",
+    "apps.platform_access",
 ]
 
 MIDDLEWARE = [
@@ -25,6 +28,7 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "axes.middleware.AxesMiddleware",
 ]
 ROOT_URLCONF = "config.urls"
 WSGI_APPLICATION = "config.wsgi.application"
@@ -44,6 +48,33 @@ DATABASES = {
     }
 }
 AUTH_USER_MODEL = "accounts.User"
+AUTHENTICATION_BACKENDS = [
+    "axes.backends.AxesStandaloneBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
+AXES_HANDLER = "axes.handlers.database.AxesDatabaseHandler"
+AXES_FAILURE_LIMIT = 5
+AXES_COOLOFF_TIME = timedelta(minutes=15)
+AXES_LOCKOUT_PARAMETERS = ["username", "ip_address"]
+AXES_USERNAME_FORM_FIELD = "email"
+AXES_RESET_ON_SUCCESS = False
+AXES_RESET_COOL_OFF_ON_FAILURE_DURING_LOCKOUT = False
+AXES_DISABLE_ACCESS_LOG = True  # Our append-only SecurityEvent records successful actions.
+AXES_ENABLE_ADMIN = False
+AXES_CLIENT_IP_CALLABLE = "apps.accounts.security.client_ip"
+AXES_CLIENT_STR_CALLABLE = "apps.accounts.security.safe_client_label"
+AXES_LOCKOUT_CALLABLE = "apps.accounts.security.lockout_response"
+AXES_SENSITIVE_PARAMETERS = [
+    "username",
+    "email",
+    "ip_address",
+    "password",
+    "old_password",
+    "new_password",
+    "sessionid",
+    "csrftoken",
+    "authorization",
+]
 PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.Argon2PasswordHasher",
     "django.contrib.auth.hashers.PBKDF2PasswordHasher",
@@ -83,7 +114,7 @@ REST_FRAMEWORK = {
 }
 SPECTACULAR_SETTINGS = {
     "TITLE": "Quick Commerce API",
-    "DESCRIPTION": "Phase 0 infrastructure. Business endpoints are not yet implemented.",
+    "DESCRIPTION": "Session-authenticated marketplace administration API.",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
 }

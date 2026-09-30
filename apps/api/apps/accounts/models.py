@@ -35,7 +35,7 @@ class UserManager(BaseUserManager["User"]):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    """Migration foundation only. No application authorization or login API yet."""
+    """Swappable UUID/email identity; platform/business roles remain separate."""
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(unique=True)
@@ -62,3 +62,28 @@ class User(AbstractBaseUser, PermissionsMixin):
     def clean(self) -> None:
         super().clean()
         self.email = UserManager.normalize_email(self.email)
+
+
+class SecurityEvent(models.Model):
+    """Immutable event snapshots; actor IDs survive account deletion without mutation."""
+
+    class Action(models.TextChoices):
+        LOGIN_SUCCEEDED = "login.succeeded"
+        LOGIN_FAILED = "login.failed"
+        LOGIN_BLOCKED = "login.blocked"
+        LOGOUT = "logout"
+        PASSWORD_CHANGED = "password.changed"
+        PASSWORD_REJECTED = "password.rejected"
+        PLATFORM_ACCESS_GRANTED = "platform_access.granted"
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    action = models.CharField(max_length=40, choices=Action.choices)
+    actor_id = models.UUIDField(null=True)
+    subject_id = models.UUIDField(null=True)
+    identity_digest = models.CharField(max_length=64, blank=True)
+    ip_address = models.GenericIPAddressField(null=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        indexes = [models.Index(fields=["action", "created_at"])]

@@ -35,7 +35,8 @@ def test_unknown_routes_and_invalid_hosts_fail_closed(client: Client) -> None:
     assert client.get("/api/v2/health").status_code == 404
     assert client.get("/api/v1/health", HTTP_HOST="attacker.example").status_code == 400
     assert client.get("/admin/").status_code == 404
-    assert client.get("/api/v1/auth/login").status_code == 404
+    assert client.get("/api/v1/auth/login").status_code == 405
+    assert client.get("/api/v1/auth/nonexistent").status_code == 404
 
 
 @pytest.mark.parametrize("authenticated", [False, True])

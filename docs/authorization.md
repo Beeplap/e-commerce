@@ -1,13 +1,27 @@
 # Authorization
 
-Phase 0 has no business authorization endpoints. The global DRF default is `config.permissions.DenyAll`, preventing accidental access even for authenticated users. Health is the only `AllowAny` exception and accepts GET/HEAD/OPTIONS. Schema generation runs through a management command.
+## Phase 1 platform capability foundation
 
-Phase 1 must introduce application platform roles starting with SUPER_ADMIN and explicit capabilities; Django superuser is emergency infrastructure access only. Future OPERATIONS_ADMIN, FINANCE_ADMIN, CATALOG_ADMIN and SUPPORT_ADMIN must use capabilities rather than role-name conditionals spread across views. Django admin, if introduced, needs network restriction and break-glass controls in production.
+Django remains the only authorization authority. DRF defaults to `config.permissions.DenyAll`, preventing accidental access even to authenticated users. The authentication API explicitly opts into public CSRF/login or authenticated-self operations. `/api/v1/admin/access` uses `PlatformCapabilityRequired` and requires `platform.access` on an active `PlatformAccess` grant. It returns only the signed-in account's safe identity and capabilities. Admin account creation or Django superuser flags never grant application capabilities.
 
-Phase 2 defines Seller as the tenant, SellerMembership as user-to-tenant access, and Role/Permission/RolePermission as the seller RBAC foundation. Membership must be active and revalidated per sensitive operation. A user can belong to multiple sellers. Browser-supplied seller IDs select context only after backend membership checks; they never grant authority.
+`PlatformRole`, `PlatformPermission`, `PlatformRolePermission` and the user's one-to-one `PlatformAccess` grant are the capability foundation. The first migration seeds `SUPER_ADMIN` and only the `platform.access` capability. A role name by itself grants nothing; no permission is implied by `is_staff`, `is_superuser`, Django groups, session contents or the frontend. `platform_capabilities` reads current state from PostgreSQL per request, so revocation takes effect without waiting for session expiry.
 
-Every seller API must independently establish identity, seller context, membership, capability, tenant-filtered query and related-object ownership. Services must also guard permissions when invoked outside HTTP. Platform inspection of seller data happens through intentionally distinct admin endpoints. A platform role does not silently grant access through seller routes.
+The management commands `create_account <email>` (hidden password prompts, password validation, regular unprivileged account) and `grant_platform_access <email> [--role SUPER_ADMIN]` are infrastructure bootstrap operations. Restrict production command access to authorized operators, protect/record shell access, and never expose them over HTTP. Grant actions append a `SecurityEvent`. Normal platform access must use explicit application capabilities, never the Django admin.
 
-Use names such as `catalog.product.read`, `inventory.adjust`, `orders.update`, `finance.read`, and `staff.invite`. Prevent self-escalation, unauthorized delegation and owner-removal hazards. Validate list results and foreign-key submissions as strictly as detail endpoints.
+## Authentication boundaries
 
-Tenant-scoped lookups should return the same 404 for missing and foreign resources. Use 403 for denied capabilities where it does not reveal private resource existence. DRF's standard `detail` error and field-validation error shapes are the initial convention. Phase 3's API client must handle them centrally. Explicit serializers, bounded pagination and allowlisted ordering/filtering remain mandatory.
+`/api/v1/auth/me` exposes only UUID, email, first/last name, email-verification state and current platform capability names. It never serializes password hashes, staff/superuser flags, session IDs, or axes state. Login normalizes email and returns one generic response for unknown, wrong-password and disabled accounts.
+
+Unsafe session-authenticated browser actions require CSRF. Login is anonymous, so `BrowserAPIView` explicitly invokes Django's CSRF check before permission handling; DRF's normal session authenticator would otherwise skip CSRF for anonymous login. State changing routes reject query parameters, unknown body fields and unsupported methods. The same-origin Next.js proxy keeps browser credentials same-origin without CORS.
+
+Future platform roles (OPERATIONS_ADMIN, FINANCE_ADMIN, CATALOG_ADMIN, SUPPORT_ADMIN) need explicit capabilities and permission-specific views. `platform.access` currently protects the self-inspection test surface only; it does not automatically grant future finance, seller or catalog capabilities.
+
+## Future tenant boundary
+
+Phase 2 defines Seller as tenant, SellerMembership as user-to-tenant access, and seller Role/Permission/RolePermission. Membership is checked for each sensitive operation. A user may belong to multiple sellers. Browser-supplied seller IDs select context only after backend membership verification; they never grant authority.
+
+Every seller API independently establishes identity, seller context, active membership, capability, tenant-filtered query and related-object ownership. Services also guard sensitive permissions when invoked outside HTTP. Platform inspection of seller data occurs through intentionally distinct admin endpoints. Platform capability never silently widens access through seller routes.
+
+Use capability names such as `catalog.product.read`, `inventory.adjust`, `orders.update`, `finance.read`, and `staff.invite`. Prevent self-escalation, unauthorized delegation and owner-removal hazards. Validate list results and foreign-key submissions as strictly as detail endpoints.
+
+Tenant-scoped lookups should return the same 404 for missing and foreign resources. Use 403 for denied capabilities when it does not reveal private resource existence. DRF's standard `detail` error and field-validation shapes are the API convention. Phase 3's client handles them centrally. Explicit serializers, bounded pagination and allowlisted ordering/filtering remain mandatory.

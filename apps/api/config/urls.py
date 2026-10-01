@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import include, path
 
 from apps.accounts.views import CSRFView, LoginView, LogoutView, MeView, PasswordChangeView
 from apps.platform_access.views import PlatformAccessView
@@ -6,6 +6,7 @@ from apps.sellers.views import PlatformSellerAccessView, SellerAccessView, Selle
 from config.health import HealthView
 
 urlpatterns = [
+    path("api/v1/", include("apps.sellers.urls")),
     path("api/v1/health", HealthView.as_view(), name="health"),
     path("api/v1/auth/csrf", CSRFView.as_view(), name="csrf"),
     path("api/v1/auth/login", LoginView.as_view(), name="login"),

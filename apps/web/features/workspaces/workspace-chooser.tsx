@@ -56,6 +56,11 @@ export function WorkspaceChooser() {
     <WorkspaceFrame mode="workspaces">
       <PageHeader
         title="Your workspaces"
+        actions={
+          <Link href="/onboarding" className={primaryButton}>
+            Register a business
+          </Link>
+        }
         description="Choose where you’d like to work. Your account may have access to several sellers or the platform."
       />
       {memberships.kind === "error" && (

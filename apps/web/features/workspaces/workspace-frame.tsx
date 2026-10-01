@@ -19,16 +19,22 @@ export function WorkspaceFrame({
   mode,
   children,
   sellerPicker,
+  sellerCanReadSettings = false,
 }: {
   mode: WorkspaceMode;
   children: ReactNode;
   sellerPicker?: ReactNode;
+  sellerCanReadSettings?: boolean;
 }) {
   const pathname = usePathname();
   const { state } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const user = state.kind === "authenticated" ? state.user : null;
   const links = [{ href: `/${mode}`, label: "Overview" }];
+  if (mode === "seller" && sellerCanReadSettings)
+    links.push({ href: "/seller/settings", label: "Seller settings" });
+  if (mode === "admin" && hasPlatformPermission(user, "platform.sellers.read"))
+    links.push({ href: "/admin/sellers", label: "Sellers" });
   if (mode !== "workspaces")
     links.push({ href: "/workspaces", label: "Workspaces" });
   if (mode !== "account") links.push({ href: "/account", label: "My account" });

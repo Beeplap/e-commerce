@@ -97,6 +97,11 @@ def production_environment() -> dict[str, str]:
         "DJANGO_SETTINGS_MODULE": "config.settings.production",
         "DJANGO_ALLOWED_HOSTS": "commerce.example.com",
         "DJANGO_CSRF_TRUSTED_ORIGINS": "https://commerce.example.com",
+        "STORAGE_ENDPOINT_URL": "https://storage.example.com",
+        "STORAGE_VERIFICATION_BUCKET": "private-test-verification",
+        "STORAGE_REGION": "test-region",
+        "STORAGE_ACCESS_KEY_ID": "test-storage-id",
+        "STORAGE_SECRET_ACCESS_KEY": "test-storage-secret",
     }
 
 
@@ -130,6 +135,10 @@ def test_production_settings_have_only_expected_preload_advisory() -> None:
         ("DJANGO_CSRF_TRUSTED_ORIGINS", "http://commerce.example.com"),
         ("DJANGO_CSRF_TRUSTED_ORIGINS", "https://*.example.com"),
         ("DJANGO_CSRF_TRUSTED_ORIGINS", "https://commerce.example.com/path"),
+        ("STORAGE_ENDPOINT_URL", ""),
+        ("STORAGE_ENDPOINT_URL", "http://storage.example.com"),
+        ("STORAGE_VERIFICATION_BUCKET", ""),
+        ("STORAGE_SECRET_ACCESS_KEY", "replace-with-storage-secret-key"),
     ],
 )
 def test_production_rejects_unsafe_configuration(variable: str, value: str) -> None:

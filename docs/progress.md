@@ -6,11 +6,12 @@
 - Phase 1: server-side Django session authentication, explicit CSRF-protected browser login/logout, current-user and password-change APIs, brute-force lockout, immutable security events, application platform roles/capabilities, bootstrap management commands, and a real Next.js proxy smoke test.
 - Phase 2: seller tenancy and UUID memberships, seven system seller roles, explicit capabilities and owner-delegation protection, per-request seller context, scoped selectors and service guards, read-only seller-access/platform-inspection endpoints, PostgreSQL cross-tenant/identity constraints and adversarial authorization tests.
 - Phase 3: Next.js login/session integration, protected seller/admin/workspace/account layouts, responsive navigation/account menu/breadcrumbs, 403/404 and retry/loading states, centralized typed/runtime-validated same-origin API client, cancellation and stale-result protection, accessible UI primitives and frontend security/interaction tests.
+- Phase 4: seller onboarding, profiles/settings/addresses, private validated verification scans and downloads, explicit platform review/lifecycle commands, seller-management screens, append-only business audits/status history and adversarial/concurrency tests.
 - Architecture, security, authorization, data-model, stack, testing, deployment and progress guidance are maintained alongside the implementation.
 
 ## Current phase
 
-Phase 1 was committed as `56c1d72` and pushed; [its GitHub validation passed](https://github.com/Beeplap/e-commerce/actions/runs/36666039048). Phase 2 was committed/pushed as `b563da6`; [its GitHub validation passed](https://github.com/Beeplap/e-commerce/actions/runs/36668437445). Phase 3 implementation, documentation and all required local validation are complete. Its commit/push and GitHub validation gate remain before beginning Phase 4.
+Phase 1 was committed as `56c1d72` and pushed; [its GitHub validation passed](https://github.com/Beeplap/e-commerce/actions/runs/36666039048). Phase 2 was committed/pushed as `b563da6`; [its GitHub validation passed](https://github.com/Beeplap/e-commerce/actions/runs/36668437445). Phase 3 was committed/pushed as `36ae824`; [its GitHub validation passed](https://github.com/Beeplap/e-commerce/actions/runs/36672333932). Phase 4 implementation and all required local validation are complete. Commit/push and GitHub validation are the remaining gate before Phase 5 implementation.
 
 ## Phase 1 validation results
 
@@ -22,13 +23,13 @@ Phase 1 was committed as `56c1d72` and pushed; [its GitHub validation passed](ht
 
 ## Known issues
 
-- No known required local validation failures remain. Phase 3 GitHub validation is pending its push; the preceding phases' local and GitHub validation passed.
-- Optional live visual/browser verification is unavailable here: the Browser integration references a missing cached support module, and automatic approval review rejected an isolated headless Chrome launch with “blocked by policy.” Required frontend unit/lint/types/build and real HTTP/proxy checks remain available. Do not claim a browser E2E pass; that suite belongs to Phase 13.
+- No required local check failures remain; Phase 4 commit/push and GitHub validation are pending.
+- Optional visual verification remains unavailable: the updated Browser runtime connects but reports no available browsers (empty discovery). Phase 3's earlier missing module/headless-launch policy rejection are historical. Required component/lint/types/build and real HTTP/proxy checks passed; browser E2E belongs to Phase 13 and is not claimed.
 - Local Compose runs through the Ubuntu WSL daemon; a foreground Compose session may be needed to keep WSL and localhost forwarding alive.
 
 ## Technical debt
 
-- Seller workflows, storefront/customer identity, CSP, production deployment, object storage and async jobs remain for their numbered phases.
+- Catalog/commerce workflows, storefront/customer identity, CSP, production deployment, malware scanning/retention, object-orphan reconciliation and async jobs remain for later work. The S3 adapter is configured but no real production provider has been provisioned or tested.
 - Login lockout currently tracks canonical attempted email and source IP using the trusted direct peer address. Operational retention and trusted-ingress design remain deployment concerns.
 - ESLint 9.39.5 remains the latest patch compatible with the selected framework plugin peer ranges; revisit when those plugins support ESLint 10.
 
@@ -40,7 +41,17 @@ Phase 1 was committed as `56c1d72` and pushed; [its GitHub validation passed](ht
 
 ## Next phase
 
-After Phase 3's completion gate, Phase 4 covers seller onboarding, profiles/addresses/private verification documents/settings, explicit platform approval/suspension workflows and attributable audit history.
+After Phase 4's completion gate, Phase 5 covers platform categories/brands/attributes, seller products/variants/images, moderation and catalog isolation tests.
+
+## Phase 4 implementation and validation
+
+- Added seller onboarding, private verification documents, registered/returns addresses, profiles, support settings, explicit platform lifecycle/document review actions and immutable audit/history records.
+- Added `/onboarding`, `/seller/settings`, `/admin/sellers` and `/admin/sellers/[id]` with API-backed forms, bounded lists, filters, private downloads, review confirmations and visible errors.
+- Final `pnpm check`: passed, with **170 PostgreSQL backend tests** and **59 frontend tests** across six files. Ruff format/lint, strict mypy (58 source files), Django checks, migration drift, warning-free offline OpenAPI, Prettier, ESLint, strict TypeScript and production build all passed. The focused lifecycle suite includes **44 cases**, including concurrent approval and rollback/storage compensation.
+- `pnpm smoke:auth` passed through the actual Next.js/Django proxy. Compose configuration validation and `git diff --check` passed. HTTP checks returned 200 with nosniff for the new onboarding/settings/platform list/detail shells; no confidential data is embedded behind client-only guards. Browser visual/E2E pass is not claimed.
+- Initial test setup failed because the WSL foreground service session had ended; the services were restarted and PostgreSQL connectivity restored. A dialog test-environment failure was fixed by supplying jsdom's missing native methods for the duration of the suite; no application assertion was relaxed.
+- Product policy: initial onboarding accepts JPEG/PNG scans (5 MiB / 12 megapixels), one pending document per type, 50 retained submissions per seller and ten owned sellers per account. PDFs and automated verification are not supported. Platform support handles rejected/closed registrations and evidence-cap exhaustion; there is no reopening or evidence-deletion API in Phase 4.
+- Malware scanning and operational retention are deferred as specified by the roadmap. Storage and database are not a distributed transaction: ordinary failures compensate a new object; process death between storage write and DB commit can leave a private orphan. Reconciliation is an operational follow-up; no file becomes public.
 
 ## Phase 3 validation results
 

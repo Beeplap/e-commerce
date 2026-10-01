@@ -20,6 +20,87 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
           description: ''
+  /api/v1/admin/sellers:
+    get:
+      operationId: admin_sellers_list
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: query
+        name: page
+        schema:
+          type: integer
+          maximum: 10000
+          minimum: 1
+      - in: query
+        name: search
+        schema:
+          type: string
+          maxLength: 100
+      - in: query
+        name: status
+        schema:
+          enum:
+          - pending
+          - active
+          - suspended
+          - rejected
+          - closed
+          type: string
+          minLength: 1
+        description: |-
+          * `pending` - Pending
+          * `active` - Active
+          * `suspended` - Suspended
+          * `rejected` - Rejected
+          * `closed` - Closed
+      - in: query
+        name: verification_status
+        schema:
+          enum:
+          - pending
+          - verified
+          - rejected
+          type: string
+          minLength: 1
+        description: |-
+          * `pending` - Pending
+          * `verified` - Verified
+          * `rejected` - Rejected
+      tags:
+      - Platform sellers
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SellerListPage'
+          description: ''
+  /api/v1/admin/sellers/{seller_id}:
+    get:
+      operationId: admin_sellers_retrieve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: seller_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform sellers
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SellerDetail'
+          description: ''
   /api/v1/admin/sellers/{seller_id}/access:
     get:
       operationId: admin_sellers_access_retrieve
@@ -34,6 +115,316 @@ paths:
         required: true
       tags:
       - Platform seller inspection
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SellerInspection'
+          description: ''
+  /api/v1/admin/sellers/{seller_id}/approve:
+    post:
+      operationId: admin_sellers_approve_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: seller_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform sellers
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SellerInspection'
+          description: ''
+  /api/v1/admin/sellers/{seller_id}/audit:
+    get:
+      operationId: admin_sellers_audit_retrieve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: 1 to 10000; 25 per page
+      - in: path
+        name: seller_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform sellers
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditPage'
+          description: ''
+  /api/v1/admin/sellers/{seller_id}/documents:
+    get:
+      operationId: admin_sellers_documents_retrieve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: 1 to 10000; 25 per page
+      - in: path
+        name: seller_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform seller documents
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentPage'
+          description: ''
+  /api/v1/admin/sellers/{seller_id}/documents/{document_id}/approve:
+    post:
+      operationId: admin_sellers_documents_approve_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: document_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: seller_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform seller documents
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+          description: ''
+  /api/v1/admin/sellers/{seller_id}/documents/{document_id}/download:
+    get:
+      operationId: admin_sellers_documents_download_retrieve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: document_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: seller_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform seller documents
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+          description: ''
+  /api/v1/admin/sellers/{seller_id}/documents/{document_id}/reject:
+    post:
+      operationId: admin_sellers_documents_reject_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: document_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: seller_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform seller documents
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reason'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+          description: ''
+  /api/v1/admin/sellers/{seller_id}/history:
+    get:
+      operationId: admin_sellers_history_retrieve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: 1 to 10000; 25 per page
+      - in: path
+        name: seller_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform sellers
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoryPage'
+          description: ''
+  /api/v1/admin/sellers/{seller_id}/members:
+    get:
+      operationId: admin_sellers_members_retrieve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: 1 to 10000; 25 per page
+      - in: path
+        name: seller_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform sellers
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberOverviewPage'
+          description: ''
+  /api/v1/admin/sellers/{seller_id}/reactivate:
+    post:
+      operationId: admin_sellers_reactivate_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: seller_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform sellers
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SellerInspection'
+          description: ''
+  /api/v1/admin/sellers/{seller_id}/reject:
+    post:
+      operationId: admin_sellers_reject_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: seller_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform sellers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reason'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SellerInspection'
+          description: ''
+  /api/v1/admin/sellers/{seller_id}/suspend:
+    post:
+      operationId: admin_sellers_suspend_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: seller_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform sellers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reason'
+        required: true
       security:
       - cookieAuth: []
       responses:
@@ -220,6 +611,157 @@ paths:
               schema:
                 $ref: '#/components/schemas/Detail'
           description: ''
+  /api/v1/seller/addresses:
+    post:
+      operationId: seller_addresses_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller settings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddressInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+          description: ''
+  /api/v1/seller/addresses/{address_id}:
+    put:
+      operationId: seller_addresses_update
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: address_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller settings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddressInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+          description: ''
+  /api/v1/seller/documents:
+    get:
+      operationId: seller_documents_retrieve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: 1 to 10000; 25 per page
+      tags:
+      - Seller documents
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentPage'
+          description: ''
+  /api/v1/seller/documents/{document_id}/download:
+    get:
+      operationId: seller_documents_download_retrieve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: document_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller documents
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+          description: ''
+  /api/v1/seller/documents/upload:
+    post:
+      operationId: seller_documents_upload_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller documents
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DocumentInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+          description: ''
   /api/v1/seller/memberships:
     get:
       operationId: seller_memberships_retrieve
@@ -242,8 +784,199 @@ paths:
               schema:
                 $ref: '#/components/schemas/SellerPage'
           description: ''
+  /api/v1/seller/onboarding:
+    post:
+      operationId: seller_onboarding_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Seller onboarding
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SellerCreate'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SellerInspection'
+          description: ''
+  /api/v1/seller/settings:
+    get:
+      operationId: seller_settings_retrieve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller settings
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SellerDetail'
+          description: ''
+    put:
+      operationId: seller_settings_update
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller settings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SellerUpdate'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SellerDetail'
+          description: ''
 components:
   schemas:
+    Address:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        kind:
+          $ref: '#/components/schemas/KindEnum'
+        line1:
+          type: string
+          maxLength: 200
+        line2:
+          type: string
+          maxLength: 200
+        city:
+          type: string
+          maxLength: 100
+        region:
+          type: string
+          maxLength: 100
+        postal_code:
+          type: string
+          maxLength: 20
+        country:
+          type: string
+          maxLength: 2
+      required:
+      - city
+      - country
+      - id
+      - kind
+      - line1
+    AddressInput:
+      type: object
+      properties:
+        kind:
+          $ref: '#/components/schemas/KindEnum'
+        line1:
+          type: string
+          maxLength: 200
+        line2:
+          type: string
+          default: ''
+          maxLength: 200
+        city:
+          type: string
+          maxLength: 100
+        region:
+          type: string
+          default: ''
+          maxLength: 100
+        postal_code:
+          type: string
+          default: ''
+          maxLength: 20
+        country:
+          type: string
+          maxLength: 2
+          pattern: ^[A-Z]{2}$
+      required:
+      - city
+      - country
+      - kind
+      - line1
+    Audit:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        actor_id:
+          type: string
+          format: uuid
+        action:
+          type: string
+          maxLength: 80
+        target_type:
+          type: string
+          maxLength: 80
+        target_id:
+          type: string
+          format: uuid
+        changes: {}
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - action
+      - actor_id
+      - created_at
+      - id
+      - target_id
+      - target_type
+    AuditPage:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          format: uri
+          nullable: true
+        previous:
+          type: string
+          format: uri
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Audit'
+      required:
+      - count
+      - next
+      - previous
+      - results
     CSRF:
       type: object
       properties:
@@ -251,6 +984,20 @@ components:
           type: string
       required:
       - csrf_token
+    DefaultCurrencyEnum:
+      enum:
+      - USD
+      - NPR
+      - INR
+      - EUR
+      - GBP
+      type: string
+      description: |-
+        * `USD` - USD
+        * `NPR` - NPR
+        * `INR` - INR
+        * `EUR` - EUR
+        * `GBP` - GBP
     Detail:
       type: object
       properties:
@@ -258,6 +1005,106 @@ components:
           type: string
       required:
       - detail
+    Document:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        document_type:
+          allOf:
+          - $ref: '#/components/schemas/DocumentTypeEnum'
+          readOnly: true
+        content_type:
+          type: string
+          readOnly: true
+        size:
+          type: integer
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/SellerVerificationStatusEnum'
+          readOnly: true
+        verified_by_id:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
+        verified_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        rejection_reason:
+          type: string
+          readOnly: true
+        expires_at:
+          type: string
+          format: date
+          readOnly: true
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - content_type
+      - created_at
+      - document_type
+      - expires_at
+      - id
+      - rejection_reason
+      - size
+      - status
+      - verified_at
+      - verified_by_id
+    DocumentInput:
+      type: object
+      properties:
+        document_type:
+          $ref: '#/components/schemas/DocumentTypeEnum'
+        file:
+          type: string
+          format: uri
+          writeOnly: true
+        expires_at:
+          type: string
+          format: date
+          nullable: true
+      required:
+      - document_type
+      - file
+    DocumentPage:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          format: uri
+          nullable: true
+        previous:
+          type: string
+          format: uri
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Document'
+      required:
+      - count
+      - next
+      - previous
+      - results
+    DocumentTypeEnum:
+      enum:
+      - registration
+      - tax
+      type: string
+      description: |-
+        * `registration` - Business registration
+        * `tax` - Tax registration
     Health:
       type: object
       properties:
@@ -270,6 +1117,63 @@ components:
       - ok
       type: string
       description: '* `ok` - ok'
+    History:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        actor_id:
+          type: string
+          format: uuid
+        from_status:
+          type: string
+          maxLength: 16
+        to_status:
+          $ref: '#/components/schemas/SellerStatusEnum'
+        reason:
+          type: string
+          maxLength: 500
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - actor_id
+      - created_at
+      - id
+      - to_status
+    HistoryPage:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          format: uri
+          nullable: true
+        previous:
+          type: string
+          format: uri
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/History'
+      required:
+      - count
+      - next
+      - previous
+      - results
+    KindEnum:
+      enum:
+      - registered
+      - returns
+      type: string
+      description: |-
+        * `registered` - Registered
+        * `returns` - Returns
     Login:
       type: object
       properties:
@@ -284,6 +1188,52 @@ components:
       required:
       - email
       - password
+    MemberOverview:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        email:
+          type: string
+          format: email
+          readOnly: true
+        role_name:
+          type: string
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/SellerMembershipStatusEnum'
+        joined_at:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+      - email
+      - id
+      - role_name
+    MemberOverviewPage:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          format: uri
+          nullable: true
+        previous:
+          type: string
+          format: uri
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MemberOverview'
+      required:
+      - count
+      - next
+      - previous
+      - results
     PasswordChange:
       type: object
       properties:
@@ -298,6 +1248,142 @@ components:
       required:
       - new_password
       - old_password
+    Profile:
+      type: object
+      properties:
+        description:
+          type: string
+          maxLength: 2000
+        website:
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+    Reason:
+      type: object
+      properties:
+        reason:
+          type: string
+          maxLength: 500
+      required:
+      - reason
+    SellerCreate:
+      type: object
+      properties:
+        display_name:
+          type: string
+          maxLength: 120
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        phone:
+          type: string
+          default: ''
+          maxLength: 32
+        timezone:
+          type: string
+          default: UTC
+          maxLength: 64
+        legal_name:
+          type: string
+          maxLength: 200
+        default_currency:
+          $ref: '#/components/schemas/DefaultCurrencyEnum'
+      required:
+      - default_currency
+      - display_name
+      - email
+      - legal_name
+    SellerDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        legal_name:
+          type: string
+          readOnly: true
+        display_name:
+          type: string
+          readOnly: true
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        status:
+          allOf:
+          - $ref: '#/components/schemas/SellerStatusEnum'
+          readOnly: true
+        verification_status:
+          allOf:
+          - $ref: '#/components/schemas/SellerVerificationStatusEnum'
+          readOnly: true
+        email:
+          type: string
+          format: email
+          readOnly: true
+        phone:
+          type: string
+          readOnly: true
+        default_currency:
+          type: string
+          readOnly: true
+        timezone:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        approved_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        approved_by:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
+        profile:
+          allOf:
+          - $ref: '#/components/schemas/Profile'
+          readOnly: true
+        settings:
+          allOf:
+          - $ref: '#/components/schemas/Settings'
+          readOnly: true
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/Address'
+          readOnly: true
+      required:
+      - addresses
+      - approved_at
+      - approved_by
+      - created_at
+      - default_currency
+      - display_name
+      - email
+      - id
+      - legal_name
+      - phone
+      - profile
+      - settings
+      - slug
+      - status
+      - timezone
+      - updated_at
+      - verification_status
     SellerInspection:
       type: object
       properties:
@@ -369,6 +1455,28 @@ components:
       - timezone
       - updated_at
       - verification_status
+    SellerListPage:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          format: uri
+          nullable: true
+        previous:
+          type: string
+          format: uri
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SellerInspection'
+      required:
+      - count
+      - next
+      - previous
+      - results
     SellerMembership:
       type: object
       properties:
@@ -498,6 +1606,47 @@ components:
       - status
       - timezone
       - verification_status
+    SellerUpdate:
+      type: object
+      properties:
+        display_name:
+          type: string
+          maxLength: 120
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        phone:
+          type: string
+          default: ''
+          maxLength: 32
+        timezone:
+          type: string
+          default: UTC
+          maxLength: 64
+        description:
+          type: string
+          maxLength: 2000
+        website:
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        support_email:
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
+      required:
+      - description
+      - display_name
+      - email
+      - support_email
+      - website
     SellerVerificationStatusEnum:
       enum:
       - pending
@@ -508,6 +1657,16 @@ components:
         * `pending` - Pending
         * `verified` - Verified
         * `rejected` - Rejected
+    Settings:
+      type: object
+      properties:
+        support_email:
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
     User:
       type: object
       properties:

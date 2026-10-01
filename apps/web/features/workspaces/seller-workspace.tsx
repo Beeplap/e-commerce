@@ -142,7 +142,13 @@ export function SellerWorkspace({ children }: { children: ReactNode }) {
   );
   return (
     <SellerContext value={current}>
-      <WorkspaceFrame mode="seller" sellerPicker={picker}>
+      <WorkspaceFrame
+        mode="seller"
+        sellerPicker={picker}
+        sellerCanReadSettings={current.permissions.includes(
+          "seller.settings.read",
+        )}
+      >
         {children}
       </WorkspaceFrame>
     </SellerContext>

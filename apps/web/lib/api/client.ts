@@ -71,6 +71,7 @@ interface RequestOptions<T> {
   sellerId?: string;
   signal?: AbortSignal;
   expectedStatus?: number;
+  responseType?: "json" | "blob";
 }
 
 export async function apiRequest<T>(
@@ -79,7 +80,7 @@ export async function apiRequest<T>(
 ): Promise<T> {
   // Keep cookies and CSRF material inside this origin, even for future callers.
   if (
-    !/^\/api\/v1\/[a-zA-Z0-9/?=&._-]+$/.test(path) ||
+    !/^\/api\/v1\/[a-zA-Z0-9/._-]+(?:\?[a-zA-Z0-9%+?=&._-]*)?$/.test(path) ||
     path
       .split("?")[0]
       ?.split("/")
@@ -101,7 +102,8 @@ export async function apiRequest<T>(
       signal: options.signal,
     });
     headers.set("X-CSRFToken", csrf);
-    headers.set("Content-Type", "application/json");
+    if (!(options.body instanceof FormData))
+      headers.set("Content-Type", "application/json");
   }
   let response: Response;
   try {
@@ -112,7 +114,14 @@ export async function apiRequest<T>(
       cache: "no-store",
       redirect: "error",
       signal: options.signal,
-      ...(method !== "GET" ? { body: JSON.stringify(options.body ?? {}) } : {}),
+      ...(method !== "GET"
+        ? {
+            body:
+              options.body instanceof FormData
+                ? options.body
+                : JSON.stringify(options.body ?? {}),
+          }
+        : {}),
     });
   } catch (error) {
     if (isAbort(error)) throw error;
@@ -141,6 +150,14 @@ export async function apiRequest<T>(
       {},
       requestId,
     );
+  }
+  if (options.responseType === "blob") {
+    if (response.headers.get("content-type") !== "application/octet-stream")
+      throw new ApiError(
+        "The server returned an unexpected download.",
+        response.status,
+      );
+    body = await response.blob();
   }
   try {
     return options.parse(body);

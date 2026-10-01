@@ -11,6 +11,7 @@ def platform_capabilities(user: User | AnonymousUser) -> list[str]:
         PlatformPermission.objects.filter(
             platformrole__platformaccess__user_id=user.pk,
             platformrole__platformaccess__is_active=True,
+            platformrole__platformaccess__user__is_active=True,
         )
         .order_by("code")
         .values_list("code", flat=True)

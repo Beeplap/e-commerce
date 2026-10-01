@@ -57,7 +57,9 @@ Create the first account with `python -m uv run --project apps/api --env-file .e
 
 For the proxied login, retrieve `/api/v1/auth/csrf`, then submit the returned CSRF cookie/header pair to `/api/v1/auth/login`. The browser session remains in an HttpOnly cookie. See `docs/security.md` and `docs/testing.md` for session, lockout and smoke-test details.
 
-Discover your accessible sellers at `GET /api/v1/seller/memberships`, then send that seller's UUID as `X-Seller-ID` to `GET /api/v1/seller/access`. Each request independently validates current membership and capabilities. The seller ID is a context selector, not a credential. Seller onboarding and staff-management APIs will be implemented in their roadmap phases. Platform seller inspection uses `GET /api/v1/admin/sellers/<uuid>/access` and requires the distinct `platform.sellers.read` capability.
+Discover your accessible sellers at `GET /api/v1/seller/memberships`, then send that seller's UUID as `X-Seller-ID` to `GET /api/v1/seller/access`. Each request independently validates current membership and capabilities. The seller ID is a context selector, not a credential. Staff management remains a later phase. Platform inspection uses explicit admin endpoints and capabilities.
+
+Register a business from `/workspaces` → `/onboarding`. In `/seller/settings`, choose the new seller, add its registered address and upload a JPEG/PNG registration scan (up to 5 MiB / 12 megapixels). A separately authorized platform reviewer uses `/admin/sellers` to inspect documents, verify registration, and then approve the seller. Seller members cannot review or approve their own seller. Rejection/suspension require reasons, and status/audit history is retained. Local documents use ignored private storage; production requires S3-compatible configuration described in `docs/deployment.md`.
 
 ## Structure and security
 

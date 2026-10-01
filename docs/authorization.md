@@ -42,6 +42,15 @@ Use capability names such as `catalog.product.read`, `inventory.adjust`, `orders
 
 Tenant-scoped lookups should return the same 404 for missing and foreign resources. Use 403 for denied capabilities when it does not reveal private resource existence. DRF's standard `detail` error and field-validation shapes are the API convention. Phase 3's client handles them centrally. Explicit serializers, bounded pagination and allowlisted ordering/filtering remain mandatory.
 
+## Phase 4 endpoint policies
+
+- Authenticated active users can `POST /api/v1/seller/onboarding` with CSRF; the service creates only a pending seller and that actor's OWNER membership. Caller-supplied status, user, role, seller, approval and commission fields are rejected.
+- Seller settings/address/document routes require current membership and `seller.settings.read` to view; updates/uploads additionally revalidate `seller.settings.update` in the service. These onboarding routes explicitly permit pending sellers. Suspended/rejected/closed sellers stay inaccessible. Related address/document UUIDs are resolved inside the authorized seller; tenant ownership is never caller-assigned.
+- `GET /api/v1/admin/sellers` and seller detail/history/members require `platform.sellers.read`; list queries allow only page/search/status/verification_status with bounded pagination and search length. No arbitrary ordering/filtering is supported.
+- `approve`, `reject`, `suspend`, `reactivate` require `platform.sellers.manage`. Legal transitions are pending → active/rejected, active → suspended and suspended → active. Reject/suspend require a reason. Approval/reactivation require a registered address and an unexpired verified business registration. The platform actor must not have any membership in the target seller.
+- Document list/download requires `platform.sellers.documents.read`; explicit document approve/reject requires `platform.sellers.documents.review`, a pending seller/document, and no actor membership in that seller. Rejection requires a reason. Seller audit history additionally requires `platform.sellers.audit.read` alongside seller-read permission. Downloads are audited for both seller and platform callers.
+- The migration grants these capabilities to the seeded SUPER_ADMIN role. Runtime authority still comes from capabilities, never the role name or Django superuser. A read-only inspector cannot download documents, mutate lifecycle or inspect audit history without the respective grant.
+
 ## Frontend authorization UX
 
 Phase 3 adds session lookup/login/logout, protected workspace layouts and permission utilities. Anonymous protected navigation goes to `/login`; inaccessible seller/admin workspaces show a 403 screen. Platform navigation is shown only for the explicit `platform.access` capability. Admin and seller layouts also call Django's respective access endpoint before rendering their children; a role label never grants UI authority. Memberships are fetched through the bounded user-scoped endpoint and every chosen seller ID is validated through `/seller/access`.

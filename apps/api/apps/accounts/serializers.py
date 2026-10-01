@@ -1,6 +1,7 @@
 from collections.abc import Mapping
 from typing import Any, cast
 
+from django.http import QueryDict
 from rest_framework import serializers
 
 from apps.accounts.models import User, UserManager
@@ -9,6 +10,8 @@ from apps.platform_access.selectors import platform_capabilities
 
 class StrictSerializer(serializers.Serializer[dict[str, Any]]):
     def to_internal_value(self, data: Any) -> dict[str, Any]:
+        if isinstance(data, QueryDict) and any(len(data.getlist(key)) != 1 for key in data):
+            raise serializers.ValidationError({"detail": "Repeated fields are not supported."})
         if isinstance(data, Mapping) and set(data) - set(self.fields):
             raise serializers.ValidationError({"detail": "Unexpected fields."})
         return cast(dict[str, Any], super().to_internal_value(data))

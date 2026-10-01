@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     "apps.accounts",
     "apps.platform_access",
     "apps.sellers",
+    "apps.audit",
 ]
 
 MIDDLEWARE = [
@@ -103,6 +104,25 @@ SECURE_REFERRER_POLICY = "same-origin"
 X_FRAME_OPTIONS = "DENY"
 DATA_UPLOAD_MAX_MEMORY_SIZE = 1024 * 1024
 FILE_UPLOAD_MAX_MEMORY_SIZE = 1024 * 1024
+DATA_UPLOAD_MAX_NUMBER_FILES = 1
+FILE_UPLOAD_HANDLERS = [
+    "config.upload_handlers.BoundedUploadHandler",
+    "django.core.files.uploadhandler.MemoryFileUploadHandler",
+    "django.core.files.uploadhandler.TemporaryFileUploadHandler",
+]
+# Development storage is private, outside application code, and has no media route.
+STORAGES = {
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
+    "verification": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "OPTIONS": {
+            "location": BASE_DIR.parent.parent / ".private-media" / "verification",
+            "file_permissions_mode": 0o600,
+            "directory_permissions_mode": 0o700,
+        },
+    },
+}
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": ["rest_framework.authentication.SessionAuthentication"],

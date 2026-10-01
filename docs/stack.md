@@ -25,4 +25,12 @@ Vitest 5.0.2, Testing Library React 16.3.3, jest-dom 7.0.1 and jsdom 30.1.1 test
 
 Phase 3 uses the existing React/Next.js/Tailwind/testing stack without additional packages. Simple forms, bounded semantic tables and a native modal dialog do not yet require form/table/component-state libraries. Runtime API validation is explicit for the small current contract; reassess a schema library when complex forms arrive. The bundled Next.js 16.3.7 guides/types were inspected for route groups, layout/client boundaries and the current error-boundary `retry` API. Browser E2E dependencies remain deferred to Phase 13.
 
-No Celery, storage SDK, auth token package, CORS package, component library, TanStack, form library or client API abstraction is installed without a current use case. Their architectural locations are documented, and they should be introduced only in the relevant phase after maintenance/security checks. Django already provides sessions, CSRF, password hashing integration and validation.
+No Celery, auth token package, CORS package, component library, TanStack or form library is installed without a current use case. Django already provides sessions, CSRF, password hashing integration and validation.
+
+## Phase 4 storage and upload dependencies
+
+Official PyPI release metadata and project documentation were checked on 2026-09-30. `django-storages[s3]==1.14.6` is the stable storage release and provides a Django STORAGES-compatible S3 adapter with configurable endpoint/region and private defaults. It is vendor-neutral; boto3/botocore and other transitives are pinned by uv.lock. Its published classifiers lag our Django 5.2/Python 3.14 pair, so compatibility is validated by our application checks and explicit storage configuration; a real provider contract test remains part of deployment setup. [Release metadata](https://pypi.org/project/django-storages/1.14.6/), [S3 configuration](https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html).
+
+`pillow==12.3.0` is the stable July 2026 release with Python 3.14 support. It validates actual JPEG/PNG bytes and decodes/re-encodes scans without original metadata; the application imposes byte/pixel/frame bounds. No PDF parser is installed because PDF uploads are not in the initial allowlist. Scanning remains a separate later integration. [Pillow release](https://pypi.org/project/pillow/12.3.0/).
+
+No new frontend dependency was needed for the bounded seller forms/lists. Multipart and binary-response support extends the existing central API client. The bundled Next.js dynamic-route and client/server guides were checked before implementing the seller detail route.

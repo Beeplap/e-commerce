@@ -169,3 +169,141 @@ class SellerMembership(models.Model):
             ),
         ]
         indexes = [models.Index(fields=["user", "status", "seller"])]
+
+
+class SellerProfile(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    seller = models.OneToOneField(Seller, on_delete=models.PROTECT, related_name="profile")
+    description = models.TextField(blank=True, max_length=2000)
+    website = models.URLField(blank=True)
+
+
+class SellerSettings(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    seller = models.OneToOneField(Seller, on_delete=models.PROTECT, related_name="settings")
+    support_email = models.EmailField(blank=True)
+
+
+class SellerAddress(models.Model):
+    class Kind(models.TextChoices):
+        REGISTERED = "registered"
+        RETURNS = "returns"
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    seller = models.ForeignKey(Seller, on_delete=models.PROTECT, related_name="addresses")
+    kind = models.CharField(max_length=12, choices=Kind.choices)
+    line1 = models.CharField(max_length=200)
+    line2 = models.CharField(max_length=200, blank=True)
+    city = models.CharField(max_length=100)
+    region = models.CharField(max_length=100, blank=True)
+    postal_code = models.CharField(max_length=20, blank=True)
+    country = models.CharField(max_length=2)
+
+    class Meta:
+        ordering = ["kind", "id"]
+        constraints = [
+            models.UniqueConstraint(fields=["seller", "kind"], name="seller_address_kind_unique"),
+            models.CheckConstraint(
+                condition=models.Q(kind__in=["registered", "returns"]),
+                name="seller_address_kind_valid",
+            ),
+            models.CheckConstraint(
+                condition=models.Q(country__regex=r"^[A-Z]{2}$"),
+                name="seller_address_country_format",
+            ),
+        ]
+
+
+class SellerDocument(models.Model):
+    class DocumentType(models.TextChoices):
+        REGISTRATION = "registration", "Business registration"
+        TAX = "tax", "Tax registration"
+
+    class Status(models.TextChoices):
+        PENDING = "pending"
+        VERIFIED = "verified"
+        REJECTED = "rejected"
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    seller = models.ForeignKey(Seller, on_delete=models.PROTECT, related_name="documents")
+    document_type = models.CharField(max_length=16, choices=DocumentType.choices)
+    # Private storage key only, never a public URL or original filename.
+    storage_key = models.CharField(max_length=200, unique=True)
+    content_type = models.CharField(max_length=32)
+    size = models.PositiveIntegerField()
+    sha256 = models.CharField(max_length=64)
+    status = models.CharField(max_length=16, choices=Status.choices, default=Status.PENDING)
+    uploaded_by_id = models.UUIDField()
+    verified_by_id = models.UUIDField(null=True)
+    verified_at = models.DateTimeField(null=True)
+    rejection_reason = models.CharField(max_length=500, blank=True)
+    expires_at = models.DateField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at", "-id"]
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(document_type__in=["registration", "tax"]),
+                name="seller_document_type_valid",
+            ),
+            models.CheckConstraint(
+                condition=models.Q(content_type__in=["image/png", "image/jpeg"]),
+                name="seller_document_content_type",
+            ),
+            models.CheckConstraint(
+                condition=models.Q(size__gt=0, size__lte=5 * 1024 * 1024),
+                name="seller_document_size_bounded",
+            ),
+            models.CheckConstraint(
+                condition=(
+                    models.Q(
+                        status="pending",
+                        verified_by_id__isnull=True,
+                        verified_at__isnull=True,
+                        rejection_reason="",
+                    )
+                    | models.Q(
+                        status="verified",
+                        verified_by_id__isnull=False,
+                        verified_at__isnull=False,
+                        rejection_reason="",
+                    )
+                    | (
+                        models.Q(
+                            status="rejected",
+                            verified_by_id__isnull=False,
+                            verified_at__isnull=False,
+                        )
+                        & ~models.Q(rejection_reason="")
+                    )
+                ),
+                name="seller_document_review_valid",
+            ),
+            models.UniqueConstraint(
+                fields=["seller", "document_type"],
+                condition=models.Q(status="pending"),
+                name="seller_one_pending_document_type",
+            ),
+        ]
+
+
+class SellerStatusHistory(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    seller = models.ForeignKey(Seller, on_delete=models.PROTECT, related_name="status_history")
+    actor_id = models.UUIDField()
+    from_status = models.CharField(max_length=16, blank=True)
+    to_status = models.CharField(max_length=16, choices=Seller.Status.choices)
+    reason = models.CharField(max_length=500, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at", "-id"]
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(
+                    to_status__in=Seller.Status.values, from_status__in=["", *Seller.Status.values]
+                ),
+                name="seller_history_status_valid",
+            )
+        ]

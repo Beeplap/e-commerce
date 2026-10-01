@@ -69,10 +69,15 @@ def require_seller_access(
 
 
 def tenant_queryset[TenantModel: models.Model](
-    *, user: User | AnonymousUser, seller_id: UUID, capability: str, model: type[TenantModel]
+    *,
+    user: User | AnonymousUser,
+    seller_id: UUID,
+    capability: str,
+    model: type[TenantModel],
+    allow_pending: bool = False,
 ) -> models.QuerySet[TenantModel]:
     """Use for reads, writes and related-object resolution; reauthorize every invocation."""
-    require_seller_access(user, seller_id, capability)
+    require_seller_access(user, seller_id, capability, allow_pending=allow_pending)
     try:
         field = model._meta.get_field("seller")
     except FieldDoesNotExist as error:

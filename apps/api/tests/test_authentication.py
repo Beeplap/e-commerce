@@ -182,6 +182,10 @@ def test_platform_role_grants_only_explicit_capabilities_and_revocation_is_immed
     assert browser.get("/api/v1/admin/access").status_code == 200
     assert browser.get("/api/v1/auth/me").data["platform_permissions"] == [
         "platform.access",
+        "platform.sellers.audit.read",
+        "platform.sellers.documents.read",
+        "platform.sellers.documents.review",
+        "platform.sellers.manage",
         "platform.sellers.read",
     ]
     PlatformAccess.objects.filter(user=user).update(is_active=False)

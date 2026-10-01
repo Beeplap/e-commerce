@@ -2,7 +2,7 @@
 
 ## Current foundation
 
-The repository is a modular monolith. `apps/api` owns the Django API and all eventual business authority; `apps/web` is a Next.js App Router application. PostgreSQL is the authoritative database. Redis is an authenticated local dependency reserved for future caching and workers. No marketplace business workflows or customer storefront are implemented yet.
+The repository is a modular monolith. `apps/api` owns the Django API and all business authority; `apps/web` is a Next.js App Router application. PostgreSQL is authoritative. Redis is reserved for future caching and workers. Seller onboarding/lifecycle management is implemented; catalog, commerce workflows and customer storefront are later phases.
 
 The `accounts` domain owns the custom swappable UUID/email user, session login/logout/password workflows and append-only security-event record. The separate `platform_access` domain owns platform roles and capability grants. The `sellers` domain now owns tenants, memberships, seller roles/capabilities and tenant-scoped authorization. Read-only access endpoints expose the authenticated user's available seller contexts and one verified context; explicit platform inspection has its own capability.
 
@@ -18,7 +18,7 @@ Production uses one HTTPS origin: ingress routes `/api/*` to Django and other pa
 
 Seller context is explicit on each seller operation through a UUID `X-Seller-ID` header. It selects a tenant after membership and capability validation, rather than granting access. There is no shared mutable session seller, so two tabs can work with different tenants. The frontend discovers contexts through `/api/v1/seller/memberships`, then inspects its selected context through `/api/v1/seller/access`. Membership, user, seller and permission revocation are checked against current PostgreSQL state. Internal services must independently use `require_seller_access` and tenant-scoped selectors, which require ACTIVE sellers by default. The read-only context view explicitly permits pending sellers for later onboarding.
 
-`SellerRole` holds system roles or one seller's custom role; PostgreSQL prevents cross-tenant role assignment and changing role/membership identity. The delegation guard rejects capabilities the actor does not hold and protects owner-role delegation. Staff mutation workflows and owner-transfer/last-owner rules remain Phase 10 work; the current guard performs no mutation. Onboarding, lifecycle transitions and profile/settings writes remain Phase 4 work.
+`SellerRole` holds system roles or one seller's custom role; PostgreSQL prevents cross-tenant role assignment and changing role/membership identity. The delegation guard rejects capabilities the actor does not hold and protects owner-role delegation. Staff mutation workflows and owner-transfer/last-owner rules remain Phase 10 work. Phase 4 onboarding creates an active OWNER membership in a pending seller in the same transaction as its profile/settings and audit/history records.
 
 ## Domain boundaries and later modules
 
@@ -39,4 +39,14 @@ Phase 3 implements the auth/workspace features and a centralized typed browser A
 
 Client guards provide UX only; current Server Components contain no confidential business data. Future server-side data fetching must call authenticated, authorized Django APIs before producing HTML/RSC, regardless of client layout guards. Seller selection remains in memory and is revalidated by Django. The initial table/form/display/dialog primitives use framework/HTML capabilities rather than adding unused state, form or table dependencies. Displayed account and membership data comes from authoritative API responses; dashboards/metrics belong to Phase 11.
 
-Future files use a private S3-compatible storage adapter via Django's storage interface. Bucket, region, endpoint, and credentials are configuration; MinIO may serve development but must not be a domain dependency. No upload endpoint or storage SDK is installed in Phase 0.
+## Seller lifecycle and evidence
+
+`sellers.lifecycle_services` owns onboarding, settings/address writes, document submission/review/download and lifecycle transitions. `lifecycle_selectors` separates seller scope from explicit platform authority. Explicit serializers validate all write input; no model-wide PATCH is enabled. `audit.AuditLog` is a separate domain for business audit, while login/password events remain in `accounts.SecurityEvent`.
+
+Writes lock in this order: active actor User; for platform commands its PlatformAccess, role and permission-link rows; Seller; seller membership, role and permission-link rows for seller writes; then child resources. Revalidate current authority after locking. Future staff/grant services must coordinate on these locks rather than authorizing outside the transaction. Seller locking serializes review, lifecycle, address and upload invariants. Failed audit insertion rolls back the business change. Concurrent approval commits once.
+
+Legal name and currency are immutable through seller settings. Registered address is editable while pending until the first verified document, then frozen so evidence cannot approve a different identity. Mutable profile/contact fields are unrelated to registered identity. Registration verification and seller approval are separate platform commands; both reject any current membership by the actor, including inactive memberships. Rejected/closed sellers have no self-service reopening command.
+
+Files use the named Django `verification` storage boundary: private local filesystem under ignored `.private-media/verification` in development; django-storages S3-compatible backend in production. Keys are server-generated UUID paths. Downloads stream through independently authorized Django endpoints with attachment/no-store/nosniff, never public or presigned browser URLs. Production requires explicit HTTPS endpoint/bucket/region/credentials and private bucket policy. Original names, EXIF and appended payloads are discarded by pixel decoding/re-encoding. Uploads own a durable transaction and compensate saved storage objects on ordinary database/audit failures; process crashes can leave private orphans requiring later reconciliation.
+
+Phase 4 adds no worker or notification infrastructure. Malware scanning integration remains later hardening work. The frontend extends the centralized client for FormData and authenticated binary downloads; it does not duplicate fetch/session/CSRF logic. Private data is loaded only through Django-authorized client requests; dynamic page parameters are validated but never treated as authorization.

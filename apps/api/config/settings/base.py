@@ -30,9 +30,11 @@ INSTALLED_APPS = [
     "apps.reviews",
     "apps.notifications",
     "apps.analytics",
+    "apps.events",
 ]
 
 MIDDLEWARE = [
+    "config.logging.RequestLoggingMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -149,6 +151,7 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 25,
+    "EXCEPTION_HANDLER": "config.exceptions.custom_exception_handler",
 }
 SPECTACULAR_SETTINGS = {
     "TITLE": "Quick Commerce API",
@@ -179,6 +182,9 @@ SPECTACULAR_SETTINGS = {
         "ReviewModerationActionEnum": "apps.reviews.models.ReviewModeration.Action",
         "NotificationDeliveryChannelEnum": "apps.notifications.models.NotificationDelivery.Channel",
         "NotificationDeliveryStatusEnum": "apps.notifications.models.NotificationDelivery.Status",
+        "OutboxEventStatusEnum": "apps.events.models.OutboxEvent.Status",
+        "CheckStatusEnum": "config.health.CheckStatus",
+        "ReadinessStatusEnum": "config.health.ReadinessStatus",
     },
 }
 LANGUAGE_CODE = "en-us"
@@ -188,3 +194,60 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# Celery background workers and task processing
+_redis_pwd = os.environ.get("REDIS_PASSWORD", "")
+_redis_auth = f":{_redis_pwd}@" if _redis_pwd else ""
+_redis_host = os.environ.get("REDIS_HOST", "127.0.0.1")
+_redis_port = os.environ.get("REDIS_PORT", "6379")
+
+CELERY_BROKER_URL = os.environ.get(
+    "CELERY_BROKER_URL", f"redis://{_redis_auth}{_redis_host}:{_redis_port}/0"
+)
+CELERY_RESULT_BACKEND = os.environ.get(
+    "CELERY_RESULT_BACKEND", f"redis://{_redis_auth}{_redis_host}:{_redis_port}/1"
+)
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TIMEZONE = "UTC"
+CELERY_TASK_TIME_LIMIT = 300
+CELERY_TASK_SOFT_TIME_LIMIT = 240
+CELERY_TASK_DEFAULT_RETRY_DELAY = 10
+CELERY_TASK_MAX_RETRIES = 5
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "json": {
+            "()": "config.logging.StructuredJsonFormatter",
+        },
+        "standard": {
+            "format": "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "json" if os.environ.get("LOG_FORMAT", "json") == "json" else "standard",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "apps": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "config": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+    },
+}

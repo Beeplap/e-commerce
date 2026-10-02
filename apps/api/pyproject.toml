@@ -12,6 +12,8 @@ dependencies = [
   "django-axes==8.3.1",
   "django-storages[s3]==1.14.6",
   "pillow==12.3.0",
+  "celery==5.6.3",
+  "redis==8.1.0",
 ]
 
 [dependency-groups]
@@ -43,9 +45,13 @@ strict = true
 exclude = ["migrations/"]
 
 [[tool.mypy.overrides]]
-module = ["axes.*"]
-# Axes 8.3.1 does not ship py.typed/stubs. Our integration remains strictly checked.
+module = ["axes.*", "celery.*", "kombu.*", "redis.*", "sentry_sdk.*"]
+# Third-party integrations lacking stubs.
 ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["apps.events.tasks"]
+disallow_untyped_decorators = false
 
 [tool.django-stubs]
 django_settings_module = "config.settings.development"

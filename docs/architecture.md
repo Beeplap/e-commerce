@@ -143,3 +143,23 @@ Phase 4 adds no worker or notification infrastructure. Malware scanning integrat
 - Frontend Next.js integration:
   - Responsive dashboards rendered at `/seller` and `/admin` featuring KPI cards, operational risk badges (low-stock alerts, pending orders, pending seller approvals), balances, top performance tables, and daily sales trends.
   - Date range picker presets seamlessly trigger re-fetches using `useApiQuery` with abort signal support.
+
+## Phase 14 observability, background jobs, operational resilience, and transactional outbox
+
+- Request correlation & structured logging (`apps/api/config/logging.py`):
+  - Request correlation middleware: Inspects incoming HTTP requests for `X-Request-ID` or generates a valid UUIDv4. Populates thread-local and `contextvars` context. Echoes `X-Request-ID` on all responses and logging entries.
+  - Structured JSON logging: `StructuredJsonFormatter` outputs log events as JSON containing timestamp (ISO 8601), log level, message, logger name, request ID, user ID, seller ID, route path, method, status code, latency (ms), and client IP.
+  - Secret redaction: Automatic regex masking for sensitive fields (passwords, tokens, cookies, authorization headers, credit cards).
+- Health & readiness probes (`apps/api/config/health.py`):
+  - Liveness: `/api/v1/health` and `/api/v1/health/live` remain lightweight, dependency-free process liveness probes.
+  - Readiness: `/api/v1/health/ready` actively probes PostgreSQL connectivity (`SELECT 1`) and Redis availability (`client.ping()`). Returns HTTP 200 `status: ok` when healthy; returns HTTP 503 `status: degraded` with check details when either fails. Responses set `Cache-Control: no-cache, no-store, must-revalidate`.
+- Custom exception handling & monitoring abstraction (`apps/api/config/monitoring.py`, `apps/api/config/exceptions.py`):
+  - Unified error monitoring abstraction with Sentry integration when configured (`SENTRY_DSN`), failing open to structured logging.
+  - Custom DRF exception handler attaches `X-Request-ID` to all DRF error responses; unhandled 500 errors produce structured JSON error payloads with error reference IDs.
+- Transactional Outbox Pattern & Celery Workers (`apps.events`):
+  - Database schema: `OutboxEvent` table records domain events atomically within the originating business transaction (`create_order`, `confirm_seller_order`, `ship_seller_order`, `process_payout`).
+  - Immutability & database triggers: PostgreSQL triggers `events_outbox_mutation_trigger` and `events_outbox_deletion_trigger` guarantee append-only immutability, preventing updates to topic, payload, event key, or deletion of events.
+  - Worker dispatch: Post-commit dispatch via `transaction.on_commit(trigger_outbox_processing.delay)` triggers Celery task execution immediately after database commit.
+  - Concurrency & locking: Outbox event processing uses `select_for_update(skip_locked=True)` in batches, preventing double-processing by concurrent Celery workers.
+  - Operational reconciliation: Periodic scheduled task `reconcile_outbox_events_task` scans for unprocessed or failed retryable events, providing operational resilience against worker crashes or lost triggers.
+  - Webhook delivery: Celery task `deliver_webhook_task` implements exponential backoff with jitter and retry limits.

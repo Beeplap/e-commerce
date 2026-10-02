@@ -229,3 +229,32 @@ Frontend coverage includes:
   10. Cross-tenant isolation verification (Seller A receives 404 attempting to view Seller B order).
   11. Platform admin access barrier (regular seller denied admin workspace via `ForbiddenScreen`).
   12. Logout invalidates session and navigates back to `/login`.
+
+Phase 14 adds 19 PostgreSQL backend tests in `apps/api/tests/test_phase14_observability.py`.
+Observability and resilience coverage includes:
+
+- Structured JSON logging:
+  - `test_structured_json_formatter_outputs_required_fields`: verifies log output conforms to structured JSON format containing timestamp (ISO 8601), log level, logger name, message, request ID, user ID, seller ID, route, method, status code, and latency.
+  - `test_structured_logging_redacts_sensitive_fields`: verifies regex redaction transforms passwords, credit cards, bearer tokens, cookies, and secret configuration into `[REDACTED]`.
+- Correlation ID propagation & context:
+  - `test_correlation_id_propagated_from_incoming_header`: verifies incoming `X-Request-ID` is respected and echoed in response headers and log context.
+  - `test_correlation_id_generated_when_missing`: verifies missing `X-Request-ID` results in an auto-generated valid UUIDv4 attached to response headers.
+- Custom DRF exception handling & error reporting:
+  - `test_custom_exception_handler_attaches_request_id_and_returns_500_json`: verifies unhandled 500 exceptions trigger error monitoring capture and return a structured JSON body with `detail` and correlation `request_id`.
+  - `test_custom_exception_handler_preserves_drf_validation_errors`: verifies 400 validation error responses preserve exact field error structures while attaching `X-Request-ID` to response headers.
+- Health check endpoints:
+  - `test_liveness_endpoints_return_200_without_db_query`: verifies `/api/v1/health` and `/api/v1/health/live` return HTTP 200 `{"status": "ok"}` with `no-store` cache headers.
+  - `test_readiness_probe_returns_200_when_healthy`: verifies `/api/v1/health/ready` executes PostgreSQL `SELECT 1` and Redis `client.ping()`, returning HTTP 200 with status `ok` and component check results.
+  - `test_readiness_probe_returns_503_when_database_fails`: verifies simulated database failure degrades readiness status to `degraded` and returns HTTP 503.
+  - `test_readiness_probe_returns_503_when_redis_fails`: verifies simulated Redis failure degrades readiness status to `degraded` and returns HTTP 503.
+- Transactional Outbox pattern & PostgreSQL triggers:
+  - `test_publish_outbox_event_creates_pending_record`: verifies atomic insertion of `OutboxEvent` with topic, event key, and payload.
+  - `test_process_outbox_event_success_transitions_to_processed`: verifies successful event dispatch sets status to `PROCESSED` with `processed_at` timestamp.
+  - `test_process_outbox_event_failure_increments_retry_count`: verifies processing failure increments retry count and updates status to `FAILED` with error message.
+  - `test_process_pending_outbox_batch_uses_skip_locked`: verifies batch query executes with row-level locks preventing duplicate processing across concurrent workers.
+  - `test_postgresql_trigger_rejects_outbox_event_mutation`: verifies PostgreSQL trigger `events_outbox_mutation_trigger` raises `IntegrityError` when attempting to alter `topic`, `event_key`, `payload`, or `created_at`.
+  - `test_postgresql_trigger_rejects_outbox_event_deletion`: verifies PostgreSQL trigger `events_outbox_deletion_trigger` raises `IntegrityError` on SQL `DELETE` attempts.
+- Domain workflow outbox integration:
+  - `test_order_creation_publishes_outbox_event`: verifies `create_order` atomically emits `order.created` outbox event with order ID, number, and total.
+  - `test_order_confirmation_publishes_outbox_event`: verifies `confirm_seller_order` atomically emits `seller_order.confirmed` outbox event.
+  - `test_payout_processing_publishes_outbox_event`: verifies `process_payout` atomically emits `payout.processed` outbox event with payout and seller details.

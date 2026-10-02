@@ -1994,6 +1994,42 @@ paths:
               schema:
                 $ref: '#/components/schemas/Health'
           description: ''
+  /api/v1/health/live:
+    get:
+      operationId: health_live_retrieve
+      description: Public liveness only; no database, dependency details, or user
+        information.
+      tags:
+      - Infrastructure
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Health'
+          description: ''
+  /api/v1/health/ready:
+    get:
+      operationId: health_ready_retrieve
+      description: |-
+        Assesses critical infrastructure readiness (authoritative PostgreSQL and Redis).
+
+        Fails closed with HTTP 503 if any dependency is unavailable without leaking credentials.
+      tags:
+      - Infrastructure
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Readiness'
+          description: ''
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Readiness'
+          description: ''
   /api/v1/notifications:
     get:
       operationId: notifications_list
@@ -5520,6 +5556,14 @@ components:
       - next
       - previous
       - results
+    CheckStatusEnum:
+      enum:
+      - ok
+      - error
+      type: string
+      description: |-
+        * `ok` - OK
+        * `error` - Error
     CommissionCalculationPreview:
       type: object
       properties:
@@ -7831,6 +7875,34 @@ components:
       description: |-
         * `platform` - Platform
         * `seller` - Seller
+    Readiness:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/ReadinessStatusEnum'
+        checks:
+          $ref: '#/components/schemas/ReadinessChecks'
+      required:
+      - checks
+      - status
+    ReadinessChecks:
+      type: object
+      properties:
+        database:
+          $ref: '#/components/schemas/CheckStatusEnum'
+        redis:
+          $ref: '#/components/schemas/CheckStatusEnum'
+      required:
+      - database
+      - redis
+    ReadinessStatusEnum:
+      enum:
+      - ready
+      - unavailable
+      type: string
+      description: |-
+        * `ready` - Ready
+        * `unavailable` - Unavailable
     Reason:
       type: object
       properties:

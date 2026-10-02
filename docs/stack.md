@@ -34,3 +34,11 @@ Official PyPI release metadata and project documentation were checked on 2026-09
 `pillow==12.3.0` is the stable July 2026 release with Python 3.14 support. It validates actual JPEG/PNG bytes and decodes/re-encodes scans without original metadata; the application imposes byte/pixel/frame bounds. No PDF parser is installed because PDF uploads are not in the initial allowlist. Scanning remains a separate later integration. [Pillow release](https://pypi.org/project/pillow/12.3.0/).
 
 No new frontend dependency was needed for the bounded seller forms/lists. Multipart and binary-response support extends the existing central API client. The bundled Next.js dynamic-route and client/server guides were checked before implementing the seller detail route.
+
+## Phase 14 background jobs and observability dependencies
+
+Official PyPI release metadata and project documentation were verified on 2026-10-02 before installation.
+
+- `celery==5.6.3`: stable release supporting Python 3.14. Configured with Redis broker/result backend, JSON serialization, explicit task timeouts (300s hard, 240s soft), exponential backoff retries with jitter, and transactional commit ordering (`transaction.on_commit`).
+- `redis==8.1.0`: maintained Python client for Redis 8.2 backend, supplying broker connections for Celery and readiness health check probe execution with connection pooling and password authentication.
+- Observability and structured logging use standard library `logging` with JSON formatting, contextual correlation IDs (`X-Request-ID`), safe IP/route/latency tracking, and strict credential redaction. Error reporting abstraction provides Sentry-compatible hooks (`capture_exception`, `capture_message`) failing open to local structured logs when unconfigured.

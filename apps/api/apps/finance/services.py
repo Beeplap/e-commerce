@@ -394,6 +394,22 @@ def process_payout(
                 "ledger_entry_id": str(ledger_entry.pk),
             },
         )
+
+        from apps.events.services import publish_outbox_event
+
+        publish_outbox_event(
+            topic="finance.payout.processed",
+            event_key=str(payout.pk),
+            payload={
+                "payout_id": str(payout.pk),
+                "seller_id": str(payout.seller_id),
+                "amount": str(payout.amount),
+                "currency": payout.currency,
+                "status": payout.status,
+                "payout_reference": ref,
+            },
+        )
+
         return payout
 
 

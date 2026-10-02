@@ -297,6 +297,20 @@ def create_order(
         ]
     )
 
+    from apps.events.services import publish_outbox_event
+
+    publish_outbox_event(
+        topic="orders.order.created",
+        event_key=str(parent_order.pk),
+        payload={
+            "order_id": str(parent_order.pk),
+            "order_number": parent_order.order_number,
+            "currency": parent_order.currency,
+            "grand_total": str(parent_order.grand_total),
+            "customer_email": parent_order.customer_email,
+        },
+    )
+
     return parent_order
 
 
@@ -342,6 +356,20 @@ def confirm_seller_order(
         target_type="seller_order",
         target_id=seller_order.id,
         changes={"from_status": old_status, "to_status": SellerOrder.Status.CONFIRMED},
+    )
+
+    from apps.events.services import publish_outbox_event
+
+    publish_outbox_event(
+        topic="orders.seller_order.confirmed",
+        event_key=str(seller_order.pk),
+        payload={
+            "seller_order_id": str(seller_order.pk),
+            "seller_id": str(seller_order.seller_id),
+            "order_id": str(seller_order.order_id),
+            "seller_order_number": seller_order.seller_order_number,
+            "status": seller_order.status,
+        },
     )
 
     return seller_order
@@ -464,6 +492,21 @@ def ship_seller_order(
             "to_status": SellerOrder.Status.SHIPPED,
             "carrier": carrier,
             "tracking_number": tracking_number,
+        },
+    )
+
+    from apps.events.services import publish_outbox_event
+
+    publish_outbox_event(
+        topic="orders.seller_order.shipped",
+        event_key=str(seller_order.pk),
+        payload={
+            "seller_order_id": str(seller_order.pk),
+            "seller_id": str(seller_order.seller_id),
+            "order_id": str(seller_order.order_id),
+            "carrier": carrier or "",
+            "tracking_number": tracking_number or "",
+            "status": seller_order.status,
         },
     )
 

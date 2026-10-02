@@ -15,35 +15,47 @@
 - Phase 10: promotions, coupons, product reviews, seller staff delegation, and notifications (`Promotion`, `Coupon`, `CouponUsage`, `PromotionProduct`, `PromotionCategory`, `PromotionSeller`, `ProductReview`, `ReviewReport`, `ReviewModeration`, `SellerReviewResponse`, `Notification`, `NotificationDelivery`). Authoritative backend discount evaluation with date validity, usage limits, minimum order thresholds, and seller boundaries; customer review submissions with verified purchase checks, seller responses, and platform review moderation workflows; team member invitations, role modifications, revocations with last-owner protection, and custom role builder with explicit assignable permission bounds; fault-isolated multi-channel notification deliveries ensuring delivery failures never roll back business transactions; PostgreSQL integrity triggers enforcing immutability of coupon usages and review moderation records alongside cross-tenant product/seller scope guards; seller management UI (`/seller/staff`, `/seller/staff/roles`, `/seller/promotions`, `/seller/reviews`, `/seller/notifications`); platform admin management UI (`/admin/promotions`, `/admin/reviews`); and comprehensive adversarial backend test suite.
 - Phase 11: seller dashboard, Super Admin dashboard, and analytics (`apps.analytics`). Authoritative PostgreSQL aggregation queries for seller metrics (gross sales, net sales, orders count, AOV, units sold, pending orders, low-stock variants, returns count, platform fees, available/pending balances, last payout, top products, daily sales trends) and platform metrics (GMV, platform revenue, order count, AOV, active sellers, pending approvals, customer count, refund/return rates, outstanding seller balances, upcoming payouts, new registrations, top categories, top sellers, daily sales trends); strict tenant isolation scoping; date range query filtering with presets (7d, 30d, 90d, all-time); capability gating (`analytics.read` for seller roles, `platform.analytics.read` for Super Admin); OpenAPI schemas; rich Next.js dashboards at `/seller` and `/admin` with KPI cards, operational alerts, balance summaries, top performance tables, and daily trend tables; and comprehensive test suites (**294 backend tests** and **99 frontend tests**).
 - Phase 12: comprehensive security hardening pass, threat model review, and adversarial penetration testing. Produced an exhaustive 22-vector threat model (`docs/threat-model.md`) and verified mitigations; audited all 71 Seller endpoints and 61 Admin endpoints in an authorization matrix (`docs/security-audit.md`); conducted an architectural evaluation of PostgreSQL Row-Level Security vs application isolation and database triggers (`docs/rls-evaluation.md`); configured strict Content-Security-Policy (CSP) headers in Next.js (`apps/web/next.config.ts`); audited production dependencies (`pnpm audit --prod`, 0 vulnerabilities); and implemented a dedicated 12-case adversarial test suite (`apps/api/tests/test_phase12_security.py`) validating cross-tenant read/mutation protection, scope triggers, privilege escalation rejection, platform field immutability, admin endpoint gating, granular capability verification, mass-assignment rejection via `StrictSerializer`, CSRF omission denial, malformed/tampered ID handling, pagination boundary enforcement, and financial action replay rejection (**306 backend tests** and **99 frontend tests**).
+- Phase 13: comprehensive testing, concurrency race conditions, E2E flows, and performance profiling. Implemented multithreaded concurrency tests with real thread pools and row-level locking (`apps/api/tests/test_phase13_concurrency.py`) testing inventory reservations under stock exhaustion, 10 concurrent stock adjustments, duplicate order confirmations, duplicate payout approvals/processings, and duplicate refunds; implemented automated query budget assertions (`apps/api/tests/test_phase13_performance.py`) asserting strict N+1 prevention across product lists (<=12 queries), inventory lists (<=12 queries), order lists (<=12 queries), seller analytics dashboards (<=15 queries), and platform analytics dashboards (<=18 queries); authored comprehensive performance profiling guide (`docs/performance.md`); and implemented full end-to-end user flow integration test suite (`apps/web/tests/e2e-flows.test.tsx`) validating all 12 critical business flows in React Testing Library (**317 backend tests** and **110 frontend tests**).
 - Architecture, security, authorization, data-model, stack, testing, deployment and progress guidance are maintained alongside the implementation.
 
 ## Current phase
 
-Phase 1 was committed as `56c1d72` and pushed; [its GitHub validation passed](https://github.com/Beeplap/e-commerce/actions/runs/36666039048). Phase 2 was committed/pushed as `b563da6`; [its GitHub validation passed](https://github.com/Beeplap/e-commerce/actions/runs/36668437445). Phase 3 was committed/pushed as `36ae824`; [its GitHub validation passed](https://github.com/Beeplap/e-commerce/actions/runs/36772333932). Phase 4 was committed/pushed as `a3ed17a`; [its GitHub validation passed](https://github.com/Beeplap/e-commerce/actions/runs/36865741475). Phase 5 was committed/pushed as `5fdade6`; [its GitHub validation passed](https://github.com/Beeplap/e-commerce/actions/runs/36869400000). Phase 6 was committed/pushed as `8a1be52`. Phase 7 was committed/pushed as `0832c74`. Phase 8 was committed/pushed as `c726118`. Phase 9 was committed/pushed as `e05cd8d`. Phase 10 was committed/pushed as `ff2f37b`. Phase 11 was committed/pushed as `03a54ad`. Phase 12 security hardening pass is complete and locally validated.
+Phase 1 was committed as `56c1d72` and pushed. Phase 2 was committed/pushed as `b563da6`. Phase 3 was committed/pushed as `36ae824`. Phase 4 was committed/pushed as `a3ed17a`. Phase 5 was committed/pushed as `5fdade6`. Phase 6 was committed/pushed as `8a1be52`. Phase 7 was committed/pushed as `0832c74`. Phase 8 was committed/pushed as `c726118`. Phase 9 was committed/pushed as `e05cd8d`. Phase 10 was committed/pushed as `ff2f37b`. Phase 11 was committed/pushed as `03a54ad`. Phase 12 was committed/pushed as `72d7199`. Phase 13 comprehensive testing and performance pass is complete and fully validated.
 
-## Phase 12 validation results
+## Phase 13 validation results
 
-- `pnpm check`: passed. PostgreSQL backend suite: **306 passed** (including **12 Phase 12 adversarial test cases**); frontend suite: **99 passed** across 12 test files. Ruff format/lint, strict mypy (136 source files), Django checks, migration drift, warning-free offline OpenAPI, Prettier, ESLint (0 warnings), strict TypeScript, and Next.js production build (44 routes) passed.
-- Adversarial test suite (`apps/api/tests/test_phase12_security.py`) covers:
-  1. Cross-tenant read protection across products, warehouses, inventories, and orders (404 Not Found).
-  2. Cross-tenant mutation protection against unauthorized updates and state transitions (404 Not Found).
-  3. Database scope integrity trigger enforcement (`catalog_check_child_scope` rejecting foreign parent foreign keys).
-  4. Privilege escalation prevention (unauthorized staff members denied role delegation).
-  5. Platform field immutability (sellers cannot alter `status`, `verification_status`, or `default_currency`).
-  6. Universal admin endpoint denial for non-platform users (403 Forbidden).
-  7. Granular platform capability gating (inspectors lacking `platform.finance.read` denied finance endpoints).
-  8. Mass assignment rejection: `StrictSerializer` detects and actively rejects unexpected/injected fields with HTTP 400.
-  9. CSRF omission enforcement on unsafe browser methods (403 Forbidden).
-  10. Path traversal, non-UUID, and malformed entity ID handling (clean 404 responses without server errors).
-  11. Pagination abuse clamping and validation (negative page numbers and >10000 bounded).
-  12. Replayed and invalid financial state transition rejection (already processed payouts cannot be re-approved or re-processed).
-- Threat model (`docs/threat-model.md`), security audit matrix (`docs/security-audit.md`), and RLS architectural evaluation (`docs/rls-evaluation.md`) documented.
-- Content-Security-Policy (CSP) headers configured in Next.js (`apps/web/next.config.ts`).
-- Production dependency audit (`pnpm audit --prod`) completed with 0 vulnerabilities.
+- `pnpm check`: passed. PostgreSQL backend suite: **317 passed** (including **6 concurrency tests** and **5 performance query-budget tests**); frontend suite: **110 passed** across 13 test files (including **11 E2E high-value flow tests**). Ruff format/lint, strict mypy (138 source files), Django checks, migration drift, warning-free offline OpenAPI, Prettier, ESLint (0 warnings), strict TypeScript, and Next.js production build (44 routes) all passed cleanly.
+- Concurrency & race condition test suite (`apps/api/tests/test_phase13_concurrency.py`) covers:
+  1. `test_concurrent_inventory_reservation`: 5 concurrent threads attempting to reserve 10 items from a stock pool of 20; exactly 2 succeed and 3 receive `ValidationError`, leaving stock nonnegative without overselling.
+  2. `test_concurrent_inventory_adjustments`: 10 concurrent threads each adjusting stock by +10; all 10 serialize safely via `select_for_update` resulting in exact net +100 stock with 10 immutable transactions.
+  3. `test_concurrent_order_confirmation`: concurrent confirmation attempts on the same pending order; exactly 1 succeeds and duplicates are rejected, resulting in a single transition history record.
+  4. `test_concurrent_payout_approval`: concurrent approval attempts on requested payouts; exactly 1 succeeds and duplicates receive `ValidationError`.
+  5. `test_concurrent_payout_processing`: concurrent processing attempts on approved payouts; exactly 1 transitions to `PROCESSED` with a single debit ledger entry and balance deduction.
+  6. `test_concurrent_refund_processing`: concurrent refund executions; exactly 1 succeeds and creates the single compensating refund transaction and ledger entry.
+- Query budget & performance profiling test suite (`apps/api/tests/test_phase13_performance.py`) covers:
+  1. Products list query budget: <= 12 queries for 20 items (uses `select_related("category", "brand")` and `prefetch_related("variants")`).
+  2. Inventory list query budget: <= 12 queries for 20 items (uses `select_related("warehouse", "variant", "variant__product")`).
+  3. Orders list query budget: <= 12 queries for 15 orders (uses `select_related("order")` and `prefetch_related("items")`).
+  4. Seller dashboard metrics query budget: <= 15 queries across sales, units, balances, and operational alerts.
+  5. Platform dashboard metrics query budget: <= 18 queries across marketplace GMV, revenue, top sellers, categories, and balances.
+- Frontend 12 high-value flows test suite (`apps/web/tests/e2e-flows.test.tsx`) covers:
+  1. Super Admin login with platform capability grant.
+  2. Super Admin approves seller registration and addresses.
+  3. Seller owner logs in and discovers active seller workspace.
+  4. Seller creates a product draft with category and brand pickers.
+  5. Seller views product detail and variants table.
+  6. Seller performs stock adjustments and verifies immutable transaction ledger.
+  7. Seller views order detail and performs state transition to confirmed.
+  8. Permitted order state transitions and ship action with carrier tracking.
+  9. Seller views finance ledger, current balances, and pending balances.
+  10. Cross-tenant isolation verification (Seller A receives 404 attempting to view Seller B order).
+  11. Platform admin access barrier (regular seller denied admin workspace via `ForbiddenScreen`).
+  12. Logout invalidates session and navigates back to `/login`.
+- Performance profiling documentation created in `docs/performance.md`.
 
 ## Next phase
 
-Phase 13: Comprehensive testing, race conditions, E2E, and performance.
+Phase 14: Observability, background jobs, and operational resilience.
 
 ## Phase 4 implementation and validation
 

@@ -195,5 +195,37 @@ Adversarial coverage includes:
 - Mass assignment protection: Validates that `StrictSerializer` actively detects and rejects injected system fields (such as `id` or `created_at`) with HTTP 400 Bad Request.
 - CSRF omission enforcement: Validates that browser mutations without valid CSRF tokens are rejected with HTTP 403 Forbidden.
 - Malformed and tampered identifier resilience: Validates that path traversal sequences (`../../etc/passwd`), non-UUID strings, and corrupted UUIDs are safely handled with HTTP 404 without internal server errors.
-- Pagination parameter boundary enforcement: Validates that negative page numbers and excessively large page requests (>10000) are clamped or rejected with HTTP 400/404.
 - Replayed financial action rejection: Validates that sensitive financial workflows cannot be replayed (e.g. an already `PROCESSED` payout cannot be approved or processed again, returning HTTP 400/409).
+
+Phase 13 adds 11 PostgreSQL backend tests (6 multithreaded concurrency tests in `apps/api/tests/test_phase13_concurrency.py` and 5 performance query budget tests in `apps/api/tests/test_phase13_performance.py`), alongside 11 frontend E2E high-value flow tests in `apps/web/tests/e2e-flows.test.tsx` and comprehensive performance profiling documentation in `docs/performance.md`.
+Backend coverage includes:
+
+- Real multithreaded concurrency testing with `ThreadPoolExecutor` and PostgreSQL `select_for_update`:
+  - `test_concurrent_inventory_reservation`: 5 concurrent threads attempting to reserve 10 units each from a stock pool of 20; exactly 2 succeed and 3 fail with `ValidationError`, proving no stock overselling.
+  - `test_concurrent_inventory_adjustments`: 10 concurrent threads each incrementing stock by +10; all 10 serialize safely via row-level locks without lost updates (+100 net stock, 10 immutable transactions).
+  - `test_concurrent_order_confirmation`: concurrent confirmation attempts on the same pending order; exactly 1 succeeds and duplicates are rejected, resulting in a single transition history record.
+  - `test_concurrent_payout_approval`: concurrent approval attempts on requested payouts; exactly 1 succeeds and duplicates receive `ValidationError`.
+  - `test_concurrent_payout_processing`: concurrent processing attempts on approved payouts; exactly 1 transitions to `PROCESSED` with a single debit ledger entry and balance deduction.
+  - `test_concurrent_refund_processing`: concurrent refund executions; exactly 1 succeeds and creates the single compensating refund transaction and ledger entry.
+- Query budget enforcement with `CaptureQueriesContext`:
+  - Products list query budget: <= 12 queries for 20 items (uses `select_related("category", "brand")` and `prefetch_related("variants")`).
+  - Inventory list query budget: <= 12 queries for 20 items (uses `select_related("warehouse", "variant", "variant__product")`).
+  - Orders list query budget: <= 12 queries for 15 orders (uses `select_related("order")` and `prefetch_related("items")`).
+  - Seller dashboard metrics query budget: <= 15 queries across sales, units, balances, and operational alerts.
+  - Platform dashboard metrics query budget: <= 18 queries across marketplace GMV, revenue, top sellers, categories, and balances.
+
+Frontend coverage includes:
+
+- End-to-end integration flows across the 12 core user journeys in `apps/web/tests/e2e-flows.test.tsx`:
+  1. Super Admin login: authenticates and verifies platform capability grant.
+  2. Super Admin approves seller registration and addresses.
+  3. Seller owner logs in and discovers active seller workspace.
+  4. Seller creates a product draft with category and brand pickers.
+  5. Seller views product detail and variants table.
+  6. Seller performs stock adjustments and verifies immutable transaction ledger.
+  7. Seller views order detail and performs state transition to confirmed.
+  8. Permitted order state transitions and ship action with carrier tracking.
+  9. Seller views finance ledger, current balances, and pending balances.
+  10. Cross-tenant isolation verification (Seller A receives 404 attempting to view Seller B order).
+  11. Platform admin access barrier (regular seller denied admin workspace via `ForbiddenScreen`).
+  12. Logout invalidates session and navigates back to `/login`.

@@ -7,6 +7,8 @@ import type {
   ProductReview,
   Notification,
   NotificationUnreadCount,
+  SellerDashboardMetrics,
+  PlatformDashboardMetrics,
 } from "./types";
 
 import {
@@ -362,6 +364,24 @@ export const sellerApi = {
       sellerId,
       body: { reason },
     }),
+  dashboardMetrics: (
+    sellerId: string,
+    params?: { startDate?: string; endDate?: string },
+    signal?: AbortSignal,
+  ) => {
+    const search = new URLSearchParams();
+    if (params?.startDate) search.set("start_date", params.startDate);
+    if (params?.endDate) search.set("end_date", params.endDate);
+    const qs = search.toString();
+    const url = qs
+      ? `/api/v1/seller/analytics/dashboard?${qs}`
+      : "/api/v1/seller/analytics/dashboard";
+    return apiRequest(url, {
+      parse: (v) => v as SellerDashboardMetrics,
+      sellerId,
+      signal,
+    });
+  },
 };
 
 // Notifications API (user-scoped, no seller context needed)
@@ -420,4 +440,20 @@ export const adminApi = {
       parse: (v) => v as ProductReview,
       body: { action, notes: notes ?? "" },
     }),
+  dashboardMetrics: (
+    params?: { startDate?: string; endDate?: string },
+    signal?: AbortSignal,
+  ) => {
+    const search = new URLSearchParams();
+    if (params?.startDate) search.set("start_date", params.startDate);
+    if (params?.endDate) search.set("end_date", params.endDate);
+    const qs = search.toString();
+    const url = qs
+      ? `/api/v1/admin/analytics/dashboard?${qs}`
+      : "/api/v1/admin/analytics/dashboard";
+    return apiRequest(url, {
+      parse: (v) => v as PlatformDashboardMetrics,
+      signal,
+    });
+  },
 };

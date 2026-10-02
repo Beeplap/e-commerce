@@ -164,3 +164,20 @@ Frontend coverage includes:
 - In-app notifications panel with unread badge counters, mark-read, and mark-all-as-read actions.
 - Platform admin promotions overview and platform promotion creation modal.
 - Platform admin review moderation queue with status filters and approval/rejection/removal confirmation dialogs.
+
+Phase 11 adds 6 PostgreSQL backend tests in `tests/test_phase11.py` and 3 frontend tests in `apps/web/tests/dashboard.test.tsx`.
+Backend coverage includes:
+
+- Authoritative calculation of seller dashboard metrics: gross sales, net sales, orders count, AOV, units sold, pending orders, low stock variants, returns count, platform fees, available/pending balances, payout history, top products, and daily sales over time.
+- Cancellation exclusion: Cancelled orders and failed payments are verified to be excluded from revenue and order metrics.
+- Cross-tenant isolation: Complete verification that Seller B's sales and orders never leak into Seller A's metrics or top products.
+- Date range query boundary filtering: Verifying historical orders outside specified `start_date` and `end_date` are excluded.
+- Authentication and capability gating: Seller dashboard requires active seller membership and context; unauthenticated or foreign callers receive 401/403/404.
+- Super Admin platform dashboard: Total marketplace GMV, platform revenue, order count, AOV, active sellers, pending seller approvals, customers count, refund rate, return rate, outstanding seller balances, upcoming payouts, top categories, top sellers, and daily GMV trends.
+- Platform capability gating: Platform dashboard requires explicit `platform.analytics.read`; regular seller owners are denied (403 Forbidden).
+
+Frontend coverage includes:
+
+- `SellerOverview` dashboard rendering: Verifies KPI cards (Gross/Net sales, Orders placed, Units sold), balances (Available/Pending balance, Payouts), operational alert badges (low-stock warning, pending orders), top products table, and workspace details.
+- Seller date range preset filtering: Verifies switching presets ("Last 7 days", "Last 30 days", "Last 90 days") triggers re-fetching with updated `start_date` query parameters.
+- `AdminOverview` dashboard rendering: Verifies platform GMV, platform commission revenue, total orders, refund rate, top sellers table, top categories table, and pending approvals alert badge.

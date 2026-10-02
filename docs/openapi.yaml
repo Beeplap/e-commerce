@@ -20,6 +20,33 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
           description: ''
+  /api/v1/admin/analytics/dashboard:
+    get:
+      operationId: platform_dashboard_metrics
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: query
+        name: end_date
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: start_date
+        schema:
+          type: string
+          format: date-time
+      tags:
+      - Platform analytics
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformDashboardMetrics'
+          description: ''
   /api/v1/admin/catalog/{kind}:
     get:
       operationId: admin_catalog_retrieve
@@ -2255,6 +2282,39 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Address'
+          description: ''
+  /api/v1/seller/analytics/dashboard:
+    get:
+      operationId: seller_dashboard_metrics
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: query
+        name: end_date
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: start_date
+        schema:
+          type: string
+          format: date-time
+      tags:
+      - Seller analytics
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SellerDashboardMetrics'
           description: ''
   /api/v1/seller/catalog/{kind}:
     get:
@@ -5934,6 +5994,16 @@ components:
       required:
       - name
       - permissions
+    DateRange:
+      type: object
+      properties:
+        start_date:
+          type: string
+        end_date:
+          type: string
+      required:
+      - end_date
+      - start_date
     DefaultCurrencyEnum:
       enum:
       - USD
@@ -6915,6 +6985,25 @@ components:
       - processed_by_email
       - seller_id
       - seller_name
+    PayoutInfo:
+      type: object
+      properties:
+        total_paid_out:
+          type: string
+        last_payout_amount:
+          type: string
+          nullable: true
+        last_payout_status:
+          type: string
+          nullable: true
+        last_payout_date:
+          type: string
+          nullable: true
+      required:
+      - last_payout_amount
+      - last_payout_date
+      - last_payout_status
+      - total_paid_out
     PayoutItem:
       type: object
       properties:
@@ -7005,6 +7094,69 @@ components:
         * `APPROVED` - Approved
         * `PROCESSED` - Processed
         * `REJECTED` - Rejected
+    PlatformDashboardMetrics:
+      type: object
+      properties:
+        date_range:
+          $ref: '#/components/schemas/DateRange'
+        gmv:
+          type: string
+        platform_revenue:
+          type: string
+        commission_revenue:
+          type: string
+        orders_count:
+          type: integer
+        active_sellers:
+          type: integer
+        pending_seller_approvals:
+          type: integer
+        customers_count:
+          type: integer
+        refund_rate:
+          type: number
+          format: double
+        return_rate:
+          type: number
+          format: double
+        average_order_value:
+          type: string
+        outstanding_seller_balances:
+          type: string
+        upcoming_payouts:
+          type: string
+        new_seller_registrations:
+          type: integer
+        top_categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/TopCategory'
+        top_sellers:
+          type: array
+          items:
+            $ref: '#/components/schemas/TopSeller'
+        sales_over_time:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlatformSalesOverTimePoint'
+      required:
+      - active_sellers
+      - average_order_value
+      - commission_revenue
+      - customers_count
+      - date_range
+      - gmv
+      - new_seller_registrations
+      - orders_count
+      - outstanding_seller_balances
+      - pending_seller_approvals
+      - platform_revenue
+      - refund_rate
+      - return_rate
+      - sales_over_time
+      - top_categories
+      - top_sellers
+      - upcoming_payouts
     PlatformOrderDetailOutput:
       type: object
       properties:
@@ -7147,6 +7299,22 @@ components:
       - next
       - previous
       - results
+    PlatformSalesOverTimePoint:
+      type: object
+      properties:
+        date:
+          type: string
+        gmv:
+          type: string
+        platform_revenue:
+          type: string
+        orders_count:
+          type: integer
+      required:
+      - date
+      - gmv
+      - orders_count
+      - platform_revenue
     PlatformSellerOrderSummary:
       type: object
       properties:
@@ -8154,6 +8322,22 @@ components:
         * `pending` - Pending
         * `reviewed` - Reviewed
         * `dismissed` - Dismissed
+    SalesOverTimePoint:
+      type: object
+      properties:
+        date:
+          type: string
+        gross_sales:
+          type: string
+        net_sales:
+          type: string
+        orders_count:
+          type: integer
+      required:
+      - date
+      - gross_sales
+      - net_sales
+      - orders_count
     SellerBalance:
       type: object
       properties:
@@ -8211,6 +8395,59 @@ components:
       - display_name
       - email
       - legal_name
+    SellerDashboardMetrics:
+      type: object
+      properties:
+        date_range:
+          $ref: '#/components/schemas/DateRange'
+        gross_sales:
+          type: string
+        net_sales:
+          type: string
+        orders_count:
+          type: integer
+        average_order_value:
+          type: string
+        units_sold:
+          type: integer
+        pending_orders:
+          type: integer
+        low_stock_variants:
+          type: integer
+        returns_count:
+          type: integer
+        platform_fees:
+          type: string
+        available_balance:
+          type: string
+        pending_balance:
+          type: string
+        payout_info:
+          $ref: '#/components/schemas/PayoutInfo'
+        top_products:
+          type: array
+          items:
+            $ref: '#/components/schemas/TopProduct'
+        sales_over_time:
+          type: array
+          items:
+            $ref: '#/components/schemas/SalesOverTimePoint'
+      required:
+      - available_balance
+      - average_order_value
+      - date_range
+      - gross_sales
+      - low_stock_variants
+      - net_sales
+      - orders_count
+      - payout_info
+      - pending_balance
+      - pending_orders
+      - platform_fees
+      - returns_count
+      - sales_over_time
+      - top_products
+      - units_sold
     SellerDetail:
       type: object
       properties:
@@ -9158,6 +9395,54 @@ components:
       required:
       - email
       - id
+    TopCategory:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        units_sold:
+          type: integer
+        revenue:
+          type: string
+      required:
+      - id
+      - name
+      - revenue
+      - units_sold
+    TopProduct:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        units_sold:
+          type: integer
+        revenue:
+          type: string
+      required:
+      - id
+      - name
+      - revenue
+      - units_sold
+    TopSeller:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        gross_sales:
+          type: string
+        orders_count:
+          type: integer
+      required:
+      - gross_sales
+      - id
+      - name
+      - orders_count
     TrackingEvent:
       type: object
       properties:

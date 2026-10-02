@@ -127,3 +127,19 @@ Phase 4 adds no worker or notification infrastructure. Malware scanning integrat
 - Notifications infrastructure (`apps/notifications`):
   - In-app & async multi-channel messaging: `Notification` and `NotificationDelivery` provide transactional notifications across in-app, email, and future channels.
   - Fault isolation: Delivery attempt failures (e.g. SMTP connectivity issues) are captured and marked as `FAILED` in `NotificationDelivery` without rolling back the enclosing database transaction.
+
+## Phase 11 analytics and dashboards architecture
+
+- Single-roundtrip authoritative metrics (`apps/analytics`):
+  - Queries operate as direct PostgreSQL aggregates over authoritative tables (`SellerOrder`, `OrderItem`, `Inventory`, `SellerBalance`, `Payout`, `ReturnRequest`, `Refund`, `Seller`).
+  - Single source of truth: No denormalized aggregate tables or out-of-sync caching layers. Real-time changes in orders, fulfillment, payouts, and stock are immediately reflected in dashboard responses.
+  - Order cancellation exclusion: Cancelled seller orders (`status == CANCELLED`) and failed payments are rigorously excluded from gross sales, net sales, units sold, and GMV aggregates.
+  - Tenant isolation: Seller dashboard endpoint (`/api/v1/seller/analytics/dashboard`) validates `X-Seller-ID` context and executes all subqueries filtered strictly to `seller=request_seller`. Cross-tenant data leakage is structurally impossible.
+  - Date range query parameters: Allowlisted to `start_date` and `end_date`, supporting preset intervals (last 7 days, 30 days, 90 days, all time) and custom date intervals.
+- Platform Super Admin dashboard:
+  - Endpoint (`/api/v1/admin/analytics/dashboard`) guarded by explicit `platform.analytics.read` capability.
+  - Computes platform-wide marketplace GMV, commission revenues, active seller counts, pending onboarding approvals, customer base, refund rates, return rates, outstanding seller balances, and upcoming payouts.
+  - Provides category and seller breakdowns with sales volume and daily sales-over-time trends.
+- Frontend Next.js integration:
+  - Responsive dashboards rendered at `/seller` and `/admin` featuring KPI cards, operational risk badges (low-stock alerts, pending orders, pending seller approvals), balances, top performance tables, and daily sales trends.
+  - Date range picker presets seamlessly trigger re-fetches using `useApiQuery` with abort signal support.

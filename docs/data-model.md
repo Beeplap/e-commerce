@@ -172,3 +172,16 @@ PostgreSQL migration `0002_reviews_integrity` enforces:
 - Custom `SellerRole` creation per seller with explicit assignable permission sets.
 - Delegation guard enforcing that members cannot grant capabilities they do not hold.
 - Last-owner protection ensuring a seller always retains at least one active owner.
+
+## Analytics and Reporting (Phase 11)
+
+`analytics` implements single-roundtrip, authoritative database aggregation queries without introducing denormalized state or redundant metrics tables:
+
+- Operates as a purely authoritative query engine directly reading from primary PostgreSQL tables using database-level aggregation functions (`Sum`, `Count`, `Avg`, `TruncDate`):
+  - **Orders and Revenue**: Evaluated against `SellerOrder` and `OrderItem`. Cancelled orders (`status == CANCELLED`) are strictly excluded from gross sales, net sales, unit counts, and GMV calculations.
+  - **Financial Ledgers**: Available and pending seller balances read from authoritative `SellerBalance` records; payout history and pending payout sums read directly from `Payout`.
+  - **Inventory Health**: Low-stock variant counts computed dynamically via `quantity_on_hand <= quantity_reserved + reorder_level` on `Inventory` joined with `Warehouse`.
+  - **Operational Risk**: Return counts from `ReturnRequest`, refund rates and return rates computed as percentages against non-cancelled order volume.
+  - **Marketplace Breakdown**: Super Admin metrics aggregate GMV by product category (`ProductCategory`) and top sellers (`Seller`), calculating AOV across all marketplace orders.
+  - **Daily Trends**: Daily sales-over-time trends aggregated using PostgreSQL `TruncDate('created_at')` to guarantee timezone consistency.
+- Strict tenant isolation: Seller analytics views execute queries filtered strictly by `seller=request_seller`. Foreign seller data is completely unreachable.

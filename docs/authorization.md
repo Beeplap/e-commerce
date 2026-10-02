@@ -102,3 +102,16 @@ Frontend capabilities are hints for rendering controls and are never sent as tru
 - Notifications:
   - `GET /api/v1/notifications`, mark-read, and mark-all-read require authentication and are scoped strictly to `request.user`.
   - Async delivery failures are logged to `NotificationDelivery` with `FAILED` status and never cause transactional rollbacks of business operations.
+
+## Phase 11 analytics authorization policies
+
+- Seller dashboard analytics:
+  - `GET /api/v1/seller/analytics/dashboard` requires `seller.context.read` and active membership in the selected seller context (`X-Seller-ID`).
+  - Strict tenant isolation: All sales, order counts, product performance, balances, returns, and inventory low-stock queries filter strictly by `seller=request_seller`.
+  - Data leakage prevention: Cancelled seller orders are excluded from revenue and sales totals. Foreign seller orders and inventory are completely invisible.
+  - Query parameters: strictly allowlisted to `start_date` and `end_date` via `BrowserAPIView.allowed_query_parameters`.
+- Platform dashboard analytics:
+  - `GET /api/v1/admin/analytics/dashboard` requires `platform.analytics.read`.
+  - Granted explicitly to `SUPER_ADMIN` via application capability grants. Seller users, unauthenticated users, or platform users lacking `platform.analytics.read` receive 403 Forbidden.
+  - Marketplace aggregation: authoritatively computes total GMV, platform commission revenues, customer and seller counts, refund and return rates, outstanding seller balances, and upcoming payouts.
+  - Query parameters: strictly allowlisted to `start_date` and `end_date`.

@@ -639,6 +639,11 @@ describe("Admin Finance UI", () => {
     );
 
     // Reject the payout
+    await waitFor(() => {
+      expect(
+        screen.getByRole("button", { name: "Reject" }),
+      ).toBeInTheDocument();
+    });
     fireEvent.click(screen.getByRole("button", { name: "Reject" }));
     expect(screen.getByLabelText(/Reason for Rejection/)).toBeInTheDocument();
 

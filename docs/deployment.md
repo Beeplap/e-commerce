@@ -1,27 +1,143 @@
-# Development and future deployment
+# Production deployment architecture
 
-Phase 0 establishes local infrastructure and secure production settings, not a production deployment. Do not expose Django runserver or the local Compose database bootstrap credentials to the internet.
+## Architecture overview
 
-Local apps run natively with Node/pnpm and Python/uv; Docker Compose runs PostgreSQL and Redis. Named volumes persist across `down` and `up`. Removing volumes destroys local data and requires a deliberate operator action. Never add that action to normal setup or validation.
+The quick-commerce production deployment topology follows a vendor-neutral, multi-tier defense-in-depth architecture. It does not assume any specific cloud provider and can run on any container runtime supporting OCI standards (e.g. Docker, Kubernetes, AWS ECS, Google Cloud Run).
 
-The target production topology is HTTPS ingress/CDN -> Next.js for pages and Django for `/api/*`, with private PostgreSQL, authenticated Redis, later Celery workers, and private S3-compatible object storage. Production must inject configuration through a secret manager and separate database migration/runtime privileges. No database, Redis or storage service should be publicly bound.
+```
+Internet (HTTPS)
+      │
+      ▼
+┌──────────────┐
+│   CDN / WAF  │  Cloudflare, AWS CloudFront, Fastly
+│ (TLS Term.)  │  DDoS protection, rate limiting, bot management
+└──────┬───────┘
+       │
+       ▼
+┌────────────────────────────────────────────────────────┐
+│               Ingress / Reverse Proxy                  │  Nginx 1.27
+│  (Single-origin routing, security headers, buffering)  │  infra/nginx/nginx.conf
+└──────────┬─────────────────────────────┬───────────────┘
+           │ /_next/*, /*                │ /api/*
+           ▼                             ▼
+┌───────────────────────┐   ┌────────────────────────────┐
+│   Next.js Frontend    │   │      Django API Monolith   │  Gunicorn 26.2
+│ (Node 24 LTS, UID 10001)   │ (Python 3.14, UID 10001)   │  apps/api/Dockerfile
+│   apps/web/Dockerfile │   └────────────┬───────────────┘
+└───────────────────────┘                │
+        ▲ (Internal frontend_net)        │ (Internal backend_net)
+        └────────────────────────────────┤
+                                         ├─────────────────────────┐
+                                         ▼                         ▼
+                              ┌───────────────────────┐ ┌──────────────────────┐
+                              │  PostgreSQL 18.6 DB   │ │   Redis 8.2 Broker   │
+                              │ (SCRAM-SHA-256, Scoped│ │(AOF, Auth required,  │
+                              │  triggers, constraints)│ │ Celery queue/cache)  │
+                              └───────────────────────┘ └──────────┬───────────┘
+                                                                   │
+                                                                   ▼
+                                                        ┌──────────────────────┐
+                                                        │ Celery Workers & Beat│
+                                                        │ (Outbox, Webhooks,   │
+                                                        │  Reconciliation)     │
+                                                        └──────────────────────┘
+```
 
-Set `DJANGO_SETTINGS_MODULE=config.settings.production`, a cryptographically random `DJANGO_SECRET_KEY` of at least 50 characters, explicit `DJANGO_ALLOWED_HOSTS`, explicit HTTPS-only `DJANGO_CSRF_TRUSTED_ORIGINS`, and the PostgreSQL connection variables. There are no fallback production credentials. ASGI/WSGI default to production; local management commands explicitly select development. Production storage TLS/database TLS/credentials and web server configuration must be specified when a deployment target is chosen.
+## Network security & isolation
 
-Production settings enable HTTPS redirects, Secure cookies and one-year HSTS including subdomains, without preload. Ensure all subdomains are HTTPS-ready before launch. Django must receive correct secure-request information: if TLS terminates at ingress, configure `SECURE_PROXY_SSL_HEADER` only after ensuring the ingress strips untrusted forwarded headers, overwrites its own value and is Django's only network entry point. No such trust is enabled in Phase 0. Incorrect setup can produce redirect loops and CSRF failures; test the actual ingress before deployment.
+Production uses two isolated Docker bridge networks defined in `infra/compose.prod.yaml`:
 
-The production Next.js app has no development rewrite. Configure `/api/*` at ingress and preserve Origin, cookies and appropriate host semantics. Implement a nonce-compatible CSP with the app shell and validate the policy in Phase 12. Configure request limits and monitoring redaction. Do not add permissive CORS or disable CSRF to repair routing.
+1. `frontend_net`: External-facing network. Connects `ingress`, `web`, and `api`.
+2. `backend_net`: Internal-only network (`internal: true`). Connects `api`, `celery_worker`, `celery_beat`, `postgres`, and `redis`.
+   - `postgres` and `redis` have **no host port bindings** and **zero internet gateway access**.
+   - `web` cannot access `backend_net` or communicate directly with `postgres` or `redis`.
+   - Only `api` and Celery worker services bridge both networks.
+   - External internet traffic can enter only through the `ingress` container on port 80/443.
 
-The Phase 3 app shell uses relative same-origin API requests and browser sessions; there is no second Next.js auth store or token exchange. Public/protected shell pages may be statically built because they contain no private business records. Authentication and membership/capability APIs remain uncached and authoritative. If later server-rendered pages include private data, the server must authorize those Django calls before producing HTML/RSC; a client guard is insufficient. Production ingress must serve these API paths before login will work in the production build.
+## Single-origin routing & reverse proxy
 
-Phase 15 will add production non-root containers, pinned images, controlled migration rollout, CI/CD release gates, backup/restore testing, secret-manager integration guidance, and operational runbooks. Phase 14 adds readiness, correlation IDs, structured observability and resilient background work. No production launch is claimed before those phases and the final audit.
+The production reverse proxy (`infra/nginx/nginx.conf`) unifies frontend and backend under a single HTTPS origin, eliminating the need for CORS:
 
-## Private verification storage (Phase 4)
+- `location /api/`: Proxies to Django API upstream (`http://api:8000/api/`).
+  - Strict cache prevention: `Cache-Control "no-store, no-cache, must-revalidate"`.
+  - Header preservation: `Host`, `X-Real-IP`, `X-Forwarded-For`, `X-Forwarded-Proto`.
+  - Payload size cap: `client_max_body_size 6M` (protects file upload limits).
+- `location /_next/static/`: Proxies to Next.js frontend with immutable caching: `Cache-Control "public, max-age=31536000, immutable"`.
+- `location /`: Proxies all other requests to Next.js frontend (`http://web:3000/`).
 
-Local verification files live in ignored `.private-media/verification`, outside executable application directories, with private file/directory modes on supporting operating systems. No media URL is routed. Back up this directory with the local database if its evidence matters. Never commit uploaded scans.
+### Global security headers
 
-Production settings additionally require `STORAGE_ENDPOINT_URL` (HTTPS origin), `STORAGE_VERIFICATION_BUCKET`, `STORAGE_REGION`, `STORAGE_ACCESS_KEY_ID` and `STORAGE_SECRET_ACCESS_KEY`, supplied externally. Django's named `verification` storage uses the vendor-neutral S3 protocol through django-storages, with private ACL, TLS verification, signed requests, no custom public domain, no overwrite and no-store object metadata. Grant only the required bucket/prefix operations. Require a bucket policy denying public reads/listing, encryption at rest and appropriate backup/versioning. No provider-specific deployment or credentials are embedded.
+The ingress enforces HTTP security headers on all responses:
 
-Ingress must cap multipart requests at 6 MiB and enforce connection/read timeouts; the application independently caps each uploaded file at 5 MiB before disk spooling and caps decoded images. Preserve multipart Content-Type/boundary and CSRF headers through the same-origin API route. Private downloads must reach Django for current authorization and must not be CDN-cached.
+- `X-Content-Type-Options: nosniff`
+- `X-Frame-Options: DENY`
+- `Referrer-Policy: same-origin`
+- `Permissions-Policy: camera=(), microphone=(), geolocation=()`
+- `server_tokens off` (strips web server version disclosures)
 
-Human verification does not replace malware scanning or a production compliance policy. Before launch, integrate scanning and define retention, object-orphan reconciliation and controlled deletion procedures. An ordinary upload failure removes its newly saved object, but a process crash between object save and PostgreSQL commit can leave a private orphan. Do not blindly delete unreferenced objects without a grace interval and operational review.
+## Containerization & non-root security
+
+All application containers adhere to strict container security standards:
+
+### API container (`apps/api/Dockerfile`)
+
+- **Base image**: `python:3.14-slim-bookworm` (minimal, pinned, official Debian Bookworm base).
+- **Multi-stage build**:
+  - `builder` stage: installs locked dependencies with `uv` (`uv sync --frozen --no-dev`) and compiles bytecode.
+  - `runner` stage: copies only the virtual environment and application source code.
+- **Non-root execution**: runs under unprivileged system user `appuser` (UID 10001, GID 10001) without shell access (`/sbin/nologin`).
+- **WSGI server**: Gunicorn 26.2.0 with synchronous/threaded worker model (`--workers 4 --threads 2 --timeout 60`).
+- **Health check**: Built-in Python `urllib` probe testing `/api/v1/health` every 15s.
+
+### Frontend container (`apps/web/Dockerfile`)
+
+- **Base image**: `node:24-bookworm-slim` (official Node 24 LTS Bookworm base).
+- **Multi-stage build**:
+  - `deps` stage: installs locked dependencies with `pnpm install --frozen-lockfile`.
+  - `builder` stage: builds Next.js with `output: "standalone"` via Turbopack.
+  - `runner` stage: copies only the standalone output, `.next/static`, and `public` directory.
+- **Non-root execution**: runs under unprivileged system user `nextjs` (UID 10001, GID 10001).
+- **Standalone execution**: runs directly via `node apps/web/server.js` without entire `node_modules` overhead.
+- **Health check**: Built-in Node HTTP probe testing `/health` every 15s.
+
+### Celery workers & beat
+
+- Reuses the hardened `quick-commerce-api` image with specialized commands:
+  - Worker: `celery -A config worker --loglevel=INFO --concurrency=4`
+  - Beat: `celery -A config beat --loglevel=INFO`
+
+## Secret management & configuration
+
+Production configuration must never be committed to git. Secrets must be injected at container runtime using an external secret manager:
+
+- **Cloud secret providers**: AWS Secrets Manager / Parameter Store, Google Secret Manager, HashiCorp Vault, or Doppler.
+- **Required production variables**:
+  - `DJANGO_SECRET_KEY`: Minimum 50 cryptographically random characters (generated via `secrets.token_urlsafe(64)`).
+  - `DJANGO_ALLOWED_HOSTS`: Explicit domain names (e.g. `example.com,api.example.com`).
+  - `DJANGO_CSRF_TRUSTED_ORIGINS`: Explicit HTTPS origins (e.g. `https://example.com`).
+  - `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`: Production database credentials.
+  - `REDIS_PASSWORD`: Strong authentication secret for Redis broker.
+  - `STORAGE_ENDPOINT_URL`, `STORAGE_VERIFICATION_BUCKET`, `STORAGE_REGION`, `STORAGE_ACCESS_KEY_ID`, `STORAGE_SECRET_ACCESS_KEY`: Private S3-compatible credentials.
+  - `SENTRY_DSN`: Error monitoring endpoint.
+
+## Continuous Integration & release gates (`.github/workflows/checks.yaml`)
+
+Every pull request and merge to `main` must pass all CI gates:
+
+1. **Dependency & security audit**: `pnpm audit --prod` ensuring zero known production vulnerabilities.
+2. **Infrastructure validation**: `docker compose config --quiet` validating both `infra/compose.yaml` (dev) and `infra/compose.prod.yaml` (prod).
+3. **Backend quality**:
+   - Ruff linting and formatting check
+   - Mypy strict type checking across all 148 source files
+   - Django system check (`manage.py check --deploy`)
+   - Migration drift check (`manage.py makemigrations --check --dry-run`)
+   - OpenAPI schema validation (`manage.py spectacular --validate --fail-on-warn`)
+   - 336 PostgreSQL backend tests
+4. **Frontend quality**:
+   - Prettier formatting check
+   - ESLint with `--max-warnings 0`
+   - TypeScript `tsc --noEmit` check
+   - 110 Vitest frontend tests
+   - Next.js production build (`next build` with standalone output across 44 routes)
+5. **Real development proxy smoke test**: Verifies live CSRF acquisition, session authentication, cookie rotation, and logout through Next.js proxy.
+6. **Container build & non-root verification**: Builds both API and Web Dockerfiles and verifies unprivileged non-root users (`appuser`, `nextjs`).

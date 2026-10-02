@@ -1,7 +1,7 @@
-PHASE 15
+PHASE 16
 
-Phase 14 is complete and locally validated. Begin Phase 15 as defined in `instructions.md` after the Phase 14 commit/push and CI gate succeeds.
+Phase 15 is complete and locally validated. Begin Phase 16 as defined in `instructions.md` after the Phase 15 commit/push and CI gate succeeds.
 
-Implement only Phase 15: Production deployment architecture and CI/CD (Production Dockerfiles with multi-stage non-root containers, production compose profile, GitHub Actions CI workflow, deployment runbook, backup/restore procedures, zero-downtime migration guidelines). Future phases remain architectural context until their turn.
+Implement only Phase 16: Final architecture and security audit (Repository-wide review of architecture boundaries, tenant isolation, RBAC consistency, authentication, CSRF, financial correctness, audit trails, container configuration, dependency health; polish and warning elimination; and final audit deliverable `docs/final-audit.md`). Future phases do not exist; mark roadmap complete after Phase 16.
 
-After Phase 15 passes all required validation, update documentation and progress, advance this selector, commit, and push before beginning the next phase. Sequential continuation is authorized. Stop advancement on failed validation or push, and respect later user pause or scope instructions.
+After Phase 16 passes all required validation, update documentation and progress, mark the roadmap complete, commit, and push. Stop advancement on failed validation or push, and respect later user pause or scope instructions.

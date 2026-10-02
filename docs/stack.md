@@ -42,3 +42,10 @@ Official PyPI release metadata and project documentation were verified on 2026-1
 - `celery==5.6.3`: stable release supporting Python 3.14. Configured with Redis broker/result backend, JSON serialization, explicit task timeouts (300s hard, 240s soft), exponential backoff retries with jitter, and transactional commit ordering (`transaction.on_commit`).
 - `redis==8.1.0`: maintained Python client for Redis 8.2 backend, supplying broker connections for Celery and readiness health check probe execution with connection pooling and password authentication.
 - Observability and structured logging use standard library `logging` with JSON formatting, contextual correlation IDs (`X-Request-ID`), safe IP/route/latency tracking, and strict credential redaction. Error reporting abstraction provides Sentry-compatible hooks (`capture_exception`, `capture_message`) failing open to local structured logs when unconfigured.
+
+## Phase 15 production deployment and container dependencies
+
+Official PyPI release metadata was verified on 2026-10-02 before installation.
+
+- `gunicorn==26.2.0`: standard, battle-tested WSGI HTTP Server for UNIX containers. Configured with multiple worker processes, request timeouts, and direct stdout/stderr structured JSON logging.
+- Next.js `standalone` build output enables minimal container footprints by tracing runtime module dependencies without shipping the entire workspace `node_modules` directory in production runner images.

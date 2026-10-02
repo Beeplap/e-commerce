@@ -25,10 +25,14 @@ jobs:
           python -m pip install uv==0.12.20
           python -m uv sync --project apps/api --locked
           pnpm install --frozen-lockfile
+      - name: Security and dependency audit
+        run: |
+          pnpm audit --prod
       - name: Initialize local infrastructure
         run: |
           pnpm setup:env
           docker compose --env-file .env -f infra/compose.yaml config --quiet
+          docker compose --env-file .env -f infra/compose.prod.yaml config --quiet
           pnpm infra:up
           pnpm db:migrate
       - name: Validate foundation
@@ -49,6 +53,12 @@ jobs:
           done
           python -m uv run --project apps/api --env-file .env python scripts/smoke_auth.py
           git diff --exit-code -- docs/openapi.yaml
+      - name: Build and validate production containers
+        run: |
+          docker build -t quick-commerce-api:ci -f apps/api/Dockerfile apps/api
+          docker build -t quick-commerce-web:ci -f apps/web/Dockerfile .
+          test "$(docker run --rm quick-commerce-api:ci whoami)" = "appuser"
+          test "$(docker run --rm quick-commerce-web:ci whoami)" = "nextjs"
       - name: Stop infrastructure
         if: always()
         run: docker compose --env-file .env -f infra/compose.yaml down

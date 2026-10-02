@@ -71,3 +71,21 @@ PostgreSQL migration `0002_inventory_integrity` enforces:
 - Inventory immutable identity: SQL trigger rejects changes to `warehouse_id` or `variant_id` on `Inventory`.
 - Cross-tenant validation: SQL triggers verify that `ProductVariant.product.seller_id` matches `Warehouse.seller_id` before creating or updating `Inventory` or `InventoryTransaction`.
 - Append-only immutability trigger on `InventoryTransaction`: SQL trigger rejects all UPDATE and DELETE operations on `inventory_inventorytransaction`.
+
+## Phase 7 orders schema
+
+`orders` implements the multi-seller marketplace order architecture and secure state machines:
+
+- `Order`: Parent customer order recording customer email/ID, unique `order_number`, currency, financial totals (`subtotal`, `discount_total`, `tax_total`, `shipping_total`, `grand_total`), immutable `billing_address_snapshot` and `shipping_address_snapshot`, `payment_status` (`pending`, `authorized`, `paid`, `failed`, `refunded`), and `fulfillment_status` (`unfulfilled`, `partially_fulfilled`, `fulfilled`, `cancelled`).
+- `SellerOrder`: Tenant-isolated sub-order partitioned per seller. Links to parent `order` and `seller`, with unique `seller_order_number`, financial breakdowns (`subtotal`, `discount_total`, `tax_total`, `shipping_total`, `commission_total`, `seller_net_total`), optional shipping details (`carrier`, `tracking_number`, `shipped_at`, `delivered_at`, `cancelled_at`, `cancellation_reason`), and order `status` (`pending`, `confirmed`, `processing`, `shipped`, `delivered`, `cancelled`).
+- `OrderItem`: Line items associated with a `SellerOrder`. Captures immutable product and pricing snapshots independent of mutable catalog entities: `product_id`, `variant_id`, `warehouse_id`, `product_name_snapshot`, `sku_snapshot`, `variant_snapshot` JSON, positive integer `quantity`, and Decimal financial snapshots (`unit_price`, `discount_amount`, `tax_amount`, `total`, `commission_amount`, `seller_net_amount`).
+- `OrderStatusHistory`: Append-only transition audit ledger for `SellerOrder`. Records `seller_order`, optional `actor_id` UUID, `from_status`, `to_status`, `notes`, and timestamp.
+
+PostgreSQL migration `0002_orders_integrity` enforces:
+
+- Nonnegative financial constraints on all monetary amounts for `Order`, `SellerOrder`, and `OrderItem`.
+- Check constraints enforcing `quantity >= 1` on `OrderItem`.
+- Immutability trigger on `OrderStatusHistory`: Rejects all UPDATE and DELETE operations.
+- Immutability trigger on `OrderItem`: Rejects UPDATE and DELETE operations once committed.
+- SellerOrder immutable identity trigger: Rejects modifications to `seller_id` or `order_id`.
+- Cross-tenant validation trigger: Verifies that `product.seller_id`, `variant.product.seller_id`, and `warehouse.seller_id` match the `SellerOrder.seller_id` before inserting any `OrderItem`. Rejecting foreign products, variants, or warehouses.

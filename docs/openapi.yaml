@@ -266,6 +266,86 @@ paths:
               schema:
                 $ref: '#/components/schemas/InventoryTransactionPage'
           description: ''
+  /api/v1/admin/orders/:
+    get:
+      operationId: platform_orders_list
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: query
+        name: fulfillment_status
+        schema:
+          enum:
+          - unfulfilled
+          - partially_fulfilled
+          - fulfilled
+          - cancelled
+          - null
+          type: string
+          nullable: true
+          minLength: 1
+        description: |-
+          * `unfulfilled` - Unfulfilled
+          * `partially_fulfilled` - Partially Fulfilled
+          * `fulfilled` - Fulfilled
+          * `cancelled` - Cancelled
+      - in: query
+        name: payment_status
+        schema:
+          enum:
+          - pending
+          - authorized
+          - paid
+          - failed
+          - refunded
+          - null
+          type: string
+          nullable: true
+          minLength: 1
+        description: |-
+          * `pending` - Pending
+          * `authorized` - Authorized
+          * `paid` - Paid
+          * `failed` - Failed
+          * `refunded` - Refunded
+      - in: query
+        name: search
+        schema:
+          type: string
+      tags:
+      - Platform orders
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformOrderPage'
+          description: ''
+  /api/v1/admin/orders/{id}/:
+    get:
+      operationId: platform_orders_detail
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform orders
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformOrderDetailOutput'
+          description: ''
   /api/v1/admin/products:
     get:
       operationId: admin_products_list
@@ -1749,6 +1829,239 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SellerInspection'
+          description: ''
+  /api/v1/seller/orders/:
+    get:
+      operationId: seller_orders_list
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: query
+        name: search
+        schema:
+          type: string
+      - in: query
+        name: status
+        schema:
+          enum:
+          - pending
+          - confirmed
+          - processing
+          - shipped
+          - delivered
+          - cancelled
+          - null
+          type: string
+          nullable: true
+          minLength: 1
+        description: |-
+          * `pending` - Pending
+          * `confirmed` - Confirmed
+          * `processing` - Processing
+          * `shipped` - Shipped
+          * `delivered` - Delivered
+          * `cancelled` - Cancelled
+      tags:
+      - Seller orders
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SellerOrderPage'
+          description: ''
+  /api/v1/seller/orders/{id}/:
+    get:
+      operationId: seller_orders_detail
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller orders
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SellerOrderDetailOutput'
+          description: ''
+  /api/v1/seller/orders/{id}/begin-processing/:
+    post:
+      operationId: seller_orders_begin_processing
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller orders
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SellerOrderDetailOutput'
+          description: ''
+  /api/v1/seller/orders/{id}/cancel/:
+    post:
+      operationId: seller_orders_cancel
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller orders
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SellerOrderCancelInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SellerOrderDetailOutput'
+          description: ''
+  /api/v1/seller/orders/{id}/confirm/:
+    post:
+      operationId: seller_orders_confirm
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller orders
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SellerOrderDetailOutput'
+          description: ''
+  /api/v1/seller/orders/{id}/deliver/:
+    post:
+      operationId: seller_orders_deliver
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller orders
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SellerOrderDetailOutput'
+          description: ''
+  /api/v1/seller/orders/{id}/ship/:
+    post:
+      operationId: seller_orders_ship
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller orders
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SellerOrderShipInput'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SellerOrderDetailOutput'
           description: ''
   /api/v1/seller/products:
     get:
@@ -3727,6 +4040,119 @@ components:
       - next
       - previous
       - results
+    OrderFulfillmentStatusEnum:
+      enum:
+      - unfulfilled
+      - partially_fulfilled
+      - fulfilled
+      - cancelled
+      type: string
+      description: |-
+        * `unfulfilled` - Unfulfilled
+        * `partially_fulfilled` - Partially Fulfilled
+        * `fulfilled` - Fulfilled
+        * `cancelled` - Cancelled
+    OrderItemOutput:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        product_id:
+          type: string
+          format: uuid
+          nullable: true
+          readOnly: true
+        variant_id:
+          type: string
+          format: uuid
+          nullable: true
+          readOnly: true
+        warehouse_id:
+          type: string
+          format: uuid
+          nullable: true
+          readOnly: true
+        product_name_snapshot:
+          type: string
+          maxLength: 255
+        sku_snapshot:
+          type: string
+          maxLength: 64
+        variant_snapshot: {}
+        quantity:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        unit_price:
+          type: string
+        discount_amount:
+          type: string
+        tax_amount:
+          type: string
+        total:
+          type: string
+        commission_amount:
+          type: string
+        seller_net_amount:
+          type: string
+      required:
+      - commission_amount
+      - discount_amount
+      - id
+      - product_id
+      - product_name_snapshot
+      - quantity
+      - seller_net_amount
+      - sku_snapshot
+      - tax_amount
+      - total
+      - unit_price
+      - variant_id
+      - warehouse_id
+    OrderPaymentStatusEnum:
+      enum:
+      - pending
+      - authorized
+      - paid
+      - failed
+      - refunded
+      type: string
+      description: |-
+        * `pending` - Pending
+        * `authorized` - Authorized
+        * `paid` - Paid
+        * `failed` - Failed
+        * `refunded` - Refunded
+    OrderStatusHistoryOutput:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        actor_id:
+          type: string
+          format: uuid
+          nullable: true
+        from_status:
+          type: string
+          maxLength: 32
+        to_status:
+          type: string
+          maxLength: 32
+        notes:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - from_status
+      - id
+      - to_status
     PasswordChange:
       type: object
       properties:
@@ -3741,6 +4167,211 @@ components:
       required:
       - new_password
       - old_password
+    PlatformOrderDetailOutput:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        order_number:
+          type: string
+          maxLength: 64
+        customer_id:
+          type: string
+          format: uuid
+          nullable: true
+          readOnly: true
+        customer_email:
+          type: string
+          format: email
+          maxLength: 255
+        currency:
+          type: string
+          maxLength: 3
+        subtotal:
+          type: string
+        discount_total:
+          type: string
+        tax_total:
+          type: string
+        shipping_total:
+          type: string
+        grand_total:
+          type: string
+        payment_status:
+          $ref: '#/components/schemas/OrderPaymentStatusEnum'
+        fulfillment_status:
+          $ref: '#/components/schemas/OrderFulfillmentStatusEnum'
+        billing_address_snapshot: {}
+        shipping_address_snapshot: {}
+        seller_orders:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlatformSellerOrderSummary'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - currency
+      - customer_email
+      - customer_id
+      - discount_total
+      - grand_total
+      - id
+      - order_number
+      - seller_orders
+      - shipping_total
+      - subtotal
+      - tax_total
+      - updated_at
+    PlatformOrderListOutput:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        order_number:
+          type: string
+          maxLength: 64
+        customer_email:
+          type: string
+          format: email
+          maxLength: 255
+        currency:
+          type: string
+          maxLength: 3
+        subtotal:
+          type: string
+        discount_total:
+          type: string
+        tax_total:
+          type: string
+        shipping_total:
+          type: string
+        grand_total:
+          type: string
+        payment_status:
+          $ref: '#/components/schemas/OrderPaymentStatusEnum'
+        fulfillment_status:
+          $ref: '#/components/schemas/OrderFulfillmentStatusEnum'
+        seller_orders_count:
+          type: integer
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - currency
+      - customer_email
+      - discount_total
+      - grand_total
+      - id
+      - order_number
+      - seller_orders_count
+      - shipping_total
+      - subtotal
+      - tax_total
+      - updated_at
+    PlatformOrderPage:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          format: uri
+          nullable: true
+        previous:
+          type: string
+          format: uri
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlatformOrderListOutput'
+      required:
+      - count
+      - next
+      - previous
+      - results
+    PlatformSellerOrderSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        seller_id:
+          type: string
+          format: uuid
+          readOnly: true
+        seller_name:
+          type: string
+        seller_order_number:
+          type: string
+          maxLength: 64
+        subtotal:
+          type: string
+        discount_total:
+          type: string
+        tax_total:
+          type: string
+        shipping_total:
+          type: string
+        commission_total:
+          type: string
+        seller_net_total:
+          type: string
+        status:
+          $ref: '#/components/schemas/SellerOrderStatusEnum'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItemOutput'
+          readOnly: true
+        status_history:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderStatusHistoryOutput'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - commission_total
+      - created_at
+      - discount_total
+      - id
+      - items
+      - seller_id
+      - seller_name
+      - seller_net_total
+      - seller_order_number
+      - shipping_total
+      - status_history
+      - subtotal
+      - tax_total
+      - updated_at
     ProductHistoryOutput:
       type: object
       properties:
@@ -4249,6 +4880,195 @@ components:
         * `invited` - Invited
         * `active` - Active
         * `suspended` - Suspended
+    SellerOrderCancelInput:
+      type: object
+      properties:
+        reason:
+          type: string
+          maxLength: 500
+          minLength: 1
+      required:
+      - reason
+    SellerOrderDetailOutput:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        order_id:
+          type: string
+          format: uuid
+          readOnly: true
+        order_number:
+          type: string
+        seller_order_number:
+          type: string
+          maxLength: 64
+        currency:
+          type: string
+        customer_email:
+          type: string
+        subtotal:
+          type: string
+        discount_total:
+          type: string
+        tax_total:
+          type: string
+        shipping_total:
+          type: string
+        commission_total:
+          type: string
+        seller_net_total:
+          type: string
+        status:
+          $ref: '#/components/schemas/SellerOrderStatusEnum'
+        shipping_address_snapshot: {}
+        billing_address_snapshot: {}
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItemOutput'
+          readOnly: true
+        status_history:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderStatusHistoryOutput'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - billing_address_snapshot
+      - commission_total
+      - created_at
+      - currency
+      - customer_email
+      - discount_total
+      - id
+      - items
+      - order_id
+      - order_number
+      - seller_net_total
+      - seller_order_number
+      - shipping_address_snapshot
+      - shipping_total
+      - status_history
+      - subtotal
+      - tax_total
+      - updated_at
+    SellerOrderListOutput:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        order_id:
+          type: string
+          format: uuid
+          readOnly: true
+        order_number:
+          type: string
+        seller_order_number:
+          type: string
+          maxLength: 64
+        currency:
+          type: string
+        subtotal:
+          type: string
+        discount_total:
+          type: string
+        tax_total:
+          type: string
+        shipping_total:
+          type: string
+        commission_total:
+          type: string
+        seller_net_total:
+          type: string
+        status:
+          $ref: '#/components/schemas/SellerOrderStatusEnum'
+        items_count:
+          type: integer
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - commission_total
+      - created_at
+      - currency
+      - discount_total
+      - id
+      - items_count
+      - order_id
+      - order_number
+      - seller_net_total
+      - seller_order_number
+      - shipping_total
+      - subtotal
+      - tax_total
+      - updated_at
+    SellerOrderPage:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          format: uri
+          nullable: true
+        previous:
+          type: string
+          format: uri
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SellerOrderListOutput'
+      required:
+      - count
+      - next
+      - previous
+      - results
+    SellerOrderShipInput:
+      type: object
+      properties:
+        tracking_number:
+          type: string
+          default: ''
+          maxLength: 128
+        carrier:
+          type: string
+          default: ''
+          maxLength: 64
+    SellerOrderStatusEnum:
+      enum:
+      - pending
+      - confirmed
+      - processing
+      - shipped
+      - delivered
+      - cancelled
+      type: string
+      description: |-
+        * `pending` - Pending
+        * `confirmed` - Confirmed
+        * `processing` - Processing
+        * `shipped` - Shipped
+        * `delivered` - Delivered
+        * `cancelled` - Cancelled
     SellerPage:
       type: object
       properties:

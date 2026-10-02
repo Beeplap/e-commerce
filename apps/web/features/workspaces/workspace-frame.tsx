@@ -22,6 +22,7 @@ export function WorkspaceFrame({
   sellerCanReadSettings = false,
   sellerCanReadProducts = false,
   sellerCanReadInventory = false,
+  sellerCanReadOrders = false,
 }: {
   mode: WorkspaceMode;
   children: ReactNode;
@@ -29,12 +30,15 @@ export function WorkspaceFrame({
   sellerCanReadSettings?: boolean;
   sellerCanReadProducts?: boolean;
   sellerCanReadInventory?: boolean;
+  sellerCanReadOrders?: boolean;
 }) {
   const pathname = usePathname();
   const { state } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const user = state.kind === "authenticated" ? state.user : null;
   const links = [{ href: `/${mode}`, label: "Overview" }];
+  if (mode === "seller" && sellerCanReadOrders)
+    links.push({ href: "/seller/orders", label: "Orders" });
   if (mode === "seller" && sellerCanReadProducts)
     links.push({ href: "/seller/products", label: "Products" });
   if (mode === "seller" && sellerCanReadInventory) {
@@ -43,6 +47,8 @@ export function WorkspaceFrame({
   }
   if (mode === "seller" && sellerCanReadSettings)
     links.push({ href: "/seller/settings", label: "Seller settings" });
+  if (mode === "admin" && hasPlatformPermission(user, "platform.orders.read"))
+    links.push({ href: "/admin/orders", label: "Orders" });
   if (mode === "admin" && hasPlatformPermission(user, "platform.sellers.read"))
     links.push({ href: "/admin/sellers", label: "Sellers" });
   if (mode === "admin" && hasPlatformPermission(user, "platform.products.read"))

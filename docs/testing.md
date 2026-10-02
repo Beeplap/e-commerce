@@ -71,3 +71,24 @@ Frontend coverage includes:
 - Stock adjustment modal with delta/reason validation and optimistic/server error handling.
 - Immutable inventory transaction ledger with delta indicators and transaction-type filtering.
 - Platform inventory overview accessible only with `platform.inventory.read` capability.
+
+Phase 7 adds 12 PostgreSQL order backend tests in `tests/test_orders.py` and 7 frontend tests in `apps/web/tests/orders.test.tsx`.
+Backend coverage includes:
+
+- Multi-seller order creation, partitioning of single customer checkout into distinct `SellerOrder` instances, and snapshot preservation on `OrderItem`.
+- Cross-tenant injection rejection: PostgreSQL trigger rejection of foreign seller products, variants, or warehouses on order items.
+- Immutability enforcement via database triggers: rejection of UPDATE and DELETE operations on `OrderStatusHistory` and `OrderItem`.
+- SellerOrder immutable identity trigger: rejection of mutations to `seller_id` or `order_id`.
+- Explicit state machine transitions (`confirm`, `begin-processing`, `ship`, `deliver`, `cancel`) and rejection of invalid status transitions (e.g. shipping a cancelled order, delivering a pending order).
+- Atomic inventory reservation upon order placement, release of reserved stock upon cancellation (with mandatory reason), and consumption of reserved stock upon shipment.
+- Parent `Order` status derivation: shipping or delivering child seller orders advances parent order fulfillment status.
+- Seller authorization and tenant isolation: seller endpoints reject access to foreign seller orders; operations require `orders.read`, `orders.update`, or `orders.cancel`.
+- Platform management and authorization: platform views require `platform.orders.read` or `platform.orders.manage`; superuser without platform roles is denied access.
+
+Frontend coverage includes:
+
+- Seller orders list table with status badges, pagination, and navigation to order details.
+- Seller order detail page displaying financial summaries, line items, historical snapshots, and audit timeline.
+- Seller order lifecycle action buttons and confirmation dialogs (`confirm`, `begin-processing`, `ship` with tracking details, `cancel` with reason modal).
+- Platform admin orders list and detail views displaying multi-seller breakdown and audit history.
+- Client-side error handling and permission gating for order actions.

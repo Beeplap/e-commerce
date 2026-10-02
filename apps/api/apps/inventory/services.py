@@ -402,3 +402,122 @@ def receive_return(
         remote_ip=remote_ip,
     )
     return inventory
+
+
+@transaction.atomic
+def reserve_order_inventory(
+    *,
+    inventory_id: UUID,
+    quantity: int,
+    reference_id: str,
+    reason: str,
+    actor: User | AnonymousUser | None = None,
+) -> Inventory:
+    inventory = get_object_or_404(
+        Inventory.objects.select_for_update(),
+        pk=inventory_id,
+    )
+    if quantity <= 0:
+        raise ValidationError({"quantity": "Reservation quantity must be positive."})
+
+    available = inventory.quantity_on_hand - inventory.quantity_reserved
+    if quantity > available:
+        raise ValidationError(
+            {"quantity": f"Cannot reserve {quantity}; only {available} available."}
+        )
+
+    inventory.quantity_reserved += quantity
+    inventory.save(update_fields=["quantity_reserved", "updated_at"])
+
+    created_by = actor if (actor and actor.is_authenticated) else None
+    InventoryTransaction.objects.create(
+        inventory=inventory,
+        type=InventoryTransaction.Type.RESERVATION,
+        quantity_delta=quantity,
+        reference_type="seller_order",
+        reference_id=reference_id,
+        reason=reason.strip(),
+        created_by=created_by,
+    )
+    return inventory
+
+
+@transaction.atomic
+def release_order_inventory(
+    *,
+    inventory_id: UUID,
+    quantity: int,
+    reference_id: str,
+    reason: str,
+    actor: User | AnonymousUser | None = None,
+) -> Inventory:
+    inventory = get_object_or_404(
+        Inventory.objects.select_for_update(),
+        pk=inventory_id,
+    )
+    if quantity <= 0:
+        raise ValidationError({"quantity": "Release quantity must be positive."})
+    if quantity > inventory.quantity_reserved:
+        raise ValidationError(
+            {
+                "quantity": (
+                    f"Cannot release {quantity}; only {inventory.quantity_reserved} is reserved."
+                )
+            }
+        )
+
+    inventory.quantity_reserved -= quantity
+    inventory.save(update_fields=["quantity_reserved", "updated_at"])
+
+    created_by = actor if (actor and actor.is_authenticated) else None
+    InventoryTransaction.objects.create(
+        inventory=inventory,
+        type=InventoryTransaction.Type.RELEASE,
+        quantity_delta=-quantity,
+        reference_type="seller_order",
+        reference_id=reference_id,
+        reason=reason.strip(),
+        created_by=created_by,
+    )
+    return inventory
+
+
+@transaction.atomic
+def consume_order_inventory(
+    *,
+    inventory_id: UUID,
+    quantity: int,
+    reference_id: str,
+    reason: str,
+    actor: User | AnonymousUser | None = None,
+) -> Inventory:
+    inventory = get_object_or_404(
+        Inventory.objects.select_for_update(),
+        pk=inventory_id,
+    )
+    if quantity <= 0:
+        raise ValidationError({"quantity": "Consumed quantity must be positive."})
+    if quantity > inventory.quantity_reserved:
+        raise ValidationError(
+            {
+                "quantity": (
+                    f"Cannot consume {quantity}; only {inventory.quantity_reserved} is reserved."
+                )
+            }
+        )
+
+    inventory.quantity_reserved -= quantity
+    inventory.quantity_on_hand -= quantity
+    inventory.save(update_fields=["quantity_reserved", "quantity_on_hand", "updated_at"])
+
+    created_by = actor if (actor and actor.is_authenticated) else None
+    InventoryTransaction.objects.create(
+        inventory=inventory,
+        type=InventoryTransaction.Type.SALE,
+        quantity_delta=-quantity,
+        reference_type="seller_order",
+        reference_id=reference_id,
+        reason=reason.strip(),
+        created_by=created_by,
+    )
+    return inventory

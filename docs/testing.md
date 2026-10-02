@@ -181,3 +181,19 @@ Frontend coverage includes:
 - `SellerOverview` dashboard rendering: Verifies KPI cards (Gross/Net sales, Orders placed, Units sold), balances (Available/Pending balance, Payouts), operational alert badges (low-stock warning, pending orders), top products table, and workspace details.
 - Seller date range preset filtering: Verifies switching presets ("Last 7 days", "Last 30 days", "Last 90 days") triggers re-fetching with updated `start_date` query parameters.
 - `AdminOverview` dashboard rendering: Verifies platform GMV, platform commission revenue, total orders, refund rate, top sellers table, top categories table, and pending approvals alert badge.
+
+Phase 12 adds 12 PostgreSQL backend adversarial security tests in `apps/api/tests/test_phase12_security.py`.
+Adversarial coverage includes:
+
+- Cross-tenant read protection: Confirms an active seller owner cannot inspect another seller's products, warehouses, inventories, or orders (all returning HTTP 404).
+- Cross-tenant mutation protection: Confirms an active seller owner cannot edit another seller's products or trigger order state transitions (returning HTTP 404).
+- Database foreign-key scope integrity: Validates that database trigger `catalog_check_child_scope` aborts variant creation referencing another tenant's product with `IntegrityError`.
+- Privilege escalation prevention: Validates that a seller staff member with restricted capabilities (e.g. `SUPPORT_AGENT`) cannot invite new staff members or delegate administrative roles (HTTP 403 Forbidden).
+- Platform field immutability: Validates that seller owners cannot alter platform-controlled fields (`status`, `verification_status`, `default_currency`) through seller settings endpoints (HTTP 400 Bad Request via `StrictSerializer`).
+- Universal admin endpoint protection: Validates that ordinary authenticated users without platform roles are denied access across all administrative endpoints (`/api/v1/admin/*`, HTTP 403 Forbidden).
+- Granular platform capability gating: Validates that platform administrators with limited roles (e.g. inspector) cannot access sensitive financial endpoints lacking explicit capability grants (HTTP 403 Forbidden).
+- Mass assignment protection: Validates that `StrictSerializer` actively detects and rejects injected system fields (such as `id` or `created_at`) with HTTP 400 Bad Request.
+- CSRF omission enforcement: Validates that browser mutations without valid CSRF tokens are rejected with HTTP 403 Forbidden.
+- Malformed and tampered identifier resilience: Validates that path traversal sequences (`../../etc/passwd`), non-UUID strings, and corrupted UUIDs are safely handled with HTTP 404 without internal server errors.
+- Pagination parameter boundary enforcement: Validates that negative page numbers and excessively large page requests (>10000) are clamped or rejected with HTTP 400/404.
+- Replayed financial action rejection: Validates that sensitive financial workflows cannot be replayed (e.g. an already `PROCESSED` payout cannot be approved or processed again, returning HTTP 400/409).

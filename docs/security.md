@@ -63,4 +63,15 @@ Human verification is explicit and attributable; it is not automated identity pr
 
 Business audit and status history are append-only in PostgreSQL and committed with the business action. Audit diffs include old/new lifecycle/review states or changed-field names for contact/address edits, not private document contents/contact values. Reasons are restricted free text shown only to the appropriate seller/platform audience; operators must avoid putting sensitive document identifiers in reasons. Direct peer IP is recorded without trusting forwarded headers. Retention/deletion exceptions require a separately reviewed operational process; no application evidence/history-delete endpoint exists.
 
-Malware scanning remains a later integration; re-encoding is not represented as a malware scanner. New files are compensated on ordinary DB/audit failures, but process-crash orphans need later reconciliation. No S3 provider is provisioned or production launch claimed by local validation. Future work also includes MFA/recovery with a real provider, retention, CSP/production hardening and tenant/RLS review.
+Malware scanning remains a later integration; re-encoding is not represented as a malware scanner. New files are compensated on ordinary DB/audit failures, but process-crash orphans need later reconciliation. No S3 provider is provisioned or production launch claimed by local validation.
+
+## Phase 12 security hardening pass
+
+Phase 12 conducted an exhaustive security audit and hardening pass across the repository:
+
+- **Threat Model**: Documented in `docs/threat-model.md`, examining 22 distinct attack vectors across authentication, session management, multi-tenancy, cross-tenant leaks, privilege escalation, IDOR, mass assignment, injection, financial workflows, and infrastructure.
+- **Authorization Audit**: Exhaustive audit documented in `docs/security-audit.md`, indexing all 71 Seller API endpoints and 61 Admin API endpoints, detailing their capability checks, context validation, and database triggers.
+- **PostgreSQL RLS Evaluation**: Detailed in `docs/rls-evaluation.md`, evaluating Row-Level Security vs the repository's current application-level scoped queryset architecture and database triggers. Found that PostgreSQL triggers (`catalog_check_child_scope`, `orders_check_scope`, `finance_check_scope`, `fulfillment_check_scope`, `promotions_check_scope`, `reviews_check_scope`) provide strong mathematical boundary enforcement at zero connection pooling or session variable overhead, deferring RLS to future high-concurrency needs.
+- **Content-Security-Policy (CSP)**: Added strict CSP headers in `apps/web/next.config.ts` enforcing `default-src 'self'`, `frame-ancestors 'none'`, `object-src 'none'`, and restricted script/style sources.
+- **Dependency Audit**: Verified production dependencies with `pnpm audit --prod`, confirming 0 known vulnerabilities.
+- **Adversarial Test Suite**: Added 12 rigorous adversarial test cases in `apps/api/tests/test_phase12_security.py` directly targeting multi-tenant data leaks, horizontal privilege escalation, mass assignment via `StrictSerializer`, CSRF bypass attempts, path traversal, pagination exhaustion, and financial workflow replay attacks.

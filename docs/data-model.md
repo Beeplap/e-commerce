@@ -32,3 +32,28 @@ Phase 4 adds one-to-one `SellerProfile` (description/HTTPS website) and `SellerS
 UUIDs are public business identifiers; human order numbers are separate. Foreign keys, unique/check constraints, indexes, atomic transactions and appropriate row locks enforce integrity in PostgreSQL. Each future migration must include its matching negative and concurrency tests where relevant. SQLite is not a test substitute.
 
 Phase 3 adds no database entities or migrations. The frontend runtime contracts mirror safe `CurrentUser`, seller summaries, membership/role capabilities and bounded pagination from OpenAPI. Seller selection and rendered permission hints are ephemeral browser memory, not persisted grants or an alternative identity store. Money components consume decimal strings without numeric coercion; dates carry explicit timezone/locale for deterministic display.
+
+## Phase 5 catalog schema
+
+`catalog` introduces platform-managed taxonomies and seller-owned product hierarchies:
+
+- `Category`: hierarchical categories with optional `parent` foreign key, unique `slug`, `sort_order`, `description`, and `is_active`. Cycles are forbidden and inactive ancestors block product association.
+- `Brand`: platform-managed brands with unique `slug`, `name`, and `is_active`.
+- `Attribute`: dynamic configurable attributes with unique `code`, `value_type` (`text`, `number`, `choice`, `boolean`), and `scope` (`product` or `variant`).
+- `AttributeOption`: predefined choices for `choice` attributes with `attribute`, `label`, `value`, and `is_active`.
+- `CategoryAttribute`: links categories to attributes with an `is_required` flag.
+- `Product`: seller-owned product with `seller`, `category`, optional `brand`, `name`, unique `slug`, `description`, `short_description`, `status` (`draft`, `pending_review`, `active`, `rejected`, `archived`), `currency` (inherited from seller default currency and immutable), `created_by`, and paired optional `approved_by` / `approved_at`.
+- `ProductVariant`: SKU-bearing sellable variant with `product`, `sku`, `barcode`, `price`, optional `compare_at_price`, `cost_price`, dimensions (`length`, `width`, `height`, `weight`), and `status` (`active`, `inactive`). Money fields use `DecimalField(max_digits=14, decimal_places=2)`. Dimensions use `DecimalField(max_digits=12, decimal_places=3)`.
+- `ProductAttributeValue` and `VariantAttributeValue`: values for configured category attributes. Enforces scope matching: product attributes cannot be attached to variants; variant attributes cannot be attached to products. Choice attributes validate option foreign keys.
+- `ProductImage`: private product images with `product`, `storage_key`, `content_type` (`image/png`, `image/jpeg`), `size`, `alt_text`, and `sort_order`. Uses named Django `catalog` storage.
+- `ProductStatusHistory`: immutable append-only audit trail recording `product`, `actor_id`, `from_status`, `to_status`, `reason`, and timestamp.
+
+PostgreSQL migration `0002_catalog_integrity` enforces:
+
+- Nonnegative constraints for prices, compare_at, cost, weight, and dimensions.
+- Compare-at price must be greater than or equal to price.
+- Cross-tenant and child integrity triggers: products and variants cannot be reassigned to another seller; variant attribute values, product attribute values, and images cannot link across foreign seller boundaries.
+- Attribute values must adhere to assigned category attributes and attribute option relationships.
+- Self-approval impossible trigger: seller members cannot approve products of their own seller, even if possessing platform moderation capabilities.
+- Unverified or inactive sellers cannot have active approved products.
+- Append-only immutability trigger on `ProductStatusHistory`.

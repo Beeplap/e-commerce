@@ -45,15 +45,21 @@ def lock_actor(actor: User | AnonymousUser) -> User:
     return user
 
 
-def lock_seller_access(actor: User | AnonymousUser, seller_id: UUID) -> SellerAccess:
+def lock_seller_access(
+    actor: User | AnonymousUser,
+    seller_id: UUID,
+    capability: str = "seller.settings.update",
+    *,
+    allow_pending: bool = True,
+) -> SellerAccess:
     """Call in atomic: user -> seller -> membership -> role -> grant rows."""
     actor = lock_actor(actor)
-    access = require_seller_access(actor, seller_id, "seller.settings.update", allow_pending=True)
+    access = require_seller_access(actor, seller_id, capability, allow_pending=allow_pending)
     Seller.objects.select_for_update().get(pk=access.seller.pk)
     membership = SellerMembership.objects.select_for_update().get(pk=access.membership.pk)
     SellerRole.objects.select_for_update().get(pk=membership.role_id)
     list(SellerRolePermission.objects.select_for_update().filter(role_id=membership.role_id))
-    return require_seller_access(actor, seller_id, "seller.settings.update", allow_pending=True)
+    return require_seller_access(actor, seller_id, capability, allow_pending=allow_pending)
 
 
 def lock_platform(actor: User | AnonymousUser, capability: str) -> User:

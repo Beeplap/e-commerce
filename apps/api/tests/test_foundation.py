@@ -99,6 +99,7 @@ def production_environment() -> dict[str, str]:
         "DJANGO_CSRF_TRUSTED_ORIGINS": "https://commerce.example.com",
         "STORAGE_ENDPOINT_URL": "https://storage.example.com",
         "STORAGE_VERIFICATION_BUCKET": "private-test-verification",
+        "STORAGE_CATALOG_BUCKET": "private-test-catalog",
         "STORAGE_REGION": "test-region",
         "STORAGE_ACCESS_KEY_ID": "test-storage-id",
         "STORAGE_SECRET_ACCESS_KEY": "test-storage-secret",

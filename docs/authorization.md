@@ -56,3 +56,24 @@ Tenant-scoped lookups should return the same 404 for missing and foreign resourc
 Phase 3 adds session lookup/login/logout, protected workspace layouts and permission utilities. Anonymous protected navigation goes to `/login`; inaccessible seller/admin workspaces show a 403 screen. Platform navigation is shown only for the explicit `platform.access` capability. Admin and seller layouts also call Django's respective access endpoint before rendering their children; a role label never grants UI authority. Memberships are fetched through the bounded user-scoped endpoint and every chosen seller ID is validated through `/seller/access`.
 
 Frontend capabilities are hints for rendering controls and are never sent as trusted grants. Seller permission utilities require active membership and ACTIVE sellers by default, with an explicit pending-context option matching backend policy. In-memory context/query state is isolated by user and seller; stale work is aborted and late results are discarded. Backend permissions remain mandatory on every subsequent operation. Do not expose sensitive Server Component/RSC data behind a client-only guard.
+
+## Phase 5 catalog authorization policies
+
+- Platform taxonomy management:
+  - `GET /api/v1/admin/catalog/*` requires `platform.catalog.read`.
+  - `POST / PUT /api/v1/admin/catalog/*` requires `platform.catalog.manage`.
+  - Seller product creation/editing reads taxonomies through `GET /api/v1/seller/catalog/*` which requires active membership and `catalog.product.read` or `catalog.product.create`.
+- Seller product operations:
+  - `GET /api/v1/seller/products*` requires `catalog.product.read`.
+  - `POST /api/v1/seller/products` requires `catalog.product.create`. Products are created in `draft` status, assigning verified seller tenant and seller default currency atomically.
+  - `PUT /api/v1/seller/products/<id>` requires `catalog.product.update` and draft status.
+  - `POST /api/v1/seller/products/<id>/submit-for-review` requires `catalog.product.update`, draft status, and active variants. Moves product to `pending_review`.
+  - `POST /api/v1/seller/products/<id>/revise` requires `catalog.product.update`. Moves `pending_review`, `active`, or `rejected` products back to `draft`, revoking approval metadata.
+  - `POST /api/v1/seller/products/<id>/archive` requires `catalog.product.archive`. Moves non-archived products to `archived`.
+  - Variants, images, and attributes require `catalog.product.update` to mutate, and are scoped to the authenticated seller tenant.
+- Platform moderation:
+  - `GET /api/v1/admin/products*` requires `platform.products.read`.
+  - `POST /api/v1/admin/products/<id>/approve` and `reject` require `platform.products.moderate`.
+  - Approval moves `pending_review` to `active`, recording `approved_by` and `approved_at`. Requires verified unexpired seller registration.
+  - Rejection requires `reason` and moves `pending_review` to `rejected`.
+  - Self-approval impossible: platform moderators with any membership in the seller are forbidden from moderating that seller's products (enforced in both Django service and PostgreSQL trigger).

@@ -20,6 +20,427 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
           description: ''
+  /api/v1/admin/catalog/{kind}:
+    get:
+      operationId: admin_catalog_retrieve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: query
+        name: attribute_id
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: category_id
+        schema:
+          type: string
+          format: uuid
+      - in: path
+        name: kind
+        schema:
+          type: string
+          enum:
+          - attributes
+          - brands
+          - categories
+          - category-attributes
+          - options
+        required: true
+      - in: query
+        name: page
+        schema:
+          type: integer
+          maximum: 10000
+          minimum: 1
+      - in: query
+        name: search
+        schema:
+          type: string
+          maxLength: 100
+      tags:
+      - Platform catalog
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogPage'
+          description: ''
+    post:
+      operationId: admin_catalog_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: kind
+        schema:
+          type: string
+          enum:
+          - attributes
+          - brands
+          - categories
+          - category-attributes
+          - options
+        required: true
+      tags:
+      - Platform catalog
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CatalogInput'
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogRecord'
+          description: ''
+  /api/v1/admin/catalog/{kind}/{identity}:
+    put:
+      operationId: admin_catalog_update
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: identity
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: kind
+        schema:
+          type: string
+          enum:
+          - attributes
+          - brands
+          - categories
+          - category-attributes
+          - options
+        required: true
+      tags:
+      - Platform catalog
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CatalogInput'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogRecord'
+          description: ''
+  /api/v1/admin/products:
+    get:
+      operationId: admin_products_list
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: query
+        name: category_id
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: page
+        schema:
+          type: integer
+          maximum: 10000
+          minimum: 1
+      - in: query
+        name: search
+        schema:
+          type: string
+          maxLength: 100
+      - in: query
+        name: status
+        schema:
+          enum:
+          - draft
+          - pending_review
+          - active
+          - rejected
+          - archived
+          type: string
+          minLength: 1
+        description: |-
+          * `draft` - Draft
+          * `pending_review` - Pending Review
+          * `active` - Active
+          * `rejected` - Rejected
+          * `archived` - Archived
+      tags:
+      - Platform products
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductPage'
+          description: ''
+  /api/v1/admin/products/{product_id}:
+    get:
+      operationId: admin_products_retrieve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform products
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductOutput'
+          description: ''
+  /api/v1/admin/products/{product_id}/approve:
+    post:
+      operationId: admin_products_approve_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform products
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductOutput'
+          description: ''
+  /api/v1/admin/products/{product_id}/attributes:
+    get:
+      operationId: admin_products_attributes_retrieve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: 1 to 10000; 25 per page
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform products
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductValuePage'
+          description: ''
+  /api/v1/admin/products/{product_id}/history:
+    get:
+      operationId: admin_products_history_retrieve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: 1 to 10000; 25 per page
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform products
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductHistoryPage'
+          description: ''
+  /api/v1/admin/products/{product_id}/images:
+    get:
+      operationId: admin_products_images_retrieve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: 1 to 10000; 25 per page
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform products
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImagePage'
+          description: ''
+  /api/v1/admin/products/{product_id}/images/{image_id}/download:
+    get:
+      operationId: admin_products_images_download_retrieve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: image_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform products
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+          description: ''
+  /api/v1/admin/products/{product_id}/reject:
+    post:
+      operationId: admin_products_reject_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reason'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductOutput'
+          description: ''
+  /api/v1/admin/products/{product_id}/variants:
+    get:
+      operationId: admin_products_variants_retrieve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: 1 to 10000; 25 per page
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform products
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VariantPage'
+          description: ''
+  /api/v1/admin/products/{product_id}/variants/{variant_id}/attributes:
+    get:
+      operationId: admin_products_variants_attributes_retrieve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: 1 to 10000; 25 per page
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: variant_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform products
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VariantValuePage'
+          description: ''
   /api/v1/admin/sellers:
     get:
       operationId: admin_sellers_list
@@ -675,6 +1096,61 @@ paths:
               schema:
                 $ref: '#/components/schemas/Address'
           description: ''
+  /api/v1/seller/catalog/{kind}:
+    get:
+      operationId: seller_catalog_retrieve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: query
+        name: attribute_id
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: category_id
+        schema:
+          type: string
+          format: uuid
+      - in: path
+        name: kind
+        schema:
+          type: string
+          enum:
+          - attributes
+          - brands
+          - categories
+          - category-attributes
+          - options
+        required: true
+      - in: query
+        name: page
+        schema:
+          type: integer
+          maximum: 10000
+          minimum: 1
+      - in: query
+        name: search
+        schema:
+          type: string
+          maxLength: 100
+      tags:
+      - Seller catalog
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogPage'
+          description: ''
   /api/v1/seller/documents:
     get:
       operationId: seller_documents_retrieve
@@ -806,6 +1282,735 @@ paths:
               schema:
                 $ref: '#/components/schemas/SellerInspection'
           description: ''
+  /api/v1/seller/products:
+    get:
+      operationId: seller_products_list
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: query
+        name: category_id
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: page
+        schema:
+          type: integer
+          maximum: 10000
+          minimum: 1
+      - in: query
+        name: search
+        schema:
+          type: string
+          maxLength: 100
+      - in: query
+        name: status
+        schema:
+          enum:
+          - draft
+          - pending_review
+          - active
+          - rejected
+          - archived
+          type: string
+          minLength: 1
+        description: |-
+          * `draft` - Draft
+          * `pending_review` - Pending Review
+          * `active` - Active
+          * `rejected` - Rejected
+          * `archived` - Archived
+      tags:
+      - Seller products
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductPage'
+          description: ''
+    post:
+      operationId: seller_products_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductOutput'
+          description: ''
+  /api/v1/seller/products/{product_id}:
+    get:
+      operationId: seller_products_retrieve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller products
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductOutput'
+          description: ''
+    put:
+      operationId: seller_products_update
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductOutput'
+          description: ''
+  /api/v1/seller/products/{product_id}/archive:
+    post:
+      operationId: seller_products_archive_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller products
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductOutput'
+          description: ''
+  /api/v1/seller/products/{product_id}/attributes:
+    get:
+      operationId: seller_products_attributes_retrieve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: 1 to 10000; 25 per page
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller products
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductValuePage'
+          description: ''
+    put:
+      operationId: seller_products_attributes_update
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AttributeValueInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductValueOutput'
+          description: ''
+  /api/v1/seller/products/{product_id}/attributes/{value_id}:
+    delete:
+      operationId: seller_products_attributes_destroy
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: value_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller products
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/seller/products/{product_id}/history:
+    get:
+      operationId: seller_products_history_retrieve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: 1 to 10000; 25 per page
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller products
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductHistoryPage'
+          description: ''
+  /api/v1/seller/products/{product_id}/images:
+    get:
+      operationId: seller_products_images_retrieve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: 1 to 10000; 25 per page
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller products
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImagePage'
+          description: ''
+  /api/v1/seller/products/{product_id}/images/{image_id}:
+    delete:
+      operationId: seller_products_images_destroy
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: image_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller products
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/seller/products/{product_id}/images/{image_id}/download:
+    get:
+      operationId: seller_products_images_download_retrieve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: image_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller products
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+          description: ''
+  /api/v1/seller/products/{product_id}/images/upload:
+    post:
+      operationId: seller_products_images_upload_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller products
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ImageInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageOutput'
+          description: ''
+  /api/v1/seller/products/{product_id}/revise:
+    post:
+      operationId: seller_products_revise_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller products
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductOutput'
+          description: ''
+  /api/v1/seller/products/{product_id}/submit-for-review:
+    post:
+      operationId: seller_products_submit_for_review_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller products
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductOutput'
+          description: ''
+  /api/v1/seller/products/{product_id}/variants:
+    get:
+      operationId: seller_products_variants_retrieve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: 1 to 10000; 25 per page
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller products
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VariantPage'
+          description: ''
+    post:
+      operationId: seller_products_variants_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VariantInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VariantOutput'
+          description: ''
+  /api/v1/seller/products/{product_id}/variants/{variant_id}:
+    put:
+      operationId: seller_products_variants_update
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: variant_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VariantInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VariantOutput'
+          description: ''
+  /api/v1/seller/products/{product_id}/variants/{variant_id}/attributes:
+    get:
+      operationId: seller_products_variants_attributes_retrieve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: 1 to 10000; 25 per page
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: variant_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller products
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VariantValuePage'
+          description: ''
+    put:
+      operationId: seller_products_variants_attributes_update
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: variant_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AttributeValueInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VariantValueOutput'
+          description: ''
+  /api/v1/seller/products/{product_id}/variants/{variant_id}/attributes/{value_id}:
+    delete:
+      operationId: seller_products_variants_attributes_destroy
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: value_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: variant_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller products
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
   /api/v1/seller/settings:
     get:
       operationId: seller_settings_retrieve
@@ -924,6 +2129,92 @@ components:
       - country
       - kind
       - line1
+    AttributeInput:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 120
+        code:
+          type: string
+          maxLength: 80
+          pattern: ^[-a-zA-Z0-9_]+$
+        value_type:
+          $ref: '#/components/schemas/ValueTypeEnum'
+        scope:
+          $ref: '#/components/schemas/ScopeEnum'
+        is_active:
+          type: boolean
+          default: true
+      required:
+      - code
+      - name
+      - scope
+      - value_type
+    AttributeOutput:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 120
+        code:
+          type: string
+          maxLength: 80
+          pattern: ^[-a-zA-Z0-9_]+$
+        value_type:
+          $ref: '#/components/schemas/ValueTypeEnum'
+        scope:
+          $ref: '#/components/schemas/ScopeEnum'
+        is_active:
+          type: boolean
+      required:
+      - code
+      - id
+      - name
+      - scope
+      - value_type
+    AttributePage:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          format: uri
+          nullable: true
+        previous:
+          type: string
+          format: uri
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AttributeOutput'
+      required:
+      - count
+      - next
+      - previous
+      - results
+    AttributeValueInput:
+      type: object
+      properties:
+        attribute_id:
+          type: string
+          format: uuid
+        option_id:
+          type: string
+          format: uuid
+          nullable: true
+        value:
+          type: string
+          default: ''
+          maxLength: 500
+      required:
+      - attribute_id
     Audit:
       type: object
       properties:
@@ -977,6 +2268,64 @@ components:
       - next
       - previous
       - results
+    BrandInput:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 120
+        slug:
+          type: string
+          maxLength: 140
+          pattern: ^[-a-zA-Z0-9_]+$
+        is_active:
+          type: boolean
+          default: true
+      required:
+      - name
+      - slug
+    BrandOutput:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 120
+        slug:
+          type: string
+          maxLength: 140
+          pattern: ^[-a-zA-Z0-9_]+$
+        is_active:
+          type: boolean
+      required:
+      - id
+      - name
+      - slug
+    BrandPage:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          format: uri
+          nullable: true
+        previous:
+          type: string
+          format: uri
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/BrandOutput'
+      required:
+      - count
+      - next
+      - previous
+      - results
     CSRF:
       type: object
       properties:
@@ -984,6 +2333,169 @@ components:
           type: string
       required:
       - csrf_token
+    CatalogInput:
+      oneOf:
+      - $ref: '#/components/schemas/CategoryInput'
+      - $ref: '#/components/schemas/BrandInput'
+      - $ref: '#/components/schemas/AttributeInput'
+      - $ref: '#/components/schemas/OptionInput'
+      - $ref: '#/components/schemas/CategoryAttributeInput'
+    CatalogPage:
+      oneOf:
+      - $ref: '#/components/schemas/CategoryPage'
+      - $ref: '#/components/schemas/BrandPage'
+      - $ref: '#/components/schemas/AttributePage'
+      - $ref: '#/components/schemas/OptionPage'
+      - $ref: '#/components/schemas/CategoryAttributePage'
+    CatalogRecord:
+      oneOf:
+      - $ref: '#/components/schemas/CategoryOutput'
+      - $ref: '#/components/schemas/BrandOutput'
+      - $ref: '#/components/schemas/AttributeOutput'
+      - $ref: '#/components/schemas/OptionOutput'
+      - $ref: '#/components/schemas/CategoryAttributeOutput'
+    CategoryAttributeInput:
+      type: object
+      properties:
+        category_id:
+          type: string
+          format: uuid
+        attribute_id:
+          type: string
+          format: uuid
+        is_required:
+          type: boolean
+          default: false
+      required:
+      - attribute_id
+      - category_id
+    CategoryAttributeOutput:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        category_id:
+          type: string
+          format: uuid
+          readOnly: true
+        attribute:
+          allOf:
+          - $ref: '#/components/schemas/AttributeOutput'
+          readOnly: true
+        is_required:
+          type: boolean
+      required:
+      - attribute
+      - category_id
+      - id
+    CategoryAttributePage:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          format: uri
+          nullable: true
+        previous:
+          type: string
+          format: uri
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CategoryAttributeOutput'
+      required:
+      - count
+      - next
+      - previous
+      - results
+    CategoryInput:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 120
+        slug:
+          type: string
+          maxLength: 140
+          pattern: ^[-a-zA-Z0-9_]+$
+        description:
+          type: string
+          default: ''
+          maxLength: 2000
+        parent_id:
+          type: string
+          format: uuid
+          nullable: true
+        sort_order:
+          type: integer
+          maximum: 100000
+          minimum: 0
+          default: 0
+        is_active:
+          type: boolean
+          default: true
+      required:
+      - name
+      - slug
+    CategoryOutput:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        parent_id:
+          type: string
+          format: uuid
+          nullable: true
+          readOnly: true
+        name:
+          type: string
+          maxLength: 120
+        slug:
+          type: string
+          maxLength: 140
+          pattern: ^[-a-zA-Z0-9_]+$
+        description:
+          type: string
+          maxLength: 2000
+        sort_order:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        is_active:
+          type: boolean
+      required:
+      - id
+      - name
+      - parent_id
+      - slug
+    CategoryPage:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          format: uri
+          nullable: true
+        previous:
+          type: string
+          format: uri
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CategoryOutput'
+      required:
+      - count
+      - next
+      - previous
+      - results
     DefaultCurrencyEnum:
       enum:
       - USD
@@ -1166,6 +2678,81 @@ components:
       - next
       - previous
       - results
+    ImageInput:
+      type: object
+      properties:
+        file:
+          type: string
+          format: uri
+          writeOnly: true
+        alt_text:
+          type: string
+          default: ''
+          maxLength: 200
+        sort_order:
+          type: integer
+          maximum: 100000
+          minimum: 0
+          default: 0
+      required:
+      - file
+    ImageOutput:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        product_id:
+          type: string
+          format: uuid
+          readOnly: true
+        content_type:
+          type: string
+          maxLength: 32
+        size:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        alt_text:
+          type: string
+          maxLength: 200
+        sort_order:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - content_type
+      - created_at
+      - id
+      - product_id
+      - size
+    ImagePage:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          format: uri
+          nullable: true
+        previous:
+          type: string
+          format: uri
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImageOutput'
+      required:
+      - count
+      - next
+      - previous
+      - results
     KindEnum:
       enum:
       - registered
@@ -1234,6 +2821,73 @@ components:
       - next
       - previous
       - results
+    OptionInput:
+      type: object
+      properties:
+        attribute_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          maxLength: 120
+        value:
+          type: string
+          maxLength: 80
+          pattern: ^[-a-zA-Z0-9_]+$
+        is_active:
+          type: boolean
+          default: true
+      required:
+      - attribute_id
+      - name
+      - value
+    OptionOutput:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        attribute_id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        value:
+          type: string
+          maxLength: 80
+          pattern: ^[-a-zA-Z0-9_]+$
+        is_active:
+          type: boolean
+      required:
+      - attribute_id
+      - id
+      - name
+      - value
+    OptionPage:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          format: uri
+          nullable: true
+        previous:
+          type: string
+          format: uri
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/OptionOutput'
+      required:
+      - count
+      - next
+      - previous
+      - results
     PasswordChange:
       type: object
       properties:
@@ -1248,6 +2902,237 @@ components:
       required:
       - new_password
       - old_password
+    ProductHistoryOutput:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        actor_id:
+          type: string
+          format: uuid
+        from_status:
+          type: string
+          maxLength: 20
+        to_status:
+          $ref: '#/components/schemas/ProductStatusEnum'
+        reason:
+          type: string
+          maxLength: 500
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - actor_id
+      - created_at
+      - id
+      - to_status
+    ProductHistoryPage:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          format: uri
+          nullable: true
+        previous:
+          type: string
+          format: uri
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductHistoryOutput'
+      required:
+      - count
+      - next
+      - previous
+      - results
+    ProductInput:
+      type: object
+      properties:
+        category_id:
+          type: string
+          format: uuid
+        brand_id:
+          type: string
+          format: uuid
+          nullable: true
+        name:
+          type: string
+          maxLength: 200
+        description:
+          type: string
+          default: ''
+          maxLength: 10000
+        short_description:
+          type: string
+          default: ''
+          maxLength: 500
+      required:
+      - category_id
+      - name
+    ProductOutput:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        seller_id:
+          type: string
+          format: uuid
+          readOnly: true
+        category:
+          allOf:
+          - $ref: '#/components/schemas/CategoryOutput'
+          readOnly: true
+        brand:
+          allOf:
+          - $ref: '#/components/schemas/BrandOutput'
+          readOnly: true
+        name:
+          type: string
+          maxLength: 200
+        slug:
+          type: string
+          maxLength: 140
+          pattern: ^[-a-zA-Z0-9_]+$
+        description:
+          type: string
+          maxLength: 10000
+        short_description:
+          type: string
+          maxLength: 500
+        status:
+          $ref: '#/components/schemas/ProductStatusEnum'
+        currency:
+          type: string
+          readOnly: true
+        created_by_id:
+          type: string
+          format: uuid
+          readOnly: true
+        approved_by_id:
+          type: string
+          format: uuid
+          nullable: true
+          readOnly: true
+        approved_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - approved_by_id
+      - brand
+      - category
+      - created_at
+      - created_by_id
+      - currency
+      - id
+      - name
+      - seller_id
+      - slug
+      - updated_at
+    ProductPage:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          format: uri
+          nullable: true
+        previous:
+          type: string
+          format: uri
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductOutput'
+      required:
+      - count
+      - next
+      - previous
+      - results
+    ProductStatusEnum:
+      enum:
+      - draft
+      - pending_review
+      - active
+      - rejected
+      - archived
+      type: string
+      description: |-
+        * `draft` - Draft
+        * `pending_review` - Pending Review
+        * `active` - Active
+        * `rejected` - Rejected
+        * `archived` - Archived
+    ProductValueOutput:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        attribute:
+          allOf:
+          - $ref: '#/components/schemas/AttributeOutput'
+          readOnly: true
+        option:
+          allOf:
+          - $ref: '#/components/schemas/OptionOutput'
+          readOnly: true
+        value:
+          type: string
+          maxLength: 500
+      required:
+      - attribute
+      - id
+      - option
+    ProductValuePage:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          format: uri
+          nullable: true
+        previous:
+          type: string
+          format: uri
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductValueOutput'
+      required:
+      - count
+      - next
+      - previous
+      - results
+    ProductVariantStatusEnum:
+      enum:
+      - active
+      - inactive
+      type: string
+      description: |-
+        * `active` - Active
+        * `inactive` - Inactive
     Profile:
       type: object
       properties:
@@ -1269,6 +3154,14 @@ components:
           maxLength: 500
       required:
       - reason
+    ScopeEnum:
+      enum:
+      - product
+      - variant
+      type: string
+      description: |-
+        * `product` - Product
+        * `variant` - Variant
     SellerCreate:
       type: object
       properties:
@@ -1699,6 +3592,193 @@ components:
       - is_email_verified
       - last_name
       - platform_permissions
+    ValueTypeEnum:
+      enum:
+      - text
+      - number
+      - choice
+      - boolean
+      type: string
+      description: |-
+        * `text` - Text
+        * `number` - Number
+        * `choice` - Choice
+        * `boolean` - Boolean
+    VariantInput:
+      type: object
+      properties:
+        sku:
+          type: string
+          maxLength: 80
+        barcode:
+          type: string
+          default: ''
+          maxLength: 80
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+        compare_at_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+          nullable: true
+        cost_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+          nullable: true
+        weight:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,9}(?:\.\d{0,3})?$
+          nullable: true
+        length:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,9}(?:\.\d{0,3})?$
+          nullable: true
+        width:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,9}(?:\.\d{0,3})?$
+          nullable: true
+        height:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,9}(?:\.\d{0,3})?$
+          nullable: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/ProductVariantStatusEnum'
+          default: active
+      required:
+      - price
+      - sku
+    VariantOutput:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        product_id:
+          type: string
+          format: uuid
+          readOnly: true
+        sku:
+          type: string
+          maxLength: 80
+        barcode:
+          type: string
+          maxLength: 80
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+        compare_at_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+          nullable: true
+        cost_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+          nullable: true
+        weight:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,9}(?:\.\d{0,3})?$
+          nullable: true
+        length:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,9}(?:\.\d{0,3})?$
+          nullable: true
+        width:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,9}(?:\.\d{0,3})?$
+          nullable: true
+        height:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,9}(?:\.\d{0,3})?$
+          nullable: true
+        status:
+          $ref: '#/components/schemas/ProductVariantStatusEnum'
+      required:
+      - id
+      - price
+      - product_id
+      - sku
+    VariantPage:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          format: uri
+          nullable: true
+        previous:
+          type: string
+          format: uri
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/VariantOutput'
+      required:
+      - count
+      - next
+      - previous
+      - results
+    VariantValueOutput:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        attribute:
+          allOf:
+          - $ref: '#/components/schemas/AttributeOutput'
+          readOnly: true
+        option:
+          allOf:
+          - $ref: '#/components/schemas/OptionOutput'
+          readOnly: true
+        value:
+          type: string
+          maxLength: 500
+      required:
+      - attribute
+      - id
+      - option
+    VariantValuePage:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          format: uri
+          nullable: true
+        previous:
+          type: string
+          format: uri
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/VariantValueOutput'
+      required:
+      - count
+      - next
+      - previous
+      - results
   securitySchemes:
     cookieAuth:
       type: apiKey

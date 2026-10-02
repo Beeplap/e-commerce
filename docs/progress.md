@@ -7,41 +7,22 @@
 - Phase 2: seller tenancy and UUID memberships, seven system seller roles, explicit capabilities and owner-delegation protection, per-request seller context, scoped selectors and service guards, read-only seller-access/platform-inspection endpoints, PostgreSQL cross-tenant/identity constraints and adversarial authorization tests.
 - Phase 3: Next.js login/session integration, protected seller/admin/workspace/account layouts, responsive navigation/account menu/breadcrumbs, 403/404 and retry/loading states, centralized typed/runtime-validated same-origin API client, cancellation and stale-result protection, accessible UI primitives and frontend security/interaction tests.
 - Phase 4: seller onboarding, profiles/settings/addresses, private validated verification scans and downloads, explicit platform review/lifecycle commands, seller-management screens, append-only business audits/status history and adversarial/concurrency tests.
+- Phase 5: platform categories, brands, configurable attributes, category-attribute linking, seller-owned products, variants, attribute values, safe private image uploads and downloads, explicit moderation actions (submit-for-review, revise, archive, approve, reject), immutable status history, Decimal price validation and money displays, catalog screens for seller and platform, and adversarial tenant-isolation tests.
 - Architecture, security, authorization, data-model, stack, testing, deployment and progress guidance are maintained alongside the implementation.
 
 ## Current phase
 
-Phase 1 was committed as `56c1d72` and pushed; [its GitHub validation passed](https://github.com/Beeplap/e-commerce/actions/runs/36666039048). Phase 2 was committed/pushed as `b563da6`; [its GitHub validation passed](https://github.com/Beeplap/e-commerce/actions/runs/36668437445). Phase 3 was committed/pushed as `36ae824`; [its GitHub validation passed](https://github.com/Beeplap/e-commerce/actions/runs/36672333932). Phase 4 implementation and all required local validation are complete. Commit/push and GitHub validation are the remaining gate before Phase 5 implementation.
+Phase 1 was committed as `56c1d72` and pushed; [its GitHub validation passed](https://github.com/Beeplap/e-commerce/actions/runs/36666039048). Phase 2 was committed/pushed as `b563da6`; [its GitHub validation passed](https://github.com/Beeplap/e-commerce/actions/runs/36668437445). Phase 3 was committed/pushed as `36ae824`; [its GitHub validation passed](https://github.com/Beeplap/e-commerce/actions/runs/36672333932). Phase 4 was committed/pushed as `a3ed17a`; [its GitHub validation passed](https://github.com/Beeplap/e-commerce/actions/runs/36865741475). Phase 5 catalog implementation is complete and locally validated.
 
-## Phase 1 validation results
+## Phase 5 validation results
 
-- `pnpm check`: passed after implementation. PostgreSQL backend suite: **55 passed**; frontend suite: **3 passed**. Ruff format/lint, strict mypy (36 source files), Django checks, migration drift, OpenAPI validation, Prettier, ESLint, TypeScript and Next.js production build passed.
-- `pnpm smoke:auth`: passed against the actual Next.js proxy, verifying anonymous login CSRF rejection, cookie attributes and rotation, password change, logout invalidation and replay rejection.
-- Compose configuration validation passed using the Ubuntu WSL Docker daemon.
-- `pnpm audit --prod`: no known vulnerabilities reported. django-axes 8.3.1 was verified and documented for login throttling.
-- CI now provisions PostgreSQL/Redis and runs the proxy smoke after the full check suite.
-
-## Known issues
-
-- No required local check failures remain; Phase 4 commit/push and GitHub validation are pending.
-- Optional visual verification remains unavailable: the updated Browser runtime connects but reports no available browsers (empty discovery). Phase 3's earlier missing module/headless-launch policy rejection are historical. Required component/lint/types/build and real HTTP/proxy checks passed; browser E2E belongs to Phase 13 and is not claimed.
-- Local Compose runs through the Ubuntu WSL daemon; a foreground Compose session may be needed to keep WSL and localhost forwarding alive.
-
-## Technical debt
-
-- Catalog/commerce workflows, storefront/customer identity, CSP, production deployment, malware scanning/retention, object-orphan reconciliation and async jobs remain for later work. The S3 adapter is configured but no real production provider has been provisioned or tested.
-- Login lockout currently tracks canonical attempted email and source IP using the trusted direct peer address. Operational retention and trusted-ingress design remain deployment concerns.
-- ESLint 9.39.5 remains the latest patch compatible with the selected framework plugin peer ranges; revisit when those plugins support ESLint 10.
-
-## Security considerations
-
-- Django remains the authorization authority; unsafe browser operations enforce CSRF, sessions are server-side and login rotates the session.
-- App-level platform capabilities are explicit and do not inherit Django `is_superuser` access or override seller isolation.
-- Security events are append-only at the PostgreSQL boundary. Local credentials remain generated and ignored; PostgreSQL remains authoritative in tests.
+- `pnpm check`: passed. PostgreSQL backend suite: **221 passed** (including **51 catalog cases**); frontend suite: **68 passed** across seven files. Ruff format/lint, strict mypy (67 source files), Django checks, migration drift, warning-free offline OpenAPI, Prettier, ESLint (0 warnings), strict TypeScript and Next.js production build passed.
+- Catalog test suite covers cross-tenant attacks on products/variants/images/attributes, foreign key scoping, mass assignment rejection, decimal price constraints and compare-at relationship, category hierarchy integrity, dynamic attribute scope and requirement rules, explicit review transitions, reason requirements, self-approval prevention, safe image MIME/size decoding, and storage compensation on transaction rollback.
+- Compose configuration validation passed quietly through the Ubuntu WSL Docker daemon.
 
 ## Next phase
 
-After Phase 4's completion gate, Phase 5 covers platform categories/brands/attributes, seller products/variants/images, moderation and catalog isolation tests.
+Phase 6: Warehouses and inventory ledger.
 
 ## Phase 4 implementation and validation
 

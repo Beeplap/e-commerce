@@ -20,21 +20,35 @@ export function WorkspaceFrame({
   children,
   sellerPicker,
   sellerCanReadSettings = false,
+  sellerCanReadProducts = false,
 }: {
   mode: WorkspaceMode;
   children: ReactNode;
   sellerPicker?: ReactNode;
   sellerCanReadSettings?: boolean;
+  sellerCanReadProducts?: boolean;
 }) {
   const pathname = usePathname();
   const { state } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const user = state.kind === "authenticated" ? state.user : null;
   const links = [{ href: `/${mode}`, label: "Overview" }];
+  if (mode === "seller" && sellerCanReadProducts)
+    links.push({ href: "/seller/products", label: "Products" });
   if (mode === "seller" && sellerCanReadSettings)
     links.push({ href: "/seller/settings", label: "Seller settings" });
   if (mode === "admin" && hasPlatformPermission(user, "platform.sellers.read"))
     links.push({ href: "/admin/sellers", label: "Sellers" });
+  if (mode === "admin" && hasPlatformPermission(user, "platform.products.read"))
+    links.push({ href: "/admin/products", label: "Moderation queue" });
+  if (
+    mode === "admin" &&
+    hasPlatformPermission(user, "platform.catalog.read")
+  ) {
+    links.push({ href: "/admin/categories", label: "Categories" });
+    links.push({ href: "/admin/attributes", label: "Attributes" });
+    links.push({ href: "/admin/brands", label: "Brands" });
+  }
   if (mode !== "workspaces")
     links.push({ href: "/workspaces", label: "Workspaces" });
   if (mode !== "account") links.push({ href: "/account", label: "My account" });

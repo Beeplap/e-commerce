@@ -50,3 +50,12 @@ Legal name and currency are immutable through seller settings. Registered addres
 Files use the named Django `verification` storage boundary: private local filesystem under ignored `.private-media/verification` in development; django-storages S3-compatible backend in production. Keys are server-generated UUID paths. Downloads stream through independently authorized Django endpoints with attachment/no-store/nosniff, never public or presigned browser URLs. Production requires explicit HTTPS endpoint/bucket/region/credentials and private bucket policy. Original names, EXIF and appended payloads are discarded by pixel decoding/re-encoding. Uploads own a durable transaction and compensate saved storage objects on ordinary database/audit failures; process crashes can leave private orphans requiring later reconciliation.
 
 Phase 4 adds no worker or notification infrastructure. Malware scanning integration remains later hardening work. The frontend extends the centralized client for FormData and authenticated binary downloads; it does not duplicate fetch/session/CSRF logic. Private data is loaded only through Django-authorized client requests; dynamic page parameters are validated but never treated as authorization.
+
+## Catalog domain and product architecture
+
+`apps/catalog` encapsulates categories, brands, configurable attributes, and seller-owned products, variants, images, and attribute values.
+
+- Services: `apps/catalog/services.py` coordinates creation, mutation, and status lifecycle. Seller access is revalidated and locked under transaction; child entities (variants, attribute values, images) are tenant-scoped and locked in order.
+- Selectors: `apps/catalog/selectors.py` provides tenant-scoped read queries with bounded pagination and strict allowlisted filters.
+- Money handling: prices and compare-at amounts are validated as nonnegative decimal strings. Frontend displays use BigInt grouping and explicit locale formatting without floating-point conversion.
+- Safe image handling: uses the named Django `catalog` storage boundary (private local directory in development; S3-compatible boundary in production). UUID storage keys, strict content-type validation (`image/png`, `image/jpeg`), and Pillow byte verification ensure private storage outside executable paths. Failed audit insertions compensate uploaded storage files.

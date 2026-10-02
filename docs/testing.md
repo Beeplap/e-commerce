@@ -34,3 +34,22 @@ Full business E2E/performance/race coverage belongs to Phase 13. Foundation CI i
 Phase 4 adds PostgreSQL onboarding ownership/status, strict protected fields, permitted settings/address updates, cross-seller context/read/write/enumeration/foreign-key denial, independent platform document/audit/manage grants, self-review prevention, lifecycle legality/replay/reason requirements, suspension revocation, document upload MIME/extension/decode/size/expiry rejection, private attachment download isolation and audit, evidence/history immutability, audit rollback/storage compensation, search/filter bounds and concurrency. Two simultaneous approvals must commit exactly one transition/audit event. Production storage fail-closed configuration is covered by subprocess tests. Files use an isolated in-memory Django storage backend in tests; PostgreSQL still stores all business data.
 
 Frontend Phase 4 tests cover multipart CSRF/cookies/seller header, encoded search and traversal rejection, runtime document/page validation, private download error handling, onboarding success, capability-gated list/actions/documents, server filters, authoritative approval denial, and entering a full rejection reason before confirmation. Native dialog lifecycle uses the existing jsdom simulation approach; these are component tests, not a claim of browser E2E.
+
+Phase 5 adds 51 PostgreSQL catalog backend tests in `tests/test_catalog.py` and 9 frontend tests in `apps/web/tests/catalog.test.tsx`.
+Backend coverage includes:
+
+- Cross-tenant read, mutation, and foreign-key isolation across products, variants, images, attribute values, and history.
+- Immediate revocation and capability enforcement (`catalog.product.*`, `platform.catalog.*`, `platform.products.*`).
+- Decimal price validation (nonnegative, decimal string requirement, compare_at relationship) and money scale.
+- Category hierarchy integrity, cycle rejection, and inactive ancestor guards.
+- Dynamic attributes and value typing, category-attribute link requirement enforcement, and scope mismatch rejection.
+- Explicit product lifecycle transitions (`submit-for-review`, `revise`, `archive`, `approve`, `reject`), reason requirements, and self-approval denial.
+- Safe private image uploads, mime/size checks, download isolation, and audit rollback storage compensation.
+- Concurrent moderation locking and commit serialization.
+
+Frontend coverage includes:
+
+- Seller products table and draft creation navigation.
+- Permission gates for seller products and admin moderation.
+- Detail view rendering variants, exact decimal price strings, configurable attributes, and audit history.
+- Platform moderation workflows, rejection reasons, category management, and attribute option management.

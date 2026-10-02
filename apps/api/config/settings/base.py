@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     "apps.platform_access",
     "apps.sellers",
     "apps.audit",
+    "apps.catalog",
 ]
 
 MIDDLEWARE = [
@@ -122,6 +123,14 @@ STORAGES = {
             "directory_permissions_mode": 0o700,
         },
     },
+    "catalog": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "OPTIONS": {
+            "location": BASE_DIR.parent.parent / ".private-media" / "catalog",
+            "file_permissions_mode": 0o600,
+            "directory_permissions_mode": 0o700,
+        },
+    },
 }
 
 REST_FRAMEWORK = {
@@ -142,6 +151,8 @@ SPECTACULAR_SETTINGS = {
         "SellerStatusEnum": "apps.sellers.models.Seller.Status",
         "SellerVerificationStatusEnum": "apps.sellers.models.Seller.VerificationStatus",
         "SellerMembershipStatusEnum": "apps.sellers.models.SellerMembership.Status",
+        "ProductStatusEnum": "apps.catalog.models.Product.Status",
+        "ProductVariantStatusEnum": "apps.catalog.models.ProductVariant.Status",
     },
 }
 LANGUAGE_CODE = "en-us"

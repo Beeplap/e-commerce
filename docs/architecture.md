@@ -80,3 +80,22 @@ Phase 4 adds no worker or notification infrastructure. Malware scanning integrat
 - Explicit state transitions: Order status mutations are governed by dedicated services (`confirm_seller_order`, `begin_processing_seller_order`, `ship_seller_order`, `deliver_seller_order`, `cancel_seller_order`). Generic status setter APIs are rejected.
 - Inventory integration: Order placement reserves warehouse inventory atomically. Cancellation releases reserved inventory back to available stock. Shipment consumes reserved stock into final sales and updates overall parent `Order` fulfillment status.
 - Access control: Seller endpoints (`/api/v1/seller/orders/*`) require active seller membership and capability (`orders.read`, `orders.update`, `orders.cancel`). Platform inspection and management (`/api/v1/admin/orders/*`) require explicit capabilities `platform.orders.read` and `platform.orders.manage`. Django `is_superuser` provides break-glass infrastructure access only and does not bypass platform capability checks.
+
+## Finance domain and commission engine architecture
+
+`apps/finance` implements the marketplace commission engine, authoritatively maintained seller balances, and immutable financial accounting:
+
+- Precision Decimal accounting: All monetary calculations, commission deductions, and fee snapshots operate exclusively on high-precision Python `Decimal` instances using standard `ROUND_HALF_UP` rounding to two decimal places. Floating-point conversions are strictly forbidden across both Django services and Next.js UI components.
+- Commission rule precedence: Fee deductions are calculated using explicit priority:
+  1. Specific Seller + Specific Category rule (`priority` ordered)
+  2. Specific Seller rule
+  3. Specific Category rule
+  4. Commission plan default percentage
+- Historical rate snapshotting: Line item commission amounts are captured and frozen at order item creation. Modifying a commission plan or updating rule percentages never retroactively alters previously placed orders or historical ledger entries.
+- Append-only financial ledger: The seller ledger (`SellerLedgerEntry`) is append-only. Every financial event (`SALE`, `COMMISSION`, `REFUND`, `PAYOUT`, `ADJUSTMENT`) generates an attributable entry recording the signed amount, post-transaction balance snapshot (`balance_after`), currency, and reference identifiers. Manual accounting corrections create explicit compensating adjustment entries; historical records are never modified or purged.
+- PostgreSQL integrity enforcement: Database triggers strictly enforce financial invariants:
+  - `sellers_reject_history_mutation()` rejects any UPDATE or DELETE operation on `finance_sellerledgerentry`.
+  - Payout trigger locks `amount` and status from further mutation once marked `PROCESSED`.
+  - Scope integrity triggers prevent cross-tenant foreign key linkage: `SellerLedgerEntry` verifies `seller_order.seller_id == seller_id` and `payout.seller_id == seller_id`; `PayoutItem` verifies `payout.seller_id == ledger_entry.seller_id`.
+- Payout state machine & anti-self-approval: Payouts progress through `PENDING` -> `APPROVED` -> `PROCESSED`, or `REJECTED`. Rejection automatically posts a compensating credit restoring the seller's available balance. Zero self-approval is strictly enforced: platform administrators who possess a membership in the requesting seller are forbidden from approving, processing, or rejecting their own seller's payouts.
+- Explicit capability gating: Seller finance APIs (`/api/v1/seller/finance/*`) require `finance.read` and `payouts.read`. Platform finance APIs (`/api/v1/admin/finance/*`) require explicit `platform.finance.read` and `platform.finance.manage` capabilities seeded to `SUPER_ADMIN`.

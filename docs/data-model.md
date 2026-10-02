@@ -89,3 +89,22 @@ PostgreSQL migration `0002_orders_integrity` enforces:
 - Immutability trigger on `OrderItem`: Rejects UPDATE and DELETE operations once committed.
 - SellerOrder immutable identity trigger: Rejects modifications to `seller_id` or `order_id`.
 - Cross-tenant validation trigger: Verifies that `product.seller_id`, `variant.product.seller_id`, and `warehouse.seller_id` match the `SellerOrder.seller_id` before inserting any `OrderItem`. Rejecting foreign products, variants, or warehouses.
+
+## Phase 8 finance schema
+
+`finance` implements the marketplace commission engine, authoritatively tracked balances, and immutable append-only seller ledger:
+
+- `CommissionPlan`: Marketplace fee plan defining default percentage deductions (`name`, `description`, `default_percentage`, `is_active`, `is_default`). Exactly one plan has `is_default=True`.
+- `CommissionRule`: Granular fee overrides attached to a plan. Can be scoped to a specific seller, a category, or both (`plan`, optional `seller`, optional `category`, `percentage`, `fixed_fee`, `priority`, `is_active`). Rule precedence evaluates: Seller + Category rule > Seller rule > Category rule > Plan default rate.
+- `SellerBalance`: Authoritatively maintained real-time seller balance account (`seller`, `currency`, `current_balance`, `pending_balance`, `total_paid_out`). Check constraints enforce `current_balance >= 0`, `pending_balance >= 0`, and `total_paid_out >= 0`. Row-locked during financial transactions.
+- `SellerLedgerEntry`: Append-only transaction ledger recording every credit and debit to a seller's balance (`seller`, `entry_type`: `SALE`, `COMMISSION`, `REFUND`, `PAYOUT`, `ADJUSTMENT`; signed Decimal `amount`, `balance_after`, `currency`, optional `seller_order`, optional `payout`, `payment_reference`, `payout_reference`, `description`, `created_at`).
+- `Payout`: Seller withdrawal request lifecycle entity (`payout_number`, `seller`, `amount`, `currency`, `status`: `PENDING`, `APPROVED`, `PROCESSED`, `REJECTED`; `created_by`, `approved_by`, `processed_by`, `period_start`, `period_end`, `approved_at`, `processed_at`, `notes`, `rejection_reason`).
+- `PayoutItem`: Ledger records linked to a specific payout (`payout`, `ledger_entry`, `amount`).
+
+PostgreSQL migration `0002_finance_integrity` enforces:
+
+- Immutability trigger on `SellerLedgerEntry`: Rejects all UPDATE and DELETE operations via `sellers_reject_history_mutation()`.
+- Immutability trigger on `Payout`: Once a payout reaches `PROCESSED` status, SQL triggers reject any subsequent updates to `amount` or status modification.
+- Cross-tenant scope validation trigger on `SellerLedgerEntry`: Verifies that `seller_order.seller_id == seller_id` and `payout.seller_id == seller_id` before insertion.
+- Cross-tenant scope validation trigger on `PayoutItem`: Verifies that `payout.seller_id == ledger_entry.seller_id` preventing mixing ledger entries between tenants.
+- Nonnegative constraints on `SellerBalance` fields (`current_balance >= 0`, `pending_balance >= 0`, `total_paid_out >= 0`) and positive constraints on `Payout.amount > 0`.

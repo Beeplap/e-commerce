@@ -140,6 +140,425 @@ paths:
               schema:
                 $ref: '#/components/schemas/CatalogRecord'
           description: ''
+  /api/v1/admin/finance/commissions/plans:
+    get:
+      operationId: admin_finance_commission_plans_list
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Platform finance
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommissionPlanPage'
+          description: ''
+    post:
+      operationId: admin_finance_commission_plan_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Platform finance
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommissionPlanCreate'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommissionPlan'
+          description: ''
+  /api/v1/admin/finance/commissions/plans/{id}:
+    get:
+      operationId: admin_finance_commission_plan_detail
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform finance
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommissionPlan'
+          description: ''
+    put:
+      operationId: admin_finance_commission_plan_update
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform finance
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommissionPlanUpdate'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommissionPlan'
+          description: ''
+  /api/v1/admin/finance/commissions/plans/{id}/rules:
+    post:
+      operationId: admin_finance_commission_rule_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform finance
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommissionRuleCreate'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommissionRule'
+          description: ''
+  /api/v1/admin/finance/commissions/preview:
+    post:
+      operationId: admin_finance_commission_preview
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Platform finance
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommissionCalculationPreview'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommissionCalculationResult'
+          description: ''
+  /api/v1/admin/finance/commissions/rules/{id}:
+    put:
+      operationId: admin_finance_commission_rule_update
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform finance
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommissionRuleUpdate'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommissionRule'
+          description: ''
+    delete:
+      operationId: admin_finance_commission_rule_delete
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform finance
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/admin/finance/payouts:
+    get:
+      operationId: admin_finance_payouts_list
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: query
+        name: seller_id
+        schema:
+          type: string
+          format: uuid
+          nullable: true
+      - in: query
+        name: status
+        schema:
+          enum:
+          - PENDING
+          - APPROVED
+          - PROCESSED
+          - REJECTED
+          - null
+          type: string
+          nullable: true
+          minLength: 1
+        description: |-
+          * `PENDING` - Pending
+          * `APPROVED` - Approved
+          * `PROCESSED` - Processed
+          * `REJECTED` - Rejected
+      tags:
+      - Platform finance
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayoutPage'
+          description: ''
+  /api/v1/admin/finance/payouts/{id}:
+    get:
+      operationId: admin_finance_payout_detail
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform finance
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payout'
+          description: ''
+  /api/v1/admin/finance/payouts/{id}/approve:
+    post:
+      operationId: admin_finance_payout_approve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform finance
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payout'
+          description: ''
+  /api/v1/admin/finance/payouts/{id}/process:
+    post:
+      operationId: admin_finance_payout_process
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform finance
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayoutProcess'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payout'
+          description: ''
+  /api/v1/admin/finance/payouts/{id}/reject:
+    post:
+      operationId: admin_finance_payout_reject
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform finance
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayoutReject'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payout'
+          description: ''
+  /api/v1/admin/finance/seller-balances:
+    get:
+      operationId: admin_finance_seller_balances_list
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: query
+        name: search
+        schema:
+          type: string
+          maxLength: 100
+      tags:
+      - Platform finance
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminSellerBalancePage'
+          description: ''
+  /api/v1/admin/finance/seller-balances/{seller_id}:
+    get:
+      operationId: admin_finance_seller_balance_detail
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: seller_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform finance
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminSellerBalance'
+          description: ''
+  /api/v1/admin/finance/seller-balances/{seller_id}/adjust:
+    post:
+      operationId: admin_finance_seller_balance_adjust
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: seller_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform finance
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminBalanceAdjustment'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SellerLedgerEntry'
+          description: ''
+  /api/v1/admin/finance/summary:
+    get:
+      operationId: admin_finance_summary
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Platform finance
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminFinanceSummary'
+          description: ''
   /api/v1/admin/inventory:
     get:
       operationId: platform_inventory_list
@@ -1443,6 +1862,168 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Document'
+          description: ''
+  /api/v1/seller/finance/balance:
+    get:
+      operationId: seller_finance_balance
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller finance
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SellerBalance'
+          description: ''
+  /api/v1/seller/finance/payouts:
+    get:
+      operationId: seller_finance_payouts_list
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: query
+        name: status
+        schema:
+          enum:
+          - PENDING
+          - APPROVED
+          - PROCESSED
+          - REJECTED
+          - null
+          type: string
+          nullable: true
+          minLength: 1
+        description: |-
+          * `PENDING` - Pending
+          * `APPROVED` - Approved
+          * `PROCESSED` - Processed
+          * `REJECTED` - Rejected
+      tags:
+      - Seller finance
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayoutPage'
+          description: ''
+    post:
+      operationId: seller_finance_payout_request
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller finance
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayoutRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payout'
+          description: ''
+  /api/v1/seller/finance/payouts/{id}:
+    get:
+      operationId: seller_finance_payout_detail
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller finance
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payout'
+          description: ''
+  /api/v1/seller/finance/transactions:
+    get:
+      operationId: seller_finance_ledger_list
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: query
+        name: entry_type
+        schema:
+          enum:
+          - SALE
+          - COMMISSION
+          - REFUND
+          - PAYOUT
+          - ADJUSTMENT
+          - null
+          type: string
+          nullable: true
+          minLength: 1
+        description: |-
+          * `SALE` - Sale
+          * `COMMISSION` - Commission
+          * `REFUND` - Refund
+          * `PAYOUT` - Payout
+          * `ADJUSTMENT` - Adjustment
+      tags:
+      - Seller finance
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SellerLedgerEntryPage'
           description: ''
   /api/v1/seller/inventory:
     get:
@@ -3035,6 +3616,114 @@ components:
       - country
       - kind
       - line1
+    AdminBalanceAdjustment:
+      type: object
+      properties:
+        amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        description:
+          type: string
+          maxLength: 500
+          minLength: 3
+      required:
+      - amount
+      - description
+    AdminFinanceSummary:
+      type: object
+      properties:
+        total_gross_sales:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,2})?$
+        total_commissions:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,2})?$
+        total_available_balances:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,2})?$
+        total_pending_balances:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,2})?$
+        total_paid_out:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,2})?$
+        pending_payouts_count:
+          type: integer
+        active_plans_count:
+          type: integer
+      required:
+      - active_plans_count
+      - pending_payouts_count
+      - total_available_balances
+      - total_commissions
+      - total_gross_sales
+      - total_paid_out
+      - total_pending_balances
+    AdminSellerBalance:
+      type: object
+      properties:
+        seller_id:
+          type: string
+          format: uuid
+          readOnly: true
+        seller_name:
+          type: string
+          readOnly: true
+        seller_slug:
+          type: string
+          readOnly: true
+        currency:
+          type: string
+          maxLength: 3
+        current_balance:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        pending_balance:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        total_paid_out:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - seller_id
+      - seller_name
+      - seller_slug
+      - updated_at
+    AdminSellerBalancePage:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          format: uri
+          nullable: true
+        previous:
+          type: string
+          format: uri
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminSellerBalance'
+      required:
+      - count
+      - next
+      - previous
+      - results
     AttributeInput:
       type: object
       properties:
@@ -3402,6 +4091,273 @@ components:
       - next
       - previous
       - results
+    CommissionCalculationPreview:
+      type: object
+      properties:
+        amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        seller_id:
+          type: string
+          format: uuid
+          nullable: true
+        category_id:
+          type: string
+          format: uuid
+          nullable: true
+        plan_id:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+      - amount
+    CommissionCalculationResult:
+      type: object
+      properties:
+        plan_id:
+          type: string
+          format: uuid
+        rule_id:
+          type: string
+          format: uuid
+          nullable: true
+        percentage:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+        fixed_fee:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        commission_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        seller_net_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+      required:
+      - commission_amount
+      - fixed_fee
+      - percentage
+      - plan_id
+      - rule_id
+      - seller_net_amount
+    CommissionPlan:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 120
+        description:
+          type: string
+        default_percentage:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+        is_active:
+          type: boolean
+        is_default:
+          type: boolean
+        rules_count:
+          type: integer
+          readOnly: true
+        rules:
+          type: array
+          items:
+            $ref: '#/components/schemas/CommissionRule'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - name
+      - rules
+      - rules_count
+      - updated_at
+    CommissionPlanCreate:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 120
+        description:
+          type: string
+          default: ''
+        default_percentage:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+        is_default:
+          type: boolean
+          default: false
+      required:
+      - default_percentage
+      - name
+    CommissionPlanPage:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          format: uri
+          nullable: true
+        previous:
+          type: string
+          format: uri
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CommissionPlan'
+      required:
+      - count
+      - next
+      - previous
+      - results
+    CommissionPlanUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 120
+        description:
+          type: string
+          default: ''
+        default_percentage:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+        is_active:
+          type: boolean
+          default: true
+        is_default:
+          type: boolean
+          default: false
+      required:
+      - default_percentage
+      - name
+    CommissionRule:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        plan_id:
+          type: string
+          format: uuid
+          readOnly: true
+        seller_id:
+          type: string
+          format: uuid
+          nullable: true
+          readOnly: true
+        seller_name:
+          type: string
+          readOnly: true
+          nullable: true
+        category_id:
+          type: string
+          format: uuid
+          nullable: true
+          readOnly: true
+        category_name:
+          type: string
+          readOnly: true
+          nullable: true
+        percentage:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+        fixed_fee:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        priority:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - category_id
+      - category_name
+      - created_at
+      - id
+      - plan_id
+      - seller_id
+      - seller_name
+      - updated_at
+    CommissionRuleCreate:
+      type: object
+      properties:
+        seller_id:
+          type: string
+          format: uuid
+          nullable: true
+        category_id:
+          type: string
+          format: uuid
+          nullable: true
+        percentage:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+        fixed_fee:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          default: '0.00'
+        priority:
+          type: integer
+          minimum: 0
+          default: 0
+      required:
+      - percentage
+    CommissionRuleUpdate:
+      type: object
+      properties:
+        percentage:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+        fixed_fee:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          default: '0.00'
+        priority:
+          type: integer
+          minimum: 0
+          default: 0
+        is_active:
+          type: boolean
+          default: true
+      required:
+      - percentage
     DefaultCurrencyEnum:
       enum:
       - USD
@@ -4167,6 +5123,174 @@ components:
       required:
       - new_password
       - old_password
+    Payout:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        payout_number:
+          type: string
+          maxLength: 64
+        seller_id:
+          type: string
+          format: uuid
+          readOnly: true
+        seller_name:
+          type: string
+          readOnly: true
+        amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        currency:
+          type: string
+          maxLength: 3
+        status:
+          $ref: '#/components/schemas/PayoutStatusEnum'
+        period_start:
+          type: string
+          format: date-time
+          nullable: true
+        period_end:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        approved_at:
+          type: string
+          format: date-time
+          nullable: true
+        processed_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_by_email:
+          type: string
+          readOnly: true
+          nullable: true
+        approved_by_email:
+          type: string
+          readOnly: true
+          nullable: true
+        processed_by_email:
+          type: string
+          readOnly: true
+          nullable: true
+        notes:
+          type: string
+        rejection_reason:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/PayoutItem'
+          readOnly: true
+      required:
+      - amount
+      - approved_by_email
+      - created_at
+      - created_by_email
+      - id
+      - items
+      - payout_number
+      - processed_by_email
+      - seller_id
+      - seller_name
+    PayoutItem:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        ledger_entry_id:
+          type: string
+          format: uuid
+          readOnly: true
+        amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+      required:
+      - amount
+      - id
+      - ledger_entry_id
+    PayoutPage:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          format: uri
+          nullable: true
+        previous:
+          type: string
+          format: uri
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Payout'
+      required:
+      - count
+      - next
+      - previous
+      - results
+    PayoutProcess:
+      type: object
+      properties:
+        payout_reference:
+          type: string
+          default: ''
+          maxLength: 120
+    PayoutReject:
+      type: object
+      properties:
+        reason:
+          type: string
+          maxLength: 1000
+          minLength: 1
+      required:
+      - reason
+    PayoutRequest:
+      type: object
+      properties:
+        amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        notes:
+          type: string
+          default: ''
+          maxLength: 500
+        period_start:
+          type: string
+          format: date-time
+          nullable: true
+        period_end:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+      - amount
+    PayoutStatusEnum:
+      enum:
+      - PENDING
+      - APPROVED
+      - PROCESSED
+      - REJECTED
+      type: string
+      description: |-
+        * `PENDING` - Pending
+        * `APPROVED` - Approved
+        * `PROCESSED` - Processed
+        * `REJECTED` - Rejected
     PlatformOrderDetailOutput:
       type: object
       properties:
@@ -4632,6 +5756,35 @@ components:
       description: |-
         * `product` - Product
         * `variant` - Variant
+    SellerBalance:
+      type: object
+      properties:
+        seller_id:
+          type: string
+          format: uuid
+          readOnly: true
+        currency:
+          type: string
+          maxLength: 3
+        current_balance:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        pending_balance:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        total_paid_out:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - seller_id
+      - updated_at
     SellerCreate:
       type: object
       properties:
@@ -4818,6 +5971,107 @@ components:
       - timezone
       - updated_at
       - verification_status
+    SellerLedgerEntry:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        seller_id:
+          type: string
+          format: uuid
+          readOnly: true
+        entry_type:
+          $ref: '#/components/schemas/SellerLedgerEntryTypeEnum'
+        amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        balance_after:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        currency:
+          type: string
+          maxLength: 3
+        seller_order_id:
+          type: string
+          format: uuid
+          nullable: true
+          readOnly: true
+        seller_order_number:
+          type: string
+          readOnly: true
+          nullable: true
+        payout_id:
+          type: string
+          format: uuid
+          nullable: true
+          readOnly: true
+        payout_number:
+          type: string
+          readOnly: true
+          nullable: true
+        payment_reference:
+          type: string
+          maxLength: 120
+        payout_reference:
+          type: string
+          maxLength: 120
+        description:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - amount
+      - balance_after
+      - created_at
+      - entry_type
+      - id
+      - payout_id
+      - payout_number
+      - seller_id
+      - seller_order_id
+      - seller_order_number
+    SellerLedgerEntryPage:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          format: uri
+          nullable: true
+        previous:
+          type: string
+          format: uri
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SellerLedgerEntry'
+      required:
+      - count
+      - next
+      - previous
+      - results
+    SellerLedgerEntryTypeEnum:
+      enum:
+      - SALE
+      - COMMISSION
+      - REFUND
+      - PAYOUT
+      - ADJUSTMENT
+      type: string
+      description: |-
+        * `SALE` - Sale
+        * `COMMISSION` - Commission
+        * `REFUND` - Refund
+        * `PAYOUT` - Payout
+        * `ADJUSTMENT` - Adjustment
     SellerListPage:
       type: object
       properties:

@@ -92,3 +92,26 @@ Frontend coverage includes:
 - Seller order lifecycle action buttons and confirmation dialogs (`confirm`, `begin-processing`, `ship` with tracking details, `cancel` with reason modal).
 - Platform admin orders list and detail views displaying multi-seller breakdown and audit history.
 - Client-side error handling and permission gating for order actions.
+
+Phase 8 adds 12 PostgreSQL finance backend tests in `tests/test_finance.py` and 9 frontend tests in `apps/web/tests/finance.test.tsx`.
+Backend coverage includes:
+
+- Commission rate hierarchy and calculation: specific seller + category rule > specific seller rule > specific category rule > plan default percentage. Precision Decimal math with `ROUND_HALF_UP` 2-decimal rounding.
+- Snapshot commission and fee values: commission snapshotting on `SellerOrder` line items upon order fulfillment; immutability of historical commissions on past orders.
+- Append-only immutability of `SellerLedgerEntry` via PostgreSQL trigger; rejection of UPDATE and DELETE operations.
+- Processed payout immutability via PostgreSQL trigger; rejection of mutations to `PROCESSED` payout amounts or statuses.
+- Scope integrity triggers preventing cross-tenant links on `SellerLedgerEntry` (`seller_order.seller_id == seller_id`, `payout.seller_id == seller_id`) and `PayoutItem` (`payout.seller_id == ledger_entry.seller_id`).
+- Seller balance tracking: non-negative available and locked balances, balance updates via ledger entries, row-level locking with `select_for_update()`.
+- Payout lifecycle state machine: request payout, hold/lock balance, approve, reject (release lock), process payout (deduct balance, snapshot references). Anti-self-approval enforcement.
+- Platform capability enforcement (`platform.finance.read`, `platform.finance.manage`) and seller permission gating (`finance.read`).
+- Compensating ledger entries for manual administrative adjustments (no mutation of existing ledger entries).
+
+Frontend coverage includes:
+
+- Seller financial overview displaying balance cards (available, pending, paid out), currency formatting, and quick payout request triggers.
+- Seller transaction ledger displaying append-only records, credit/debit indicators, reference IDs, and type filters.
+- Seller payout management displaying payout history, status badges, and request payout modal.
+- Platform commission management: list, create, and inspect commission plans and rules.
+- Platform seller balance management: table of seller balances with manual adjustment modal.
+- Platform payout processing: payout queue with approve, reject, and process workflows.
+- Permission gating and error handling for finance views.

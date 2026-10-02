@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     "apps.catalog",
     "apps.inventory",
     "apps.orders",
+    "apps.finance",
 ]
 
 MIDDLEWARE = [
@@ -159,6 +160,8 @@ SPECTACULAR_SETTINGS = {
         "OrderPaymentStatusEnum": "apps.orders.models.Order.PaymentStatus",
         "OrderFulfillmentStatusEnum": "apps.orders.models.Order.FulfillmentStatus",
         "SellerOrderStatusEnum": "apps.orders.models.SellerOrder.Status",
+        "PayoutStatusEnum": "apps.finance.models.Payout.Status",
+        "SellerLedgerEntryTypeEnum": "apps.finance.models.SellerLedgerEntry.EntryType",
     },
 }
 LANGUAGE_CODE = "en-us"

@@ -23,6 +23,7 @@ export function WorkspaceFrame({
   sellerCanReadProducts = false,
   sellerCanReadInventory = false,
   sellerCanReadOrders = false,
+  sellerCanReadFinance = false,
 }: {
   mode: WorkspaceMode;
   children: ReactNode;
@@ -31,6 +32,7 @@ export function WorkspaceFrame({
   sellerCanReadProducts?: boolean;
   sellerCanReadInventory?: boolean;
   sellerCanReadOrders?: boolean;
+  sellerCanReadFinance?: boolean;
 }) {
   const pathname = usePathname();
   const { state } = useAuth();
@@ -45,12 +47,16 @@ export function WorkspaceFrame({
     links.push({ href: "/seller/inventory", label: "Inventory" });
     links.push({ href: "/seller/warehouses", label: "Warehouses" });
   }
+  if (mode === "seller" && sellerCanReadFinance)
+    links.push({ href: "/seller/finance", label: "Finance" });
   if (mode === "seller" && sellerCanReadSettings)
     links.push({ href: "/seller/settings", label: "Seller settings" });
   if (mode === "admin" && hasPlatformPermission(user, "platform.orders.read"))
     links.push({ href: "/admin/orders", label: "Orders" });
   if (mode === "admin" && hasPlatformPermission(user, "platform.sellers.read"))
     links.push({ href: "/admin/sellers", label: "Sellers" });
+  if (mode === "admin" && hasPlatformPermission(user, "platform.finance.read"))
+    links.push({ href: "/admin/finance", label: "Finance" });
   if (mode === "admin" && hasPlatformPermission(user, "platform.products.read"))
     links.push({ href: "/admin/products", label: "Moderation queue" });
   if (

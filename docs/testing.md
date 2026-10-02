@@ -139,3 +139,28 @@ Frontend coverage includes:
 - Platform admin fulfillment overview with unified tabs for marketplace shipments, customer returns, and administrative refunds.
 - Administrative refund modal for platform concessions.
 - Permission gating, 403 handling, and robust form validation.
+
+Phase 10 adds 19 PostgreSQL backend tests in `tests/test_phase10.py`.
+Backend coverage includes:
+
+- Seller staff invitation, role assignment, role updating, and membership revocation with permission gating (`seller.staff.read`, `seller.staff.manage`).
+- Custom `SellerRole` lifecycle, uniqueness within seller tenant, assignable permission set calculation, and role mutation guards.
+- Delegation guard validation: prevents staff members from assigning permissions beyond their own active grant.
+- Structural owner protection: owner role mutations require structural `is_owner` status and `seller.ownership.manage` permission; demoting or revoking the last active owner of a seller is strictly rejected.
+- Database trigger enforcement: cross-tenant custom role assignment rejection and role identity immutability.
+- Promotion and coupon lifecycle: `PLATFORM` vs `SELLER` promotions, discount calculations (percentage, fixed amount, free shipping), usage limits, minimum order constraints, maximum discount caps, and date validity.
+- Backend coupon evaluation: validation of seller scope (seller promotions apply only to the owning seller; platform promotions can restrict to designated sellers via `PromotionSeller`).
+- PostgreSQL integrity enforcement: append-only trigger on `CouponUsage` records; cross-tenant product/category qualification triggers.
+- Product reviews and moderation: customer review submission requiring verified purchase, seller response submission scoped to the product's owning seller (cross-tenant response rejected by DB trigger), and review reporting.
+- Platform moderation actions (`publish`, `reject`, `remove`) writing append-only `ReviewModeration` records enforced by database triggers.
+- In-app and multi-channel notification infrastructure: delivery failure isolation ensuring failed email attempts do not roll back enclosing business transactions.
+
+Frontend coverage includes:
+
+- Seller staff list with member details, role selection, role changing, and membership revocation.
+- Custom role builder with dynamic assignable permissions checkboxes.
+- Seller promotions table, creation modal with validation, and coupon management drawer.
+- Seller product reviews with star ratings, verified purchase badges, seller response submission, and dispute reporting.
+- In-app notifications panel with unread badge counters, mark-read, and mark-all-as-read actions.
+- Platform admin promotions overview and platform promotion creation modal.
+- Platform admin review moderation queue with status filters and approval/rejection/removal confirmation dialogs.

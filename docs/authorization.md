@@ -77,3 +77,28 @@ Frontend capabilities are hints for rendering controls and are never sent as tru
   - Approval moves `pending_review` to `active`, recording `approved_by` and `approved_at`. Requires verified unexpired seller registration.
   - Rejection requires `reason` and moves `pending_review` to `rejected`.
   - Self-approval impossible: platform moderators with any membership in the seller are forbidden from moderating that seller's products (enforced in both Django service and PostgreSQL trigger).
+
+## Phase 10 authorization policies
+
+- Seller staff and custom roles:
+  - `GET /api/v1/seller/staff` requires `seller.staff.read` or `seller.staff.manage`.
+  - `POST /api/v1/seller/staff/invite`, `PATCH /api/v1/seller/staff/<id>/role`, `POST /api/v1/seller/staff/<id>/revoke` require `seller.staff.manage`.
+  - `GET /api/v1/seller/roles` requires `seller.staff.read`; creating, editing, and deleting custom roles requires `seller.staff.manage`.
+  - Role delegation guard: `authorize_role_assignment` re-validates inside the database transaction that the actor cannot grant capabilities exceeding their own active permissions.
+  - Owner protection: Modifying or granting the `OWNER` role additionally checks structural `is_owner` status and the `seller.ownership.manage` permission. Revocation or demotion of the last active owner is rejected.
+  - System roles are immutable and cannot be edited or deleted; custom roles belong to exactly one seller and cannot be reassigned.
+- Promotions and coupons:
+  - `GET /api/v1/promotions` requires `promotions.read` (scoped to authenticated seller context).
+  - `POST /api/v1/promotions` and `PATCH /api/v1/promotions/<id>` require `promotions.manage`.
+  - `POST /api/v1/promotions/<id>/coupons` requires `promotions.manage`.
+  - Platform promotions: `GET /api/v1/admin/promotions` requires `platform.promotions.read`; creation requires `platform.promotions.manage`.
+  - Coupon evaluation: strictly computed on the backend (`evaluate_coupon_discount`). Frontend-supplied discount amounts are never trusted.
+- Reviews and moderation:
+  - Product review submission requires an authenticated customer with a verified purchase of the product.
+  - `GET /api/v1/reviews` requires `reviews.read` (scoped to authenticated seller context).
+  - `POST /api/v1/reviews/<id>/respond` requires `reviews.respond`. Direct deletion of reviews by sellers is forbidden.
+  - `POST /api/v1/reviews/<id>/report` requires `reviews.report`.
+  - Platform moderation: `GET /api/v1/admin/reviews` requires `platform.reviews.read`; moderation actions (`publish`, `reject`, `remove`) require `platform.reviews.moderate`.
+- Notifications:
+  - `GET /api/v1/notifications`, mark-read, and mark-all-read require authentication and are scoped strictly to `request.user`.
+  - Async delivery failures are logged to `NotificationDelivery` with `FAILED` status and never cause transactional rollbacks of business operations.

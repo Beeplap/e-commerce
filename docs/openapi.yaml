@@ -829,6 +829,28 @@ paths:
               schema:
                 $ref: '#/components/schemas/InventoryTransactionPage'
           description: ''
+  /api/v1/admin/notifications/broadcast:
+    post:
+      operationId: admin_notifications_broadcast_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Platform notifications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationBroadcastInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BroadcastResponse'
+          description: ''
   /api/v1/admin/orders/:
     get:
       operationId: platform_orders_list
@@ -1209,6 +1231,191 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/VariantValuePage'
+          description: ''
+  /api/v1/admin/promotions:
+    get:
+      operationId: admin_promotions_list
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Platform promotions
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Promotion'
+          description: ''
+    post:
+      operationId: admin_promotions_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Platform promotions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PromotionCreateInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Promotion'
+          description: ''
+  /api/v1/admin/promotions/{promotion_id}:
+    get:
+      operationId: admin_promotions_retrieve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: promotion_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform promotions
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Promotion'
+          description: ''
+  /api/v1/admin/promotions/{promotion_id}/coupons:
+    post:
+      operationId: admin_promotions_coupons_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: promotion_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform promotions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CouponCreateInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Coupon'
+          description: ''
+  /api/v1/admin/reviews:
+    get:
+      operationId: admin_reviews_list
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Platform reviews
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductReview'
+          description: ''
+  /api/v1/admin/reviews/{review_id}/moderate:
+    post:
+      operationId: admin_reviews_moderate_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: review_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform reviews
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewModerationInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductReview'
+          description: ''
+  /api/v1/admin/reviews/reports:
+    get:
+      operationId: admin_reviews_reports_list
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Platform reviews
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReviewReport'
+          description: ''
+  /api/v1/admin/reviews/reports/{report_id}/resolve:
+    post:
+      operationId: admin_reviews_reports_resolve_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: report_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform reviews
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewReportResolveInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewReport'
           description: ''
   /api/v1/admin/sellers:
     get:
@@ -1760,6 +1967,190 @@ paths:
               schema:
                 $ref: '#/components/schemas/Health'
           description: ''
+  /api/v1/notifications:
+    get:
+      operationId: notifications_list
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: 1 to 10000; 25 per page
+      - in: query
+        name: unread
+        schema:
+          type: boolean
+        description: Filter for unread notifications only
+      tags:
+      - Notifications
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Notification'
+          description: ''
+  /api/v1/notifications/{notification_id}/read:
+    post:
+      operationId: notifications_read_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: notification_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Notifications
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+          description: ''
+  /api/v1/notifications/mark-all-read:
+    post:
+      operationId: notifications_mark_all_read_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Notifications
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnreadCount'
+          description: ''
+  /api/v1/notifications/unread-count:
+    get:
+      operationId: notifications_unread_count_retrieve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Notifications
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnreadCount'
+          description: ''
+  /api/v1/products/{product_id}/reviews:
+    get:
+      operationId: products_reviews_list
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Product reviews
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductReview'
+          description: ''
+  /api/v1/promotions/validate:
+    post:
+      operationId: promotions_validate_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Promotions public
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidateCouponInput'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CouponValidationResult'
+          description: ''
+  /api/v1/reviews:
+    post:
+      operationId: reviews_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Product reviews
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewCreateInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductReview'
+          description: ''
+  /api/v1/reviews/{review_id}/report:
+    post:
+      operationId: reviews_report_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: review_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Product reviews
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewReportInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewReport'
+          description: ''
   /api/v1/seller/access:
     get:
       operationId: seller_access_retrieve
@@ -1919,6 +2310,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CatalogPage'
+          description: ''
+  /api/v1/seller/coupons:
+    get:
+      operationId: seller_coupons_list
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Seller coupons
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Coupon'
           description: ''
   /api/v1/seller/documents:
     get:
@@ -3930,6 +4339,171 @@ paths:
       responses:
         '204':
           description: No response body
+  /api/v1/seller/promotions:
+    get:
+      operationId: seller_promotions_list
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Seller promotions
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Promotion'
+          description: ''
+    post:
+      operationId: seller_promotions_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Seller promotions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PromotionCreateInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Promotion'
+          description: ''
+  /api/v1/seller/promotions/{promotion_id}:
+    get:
+      operationId: seller_promotions_retrieve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: promotion_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller promotions
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Promotion'
+          description: ''
+    patch:
+      operationId: seller_promotions_partial_update
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: promotion_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller promotions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPromotionUpdateInput'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Promotion'
+          description: ''
+  /api/v1/seller/promotions/{promotion_id}/coupons:
+    post:
+      operationId: seller_promotions_coupons_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: promotion_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller coupons
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CouponCreateInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Coupon'
+          description: ''
+  /api/v1/seller/reviews:
+    get:
+      operationId: seller_reviews_list
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Seller reviews
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductReview'
+          description: ''
+  /api/v1/seller/reviews/{review_id}/respond:
+    post:
+      operationId: seller_reviews_respond_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: review_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller reviews
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SellerReviewResponseInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SellerReviewResponse'
+          description: ''
   /api/v1/seller/settings:
     get:
       operationId: seller_settings_retrieve
@@ -3981,6 +4555,200 @@ paths:
               schema:
                 $ref: '#/components/schemas/SellerDetail'
           description: ''
+  /api/v1/seller/staff:
+    get:
+      operationId: seller_staff_list
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Seller staff
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StaffMembership'
+          description: ''
+  /api/v1/seller/staff/{membership_id}:
+    delete:
+      operationId: seller_staff_destroy
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: membership_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller staff
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffMembership'
+          description: ''
+  /api/v1/seller/staff/{membership_id}/role:
+    patch:
+      operationId: seller_staff_role_partial_update
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: membership_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller staff
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedStaffRoleUpdateInput'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffMembership'
+          description: ''
+  /api/v1/seller/staff/invite:
+    post:
+      operationId: seller_staff_invite_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Seller staff
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StaffInviteInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffMembership'
+          description: ''
+  /api/v1/seller/staff/permissions:
+    get:
+      operationId: seller_staff_permissions_list
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Seller staff roles
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StaffPermission'
+          description: ''
+  /api/v1/seller/staff/roles:
+    get:
+      operationId: seller_staff_roles_list
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Seller staff roles
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StaffRole'
+          description: ''
+    post:
+      operationId: seller_staff_roles_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Seller staff roles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomRoleCreateInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffRole'
+          description: ''
+  /api/v1/seller/staff/roles/{role_id}:
+    patch:
+      operationId: seller_staff_roles_partial_update
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: role_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller staff roles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCustomRoleUpdateInput'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffRole'
+          description: ''
+    delete:
+      operationId: seller_staff_roles_destroy
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: role_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller staff roles
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
   /api/v1/seller/warehouses:
     get:
       operationId: seller_warehouses_list
@@ -4320,7 +5088,7 @@ components:
         value_type:
           $ref: '#/components/schemas/ValueTypeEnum'
         scope:
-          $ref: '#/components/schemas/ScopeEnum'
+          $ref: '#/components/schemas/AttributeScopeEnum'
         is_active:
           type: boolean
           default: true
@@ -4346,7 +5114,7 @@ components:
         value_type:
           $ref: '#/components/schemas/ValueTypeEnum'
         scope:
-          $ref: '#/components/schemas/ScopeEnum'
+          $ref: '#/components/schemas/AttributeScopeEnum'
         is_active:
           type: boolean
       required:
@@ -4377,6 +5145,14 @@ components:
       - next
       - previous
       - results
+    AttributeScopeEnum:
+      enum:
+      - product
+      - variant
+      type: string
+      description: |-
+        * `product` - Product
+        * `variant` - Variant
     AttributeValueInput:
       type: object
       properties:
@@ -4504,6 +5280,16 @@ components:
       - next
       - previous
       - results
+    BroadcastResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        sent_count:
+          type: integer
+      required:
+      - message
+      - sent_count
     CSRF:
       type: object
       properties:
@@ -4941,6 +5727,95 @@ components:
           default: true
       required:
       - percentage
+    Coupon:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        promotion_id:
+          type: string
+          format: uuid
+          readOnly: true
+        promotion_name:
+          type: string
+          readOnly: true
+        code:
+          type: string
+          maxLength: 32
+        usage_limit:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          nullable: true
+        usage_limit_per_customer:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          nullable: true
+        usage_count:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        is_active:
+          type: boolean
+        expires_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - code
+      - created_at
+      - id
+      - promotion_id
+      - promotion_name
+    CouponCreateInput:
+      type: object
+      properties:
+        code:
+          type: string
+          maxLength: 32
+        usage_limit:
+          type: integer
+          nullable: true
+        usage_limit_per_customer:
+          type: integer
+          nullable: true
+        expires_at:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+      - code
+    CouponValidationResult:
+      type: object
+      properties:
+        valid:
+          type: boolean
+        discount_amount:
+          type: string
+        error_message:
+          type: string
+          nullable: true
+        coupon:
+          allOf:
+          - $ref: '#/components/schemas/Coupon'
+          nullable: true
+        promotion:
+          allOf:
+          - $ref: '#/components/schemas/Promotion'
+          nullable: true
+      required:
+      - coupon
+      - discount_amount
+      - error_message
+      - promotion
+      - valid
     CreateRefundInput:
       type: object
       properties:
@@ -5045,6 +5920,20 @@ components:
       required:
       - order_item_id
       - quantity
+    CustomRoleCreateInput:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 50
+        permissions:
+          type: array
+          items:
+            type: string
+            maxLength: 100
+      required:
+      - name
+      - permissions
     DefaultCurrencyEnum:
       enum:
       - USD
@@ -5616,6 +6505,108 @@ components:
       - next
       - previous
       - results
+    Notification:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        type:
+          type: string
+          maxLength: 40
+        title:
+          type: string
+          maxLength: 200
+        message:
+          type: string
+        data: {}
+        read_at:
+          type: string
+          format: date-time
+          nullable: true
+        deliveries:
+          type: array
+          items:
+            $ref: '#/components/schemas/NotificationDelivery'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - deliveries
+      - id
+      - message
+      - title
+      - type
+    NotificationBroadcastInput:
+      type: object
+      properties:
+        recipient_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+        type:
+          type: string
+          default: SYSTEM_BROADCAST
+          maxLength: 40
+        title:
+          type: string
+          maxLength: 200
+        message:
+          type: string
+      required:
+      - message
+      - title
+    NotificationDelivery:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        channel:
+          $ref: '#/components/schemas/NotificationDeliveryChannelEnum'
+        status:
+          $ref: '#/components/schemas/NotificationDeliveryStatusEnum'
+        sent_at:
+          type: string
+          format: date-time
+          nullable: true
+        error_message:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - channel
+      - created_at
+      - id
+      - status
+    NotificationDeliveryChannelEnum:
+      enum:
+      - in_app
+      - email
+      - sms
+      type: string
+      description: |-
+        * `in_app` - In-app
+        * `email` - Email
+        * `sms` - SMS
+    NotificationDeliveryStatusEnum:
+      enum:
+      - pending
+      - sent
+      - failed
+      type: string
+      description: |-
+        * `pending` - Pending
+        * `sent` - Sent
+        * `failed` - Failed
     OptionInput:
       type: object
       properties:
@@ -5810,6 +6801,42 @@ components:
       required:
       - new_password
       - old_password
+    PatchedCustomRoleUpdateInput:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 50
+        permissions:
+          type: array
+          items:
+            type: string
+            maxLength: 100
+    PatchedPromotionUpdateInput:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 120
+        description:
+          type: string
+          maxLength: 1000
+        discount_value:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,4})?$
+        is_active:
+          type: boolean
+        stackable:
+          type: boolean
+        priority:
+          type: integer
+    PatchedStaffRoleUpdateInput:
+      type: object
+      properties:
+        role_id:
+          type: string
+          format: uuid
     Payout:
       type: object
       properties:
@@ -6348,6 +7375,76 @@ components:
       - next
       - previous
       - results
+    ProductReview:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        product_id:
+          type: string
+          format: uuid
+          readOnly: true
+        product_name:
+          type: string
+          readOnly: true
+        seller_id:
+          type: string
+          format: uuid
+          readOnly: true
+        seller_name:
+          type: string
+          readOnly: true
+        customer_name:
+          type: string
+          readOnly: true
+        rating:
+          type: integer
+          maximum: 32767
+          minimum: 0
+        title:
+          type: string
+          maxLength: 200
+        body:
+          type: string
+          maxLength: 5000
+        status:
+          $ref: '#/components/schemas/ProductReviewStatusEnum'
+        verified_purchase:
+          type: boolean
+        seller_response:
+          allOf:
+          - $ref: '#/components/schemas/SellerReviewResponse'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - body
+      - created_at
+      - customer_name
+      - id
+      - product_id
+      - product_name
+      - rating
+      - seller_id
+      - seller_name
+      - seller_response
+      - title
+    ProductReviewStatusEnum:
+      enum:
+      - pending
+      - approved
+      - rejected
+      - hidden
+      type: string
+      description: |-
+        * `pending` - Pending
+        * `approved` - Approved
+        * `rejected` - Rejected
+        * `hidden` - Hidden
     ProductStatusEnum:
       enum:
       - draft
@@ -6427,6 +7524,145 @@ components:
             maxLength: 200
           - type: string
             maxLength: 0
+    Promotion:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        seller_id:
+          type: string
+          format: uuid
+          nullable: true
+          readOnly: true
+        scope:
+          $ref: '#/components/schemas/PromotionScopeEnum'
+        name:
+          type: string
+          maxLength: 120
+        description:
+          type: string
+          maxLength: 1000
+        discount_type:
+          $ref: '#/components/schemas/PromotionDiscountTypeEnum'
+        discount_value:
+          type: string
+        min_order_amount:
+          type: string
+        max_discount_amount:
+          type: string
+          nullable: true
+        start_date:
+          type: string
+          format: date-time
+        end_date:
+          type: string
+          format: date-time
+        is_active:
+          type: boolean
+        stackable:
+          type: boolean
+        priority:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        coupons:
+          type: array
+          items:
+            $ref: '#/components/schemas/Coupon'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - coupons
+      - created_at
+      - discount_type
+      - discount_value
+      - end_date
+      - id
+      - max_discount_amount
+      - min_order_amount
+      - name
+      - seller_id
+      - start_date
+    PromotionCreateInput:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 120
+        description:
+          type: string
+          default: ''
+          maxLength: 1000
+        discount_type:
+          $ref: '#/components/schemas/PromotionDiscountTypeEnum'
+        discount_value:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,4})?$
+        start_date:
+          type: string
+          format: date-time
+        end_date:
+          type: string
+          format: date-time
+        min_order_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,4})?$
+          default: '0.0000'
+        max_discount_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,4})?$
+          nullable: true
+        stackable:
+          type: boolean
+          default: false
+        priority:
+          type: integer
+          default: 0
+        target_product_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+        target_category_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+        target_seller_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+      - discount_type
+      - discount_value
+      - end_date
+      - name
+      - start_date
+    PromotionDiscountTypeEnum:
+      enum:
+      - percentage
+      - fixed_amount
+      type: string
+      description: |-
+        * `percentage` - Percentage
+        * `fixed_amount` - Fixed amount
+    PromotionScopeEnum:
+      enum:
+      - platform
+      - seller
+      type: string
+      description: |-
+        * `platform` - Platform
+        * `seller` - Seller
     Reason:
       type: object
       properties:
@@ -6782,14 +8018,142 @@ components:
       - from_status
       - id
       - to_status
-    ScopeEnum:
+    ReviewCreateInput:
+      type: object
+      properties:
+        product_id:
+          type: string
+          format: uuid
+        order_item_id:
+          type: string
+          format: uuid
+          nullable: true
+        rating:
+          type: integer
+          maximum: 5
+          minimum: 1
+        title:
+          type: string
+          maxLength: 200
+        body:
+          type: string
+          maxLength: 5000
+      required:
+      - body
+      - product_id
+      - rating
+      - title
+    ReviewModerationActionEnum:
       enum:
-      - product
-      - variant
+      - approve
+      - reject
+      - hide
       type: string
       description: |-
-        * `product` - Product
-        * `variant` - Variant
+        * `approve` - Approve
+        * `reject` - Reject
+        * `hide` - Hide
+    ReviewModerationInput:
+      type: object
+      properties:
+        action:
+          $ref: '#/components/schemas/ReviewModerationActionEnum'
+        reason:
+          type: string
+          maxLength: 500
+      required:
+      - action
+      - reason
+    ReviewReport:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        review_id:
+          type: string
+          format: uuid
+          readOnly: true
+        review_title:
+          type: string
+          readOnly: true
+        product_name:
+          type: string
+          readOnly: true
+        reporter_email:
+          type: string
+          format: email
+          readOnly: true
+        reason:
+          $ref: '#/components/schemas/ReviewReportReasonEnum'
+        details:
+          type: string
+          maxLength: 1000
+        status:
+          $ref: '#/components/schemas/ReviewReportStatusEnum'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - product_name
+      - reason
+      - reporter_email
+      - review_id
+      - review_title
+    ReviewReportInput:
+      type: object
+      properties:
+        reason:
+          $ref: '#/components/schemas/ReviewReportReasonEnum'
+        details:
+          type: string
+          default: ''
+          maxLength: 1000
+      required:
+      - reason
+    ReviewReportReasonEnum:
+      enum:
+      - spam
+      - abusive
+      - off_topic
+      - competitor
+      - other
+      type: string
+      description: |-
+        * `spam` - Spam
+        * `abusive` - Abusive
+        * `off_topic` - Off-topic
+        * `competitor` - Competitor interference
+        * `other` - Other
+    ReviewReportResolveInput:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/ReviewReportResolveInputStatusEnum'
+      required:
+      - status
+    ReviewReportResolveInputStatusEnum:
+      enum:
+      - reviewed
+      - dismissed
+      type: string
+      description: |-
+        * `reviewed` - reviewed
+        * `dismissed` - dismissed
+    ReviewReportStatusEnum:
+      enum:
+      - pending
+      - reviewed
+      - dismissed
+      type: string
+      description: |-
+        * `pending` - Pending
+        * `reviewed` - Reviewed
+        * `dismissed` - Dismissed
     SellerBalance:
       type: object
       properties:
@@ -7379,6 +8743,42 @@ components:
       - next
       - previous
       - results
+    SellerReviewResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        response:
+          type: string
+          maxLength: 2000
+        responder_email:
+          type: string
+          format: email
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - responder_email
+      - response
+      - updated_at
+    SellerReviewResponseInput:
+      type: object
+      properties:
+        response:
+          type: string
+          maxLength: 2000
+      required:
+      - response
     SellerRoleSummary:
       type: object
       properties:
@@ -7651,6 +9051,113 @@ components:
         * `delivered` - Delivered
         * `failed` - Failed
         * `cancelled` - Cancelled
+    StaffInviteInput:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        role_id:
+          type: string
+          format: uuid
+      required:
+      - email
+      - role_id
+    StaffMembership:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/StaffUser'
+          readOnly: true
+        role:
+          allOf:
+          - $ref: '#/components/schemas/StaffRole'
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/SellerMembershipStatusEnum'
+        joined_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - role
+      - user
+    StaffPermission:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        code:
+          type: string
+          maxLength: 100
+        description:
+          type: string
+          maxLength: 255
+      required:
+      - code
+      - description
+      - id
+    StaffRole:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 50
+        is_system:
+          type: boolean
+        is_owner:
+          type: boolean
+        permissions:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - name
+      - permissions
+    StaffUser:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+      required:
+      - email
+      - id
     TrackingEvent:
       type: object
       properties:
@@ -7677,6 +9184,13 @@ components:
       - created_at
       - id
       - status
+    UnreadCount:
+      type: object
+      properties:
+        unread_count:
+          type: integer
+      required:
+      - unread_count
     User:
       type: object
       properties:
@@ -7709,6 +9223,23 @@ components:
       - is_email_verified
       - last_name
       - platform_permissions
+    ValidateCouponInput:
+      type: object
+      properties:
+        code:
+          type: string
+          maxLength: 32
+        seller_id:
+          type: string
+          format: uuid
+        order_subtotal:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,4})?$
+      required:
+      - code
+      - order_subtotal
+      - seller_id
     ValueTypeEnum:
       enum:
       - text

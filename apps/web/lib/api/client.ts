@@ -1,4 +1,14 @@
-import type { FieldErrors } from "./types";
+import type {
+  FieldErrors,
+  StaffMember,
+  SellerRole,
+  Promotion,
+  Coupon,
+  ProductReview,
+  Notification,
+  NotificationUnreadCount,
+} from "./types";
+
 import {
   isUuid,
   parseCsrf,
@@ -204,5 +214,210 @@ export const sellerApi = {
       parse: parseMembership,
       sellerId,
       signal,
+    }),
+
+  // Staff
+  staff: (sellerId: string, page = 1, signal?: AbortSignal) =>
+    apiRequest(`/api/v1/seller/staff?page=${page}`, {
+      parse: (v) => v as { count: number; results: StaffMember[] },
+      sellerId,
+      signal,
+    }),
+  inviteStaff: (sellerId: string, body: { email: string; role_id: string }) =>
+    apiRequest("/api/v1/seller/staff/invite", {
+      method: "POST",
+      parse: (v) => v as StaffMember,
+      sellerId,
+      body,
+    }),
+  updateStaffRole: (
+    sellerId: string,
+    membershipId: string,
+    body: { role_id: string },
+  ) =>
+    apiRequest(`/api/v1/seller/staff/${membershipId}/role`, {
+      method: "PATCH",
+      parse: (v) => v as StaffMember,
+      sellerId,
+      body,
+    }),
+  revokeStaff: (sellerId: string, membershipId: string) =>
+    apiRequest(`/api/v1/seller/staff/${membershipId}/revoke`, {
+      method: "POST",
+      expectedStatus: 204,
+      parse: () => undefined,
+      sellerId,
+    }),
+  roles: (sellerId: string, signal?: AbortSignal) =>
+    apiRequest("/api/v1/seller/roles", {
+      parse: (v) => v as SellerRole[],
+      sellerId,
+      signal,
+    }),
+  assignablePermissions: (sellerId: string, signal?: AbortSignal) =>
+    apiRequest("/api/v1/seller/roles/assignable-permissions", {
+      parse: (v) => v as { permissions: string[] },
+      sellerId,
+      signal,
+    }),
+  createRole: (
+    sellerId: string,
+    body: { name: string; permissions: string[] },
+  ) =>
+    apiRequest("/api/v1/seller/roles", {
+      method: "POST",
+      expectedStatus: 201,
+      parse: (v) => v as SellerRole,
+      sellerId,
+      body,
+    }),
+  updateRole: (
+    sellerId: string,
+    roleId: string,
+    body: { name?: string; permissions?: string[] },
+  ) =>
+    apiRequest(`/api/v1/seller/roles/${roleId}`, {
+      method: "PATCH",
+      parse: (v) => v as SellerRole,
+      sellerId,
+      body,
+    }),
+  deleteRole: (sellerId: string, roleId: string) =>
+    apiRequest(`/api/v1/seller/roles/${roleId}`, {
+      method: "DELETE",
+      expectedStatus: 204,
+      parse: () => undefined,
+      sellerId,
+    }),
+
+  // Promotions
+  promotions: (sellerId: string, page = 1, signal?: AbortSignal) =>
+    apiRequest(`/api/v1/promotions/?page=${page}`, {
+      parse: (v) => v as { count: number; results: Promotion[] },
+      sellerId,
+      signal,
+    }),
+  createPromotion: (sellerId: string, body: Record<string, unknown>) =>
+    apiRequest("/api/v1/promotions/", {
+      method: "POST",
+      expectedStatus: 201,
+      parse: (v) => v as Promotion,
+      sellerId,
+      body,
+    }),
+  updatePromotion: (
+    sellerId: string,
+    id: string,
+    body: Record<string, unknown>,
+  ) =>
+    apiRequest(`/api/v1/promotions/${id}/`, {
+      method: "PATCH",
+      parse: (v) => v as Promotion,
+      sellerId,
+      body,
+    }),
+  coupons: (
+    sellerId: string,
+    promotionId: string,
+    page = 1,
+    signal?: AbortSignal,
+  ) =>
+    apiRequest(`/api/v1/promotions/${promotionId}/coupons/?page=${page}`, {
+      parse: (v) => v as { count: number; results: Coupon[] },
+      sellerId,
+      signal,
+    }),
+  createCoupon: (
+    sellerId: string,
+    promotionId: string,
+    body: Record<string, unknown>,
+  ) =>
+    apiRequest(`/api/v1/promotions/${promotionId}/coupons/`, {
+      method: "POST",
+      expectedStatus: 201,
+      parse: (v) => v as Coupon,
+      sellerId,
+      body,
+    }),
+
+  // Reviews
+  reviews: (sellerId: string, page = 1, signal?: AbortSignal) =>
+    apiRequest(`/api/v1/reviews/?page=${page}`, {
+      parse: (v) => v as { count: number; results: ProductReview[] },
+      sellerId,
+      signal,
+    }),
+  respondToReview: (sellerId: string, reviewId: string, response: string) =>
+    apiRequest(`/api/v1/reviews/${reviewId}/respond/`, {
+      method: "POST",
+      parse: (v) => v as ProductReview,
+      sellerId,
+      body: { response },
+    }),
+  reportReview: (sellerId: string, reviewId: string, reason: string) =>
+    apiRequest(`/api/v1/reviews/${reviewId}/report/`, {
+      method: "POST",
+      expectedStatus: 201,
+      parse: (v) => v as Record<string, unknown>,
+      sellerId,
+      body: { reason },
+    }),
+};
+
+// Notifications API (user-scoped, no seller context needed)
+export const notificationsApi = {
+  list: (page = 1, signal?: AbortSignal) =>
+    apiRequest(`/api/v1/notifications/?page=${page}`, {
+      parse: (v) => v as { count: number; results: Notification[] },
+      signal,
+    }),
+  unreadCount: (signal?: AbortSignal) =>
+    apiRequest("/api/v1/notifications/unread-count/", {
+      parse: (v) => v as NotificationUnreadCount,
+      signal,
+    }),
+  markRead: (notificationId: string) =>
+    apiRequest(`/api/v1/notifications/${notificationId}/read/`, {
+      method: "POST",
+      parse: (v) => v as Notification,
+    }),
+  markAllRead: () =>
+    apiRequest("/api/v1/notifications/read-all/", {
+      method: "POST",
+      expectedStatus: 204,
+      parse: () => undefined,
+    }),
+};
+
+// Admin Phase 10 APIs
+export const adminApi = {
+  promotions: (page = 1, signal?: AbortSignal) =>
+    apiRequest(`/api/v1/admin/promotions/?page=${page}`, {
+      parse: (v) => v as { count: number; results: Promotion[] },
+      signal,
+    }),
+  createPromotion: (body: Record<string, unknown>) =>
+    apiRequest("/api/v1/admin/promotions/", {
+      method: "POST",
+      expectedStatus: 201,
+      parse: (v) => v as Promotion,
+      body,
+    }),
+  reviews: (page = 1, status?: string, signal?: AbortSignal) => {
+    const qs = status ? `page=${page}&status=${status}` : `page=${page}`;
+    return apiRequest(`/api/v1/admin/reviews/?${qs}`, {
+      parse: (v) => v as { count: number; results: ProductReview[] },
+      signal,
+    });
+  },
+  moderateReview: (
+    reviewId: string,
+    action: "publish" | "reject" | "remove",
+    notes?: string,
+  ) =>
+    apiRequest(`/api/v1/admin/reviews/${reviewId}/moderate/`, {
+      method: "POST",
+      parse: (v) => v as ProductReview,
+      body: { action, notes: notes ?? "" },
     }),
 };

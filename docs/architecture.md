@@ -108,3 +108,22 @@ Phase 4 adds no worker or notification infrastructure. Malware scanning integrat
 - Inventory restock integration: When returned items are received and inspected (`receive_return_request`), items marked `restock_inventory=True` atomically create `return` transactions on the target warehouse via `receive_return`, restoring `quantity_on_hand` with full audit attribution.
 - Financial integration & commission reversal: Customer refunds (`Refund`) compute proportional marketplace commission reversals (`commission_reversed`) and seller ledger deductions (`seller_deduction`). Processing a refund automatically posts compensating `REFUND` (negative debit) and `COMMISSION` (positive reversal) entries to `SellerLedgerEntry`, adjusting the seller's available balance in real time without mutating past financial history. Completed refunds are locked against modification via PostgreSQL triggers.
 - Tenant isolation & cross-tenant rejection: PostgreSQL triggers prevent foreign-seller linkages across shipments, shipment items, return requests, return items, and refunds. Platform admins cannot approve or manage returns without explicit platform capabilities.
+
+## Phase 10 promotions, reviews, seller staff management, and notifications architecture
+
+- Promotions & coupon engine (`apps/promotions`):
+  - Campaign scoping: Promotions operate at `PLATFORM` scope (marketplace-wide or targeted to specific sellers via `PromotionSeller`) or `SELLER` scope (seller-specific discounts).
+  - Discount evaluation: Discounts (`PERCENTAGE`, `FIXED_AMOUNT`, `FREE_SHIPPING`) are evaluated authoritatively on the backend (`evaluate_coupon_discount`). Date validity, minimum order thresholds, maximum discount caps, usage limits, and seller boundaries are verified. Client-calculated discount amounts are never trusted.
+  - Coupon redemption: Redemptions record an append-only `CouponUsage` entry linking customer, order, and coupon. PostgreSQL triggers reject mutations on usage records and prevent cross-tenant targeting.
+- Product reviews & moderation (`apps/reviews`):
+  - Verified purchases: Customer product reviews link to verified customer orders and purchased order items.
+  - Seller responses: Sellers can view published reviews and submit official responses (`SellerReviewResponse`). Database triggers ensure the responding seller matches the product's owning seller. Direct deletion of legitimate negative reviews by sellers is prevented.
+  - Platform moderation: Suspicious or reported reviews (`ReviewReport`) undergo administrative review (`ReviewModeration`). Moderation decisions (`APPROVE`, `REJECT`, `REMOVE`) write immutable audit entries.
+- Seller staff & role delegation (`apps/sellers`):
+  - Team management: Sellers can invite users via email, assign roles, change member roles, and revoke memberships.
+  - Custom roles: Sellers can define tenant-scoped custom roles with granular permission subsets.
+  - Safe delegation: `authorize_role_assignment` re-verifies inside database transactions that actors cannot assign permissions they do not possess.
+  - Last-owner protection: Revocation and role modification services count remaining active owners; demoting or revoking the final active owner of a seller is blocked.
+- Notifications infrastructure (`apps/notifications`):
+  - In-app & async multi-channel messaging: `Notification` and `NotificationDelivery` provide transactional notifications across in-app, email, and future channels.
+  - Fault isolation: Delivery attempt failures (e.g. SMTP connectivity issues) are captured and marked as `FAILED` in `NotificationDelivery` without rolling back the enclosing database transaction.

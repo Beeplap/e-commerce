@@ -26,6 +26,9 @@ export function WorkspaceFrame({
   sellerCanReadFulfillment = false,
   sellerCanReadReturns = false,
   sellerCanReadFinance = false,
+  sellerCanReadStaff = false,
+  sellerCanReadPromotions = false,
+  sellerCanReadReviews = false,
 }: {
   mode: WorkspaceMode;
   children: ReactNode;
@@ -37,6 +40,9 @@ export function WorkspaceFrame({
   sellerCanReadFulfillment?: boolean;
   sellerCanReadReturns?: boolean;
   sellerCanReadFinance?: boolean;
+  sellerCanReadStaff?: boolean;
+  sellerCanReadPromotions?: boolean;
+  sellerCanReadReviews?: boolean;
 }) {
   const pathname = usePathname();
   const { state } = useAuth();
@@ -59,6 +65,14 @@ export function WorkspaceFrame({
   }
   if (mode === "seller" && sellerCanReadFinance)
     links.push({ href: "/seller/finance", label: "Finance" });
+  if (mode === "seller" && sellerCanReadPromotions)
+    links.push({ href: "/seller/promotions", label: "Promotions" });
+  if (mode === "seller" && sellerCanReadReviews)
+    links.push({ href: "/seller/reviews", label: "Reviews" });
+  if (mode === "seller" && sellerCanReadStaff) {
+    links.push({ href: "/seller/staff", label: "Staff" });
+    links.push({ href: "/seller/staff/roles", label: "Roles" });
+  }
   if (mode === "seller" && sellerCanReadSettings)
     links.push({ href: "/seller/settings", label: "Seller settings" });
   if (mode === "admin" && hasPlatformPermission(user, "platform.orders.read"))
@@ -87,11 +101,19 @@ export function WorkspaceFrame({
     links.push({ href: "/admin/attributes", label: "Attributes" });
     links.push({ href: "/admin/brands", label: "Brands" });
   }
+  if (
+    mode === "admin" &&
+    hasPlatformPermission(user, "platform.promotions.read")
+  )
+    links.push({ href: "/admin/promotions", label: "Promotions" });
+  if (mode === "admin" && hasPlatformPermission(user, "platform.reviews.read"))
+    links.push({ href: "/admin/reviews", label: "Reviews" });
   if (mode !== "workspaces")
     links.push({ href: "/workspaces", label: "Workspaces" });
   if (mode !== "account") links.push({ href: "/account", label: "My account" });
   if (mode !== "admin" && hasPlatformPermission(user, "platform.access"))
     links.push({ href: "/admin", label: "Platform workspace" });
+
   return (
     <div className="min-h-screen">
       <a

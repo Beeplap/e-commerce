@@ -26,6 +26,9 @@ INSTALLED_APPS = [
     "apps.orders",
     "apps.finance",
     "apps.fulfillment",
+    "apps.promotions",
+    "apps.reviews",
+    "apps.notifications",
 ]
 
 MIDDLEWARE = [
@@ -166,6 +169,15 @@ SPECTACULAR_SETTINGS = {
         "ShipmentStatusEnum": "apps.fulfillment.models.Shipment.Status",
         "ReturnRequestStatusEnum": "apps.fulfillment.models.ReturnRequest.Status",
         "RefundStatusEnum": "apps.fulfillment.models.Refund.Status",
+        "PromotionScopeEnum": "apps.promotions.models.Promotion.Scope",
+        "AttributeScopeEnum": "apps.catalog.models.Attribute.Scope",
+        "PromotionDiscountTypeEnum": "apps.promotions.models.Promotion.DiscountType",
+        "ProductReviewStatusEnum": "apps.reviews.models.ProductReview.Status",
+        "ReviewReportReasonEnum": "apps.reviews.models.ReviewReport.Reason",
+        "ReviewReportStatusEnum": "apps.reviews.models.ReviewReport.Status",
+        "ReviewModerationActionEnum": "apps.reviews.models.ReviewModeration.Action",
+        "NotificationDeliveryChannelEnum": "apps.notifications.models.NotificationDelivery.Channel",
+        "NotificationDeliveryStatusEnum": "apps.notifications.models.NotificationDelivery.Status",
     },
 }
 LANGUAGE_CODE = "en-us"

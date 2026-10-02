@@ -133,3 +133,42 @@ PostgreSQL migration `0002_fulfillment_integrity` enforces:
 - Cross-tenant validation trigger on `ReturnRequest` and `ReturnItem`: Verifies `seller_order.seller_id == seller_id`, `order_item.seller_order.seller_id == return_request.seller_id`, and `warehouse.seller_id == return_request.seller_id`.
 - Cross-tenant validation trigger on `Refund`: Verifies `seller_order.seller_id == seller_id` and `return_request.seller_id == seller_id`.
 - Nonnegative and positive check constraints on financial amounts and item quantities.
+
+## Phase 10 promotions, reviews, staff, and notifications schema
+
+`promotions` implements discount promotions, coupon codes, and redemption ledgers:
+
+- `Promotion`: Marketplace or seller-scoped promotion campaign (`name`, `description`, `scope`: `PLATFORM`, `SELLER`; `seller` optional, `discount_type`: `PERCENTAGE`, `FIXED_AMOUNT`, `FREE_SHIPPING`; `discount_value`, `minimum_order_amount`, `maximum_discount_amount`, `start_date`, `end_date`, `is_active`, `usage_limit`, `usage_count`).
+- `Coupon`: Specific voucher code linked to a promotion (`promotion`, `code`, `usage_limit`, `usage_count`, `per_customer_limit`, `is_active`).
+- `CouponUsage`: Append-only redemption ledger recording coupon applications (`coupon`, `customer`, `order`, `discount_amount`, `created_at`).
+- `PromotionProduct`, `PromotionCategory`, `PromotionSeller`: Targeted qualification boundaries restricting promotion applicability.
+
+PostgreSQL migration `0002_promotions_integrity` enforces:
+
+- Immutability trigger on `CouponUsage`: Rejects UPDATE and DELETE operations.
+- Cross-tenant validation triggers: Verifies that targeted products and categories belong to the promotion's seller when `scope == SELLER`.
+- `PromotionSeller` can only be attached to `PLATFORM` promotions.
+
+`reviews` implements verified product reviews, customer feedback, seller responses, and moderation:
+
+- `ProductReview`: Customer review on a purchased item (`customer`, `product`, `order_item`, `rating` 1-5, `title`, `body`, `status`: `PENDING`, `PUBLISHED`, `REJECTED`, `REMOVED`; `verified_purchase`, `seller_response`, `seller_response_at`, `created_at`).
+- `ReviewReport`: Customer or seller dispute/flagging of an offensive or fraudulent review (`review`, `reporter`, `reason`, `status`: `PENDING`, `RESOLVED`, `DISMISSED`; `created_at`).
+- `ReviewModeration`: Append-only audit record of platform administrator moderation decisions (`review`, `moderator`, `action`: `APPROVE`, `REJECT`, `REMOVE`; `notes`, `created_at`).
+- `SellerReviewResponse`: Official response from the verified product seller (`review`, `seller`, `responder`, `response`, `created_at`).
+
+PostgreSQL migration `0002_reviews_integrity` enforces:
+
+- Immutability trigger on `ReviewModeration`: Rejects UPDATE and DELETE operations.
+- Cross-tenant scope validation trigger on `SellerReviewResponse`: Verifies `review.product.seller_id == response.seller_id`.
+- Rating bounds check constraint (`rating >= 1 AND rating <= 5`).
+
+`notifications` implements asynchronous transactional and broadcast messaging:
+
+- `Notification`: In-app notification record (`recipient`, `notification_type`, `title`, `body`, `action_url`, `is_read`, `created_at`, `read_at`).
+- `NotificationDelivery`: Channel delivery attempt record (`notification`, `channel`: `IN_APP`, `EMAIL`, `SMS`, `PUSH`; `status`: `PENDING`, `SENT`, `FAILED`; `error_message`, `attempted_at`). Failures never roll back core business transactions.
+
+`sellers` staff and role delegation additions:
+
+- Custom `SellerRole` creation per seller with explicit assignable permission sets.
+- Delegation guard enforcing that members cannot grant capabilities they do not hold.
+- Last-owner protection ensuring a seller always retains at least one active owner.

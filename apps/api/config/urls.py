@@ -6,6 +6,7 @@ from apps.sellers.views import PlatformSellerAccessView, SellerAccessView, Selle
 from config.health import HealthView
 
 urlpatterns = [
+    path("api/v1/", include("apps.inventory.urls")),
     path("api/v1/", include("apps.catalog.urls")),
     path("api/v1/", include("apps.sellers.urls")),
     path("api/v1/health", HealthView.as_view(), name="health"),

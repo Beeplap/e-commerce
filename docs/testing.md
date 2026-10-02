@@ -51,5 +51,23 @@ Frontend coverage includes:
 
 - Seller products table and draft creation navigation.
 - Permission gates for seller products and admin moderation.
-- Detail view rendering variants, exact decimal price strings, configurable attributes, and audit history.
 - Platform moderation workflows, rejection reasons, category management, and attribute option management.
+
+Phase 6 adds 12 PostgreSQL inventory backend tests in `tests/test_inventory.py` and 7 frontend tests in `apps/web/tests/inventory.test.tsx`.
+Backend coverage includes:
+
+- Cross-tenant warehouse and inventory isolation, foreign key rejection, and cross-seller variant/warehouse assignment denial.
+- Nonnegative constraints (`quantity_on_hand >= 0`, `quantity_reserved >= 0`, `reorder_level >= 0`) and reserved stock bound (`quantity_reserved <= quantity_on_hand`).
+- Append-only immutability of `InventoryTransaction` via PostgreSQL trigger; rejection of UPDATE and DELETE operations.
+- Warehouse immutable code/seller identity and inventory immutable warehouse/variant identity.
+- Concurrent inventory operations tested with `ThreadPoolExecutor` and row-level `select_for_update()` locking.
+- Explicit services for `adjust_inventory`, `reserve_inventory`, `release_inventory`, `consume_reserved_inventory`, and `receive_return`.
+- Seller permission enforcement (`seller.inventory.manage`, `seller.inventory.read`) and platform capability enforcement (`platform.inventory.read`).
+
+Frontend coverage includes:
+
+- Warehouse listing, status badges, and warehouse creation modal validation.
+- Inventory listing with calculated available stock, low-stock warning badges, and search/filter controls.
+- Stock adjustment modal with delta/reason validation and optimistic/server error handling.
+- Immutable inventory transaction ledger with delta indicators and transaction-type filtering.
+- Platform inventory overview accessible only with `platform.inventory.read` capability.

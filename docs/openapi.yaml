@@ -140,6 +140,132 @@ paths:
               schema:
                 $ref: '#/components/schemas/CatalogRecord'
           description: ''
+  /api/v1/admin/inventory:
+    get:
+      operationId: platform_inventory_list
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: query
+        name: low_stock
+        schema:
+          type: boolean
+          nullable: true
+      - in: query
+        name: page
+        schema:
+          type: integer
+          maximum: 10000
+          minimum: 1
+          default: 1
+      - in: query
+        name: search
+        schema:
+          type: string
+          maxLength: 100
+          minLength: 1
+      - in: query
+        name: seller_id
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: variant_id
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: warehouse_id
+        schema:
+          type: string
+          format: uuid
+      tags:
+      - Platform inventory
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryPage'
+          description: ''
+  /api/v1/admin/inventory/{inventory_id}:
+    get:
+      operationId: platform_inventory_get
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: inventory_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform inventory
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryOutput'
+          description: ''
+  /api/v1/admin/inventory/transactions:
+    get:
+      operationId: platform_inventory_transactions_list
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: query
+        name: inventory_id
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: page
+        schema:
+          type: integer
+          maximum: 10000
+          minimum: 1
+          default: 1
+      - in: query
+        name: seller_id
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: type
+        schema:
+          enum:
+          - purchase
+          - sale
+          - return
+          - adjustment
+          - reservation
+          - release
+          type: string
+          minLength: 1
+        description: |-
+          * `purchase` - Purchase
+          * `sale` - Sale
+          * `return` - Return
+          * `adjustment` - Adjustment
+          * `reservation` - Reservation
+          * `release` - Release
+      tags:
+      - Platform inventory
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryTransactionPage'
+          description: ''
   /api/v1/admin/products:
     get:
       operationId: admin_products_list
@@ -1238,6 +1364,348 @@ paths:
               schema:
                 $ref: '#/components/schemas/Document'
           description: ''
+  /api/v1/seller/inventory:
+    get:
+      operationId: seller_inventory_list
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: query
+        name: low_stock
+        schema:
+          type: boolean
+          nullable: true
+      - in: query
+        name: page
+        schema:
+          type: integer
+          maximum: 10000
+          minimum: 1
+          default: 1
+      - in: query
+        name: search
+        schema:
+          type: string
+          maxLength: 100
+          minLength: 1
+      - in: query
+        name: seller_id
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: variant_id
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: warehouse_id
+        schema:
+          type: string
+          format: uuid
+      tags:
+      - Seller inventory
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryPage'
+          description: ''
+    post:
+      operationId: seller_inventory_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller inventory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InventoryCreateInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryOutput'
+          description: ''
+  /api/v1/seller/inventory/{inventory_id}:
+    get:
+      operationId: seller_inventory_get
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: inventory_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller inventory
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryOutput'
+          description: ''
+  /api/v1/seller/inventory/{inventory_id}/adjust:
+    post:
+      operationId: seller_inventory_adjust
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: inventory_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller inventory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InventoryAdjustInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryOutput'
+          description: ''
+  /api/v1/seller/inventory/{inventory_id}/release:
+    post:
+      operationId: seller_inventory_release
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: inventory_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller inventory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InventoryReleaseInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryOutput'
+          description: ''
+  /api/v1/seller/inventory/{inventory_id}/reserve:
+    post:
+      operationId: seller_inventory_reserve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: inventory_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller inventory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InventoryReserveInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryOutput'
+          description: ''
+  /api/v1/seller/inventory/{inventory_id}/transactions:
+    get:
+      operationId: seller_inventory_item_transactions_list
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: inventory_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: query
+        name: inventory_id
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: page
+        schema:
+          type: integer
+          maximum: 10000
+          minimum: 1
+          default: 1
+      - in: query
+        name: seller_id
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: type
+        schema:
+          enum:
+          - purchase
+          - sale
+          - return
+          - adjustment
+          - reservation
+          - release
+          type: string
+          minLength: 1
+        description: |-
+          * `purchase` - Purchase
+          * `sale` - Sale
+          * `return` - Return
+          * `adjustment` - Adjustment
+          * `reservation` - Reservation
+          * `release` - Release
+      tags:
+      - Seller inventory
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryTransactionPage'
+          description: ''
+  /api/v1/seller/inventory/transactions:
+    get:
+      operationId: seller_inventory_transactions_list
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: query
+        name: inventory_id
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: page
+        schema:
+          type: integer
+          maximum: 10000
+          minimum: 1
+          default: 1
+      - in: query
+        name: seller_id
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: type
+        schema:
+          enum:
+          - purchase
+          - sale
+          - return
+          - adjustment
+          - reservation
+          - release
+          type: string
+          minLength: 1
+        description: |-
+          * `purchase` - Purchase
+          * `sale` - Sale
+          * `return` - Return
+          * `adjustment` - Adjustment
+          * `reservation` - Reservation
+          * `release` - Release
+      tags:
+      - Seller inventory
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryTransactionPage'
+          description: ''
   /api/v1/seller/memberships:
     get:
       operationId: seller_memberships_retrieve
@@ -2062,6 +2530,131 @@ paths:
               schema:
                 $ref: '#/components/schemas/SellerDetail'
           description: ''
+  /api/v1/seller/warehouses:
+    get:
+      operationId: seller_warehouses_list
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: query
+        name: is_active
+        schema:
+          type: boolean
+          nullable: true
+      - in: query
+        name: page
+        schema:
+          type: integer
+          maximum: 10000
+          minimum: 1
+          default: 1
+      tags:
+      - Seller warehouses
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WarehousePage'
+          description: ''
+    post:
+      operationId: seller_warehouses_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller warehouses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WarehouseInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WarehouseOutput'
+          description: ''
+  /api/v1/seller/warehouses/{warehouse_id}:
+    get:
+      operationId: seller_warehouse_get
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: warehouse_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller warehouses
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WarehouseOutput'
+          description: ''
+    put:
+      operationId: seller_warehouse_update
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: warehouse_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller warehouses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WarehouseUpdateInput'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WarehouseOutput'
+          description: ''
 components:
   schemas:
     Address:
@@ -2753,6 +3346,252 @@ components:
       - next
       - previous
       - results
+    InventoryAdjustInput:
+      type: object
+      properties:
+        quantity_delta:
+          type: integer
+        reason:
+          type: string
+          maxLength: 500
+        reference_type:
+          type: string
+          default: ''
+          maxLength: 50
+        reference_id:
+          type: string
+          default: ''
+          maxLength: 100
+      required:
+      - quantity_delta
+      - reason
+    InventoryCreateInput:
+      type: object
+      properties:
+        warehouse_id:
+          type: string
+          format: uuid
+        variant_id:
+          type: string
+          format: uuid
+        reorder_level:
+          type: integer
+          minimum: 0
+          default: 0
+      required:
+      - variant_id
+      - warehouse_id
+    InventoryOutput:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        warehouse:
+          allOf:
+          - $ref: '#/components/schemas/WarehouseOutput'
+          readOnly: true
+        variant:
+          allOf:
+          - $ref: '#/components/schemas/InventoryVariantOutput'
+          readOnly: true
+        quantity_on_hand:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        quantity_reserved:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        available_quantity:
+          type: integer
+          readOnly: true
+        reorder_level:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        is_low_stock:
+          type: boolean
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - available_quantity
+      - id
+      - is_low_stock
+      - updated_at
+      - variant
+      - warehouse
+    InventoryPage:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          format: uri
+          nullable: true
+        previous:
+          type: string
+          format: uri
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/InventoryOutput'
+      required:
+      - count
+      - next
+      - previous
+      - results
+    InventoryReleaseInput:
+      type: object
+      properties:
+        quantity:
+          type: integer
+          minimum: 1
+        reason:
+          type: string
+          default: ''
+          maxLength: 500
+        reference_type:
+          type: string
+          default: ''
+          maxLength: 50
+        reference_id:
+          type: string
+          default: ''
+          maxLength: 100
+      required:
+      - quantity
+    InventoryReserveInput:
+      type: object
+      properties:
+        quantity:
+          type: integer
+          minimum: 1
+        reason:
+          type: string
+          default: ''
+          maxLength: 500
+        reference_type:
+          type: string
+          default: ''
+          maxLength: 50
+        reference_id:
+          type: string
+          default: ''
+          maxLength: 100
+      required:
+      - quantity
+    InventoryTransactionOutput:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        inventory_id:
+          type: string
+          format: uuid
+          readOnly: true
+        type:
+          $ref: '#/components/schemas/InventoryTransactionTypeEnum'
+        quantity_delta:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        reference_type:
+          type: string
+          maxLength: 50
+        reference_id:
+          type: string
+          maxLength: 100
+        reason:
+          type: string
+          maxLength: 500
+        created_by_id:
+          type: string
+          format: uuid
+          nullable: true
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - created_by_id
+      - id
+      - inventory_id
+      - quantity_delta
+      - type
+    InventoryTransactionPage:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          format: uri
+          nullable: true
+        previous:
+          type: string
+          format: uri
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/InventoryTransactionOutput'
+      required:
+      - count
+      - next
+      - previous
+      - results
+    InventoryTransactionTypeEnum:
+      enum:
+      - purchase
+      - sale
+      - return
+      - adjustment
+      - reservation
+      - release
+      type: string
+      description: |-
+        * `purchase` - Purchase
+        * `sale` - Sale
+        * `return` - Return
+        * `adjustment` - Adjustment
+        * `reservation` - Reservation
+        * `release` - Release
+    InventoryVariantOutput:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        sku:
+          type: string
+          maxLength: 80
+        barcode:
+          type: string
+          maxLength: 80
+        product_id:
+          type: string
+          format: uuid
+          readOnly: true
+        product_name:
+          type: string
+          readOnly: true
+      required:
+      - id
+      - product_id
+      - product_name
+      - sku
     KindEnum:
       enum:
       - registered
@@ -3779,6 +4618,92 @@ components:
       - next
       - previous
       - results
+    WarehouseInput:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 120
+        code:
+          type: string
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
+        address:
+          type: string
+          default: ''
+          maxLength: 500
+        is_active:
+          type: boolean
+          default: true
+      required:
+      - code
+      - name
+    WarehouseOutput:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 120
+        code:
+          type: string
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
+        address:
+          type: string
+          maxLength: 500
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - code
+      - created_at
+      - id
+      - name
+      - updated_at
+    WarehousePage:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          format: uri
+          nullable: true
+        previous:
+          type: string
+          format: uri
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/WarehouseOutput'
+      required:
+      - count
+      - next
+      - previous
+      - results
+    WarehouseUpdateInput:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 120
+        address:
+          type: string
+          maxLength: 500
+        is_active:
+          type: boolean
   securitySchemes:
     cookieAuth:
       type: apiKey

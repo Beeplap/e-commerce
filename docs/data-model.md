@@ -55,5 +55,19 @@ PostgreSQL migration `0002_catalog_integrity` enforces:
 - Cross-tenant and child integrity triggers: products and variants cannot be reassigned to another seller; variant attribute values, product attribute values, and images cannot link across foreign seller boundaries.
 - Attribute values must adhere to assigned category attributes and attribute option relationships.
 - Self-approval impossible trigger: seller members cannot approve products of their own seller, even if possessing platform moderation capabilities.
-- Unverified or inactive sellers cannot have active approved products.
 - Append-only immutability trigger on `ProductStatusHistory`.
+
+## Phase 6 inventory schema
+
+`inventory` implements seller-owned warehouses and an attributable inventory transaction ledger:
+
+- `Warehouse`: seller-scoped warehouse entity with `seller`, `code` (uppercase alphanumeric with hyphens/underscores, immutable after creation), `name`, `address_line1`, `address_line2`, `city`, `state`, `postal_code`, `country` (2-letter ISO uppercase code), and `is_active`. Unique constraint on `(seller, code)`.
+- `Inventory`: unique stock entry per `(warehouse, variant)` pairing. Tracks integer quantities: `quantity_on_hand`, `quantity_reserved`, and `reorder_level`. Exposes computed property `available_quantity` (`quantity_on_hand - quantity_reserved`). Check constraints enforce `quantity_on_hand >= 0`, `quantity_reserved >= 0`, `quantity_reserved <= quantity_on_hand`, and `reorder_level >= 0`.
+- `InventoryTransaction`: immutable append-only ledger tracking all stock movements. Types: `purchase`, `sale`, `return`, `adjustment`, `reservation`, `release`. Records `inventory`, `warehouse`, `variant`, `actor_id` UUID, `quantity_delta` integer, `quantity_on_hand_after` nonnegative integer, `quantity_reserved_after` nonnegative integer, optional `reference_type` and `reference_id` UUID, and optional `notes`.
+
+PostgreSQL migration `0002_inventory_integrity` enforces:
+
+- Warehouse immutable identity: SQL trigger rejects changes to `seller_id` or `code` on `Warehouse`.
+- Inventory immutable identity: SQL trigger rejects changes to `warehouse_id` or `variant_id` on `Inventory`.
+- Cross-tenant validation: SQL triggers verify that `ProductVariant.product.seller_id` matches `Warehouse.seller_id` before creating or updating `Inventory` or `InventoryTransaction`.
+- Append-only immutability trigger on `InventoryTransaction`: SQL trigger rejects all UPDATE and DELETE operations on `inventory_inventorytransaction`.

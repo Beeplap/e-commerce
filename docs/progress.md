@@ -8,21 +8,22 @@
 - Phase 3: Next.js login/session integration, protected seller/admin/workspace/account layouts, responsive navigation/account menu/breadcrumbs, 403/404 and retry/loading states, centralized typed/runtime-validated same-origin API client, cancellation and stale-result protection, accessible UI primitives and frontend security/interaction tests.
 - Phase 4: seller onboarding, profiles/settings/addresses, private validated verification scans and downloads, explicit platform review/lifecycle commands, seller-management screens, append-only business audits/status history and adversarial/concurrency tests.
 - Phase 5: platform categories, brands, configurable attributes, category-attribute linking, seller-owned products, variants, attribute values, safe private image uploads and downloads, explicit moderation actions (submit-for-review, revise, archive, approve, reject), immutable status history, Decimal price validation and money displays, catalog screens for seller and platform, and adversarial tenant-isolation tests.
+- Phase 6: seller-scoped warehouses, inventory tracking per warehouse/variant, attributable append-only inventory transaction ledger (purchase, sale, return, adjustment, reservation, release), check constraints preventing negative stock or reserved exceeding on-hand, atomic row locking on stock changes, seller and platform inventory endpoints, warehouse/inventory/adjustments management screens, and adversarial tenant-isolation/concurrency tests.
 - Architecture, security, authorization, data-model, stack, testing, deployment and progress guidance are maintained alongside the implementation.
 
 ## Current phase
 
-Phase 1 was committed as `56c1d72` and pushed; [its GitHub validation passed](https://github.com/Beeplap/e-commerce/actions/runs/36666039048). Phase 2 was committed/pushed as `b563da6`; [its GitHub validation passed](https://github.com/Beeplap/e-commerce/actions/runs/36668437445). Phase 3 was committed/pushed as `36ae824`; [its GitHub validation passed](https://github.com/Beeplap/e-commerce/actions/runs/36672333932). Phase 4 was committed/pushed as `a3ed17a`; [its GitHub validation passed](https://github.com/Beeplap/e-commerce/actions/runs/36865741475). Phase 5 catalog implementation is complete and locally validated.
+Phase 1 was committed as `56c1d72` and pushed; [its GitHub validation passed](https://github.com/Beeplap/e-commerce/actions/runs/36666039048). Phase 2 was committed/pushed as `b563da6`; [its GitHub validation passed](https://github.com/Beeplap/e-commerce/actions/runs/36668437445). Phase 3 was committed/pushed as `36ae824`; [its GitHub validation passed](https://github.com/Beeplap/e-commerce/actions/runs/36672333932). Phase 4 was committed/pushed as `a3ed17a`; [its GitHub validation passed](https://github.com/Beeplap/e-commerce/actions/runs/36865741475). Phase 5 was committed/pushed as `5fdade6`; [its GitHub validation passed](https://github.com/Beeplap/e-commerce/actions/runs/36869400000). Phase 6 warehouse and inventory ledger implementation is complete and locally validated.
 
-## Phase 5 validation results
+## Phase 6 validation results
 
-- `pnpm check`: passed. PostgreSQL backend suite: **221 passed** (including **51 catalog cases**); frontend suite: **68 passed** across seven files. Ruff format/lint, strict mypy (67 source files), Django checks, migration drift, warning-free offline OpenAPI, Prettier, ESLint (0 warnings), strict TypeScript and Next.js production build passed.
-- Catalog test suite covers cross-tenant attacks on products/variants/images/attributes, foreign key scoping, mass assignment rejection, decimal price constraints and compare-at relationship, category hierarchy integrity, dynamic attribute scope and requirement rules, explicit review transitions, reason requirements, self-approval prevention, safe image MIME/size decoding, and storage compensation on transaction rollback.
+- `pnpm check`: passed. PostgreSQL backend suite: **233 passed** (including **12 inventory cases**); frontend suite: **75 passed** across eight files. Ruff format/lint, strict mypy (76 source files), Django checks, migration drift, warning-free offline OpenAPI, Prettier, ESLint (0 warnings), strict TypeScript and Next.js production build (22 routes) passed.
+- Inventory test suite covers cross-tenant attacks on warehouses and inventory, foreign key scoping, immutability of warehouse code and inventory identity, check constraints for nonnegative stock and reserved <= on_hand, append-only transaction ledger immutability in PostgreSQL, atomic row-level locking under concurrent thread pools, reservation, release, adjustment, and return workflows, and permission gates (`seller.inventory.*`, `platform.inventory.read`).
 - Compose configuration validation passed quietly through the Ubuntu WSL Docker daemon.
 
 ## Next phase
 
-Phase 6: Warehouses and inventory ledger.
+Phase 7: Orders and checkout workflow.
 
 ## Phase 4 implementation and validation
 

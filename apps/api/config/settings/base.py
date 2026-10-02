@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     "apps.sellers",
     "apps.audit",
     "apps.catalog",
+    "apps.inventory",
 ]
 
 MIDDLEWARE = [
@@ -153,6 +154,7 @@ SPECTACULAR_SETTINGS = {
         "SellerMembershipStatusEnum": "apps.sellers.models.SellerMembership.Status",
         "ProductStatusEnum": "apps.catalog.models.Product.Status",
         "ProductVariantStatusEnum": "apps.catalog.models.ProductVariant.Status",
+        "InventoryTransactionTypeEnum": "apps.inventory.models.InventoryTransaction.Type",
     },
 }
 LANGUAGE_CODE = "en-us"

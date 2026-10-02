@@ -151,6 +151,7 @@ export function SellerWorkspace({ children }: { children: ReactNode }) {
         sellerCanReadProducts={current.permissions.includes(
           "catalog.product.read",
         )}
+        sellerCanReadInventory={current.permissions.includes("inventory.read")}
       >
         {children}
       </WorkspaceFrame>

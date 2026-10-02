@@ -59,3 +59,12 @@ Phase 4 adds no worker or notification infrastructure. Malware scanning integrat
 - Selectors: `apps/catalog/selectors.py` provides tenant-scoped read queries with bounded pagination and strict allowlisted filters.
 - Money handling: prices and compare-at amounts are validated as nonnegative decimal strings. Frontend displays use BigInt grouping and explicit locale formatting without floating-point conversion.
 - Safe image handling: uses the named Django `catalog` storage boundary (private local directory in development; S3-compatible boundary in production). UUID storage keys, strict content-type validation (`image/png`, `image/jpeg`), and Pillow byte verification ensure private storage outside executable paths. Failed audit insertions compensate uploaded storage files.
+
+## Inventory domain and ledger architecture
+
+`apps/inventory` provides seller-isolated warehouse management and an attributable inventory ledger:
+
+- Attributable transaction ledger: stock is never updated with a blind counter. Every stock increase, decrease, reservation, release, sale, or return generates an immutable `InventoryTransaction` recording the actor UUID, quantity delta, post-operation on-hand and reserved balances, reference keys, and optional audit notes.
+- Concurrency and lock order: inventory operations adhere to the mutation lock order: actor `User` -> `Seller` -> `SellerMembership` -> `Inventory` row (`select_for_update()`). This serializes concurrent adjustments, reservations, and releases for the same SKU/warehouse and prevents race conditions.
+- Tenant isolation: warehouse creation and inventory operations enforce tenant scope via `lock_seller_access`. Database triggers reject any attempt to link a variant belonging to Seller A with a warehouse belonging to Seller B.
+- Capability authorization: seller warehouse and inventory operations require `seller.inventory.manage` or `seller.inventory.read` via `require_seller_access`. Platform administrators require explicit `platform.inventory.read` capability to view inventory across sellers; Django `is_superuser` alone grants no implicit access.

@@ -184,6 +184,7 @@ def test_platform_role_grants_only_explicit_capabilities_and_revocation_is_immed
         "platform.access",
         "platform.catalog.manage",
         "platform.catalog.read",
+        "platform.inventory.read",
         "platform.products.moderate",
         "platform.products.read",
         "platform.sellers.audit.read",

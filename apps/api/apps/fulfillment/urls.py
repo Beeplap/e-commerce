@@ -1,0 +1,93 @@
+from django.urls import path
+
+from apps.fulfillment import views
+
+urlpatterns = [
+    # Seller fulfillment routes
+    path(
+        "seller/fulfillment/shipments",
+        views.SellerShipmentListView.as_view(),
+        name="seller-fulfillment-shipment-list",
+    ),
+    path(
+        "seller/fulfillment/shipments/<uuid:shipment_id>",
+        views.SellerShipmentDetailView.as_view(),
+        name="seller-fulfillment-shipment-detail",
+    ),
+    path(
+        "seller/fulfillment/shipments/<uuid:shipment_id>/events",
+        views.SellerShipmentAddTrackingEventView.as_view(),
+        name="seller-fulfillment-shipment-add-event",
+    ),
+    path(
+        "seller/fulfillment/shipments/<uuid:shipment_id>/deliver",
+        views.SellerShipmentDeliverView.as_view(),
+        name="seller-fulfillment-shipment-deliver",
+    ),
+    path(
+        "seller/fulfillment/returns",
+        views.SellerReturnListView.as_view(),
+        name="seller-fulfillment-return-list",
+    ),
+    path(
+        "seller/fulfillment/returns/<uuid:return_id>",
+        views.SellerReturnDetailView.as_view(),
+        name="seller-fulfillment-return-detail",
+    ),
+    path(
+        "seller/fulfillment/returns/<uuid:return_id>/approve",
+        views.SellerReturnApproveView.as_view(),
+        name="seller-fulfillment-return-approve",
+    ),
+    path(
+        "seller/fulfillment/returns/<uuid:return_id>/reject",
+        views.SellerReturnRejectView.as_view(),
+        name="seller-fulfillment-return-reject",
+    ),
+    path(
+        "seller/fulfillment/returns/<uuid:return_id>/receive",
+        views.SellerReturnReceiveView.as_view(),
+        name="seller-fulfillment-return-receive",
+    ),
+    path(
+        "seller/fulfillment/refunds",
+        views.SellerRefundListView.as_view(),
+        name="seller-fulfillment-refund-list",
+    ),
+    path(
+        "seller/fulfillment/refunds/<uuid:refund_id>",
+        views.SellerRefundDetailView.as_view(),
+        name="seller-fulfillment-refund-detail",
+    ),
+    # Platform admin fulfillment routes
+    path(
+        "admin/fulfillment/shipments",
+        views.AdminShipmentListView.as_view(),
+        name="admin-fulfillment-shipment-list",
+    ),
+    path(
+        "admin/fulfillment/shipments/<uuid:shipment_id>",
+        views.AdminShipmentDetailView.as_view(),
+        name="admin-fulfillment-shipment-detail",
+    ),
+    path(
+        "admin/fulfillment/returns",
+        views.AdminReturnListView.as_view(),
+        name="admin-fulfillment-return-list",
+    ),
+    path(
+        "admin/fulfillment/returns/<uuid:return_id>",
+        views.AdminReturnDetailView.as_view(),
+        name="admin-fulfillment-return-detail",
+    ),
+    path(
+        "admin/fulfillment/refunds",
+        views.AdminRefundListView.as_view(),
+        name="admin-fulfillment-refund-list",
+    ),
+    path(
+        "admin/fulfillment/refunds/<uuid:refund_id>",
+        views.AdminRefundDetailView.as_view(),
+        name="admin-fulfillment-refund-detail",
+    ),
+]

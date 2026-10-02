@@ -559,6 +559,150 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminFinanceSummary'
           description: ''
+  /api/v1/admin/fulfillment/refunds:
+    get:
+      operationId: platform_refunds_list
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Platform refunds
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Refund'
+          description: ''
+    post:
+      operationId: platform_refunds_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Platform refunds
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRefundInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Refund'
+          description: ''
+  /api/v1/admin/fulfillment/refunds/{refund_id}:
+    get:
+      operationId: platform_refunds_detail
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: refund_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform refunds
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Refund'
+          description: ''
+  /api/v1/admin/fulfillment/returns:
+    get:
+      operationId: platform_returns_list
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Platform returns
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReturnRequest'
+          description: ''
+  /api/v1/admin/fulfillment/returns/{return_id}:
+    get:
+      operationId: platform_returns_detail
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: return_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform returns
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnRequest'
+          description: ''
+  /api/v1/admin/fulfillment/shipments:
+    get:
+      operationId: platform_fulfillment_list_shipments
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Platform fulfillment
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Shipment'
+          description: ''
+  /api/v1/admin/fulfillment/shipments/{shipment_id}:
+    get:
+      operationId: platform_fulfillment_get_shipment
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: shipment_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Platform fulfillment
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shipment'
+          description: ''
   /api/v1/admin/inventory:
     get:
       operationId: platform_inventory_list
@@ -2024,6 +2168,419 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SellerLedgerEntryPage'
+          description: ''
+  /api/v1/seller/fulfillment/refunds:
+    get:
+      operationId: seller_refunds_list
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller refunds
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Refund'
+          description: ''
+    post:
+      operationId: seller_refunds_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller refunds
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRefundInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Refund'
+          description: ''
+  /api/v1/seller/fulfillment/refunds/{refund_id}:
+    get:
+      operationId: seller_refunds_detail
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: refund_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller refunds
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Refund'
+          description: ''
+  /api/v1/seller/fulfillment/returns:
+    get:
+      operationId: seller_returns_list
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller returns
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReturnRequest'
+          description: ''
+    post:
+      operationId: seller_returns_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller returns
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReturnRequestInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnRequest'
+          description: ''
+  /api/v1/seller/fulfillment/returns/{return_id}:
+    get:
+      operationId: seller_returns_detail
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: return_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller returns
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnRequest'
+          description: ''
+  /api/v1/seller/fulfillment/returns/{return_id}/approve:
+    post:
+      operationId: seller_returns_approve
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: return_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller returns
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApproveReturnInput'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnRequest'
+          description: ''
+  /api/v1/seller/fulfillment/returns/{return_id}/receive:
+    post:
+      operationId: seller_returns_receive
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: return_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller returns
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReceiveReturnInput'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnRequest'
+          description: ''
+  /api/v1/seller/fulfillment/returns/{return_id}/reject:
+    post:
+      operationId: seller_returns_reject
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: return_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller returns
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RejectReturnInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnRequest'
+          description: ''
+  /api/v1/seller/fulfillment/shipments:
+    get:
+      operationId: seller_fulfillment_list_shipments
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller fulfillment
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Shipment'
+          description: ''
+    post:
+      operationId: seller_fulfillment_create_shipment
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller fulfillment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateShipmentInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shipment'
+          description: ''
+  /api/v1/seller/fulfillment/shipments/{shipment_id}:
+    get:
+      operationId: seller_fulfillment_get_shipment
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: shipment_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller fulfillment
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shipment'
+          description: ''
+  /api/v1/seller/fulfillment/shipments/{shipment_id}/deliver:
+    post:
+      operationId: seller_fulfillment_deliver_shipment
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: shipment_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller fulfillment
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shipment'
+          description: ''
+  /api/v1/seller/fulfillment/shipments/{shipment_id}/events:
+    post:
+      operationId: seller_fulfillment_add_tracking_event
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: header
+        name: X-Seller-ID
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: shipment_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Seller fulfillment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddTrackingEventInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrackingEvent'
           description: ''
   /api/v1/seller/inventory:
     get:
@@ -3551,6 +4108,21 @@ paths:
           description: ''
 components:
   schemas:
+    AddTrackingEventInput:
+      type: object
+      properties:
+        status:
+          type: string
+          maxLength: 32
+        location:
+          type: string
+          default: ''
+          maxLength: 255
+        description:
+          type: string
+          default: ''
+      required:
+      - status
     Address:
       type: object
       properties:
@@ -3724,6 +4296,17 @@ components:
       - next
       - previous
       - results
+    ApproveReturnInput:
+      type: object
+      properties:
+        return_carrier:
+          type: string
+          default: ''
+          maxLength: 64
+        return_tracking_number:
+          type: string
+          default: ''
+          maxLength: 120
     AttributeInput:
       type: object
       properties:
@@ -4358,6 +4941,110 @@ components:
           default: true
       required:
       - percentage
+    CreateRefundInput:
+      type: object
+      properties:
+        seller_order_id:
+          type: string
+          format: uuid
+        amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        reason:
+          type: string
+          maxLength: 120
+        return_request_id:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+      - amount
+      - reason
+      - seller_order_id
+    CreateReturnItemInput:
+      type: object
+      properties:
+        order_item_id:
+          type: string
+          format: uuid
+        quantity:
+          type: integer
+          minimum: 1
+        reason:
+          type: string
+          default: ''
+          maxLength: 120
+      required:
+      - order_item_id
+      - quantity
+    CreateReturnRequestInput:
+      type: object
+      properties:
+        seller_order_id:
+          type: string
+          format: uuid
+        reason:
+          type: string
+          maxLength: 64
+        customer_notes:
+          type: string
+          default: ''
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateReturnItemInput'
+      required:
+      - items
+      - reason
+      - seller_order_id
+    CreateShipmentInput:
+      type: object
+      properties:
+        seller_order_id:
+          type: string
+          format: uuid
+        carrier:
+          type: string
+          maxLength: 64
+        tracking_number:
+          type: string
+          default: ''
+          maxLength: 120
+        tracking_url:
+          oneOf:
+          - type: string
+            format: uri
+            default: ''
+          - type: string
+            maxLength: 0
+        shipping_method_id:
+          type: string
+          format: uuid
+          nullable: true
+        notes:
+          type: string
+          default: ''
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateShipmentItemInput'
+      required:
+      - carrier
+      - items
+      - seller_order_id
+    CreateShipmentItemInput:
+      type: object
+      properties:
+        order_item_id:
+          type: string
+          format: uuid
+        quantity:
+          type: integer
+          minimum: 1
+      required:
+      - order_item_id
+      - quantity
     DefaultCurrencyEnum:
       enum:
       - USD
@@ -5748,6 +6435,353 @@ components:
           maxLength: 500
       required:
       - reason
+    ReceiveReturnInput:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReceiveReturnItemInspectionInput'
+    ReceiveReturnItemInspectionInput:
+      type: object
+      properties:
+        return_item_id:
+          type: string
+          format: uuid
+        condition:
+          type: string
+          default: unopened
+          maxLength: 64
+        restock_inventory:
+          type: boolean
+          default: true
+        warehouse_id:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+      - return_item_id
+    Refund:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        refund_number:
+          type: string
+          maxLength: 64
+        seller_id:
+          type: string
+          format: uuid
+          readOnly: true
+        seller_name:
+          type: string
+          readOnly: true
+        seller_order_id:
+          type: string
+          format: uuid
+          readOnly: true
+        seller_order_number:
+          type: string
+          readOnly: true
+        return_request_id:
+          type: string
+          format: uuid
+          nullable: true
+          readOnly: true
+        amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        currency:
+          type: string
+          maxLength: 3
+        status:
+          $ref: '#/components/schemas/RefundStatusEnum'
+        reason:
+          type: string
+          maxLength: 120
+        commission_reversed:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        seller_deduction:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        created_by_id:
+          type: string
+          format: uuid
+          nullable: true
+          readOnly: true
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/RefundTransaction'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        completed_at:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+      - amount
+      - created_at
+      - created_by_id
+      - id
+      - reason
+      - refund_number
+      - return_request_id
+      - seller_id
+      - seller_name
+      - seller_order_id
+      - seller_order_number
+      - transactions
+    RefundStatusEnum:
+      enum:
+      - pending
+      - processing
+      - completed
+      - failed
+      type: string
+      description: |-
+        * `pending` - Pending
+        * `processing` - Processing
+        * `completed` - Completed
+        * `failed` - Failed
+    RefundTransaction:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        transaction_type:
+          type: string
+          maxLength: 32
+        amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        gateway_reference:
+          type: string
+          maxLength: 120
+        status:
+          type: string
+          maxLength: 32
+        raw_response: {}
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - amount
+      - created_at
+      - id
+      - status
+      - transaction_type
+    RejectReturnInput:
+      type: object
+      properties:
+        reason:
+          type: string
+          maxLength: 255
+      required:
+      - reason
+    ReturnItem:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        order_item_id:
+          type: string
+          format: uuid
+          readOnly: true
+        sku_snapshot:
+          type: string
+          readOnly: true
+        product_name_snapshot:
+          type: string
+          readOnly: true
+        quantity:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        reason:
+          type: string
+          maxLength: 120
+        condition:
+          type: string
+          maxLength: 64
+        restock_inventory:
+          type: boolean
+        warehouse_id:
+          type: string
+          format: uuid
+          nullable: true
+          readOnly: true
+        refund_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+      required:
+      - id
+      - order_item_id
+      - product_name_snapshot
+      - quantity
+      - sku_snapshot
+      - warehouse_id
+    ReturnRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        return_number:
+          type: string
+          maxLength: 64
+        seller_id:
+          type: string
+          format: uuid
+          readOnly: true
+        seller_name:
+          type: string
+          readOnly: true
+        seller_order_id:
+          type: string
+          format: uuid
+          readOnly: true
+        seller_order_number:
+          type: string
+          readOnly: true
+        customer_id:
+          type: string
+          format: uuid
+          nullable: true
+          readOnly: true
+        customer_email:
+          type: string
+          format: email
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/ReturnRequestStatusEnum'
+        reason:
+          type: string
+          maxLength: 64
+        customer_notes:
+          type: string
+        rejection_reason:
+          type: string
+        return_tracking_number:
+          type: string
+          maxLength: 120
+        return_carrier:
+          type: string
+          maxLength: 64
+        requested_at:
+          type: string
+          format: date-time
+          readOnly: true
+        approved_at:
+          type: string
+          format: date-time
+          nullable: true
+        received_at:
+          type: string
+          format: date-time
+          nullable: true
+        closed_at:
+          type: string
+          format: date-time
+          nullable: true
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReturnItem'
+          readOnly: true
+        status_history:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReturnStatusHistory'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - customer_email
+      - customer_id
+      - id
+      - items
+      - reason
+      - requested_at
+      - return_number
+      - seller_id
+      - seller_name
+      - seller_order_id
+      - seller_order_number
+      - status_history
+      - updated_at
+    ReturnRequestStatusEnum:
+      enum:
+      - requested
+      - approved
+      - rejected
+      - in_transit
+      - received
+      - refund_pending
+      - refunded
+      - closed
+      type: string
+      description: |-
+        * `requested` - Requested
+        * `approved` - Approved
+        * `rejected` - Rejected
+        * `in_transit` - In Transit
+        * `received` - Received
+        * `refund_pending` - Refund Pending
+        * `refunded` - Refunded
+        * `closed` - Closed
+    ReturnStatusHistory:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        actor_id:
+          type: string
+          format: uuid
+          nullable: true
+        from_status:
+          type: string
+          maxLength: 32
+        to_status:
+          type: string
+          maxLength: 32
+        notes:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - from_status
+      - id
+      - to_status
     ScopeEnum:
       enum:
       - product
@@ -6473,6 +7507,176 @@ components:
             maxLength: 254
           - type: string
             maxLength: 0
+    Shipment:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        shipment_number:
+          type: string
+          maxLength: 64
+        seller_id:
+          type: string
+          format: uuid
+          readOnly: true
+        seller_name:
+          type: string
+          readOnly: true
+        seller_order_id:
+          type: string
+          format: uuid
+          readOnly: true
+        seller_order_number:
+          type: string
+          readOnly: true
+        shipping_method_id:
+          type: string
+          format: uuid
+          nullable: true
+          readOnly: true
+        carrier:
+          type: string
+          maxLength: 64
+        tracking_number:
+          type: string
+          maxLength: 120
+        tracking_url:
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        status:
+          $ref: '#/components/schemas/ShipmentStatusEnum'
+        shipped_at:
+          type: string
+          format: date-time
+          nullable: true
+        delivered_at:
+          type: string
+          format: date-time
+          nullable: true
+        estimated_delivery_at:
+          type: string
+          format: date-time
+          nullable: true
+        shipping_label_url:
+          type: string
+          maxLength: 255
+        notes:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ShipmentItem'
+          readOnly: true
+        tracking_events:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrackingEvent'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - carrier
+      - created_at
+      - id
+      - items
+      - seller_id
+      - seller_name
+      - seller_order_id
+      - seller_order_number
+      - shipment_number
+      - shipping_method_id
+      - tracking_events
+      - updated_at
+    ShipmentItem:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        order_item_id:
+          type: string
+          format: uuid
+          readOnly: true
+        sku_snapshot:
+          type: string
+          readOnly: true
+        product_name_snapshot:
+          type: string
+          readOnly: true
+        quantity:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - order_item_id
+      - product_name_snapshot
+      - quantity
+      - sku_snapshot
+    ShipmentStatusEnum:
+      enum:
+      - pending
+      - preparing
+      - shipped
+      - in_transit
+      - out_for_delivery
+      - delivered
+      - failed
+      - cancelled
+      type: string
+      description: |-
+        * `pending` - Pending
+        * `preparing` - Preparing
+        * `shipped` - Shipped
+        * `in_transit` - In Transit
+        * `out_for_delivery` - Out for Delivery
+        * `delivered` - Delivered
+        * `failed` - Failed
+        * `cancelled` - Cancelled
+    TrackingEvent:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        status:
+          type: string
+          maxLength: 32
+        location:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - status
     User:
       type: object
       properties:

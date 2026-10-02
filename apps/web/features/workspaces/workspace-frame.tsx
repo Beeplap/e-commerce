@@ -23,6 +23,8 @@ export function WorkspaceFrame({
   sellerCanReadProducts = false,
   sellerCanReadInventory = false,
   sellerCanReadOrders = false,
+  sellerCanReadFulfillment = false,
+  sellerCanReadReturns = false,
   sellerCanReadFinance = false,
 }: {
   mode: WorkspaceMode;
@@ -32,6 +34,8 @@ export function WorkspaceFrame({
   sellerCanReadProducts?: boolean;
   sellerCanReadInventory?: boolean;
   sellerCanReadOrders?: boolean;
+  sellerCanReadFulfillment?: boolean;
+  sellerCanReadReturns?: boolean;
   sellerCanReadFinance?: boolean;
 }) {
   const pathname = usePathname();
@@ -41,6 +45,12 @@ export function WorkspaceFrame({
   const links = [{ href: `/${mode}`, label: "Overview" }];
   if (mode === "seller" && sellerCanReadOrders)
     links.push({ href: "/seller/orders", label: "Orders" });
+  if (mode === "seller" && sellerCanReadFulfillment)
+    links.push({ href: "/seller/shipments", label: "Shipments" });
+  if (mode === "seller" && sellerCanReadReturns) {
+    links.push({ href: "/seller/returns", label: "Returns" });
+    links.push({ href: "/seller/refunds", label: "Refunds" });
+  }
   if (mode === "seller" && sellerCanReadProducts)
     links.push({ href: "/seller/products", label: "Products" });
   if (mode === "seller" && sellerCanReadInventory) {
@@ -53,6 +63,11 @@ export function WorkspaceFrame({
     links.push({ href: "/seller/settings", label: "Seller settings" });
   if (mode === "admin" && hasPlatformPermission(user, "platform.orders.read"))
     links.push({ href: "/admin/orders", label: "Orders" });
+  if (
+    mode === "admin" &&
+    hasPlatformPermission(user, "platform.fulfillment.read")
+  )
+    links.push({ href: "/admin/fulfillment", label: "Fulfillment" });
   if (mode === "admin" && hasPlatformPermission(user, "platform.sellers.read"))
     links.push({ href: "/admin/sellers", label: "Sellers" });
   if (mode === "admin" && hasPlatformPermission(user, "platform.finance.read"))

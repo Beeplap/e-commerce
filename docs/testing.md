@@ -115,3 +115,27 @@ Frontend coverage includes:
 - Platform seller balance management: table of seller balances with manual adjustment modal.
 - Platform payout processing: payout queue with approve, reject, and process workflows.
 - Permission gating and error handling for finance views.
+
+Phase 9 adds 12 PostgreSQL fulfillment backend tests in `tests/test_fulfillment.py` and 5 frontend tests in `apps/web/tests/fulfillment.test.tsx`.
+Backend coverage includes:
+
+- Shipping zone, method, and rate setup scoped to sellers.
+- Multi-shipment creation per `SellerOrder` with carrier tracking and item manifest validation.
+- Append-only parcel `TrackingEvent` logging and immutable database triggers rejecting updates/deletions.
+- Shipment delivery marking and order fulfillment progression.
+- Customer return authorizations (`ReturnRequest` and `ReturnItem`) operating against delivered order items.
+- Return lifecycle state transitions (`REQUESTED` -> `APPROVED` | `REJECTED` -> `IN_TRANSIT` -> `RECEIVED` -> `REFUND_PENDING` -> `REFUNDED` -> `CLOSED`).
+- Inventory restock integration: returning inspected items with `restock_inventory=True` creating `return` inventory ledger transactions.
+- Customer refund processing (`Refund`): automatic proportional marketplace commission reversal calculation, posting compensating `REFUND` debit and `COMMISSION` credit entries to the seller financial ledger.
+- Completed refund immutability via PostgreSQL trigger; rejection of mutations to completed refunds.
+- Scope integrity triggers preventing cross-tenant links on shipments, shipment items, return requests, return items, and refunds.
+- Capability and permission gating: seller capabilities (`fulfillment.read`, `fulfillment.manage`, `returns.read`, `returns.manage`) and platform capabilities (`platform.fulfillment.read`, `platform.returns.read`, `platform.refunds.manage`).
+
+Frontend coverage includes:
+
+- Seller shipments list with carrier tracking, status badges, status filter, and parcel inspection modal displaying items and timeline.
+- Seller returns list with status filters, inspection modal, return approval, rejection with reason, and receipt with restock selection.
+- Seller refunds list with financial deductions, commission reversals, and issue refund modal.
+- Platform admin fulfillment overview with unified tabs for marketplace shipments, customer returns, and administrative refunds.
+- Administrative refund modal for platform concessions.
+- Permission gating, 403 handling, and robust form validation.

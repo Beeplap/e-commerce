@@ -108,3 +108,28 @@ PostgreSQL migration `0002_finance_integrity` enforces:
 - Cross-tenant scope validation trigger on `SellerLedgerEntry`: Verifies that `seller_order.seller_id == seller_id` and `payout.seller_id == seller_id` before insertion.
 - Cross-tenant scope validation trigger on `PayoutItem`: Verifies that `payout.seller_id == ledger_entry.seller_id` preventing mixing ledger entries between tenants.
 - Nonnegative constraints on `SellerBalance` fields (`current_balance >= 0`, `pending_balance >= 0`, `total_paid_out >= 0`) and positive constraints on `Payout.amount > 0`.
+
+## Phase 9 fulfillment and returns schema
+
+`fulfillment` implements shipping logistics, shipment parcel tracking, customer returns (RMA), and refund resolution:
+
+- `ShippingZone`: Regional shipping delivery jurisdiction (`seller`, `name`, `countries` list, `regions` list, `is_active`).
+- `ShippingMethod`: Delivery carrier service definition (`seller`, `name`, `carrier`, `estimated_days_min`, `estimated_days_max`, `is_active`).
+- `ShippingRate`: Pricing rules attached to a method and zone (`shipping_method`, `shipping_zone`, `min_order_price`, `max_order_price`, `min_weight`, `max_weight`, `rate`, `currency`).
+- `Shipment`: Parcel delivery entity linked to a specific `SellerOrder` (`shipment_number`, `seller`, `seller_order`, `shipping_method`, `carrier`, `tracking_number`, `tracking_url`, `shipping_label_url`, `status`: `PENDING`, `PREPARING`, `SHIPPED`, `IN_TRANSIT`, `OUT_FOR_DELIVERY`, `DELIVERED`, `FAILED`, `CANCELLED`; `shipped_at`, `delivered_at`, `estimated_delivery_at`, `notes`).
+- `ShipmentItem`: Line item manifest contained in a shipment (`shipment`, `order_item`, `quantity`).
+- `TrackingEvent`: Append-only parcel transit updates (`shipment`, `status`, `location`, `description`, `timestamp`).
+- `ReturnRequest`: Customer return authorization entity linked to a `SellerOrder` (`return_number`, `seller`, `seller_order`, `customer`, `customer_email`, `status`: `REQUESTED`, `APPROVED`, `REJECTED`, `IN_TRANSIT`, `RECEIVED`, `REFUND_PENDING`, `REFUNDED`, `CLOSED`; `reason`, `customer_notes`, `rejection_reason`, `return_tracking_number`, `return_carrier`, `requested_at`, `approved_at`, `received_at`, `closed_at`).
+- `ReturnItem`: Individual order item returned with inspection data (`return_request`, `order_item`, `quantity`, `reason`, `condition`, `restock_inventory`, `warehouse`, `refund_amount`).
+- `ReturnStatusHistory`: Append-only lifecycle transition audit ledger for return requests (`return_request`, `actor_id`, `from_status`, `to_status`, `notes`).
+- `Refund`: Order refund record (`refund_number`, `seller`, `seller_order`, `return_request`, `amount`, `currency`, `status`: `PENDING`, `PROCESSING`, `COMPLETED`, `FAILED`; `reason`, `commission_reversed`, `seller_deduction`, `created_by`, `completed_at`).
+- `RefundTransaction`: Payment gateway interaction record (`refund`, `transaction_type`, `amount`, `gateway_reference`, `status`, `raw_response`).
+
+PostgreSQL migration `0002_fulfillment_integrity` enforces:
+
+- Immutability trigger on `ReturnStatusHistory`, `TrackingEvent`, and `RefundTransaction`: Rejects all UPDATE and DELETE operations via `sellers_reject_history_mutation()`.
+- Immutability trigger on completed `Refund`: Once status is `completed`, SQL trigger rejects all mutations.
+- Cross-tenant validation trigger on `Shipment` and `ShipmentItem`: Verifies `seller_order.seller_id == seller_id` and `order_item.seller_order.seller_id == shipment.seller_id`.
+- Cross-tenant validation trigger on `ReturnRequest` and `ReturnItem`: Verifies `seller_order.seller_id == seller_id`, `order_item.seller_order.seller_id == return_request.seller_id`, and `warehouse.seller_id == return_request.seller_id`.
+- Cross-tenant validation trigger on `Refund`: Verifies `seller_order.seller_id == seller_id` and `return_request.seller_id == seller_id`.
+- Nonnegative and positive check constraints on financial amounts and item quantities.

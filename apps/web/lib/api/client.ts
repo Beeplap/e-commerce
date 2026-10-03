@@ -9,6 +9,12 @@ import type {
   NotificationUnreadCount,
   SellerDashboardMetrics,
   PlatformDashboardMetrics,
+  Page,
+  StorefrontCategory,
+  StorefrontBrand,
+  StorefrontProductCard,
+  StorefrontProductDetail,
+  StorefrontSellerDetail,
 } from "./types";
 
 import {
@@ -456,4 +462,57 @@ export const adminApi = {
       signal,
     });
   },
+};
+
+// Phase 17: Public Storefront APIs
+export const storefrontApi = {
+  categories: (signal?: AbortSignal) =>
+    apiRequest("/api/v1/storefront/categories", {
+      parse: (v) => v as StorefrontCategory[],
+      signal,
+    }),
+
+  brands: (signal?: AbortSignal) =>
+    apiRequest("/api/v1/storefront/brands", {
+      parse: (v) => v as StorefrontBrand[],
+      signal,
+    }),
+
+  products: (
+    params?: {
+      page?: number;
+      category?: string;
+      brand?: string;
+      seller?: string;
+      sort?: "newest" | "price_asc" | "price_desc" | "rating";
+    },
+    signal?: AbortSignal,
+  ) => {
+    const search = new URLSearchParams();
+    if (params?.page) search.set("page", String(params.page));
+    if (params?.category) search.set("category", params.category);
+    if (params?.brand) search.set("brand", params.brand);
+    if (params?.seller) search.set("seller", params.seller);
+    if (params?.sort) search.set("sort", params.sort);
+    const qs = search.toString();
+    const url = qs
+      ? `/api/v1/storefront/products?${qs}`
+      : "/api/v1/storefront/products";
+    return apiRequest(url, {
+      parse: (v) => v as Page<StorefrontProductCard>,
+      signal,
+    });
+  },
+
+  productDetail: (productId: string, signal?: AbortSignal) =>
+    apiRequest(`/api/v1/storefront/products/${productId}`, {
+      parse: (v) => v as StorefrontProductDetail,
+      signal,
+    }),
+
+  sellerDetail: (sellerId: string, signal?: AbortSignal) =>
+    apiRequest(`/api/v1/storefront/sellers/${sellerId}`, {
+      parse: (v) => v as StorefrontSellerDetail,
+      signal,
+    }),
 };

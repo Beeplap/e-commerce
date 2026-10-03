@@ -4970,6 +4970,164 @@ paths:
               schema:
                 $ref: '#/components/schemas/WarehouseOutput'
           description: ''
+  /api/v1/storefront/brands:
+    get:
+      operationId: storefront_brands_list
+      description: List active brands with active product counts.
+      tags:
+      - Storefront
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StorefrontBrand'
+          description: ''
+  /api/v1/storefront/categories:
+    get:
+      operationId: storefront_categories_list
+      description: List active product categories with active product counts.
+      tags:
+      - Storefront
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StorefrontCategory'
+          description: ''
+  /api/v1/storefront/products:
+    get:
+      operationId: storefront_products_list
+      description: Paginated list of active products from verified active sellers.
+      parameters:
+      - in: query
+        name: brand
+        schema:
+          type: string
+          format: uuid
+        description: Filter by brand UUID.
+      - in: query
+        name: category
+        schema:
+          type: string
+          format: uuid
+        description: Filter by category UUID.
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: Page number (1-10000).
+      - in: query
+        name: seller
+        schema:
+          type: string
+          format: uuid
+        description: Filter by seller UUID.
+      - in: query
+        name: sort
+        schema:
+          type: string
+        description: Sort order (newest, price_asc, price_desc, rating).
+      tags:
+      - Storefront
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StorefrontProductPage'
+          description: ''
+  /api/v1/storefront/products/{product_id}:
+    get:
+      operationId: storefront_product_detail
+      description: Comprehensive product detail with variants, attributes, images,
+        and reviews.
+      parameters:
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Storefront
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StorefrontProductDetail'
+          description: ''
+  /api/v1/storefront/products/{product_id}/images/{image_id}:
+    get:
+      operationId: storefront_product_image_retrieve
+      description: Public product image viewer.
+      parameters:
+      - in: path
+        name: image_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Storefront
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            image/*:
+              schema:
+                type: string
+                format: binary
+          description: ''
+  /api/v1/storefront/sellers/{seller_id}:
+    get:
+      operationId: storefront_seller_detail
+      description: Public seller store page with profile, ratings, and catalog metadata.
+      parameters:
+      - in: path
+        name: seller_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Storefront
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StorefrontSellerDetail'
+          description: ''
 components:
   schemas:
     AddTrackingEventInput:
@@ -9467,6 +9625,349 @@ components:
       required:
       - email
       - id
+    StorefrontBrand:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        slug:
+          type: string
+          pattern: ^[-a-zA-Z0-9_]+$
+        product_count:
+          type: integer
+          default: 0
+      required:
+      - id
+      - name
+      - slug
+    StorefrontCategory:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        slug:
+          type: string
+          pattern: ^[-a-zA-Z0-9_]+$
+        description:
+          type: string
+          default: ''
+        parent_id:
+          type: string
+          format: uuid
+          nullable: true
+        product_count:
+          type: integer
+          default: 0
+      required:
+      - id
+      - name
+      - parent_id
+      - slug
+    StorefrontImage:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        url:
+          type: string
+        alt_text:
+          type: string
+          default: ''
+        sort_order:
+          type: integer
+          default: 0
+      required:
+      - id
+      - url
+    StorefrontProductCard:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        slug:
+          type: string
+          pattern: ^[-a-zA-Z0-9_]+$
+        short_description:
+          type: string
+          default: ''
+        category_id:
+          type: string
+          format: uuid
+        category_name:
+          type: string
+        brand_id:
+          type: string
+          format: uuid
+          nullable: true
+        brand_name:
+          type: string
+          nullable: true
+        starting_price:
+          type: string
+        compare_at_price:
+          type: string
+          nullable: true
+        currency:
+          type: string
+          default: USD
+        thumbnail_url:
+          type: string
+          nullable: true
+        in_stock:
+          type: boolean
+          default: true
+        average_rating:
+          type: number
+          format: double
+          nullable: true
+        review_count:
+          type: integer
+          default: 0
+        seller:
+          $ref: '#/components/schemas/StorefrontSellerBadge'
+      required:
+      - average_rating
+      - brand_id
+      - brand_name
+      - category_id
+      - category_name
+      - compare_at_price
+      - id
+      - seller
+      - slug
+      - starting_price
+      - thumbnail_url
+      - title
+    StorefrontProductDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        slug:
+          type: string
+          pattern: ^[-a-zA-Z0-9_]+$
+        description:
+          type: string
+          default: ''
+        short_description:
+          type: string
+          default: ''
+        category:
+          $ref: '#/components/schemas/StorefrontCategory'
+        brand:
+          allOf:
+          - $ref: '#/components/schemas/StorefrontBrand'
+          nullable: true
+        seller:
+          $ref: '#/components/schemas/StorefrontSellerBadge'
+        starting_price:
+          type: string
+        compare_at_price:
+          type: string
+          nullable: true
+        currency:
+          type: string
+          default: USD
+        in_stock:
+          type: boolean
+          default: true
+        total_available_stock:
+          type: integer
+          default: 0
+        average_rating:
+          type: number
+          format: double
+          nullable: true
+        review_count:
+          type: integer
+          default: 0
+        rating_breakdown:
+          type: object
+          additionalProperties:
+            type: integer
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/StorefrontImage'
+        variants:
+          type: array
+          items:
+            $ref: '#/components/schemas/StorefrontVariant'
+        recent_reviews:
+          type: array
+          items:
+            $ref: '#/components/schemas/StorefrontReviewItem'
+      required:
+      - average_rating
+      - brand
+      - category
+      - compare_at_price
+      - id
+      - images
+      - recent_reviews
+      - seller
+      - slug
+      - starting_price
+      - title
+      - variants
+    StorefrontProductPage:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          format: uri
+          nullable: true
+        previous:
+          type: string
+          format: uri
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/StorefrontProductCard'
+      required:
+      - count
+      - next
+      - previous
+      - results
+    StorefrontReviewItem:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        customer_name:
+          type: string
+        rating:
+          type: integer
+        title:
+          type: string
+        body:
+          type: string
+        verified_purchase:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        seller_response:
+          type: string
+          nullable: true
+        seller_response_at:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+      - body
+      - created_at
+      - customer_name
+      - id
+      - rating
+      - seller_response
+      - seller_response_at
+      - title
+      - verified_purchase
+    StorefrontSellerBadge:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        store_name:
+          type: string
+        rating:
+          type: number
+          format: double
+          nullable: true
+      required:
+      - id
+      - name
+      - rating
+      - store_name
+    StorefrontSellerDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        store_name:
+          type: string
+        description:
+          type: string
+          default: ''
+        contact_email:
+          type: string
+          default: ''
+        city:
+          type: string
+          nullable: true
+        state:
+          type: string
+          nullable: true
+        country:
+          type: string
+          nullable: true
+        average_rating:
+          type: number
+          format: double
+          nullable: true
+        total_products:
+          type: integer
+          default: 0
+      required:
+      - average_rating
+      - city
+      - country
+      - id
+      - name
+      - state
+      - store_name
+    StorefrontVariant:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        sku:
+          type: string
+        price:
+          type: string
+        compare_at_price:
+          type: string
+          nullable: true
+        in_stock:
+          type: boolean
+          default: true
+        available_quantity:
+          type: integer
+          default: 0
+        attributes:
+          type: object
+          additionalProperties:
+            type: string
+      required:
+      - compare_at_price
+      - id
+      - price
+      - sku
     TopCategory:
       type: object
       properties:

@@ -197,3 +197,110 @@ export interface PlatformDashboardMetrics {
   top_sellers: TopSeller[];
   sales_over_time: PlatformSalesOverTimePoint[];
 }
+
+// Phase 17: Storefront Interfaces
+export interface StorefrontCategory {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  parent_id: string | null;
+  product_count: number;
+}
+
+export interface StorefrontBrand {
+  id: string;
+  name: string;
+  slug: string;
+  product_count: number;
+}
+
+export interface StorefrontSellerBadge {
+  id: string;
+  name: string;
+  store_name: string;
+  rating: number | null;
+}
+
+export interface StorefrontProductCard {
+  id: string;
+  title: string;
+  slug: string;
+  short_description: string;
+  category_id: string;
+  category_name: string;
+  brand_id: string | null;
+  brand_name: string | null;
+  starting_price: string;
+  compare_at_price: string | null;
+  currency: string;
+  thumbnail_url: string | null;
+  in_stock: boolean;
+  average_rating: number | null;
+  review_count: number;
+  seller: StorefrontSellerBadge;
+}
+
+export interface StorefrontVariant {
+  id: string;
+  sku: string;
+  price: string;
+  compare_at_price: string | null;
+  in_stock: boolean;
+  available_quantity: number;
+  attributes: Record<string, string>;
+}
+
+export interface StorefrontImage {
+  id: string;
+  url: string;
+  alt_text: string;
+  sort_order: number;
+}
+
+export interface StorefrontReview {
+  id: string;
+  customer_name: string;
+  rating: number;
+  title: string;
+  body: string;
+  verified_purchase: boolean;
+  created_at: string;
+  seller_response: string | null;
+  seller_response_at: string | null;
+}
+
+export interface StorefrontProductDetail {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  short_description: string;
+  category: StorefrontCategory;
+  brand: StorefrontBrand | null;
+  seller: StorefrontSellerBadge;
+  starting_price: string;
+  compare_at_price: string | null;
+  currency: string;
+  in_stock: boolean;
+  total_available_stock: number;
+  average_rating: number | null;
+  review_count: number;
+  rating_breakdown: Record<string, number>;
+  images: StorefrontImage[];
+  variants: StorefrontVariant[];
+  recent_reviews: StorefrontReview[];
+}
+
+export interface StorefrontSellerDetail {
+  id: string;
+  name: string;
+  store_name: string;
+  description: string;
+  contact_email: string;
+  city: string | null;
+  state: string | null;
+  country: string | null;
+  average_rating: number | null;
+  total_products: number;
+}

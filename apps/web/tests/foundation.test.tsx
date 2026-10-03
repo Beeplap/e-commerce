@@ -1,23 +1,43 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 import Home from "../app/page";
 import { GET } from "../app/health/route";
 import nextConfig from "../next.config";
+import { AuthProvider } from "@/features/auth/auth-provider";
+
+vi.mock("next/navigation", () => ({
+  usePathname: () => "/",
+  useRouter: () => ({ push: vi.fn(), replace: vi.fn() }),
+}));
 
 describe("platform foundation", () => {
+  beforeAll(() => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: async () => ({ results: [], count: 0 }),
+      }),
+    );
+  });
+
   it("renders an accessible landing page without fake business data", () => {
-    render(<Home />);
+    render(
+      <AuthProvider>
+        <Home />
+      </AuthProvider>,
+    );
     expect(screen.getByRole("main")).toBeInTheDocument();
     expect(
       screen.getByRole("heading", {
         level: 1,
-        name: "Marketplace administration",
+        name: /Lightning commerce/i,
       }),
     ).toBeVisible();
-    expect(screen.getByRole("link", { name: "Sign in" })).toHaveAttribute(
-      "href",
-      "/login",
-    );
+    expect(
+      screen.getByRole("link", { name: "Sell on QuickCommerce" }),
+    ).toHaveAttribute("href", "/onboarding");
   });
 
   it("returns minimal, uncached web liveness", async () => {

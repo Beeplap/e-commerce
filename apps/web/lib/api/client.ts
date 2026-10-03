@@ -15,6 +15,8 @@ import type {
   StorefrontProductCard,
   StorefrontProductDetail,
   StorefrontSellerDetail,
+  StorefrontSearchResultPage,
+  StorefrontSuggestResponse,
 } from "./types";
 
 import {
@@ -515,4 +517,56 @@ export const storefrontApi = {
       parse: (v) => v as StorefrontSellerDetail,
       signal,
     }),
+
+  search: (
+    params: {
+      q?: string;
+      category?: string;
+      category_slug?: string;
+      brand?: string;
+      brand_slug?: string;
+      seller?: string;
+      min_price?: string;
+      max_price?: string;
+      in_stock?: boolean;
+      min_rating?: number;
+      sort?: string;
+      page?: number;
+      limit?: number;
+    },
+    signal?: AbortSignal,
+  ) => {
+    const sp = new URLSearchParams();
+    if (params.q) sp.set("q", params.q);
+    if (params.category) sp.set("category", params.category);
+    if (params.category_slug) sp.set("category_slug", params.category_slug);
+    if (params.brand) sp.set("brand", params.brand);
+    if (params.brand_slug) sp.set("brand_slug", params.brand_slug);
+    if (params.seller) sp.set("seller", params.seller);
+    if (params.min_price) sp.set("min_price", params.min_price);
+    if (params.max_price) sp.set("max_price", params.max_price);
+    if (params.in_stock) sp.set("in_stock", "true");
+    if (params.min_rating) sp.set("min_rating", String(params.min_rating));
+    if (params.sort) sp.set("sort", params.sort);
+    if (params.page && params.page > 1) sp.set("page", String(params.page));
+    if (params.limit) sp.set("limit", String(params.limit));
+
+    const qs = sp.toString();
+    const url = qs
+      ? `/api/v1/storefront/search?${qs}`
+      : "/api/v1/storefront/search";
+    return apiRequest(url, {
+      parse: (v) => v as StorefrontSearchResultPage,
+      signal,
+    });
+  },
+
+  suggest: (query: string, signal?: AbortSignal) => {
+    const sp = new URLSearchParams();
+    if (query) sp.set("q", query);
+    return apiRequest(`/api/v1/storefront/search/suggest?${sp.toString()}`, {
+      parse: (v) => v as StorefrontSuggestResponse,
+      signal,
+    });
+  },
 };

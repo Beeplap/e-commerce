@@ -13,7 +13,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.catalog.models import ProductImage
-from apps.storefront import selectors
+from apps.storefront import search, selectors
 from apps.storefront import serializers as schemas
 from config.pagination import BoundedPagination
 
@@ -49,7 +49,49 @@ SORT_PARAM = OpenApiParameter(
     name="sort",
     type=str,
     location=OpenApiParameter.QUERY,
-    description="Sort order (newest, price_asc, price_desc, rating).",
+    description="Sort order (newest, price_asc, price_desc, rating, relevance).",
+    required=False,
+)
+Q_PARAM = OpenApiParameter(
+    name="q",
+    type=str,
+    location=OpenApiParameter.QUERY,
+    description="Full-text search query string.",
+    required=False,
+)
+MIN_PRICE_PARAM = OpenApiParameter(
+    name="min_price",
+    type=str,
+    location=OpenApiParameter.QUERY,
+    description="Filter by minimum price.",
+    required=False,
+)
+MAX_PRICE_PARAM = OpenApiParameter(
+    name="max_price",
+    type=str,
+    location=OpenApiParameter.QUERY,
+    description="Filter by maximum price.",
+    required=False,
+)
+IN_STOCK_PARAM = OpenApiParameter(
+    name="in_stock",
+    type=bool,
+    location=OpenApiParameter.QUERY,
+    description="Filter to in-stock items only.",
+    required=False,
+)
+MIN_RATING_PARAM = OpenApiParameter(
+    name="min_rating",
+    type=float,
+    location=OpenApiParameter.QUERY,
+    description="Filter by minimum rating (e.g. 4.0).",
+    required=False,
+)
+LIMIT_PARAM = OpenApiParameter(
+    name="limit",
+    type=int,
+    location=OpenApiParameter.QUERY,
+    description="Number of results per page (1-50).",
     required=False,
 )
 
@@ -200,3 +242,147 @@ class StorefrontImageDownloadView(PublicStorefrontAPIView):
         )
         response["Cache-Control"] = "public, max-age=86400, immutable"
         return response
+
+
+class StorefrontSearchView(PublicStorefrontAPIView):
+    allowed_query_parameters = frozenset(
+        {
+            "q",
+            "category",
+            "category_slug",
+            "brand",
+            "brand_slug",
+            "seller",
+            "min_price",
+            "max_price",
+            "in_stock",
+            "min_rating",
+            "sort",
+            "page",
+            "limit",
+        }
+    )
+
+    @extend_schema(
+        operation_id="storefront_search_list",
+        responses=schemas.StorefrontSearchResultPageSerializer,
+        parameters=[
+            Q_PARAM,
+            CATEGORY_PARAM,
+            BRAND_PARAM,
+            SELLER_PARAM,
+            MIN_PRICE_PARAM,
+            MAX_PRICE_PARAM,
+            IN_STOCK_PARAM,
+            MIN_RATING_PARAM,
+            SORT_PARAM,
+            PAGE_PARAM,
+            LIMIT_PARAM,
+        ],
+        tags=["Storefront"],
+        description=(
+            "Search active products with PostgreSQL full-text search, "
+            "dynamic facets, and filtering."
+        ),
+    )
+    def get(self, request: Request) -> Response:
+        page_num = 1
+        page_raw = request.query_params.get("page")
+        if page_raw:
+            try:
+                page_num = int(page_raw)
+                if page_num < 1:
+                    raise ValidationError({"page": "Page must be greater than or equal to 1."})
+            except ValueError:
+                raise ValidationError({"page": "Invalid page number."}) from None
+
+        limit = 20
+        limit_raw = request.query_params.get("limit")
+        if limit_raw:
+            try:
+                limit = int(limit_raw)
+                if limit < 1 or limit > 50:
+                    raise ValidationError({"limit": "Limit must be between 1 and 50."})
+            except ValueError:
+                raise ValidationError({"limit": "Invalid limit."}) from None
+
+        offset = (page_num - 1) * limit
+
+        category_id = None
+        cat_raw = request.query_params.get("category")
+        if cat_raw:
+            try:
+                category_id = UUID(cat_raw)
+            except ValueError:
+                raise ValidationError({"category": "Invalid category UUID."}) from None
+
+        brand_id = None
+        brand_raw = request.query_params.get("brand")
+        if brand_raw:
+            try:
+                brand_id = UUID(brand_raw)
+            except ValueError:
+                raise ValidationError({"brand": "Invalid brand UUID."}) from None
+
+        seller_id = None
+        seller_raw = request.query_params.get("seller")
+        if seller_raw:
+            try:
+                seller_id = UUID(seller_raw)
+            except ValueError:
+                raise ValidationError({"seller": "Invalid seller UUID."}) from None
+
+        in_stock_only = request.query_params.get("in_stock", "").lower() in ("true", "1", "yes")
+
+        min_rating = None
+        rating_raw = request.query_params.get("min_rating")
+        if rating_raw:
+            try:
+                min_rating = float(rating_raw)
+            except ValueError:
+                raise ValidationError({"min_rating": "Invalid minimum rating."}) from None
+
+        search_result = search.execute_storefront_search(
+            q=request.query_params.get("q"),
+            category_id=category_id,
+            category_slug=request.query_params.get("category_slug"),
+            brand_id=brand_id,
+            brand_slug=request.query_params.get("brand_slug"),
+            min_price=request.query_params.get("min_price"),
+            max_price=request.query_params.get("max_price"),
+            in_stock_only=in_stock_only,
+            seller_id=seller_id,
+            min_rating=min_rating,
+            sort=request.query_params.get("sort"),
+            offset=offset,
+            limit=limit,
+        )
+
+        total_count = search_result["count"]
+        next_url = f"?page={page_num + 1}" if offset + limit < total_count else None
+        prev_url = f"?page={page_num - 1}" if page_num > 1 else None
+
+        data = {
+            "count": total_count,
+            "next": next_url,
+            "previous": prev_url,
+            "facets": search_result["facets"],
+            "results": search_result["results"],
+        }
+        return Response(schemas.StorefrontSearchResultPageSerializer(data).data)
+
+
+class StorefrontSuggestView(PublicStorefrontAPIView):
+    allowed_query_parameters = frozenset({"q"})
+
+    @extend_schema(
+        operation_id="storefront_search_suggest",
+        responses=schemas.StorefrontSuggestResponseSerializer,
+        parameters=[Q_PARAM],
+        tags=["Storefront"],
+        description="Fast search suggestions, categories, brands, and top product matches.",
+    )
+    def get(self, request: Request) -> Response:
+        q = request.query_params.get("q", "")
+        data = search.execute_search_suggestions(q)
+        return Response(schemas.StorefrontSuggestResponseSerializer(data).data)

@@ -29,6 +29,16 @@ urlpatterns = [
         name="storefront-image-download",
     ),
     path(
+        "storefront/search",
+        views.StorefrontSearchView.as_view(),
+        name="storefront-search",
+    ),
+    path(
+        "storefront/search/suggest",
+        views.StorefrontSuggestView.as_view(),
+        name="storefront-search-suggest",
+    ),
+    path(
         "storefront/sellers/<uuid:seller_id>",
         views.StorefrontSellerDetailView.as_view(),
         name="storefront-seller-detail",

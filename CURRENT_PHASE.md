@@ -1,7 +1,7 @@
-PHASE 18
+PHASE 19
 
-Implement only Phase 18: High-Performance Search & Faceted Filtering as defined in `instructions2.md`.
+Implement only Phase 19: Shopping Cart & Real-Time Reservation Checks as defined in `instructions2.md`.
 
-Scope: Authoritative PostgreSQL full-text search (SearchVector, SearchQuery, trigram indexing) across products, categories, brands, variants; GET /api/v1/storefront/search/ with faceted counts (categories, brands, price brackets, rating, stock status); instant suggestions autocomplete endpoint GET /api/v1/storefront/search/suggest/; Next.js search results page at /search with faceted filter sidebar, dynamic filter chips, mobile sheet, sort selector, and instant search dropdown in header. Future phases remain architectural context until their turn.
+Scope: Dedicated `apps/cart` app; Cart and CartItem models supporting guest sessions (session_key) and authenticated customers (user); multi-seller item grouping with server-authoritative line subtotals and seller subtotals; atomic real-time stock availability verification (`quantity_on_hand - quantity_reserved`); cart endpoints (GET /api/v1/cart/, POST /api/v1/cart/items/, PATCH /api/v1/cart/items/<id>/, DELETE /api/v1/cart/items/<id>/, POST /api/v1/cart/clear/); automated guest-to-authenticated cart merging on login; Next.js slide-out Cart Drawer, navigation badge count, and full Cart page at /cart with seller grouping, coupon discount preview, and out-of-stock checkout guards. Future phases remain architectural context until their turn.
 
-After Phase 18 passes all required validation, update documentation and progress, advance this selector, commit, and push before beginning the next phase. Sequential continuation is authorized. Stop advancement on failed validation or push, and respect later user pause or scope instructions.
+After Phase 19 passes all required validation, update documentation and progress, advance this selector, commit, and push before beginning the next phase. Sequential continuation is authorized. Stop advancement on failed validation or push, and respect later user pause or scope instructions.

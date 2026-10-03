@@ -5038,7 +5038,7 @@ paths:
         name: sort
         schema:
           type: string
-        description: Sort order (newest, price_asc, price_desc, rating).
+        description: Sort order (newest, price_asc, price_desc, rating, relevance).
       tags:
       - Storefront
       security:
@@ -5104,6 +5104,105 @@ paths:
               schema:
                 type: string
                 format: binary
+          description: ''
+  /api/v1/storefront/search:
+    get:
+      operationId: storefront_search_list
+      description: Search active products with PostgreSQL full-text search, dynamic
+        facets, and filtering.
+      parameters:
+      - in: query
+        name: brand
+        schema:
+          type: string
+          format: uuid
+        description: Filter by brand UUID.
+      - in: query
+        name: category
+        schema:
+          type: string
+          format: uuid
+        description: Filter by category UUID.
+      - in: query
+        name: in_stock
+        schema:
+          type: boolean
+        description: Filter to in-stock items only.
+      - in: query
+        name: limit
+        schema:
+          type: integer
+        description: Number of results per page (1-50).
+      - in: query
+        name: max_price
+        schema:
+          type: string
+        description: Filter by maximum price.
+      - in: query
+        name: min_price
+        schema:
+          type: string
+        description: Filter by minimum price.
+      - in: query
+        name: min_rating
+        schema:
+          type: number
+          format: double
+        description: Filter by minimum rating (e.g. 4.0).
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: Page number (1-10000).
+      - in: query
+        name: q
+        schema:
+          type: string
+        description: Full-text search query string.
+      - in: query
+        name: seller
+        schema:
+          type: string
+          format: uuid
+        description: Filter by seller UUID.
+      - in: query
+        name: sort
+        schema:
+          type: string
+        description: Sort order (newest, price_asc, price_desc, rating, relevance).
+      tags:
+      - Storefront
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StorefrontSearchResultPage'
+          description: ''
+  /api/v1/storefront/search/suggest:
+    get:
+      operationId: storefront_search_suggest
+      description: Fast search suggestions, categories, brands, and top product matches.
+      parameters:
+      - in: query
+        name: q
+        schema:
+          type: string
+        description: Full-text search query string.
+      tags:
+      - Storefront
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StorefrontSuggestResponse'
           description: ''
   /api/v1/storefront/sellers/{seller_id}:
     get:
@@ -9669,6 +9768,70 @@ components:
       - name
       - parent_id
       - slug
+    StorefrontFacetBrand:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        slug:
+          type: string
+        count:
+          type: integer
+      required:
+      - count
+      - id
+      - name
+      - slug
+    StorefrontFacetCategory:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        slug:
+          type: string
+        count:
+          type: integer
+      required:
+      - count
+      - id
+      - name
+      - slug
+    StorefrontFacetPriceBracket:
+      type: object
+      properties:
+        label:
+          type: string
+        min_price:
+          type: string
+        max_price:
+          type: string
+          nullable: true
+        count:
+          type: integer
+      required:
+      - count
+      - label
+      - max_price
+      - min_price
+    StorefrontFacetRatingBracket:
+      type: object
+      properties:
+        label:
+          type: string
+        min_rating:
+          type: integer
+        count:
+          type: integer
+      required:
+      - count
+      - label
+      - min_rating
     StorefrontImage:
       type: object
       properties:
@@ -9881,6 +10044,58 @@ components:
       - seller_response_at
       - title
       - verified_purchase
+    StorefrontSearchFacets:
+      type: object
+      properties:
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/StorefrontFacetCategory'
+        brands:
+          type: array
+          items:
+            $ref: '#/components/schemas/StorefrontFacetBrand'
+        price_brackets:
+          type: array
+          items:
+            $ref: '#/components/schemas/StorefrontFacetPriceBracket'
+        rating_brackets:
+          type: array
+          items:
+            $ref: '#/components/schemas/StorefrontFacetRatingBracket'
+        in_stock_count:
+          type: integer
+      required:
+      - brands
+      - categories
+      - in_stock_count
+      - price_brackets
+      - rating_brackets
+    StorefrontSearchResultPage:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          format: uri
+          nullable: true
+        previous:
+          type: string
+          format: uri
+          nullable: true
+        facets:
+          $ref: '#/components/schemas/StorefrontSearchFacets'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/StorefrontProductCard'
+      required:
+      - count
+      - facets
+      - next
+      - previous
+      - results
     StorefrontSellerBadge:
       type: object
       properties:
@@ -9940,6 +10155,60 @@ components:
       - name
       - state
       - store_name
+    StorefrontSuggestProduct:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        slug:
+          type: string
+        starting_price:
+          type: string
+        currency:
+          type: string
+          default: USD
+        thumbnail_url:
+          type: string
+          nullable: true
+        category_name:
+          type: string
+      required:
+      - category_name
+      - id
+      - slug
+      - starting_price
+      - thumbnail_url
+      - title
+    StorefrontSuggestResponse:
+      type: object
+      properties:
+        query:
+          type: string
+        suggestions:
+          type: array
+          items:
+            type: string
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/StorefrontCategory'
+        brands:
+          type: array
+          items:
+            $ref: '#/components/schemas/StorefrontBrand'
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/StorefrontSuggestProduct'
+      required:
+      - brands
+      - categories
+      - products
+      - query
+      - suggestions
     StorefrontVariant:
       type: object
       properties:

@@ -113,3 +113,61 @@ class StorefrontSellerDetailSerializer(serializers.Serializer[Any]):
     country = serializers.CharField(allow_null=True)
     average_rating = serializers.FloatField(allow_null=True)
     total_products = serializers.IntegerField(default=0)
+
+
+class StorefrontFacetCategorySerializer(serializers.Serializer[Any]):
+    id = serializers.UUIDField()
+    name = serializers.CharField()
+    slug = serializers.CharField()
+    count = serializers.IntegerField()
+
+
+class StorefrontFacetBrandSerializer(serializers.Serializer[Any]):
+    id = serializers.UUIDField()
+    name = serializers.CharField()
+    slug = serializers.CharField()
+    count = serializers.IntegerField()
+
+
+class StorefrontFacetPriceBracketSerializer(serializers.Serializer[Any]):
+    label = serializers.CharField()  # type: ignore[assignment]
+    min_price = serializers.CharField()
+    max_price = serializers.CharField(allow_null=True)
+    count = serializers.IntegerField()
+
+
+class StorefrontFacetRatingBracketSerializer(serializers.Serializer[Any]):
+    label = serializers.CharField()  # type: ignore[assignment]
+    min_rating = serializers.IntegerField()
+    count = serializers.IntegerField()
+
+
+class StorefrontSearchFacetsSerializer(serializers.Serializer[Any]):
+    categories = StorefrontFacetCategorySerializer(many=True)
+    brands = StorefrontFacetBrandSerializer(many=True)
+    price_brackets = StorefrontFacetPriceBracketSerializer(many=True)
+    rating_brackets = StorefrontFacetRatingBracketSerializer(many=True)
+    in_stock_count = serializers.IntegerField()
+
+
+class StorefrontSearchResultPageSerializer(PageSerializer):
+    facets = StorefrontSearchFacetsSerializer()
+    results = StorefrontProductCardSerializer(many=True)
+
+
+class StorefrontSuggestProductSerializer(serializers.Serializer[Any]):
+    id = serializers.UUIDField()
+    title = serializers.CharField()
+    slug = serializers.CharField()
+    starting_price = serializers.CharField()
+    currency = serializers.CharField(default="USD")
+    thumbnail_url = serializers.CharField(allow_null=True)
+    category_name = serializers.CharField()
+
+
+class StorefrontSuggestResponseSerializer(serializers.Serializer[Any]):
+    query = serializers.CharField()
+    suggestions = serializers.ListField(child=serializers.CharField())
+    categories = StorefrontCategorySerializer(many=True)
+    brands = StorefrontBrandSerializer(many=True)
+    products = StorefrontSuggestProductSerializer(many=True)

@@ -1,35 +1,28 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { storefrontApi } from "@/lib/api/client";
 import type { StorefrontCategory } from "@/lib/api/types";
 import { useAuth } from "@/features/auth/auth-provider";
+import { SearchBar } from "./search-bar";
 
 export function StorefrontHeader() {
-  const router = useRouter();
   const { state } = useAuth();
   const user = state.kind === "authenticated" ? state.user : null;
   const [categories, setCategories] = useState<StorefrontCategory[]>([]);
-  const [searchQuery, setSearchQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const controller = new AbortController();
     storefrontApi
       .categories(controller.signal)
-      .then((data) => setCategories(data))
+      .then((data) => {
+        if (Array.isArray(data)) setCategories(data);
+      })
       .catch(() => {});
     return () => controller.abort();
   }, []);
-
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
-    }
-  };
 
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur-sm">
@@ -67,34 +60,8 @@ export function StorefrontHeader() {
           </nav>
         </div>
 
-        {/* Search Bar */}
-        <form
-          onSubmit={handleSearchSubmit}
-          className="flex-1 max-w-lg hidden sm:block"
-        >
-          <div className="relative">
-            <input
-              type="search"
-              placeholder="Search products, brands, sellers..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-full border border-slate-300 bg-slate-50 px-4 py-2 pl-10 text-sm text-slate-900 transition focus:border-teal-600 focus:bg-white focus:outline-none focus:ring-1 focus:ring-teal-600"
-            />
-            <svg
-              className="absolute left-3.5 top-2.5 h-4 w-4 text-slate-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-          </div>
-        </form>
+        {/* Search Bar with Autocomplete */}
+        <SearchBar className="flex-1 max-w-lg hidden sm:block" />
 
         {/* Actions (Cart, Account, Workspaces) */}
         <div className="flex items-center gap-3">
@@ -183,15 +150,7 @@ export function StorefrontHeader() {
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
         <div className="border-t border-slate-200 bg-white px-4 py-3 lg:hidden">
-          <form onSubmit={handleSearchSubmit} className="mb-3 sm:hidden">
-            <input
-              type="search"
-              placeholder="Search products..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900"
-            />
-          </form>
+          <SearchBar className="mb-3 sm:hidden" />
           <div className="space-y-1">
             <p className="px-2 py-1 text-xs font-semibold text-slate-400 uppercase tracking-wider">
               Categories

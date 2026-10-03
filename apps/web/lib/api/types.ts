@@ -304,3 +304,64 @@ export interface StorefrontSellerDetail {
   average_rating: number | null;
   total_products: number;
 }
+
+export interface StorefrontFacetCategory {
+  id: string;
+  name: string;
+  slug: string;
+  count: number;
+}
+
+export interface StorefrontFacetBrand {
+  id: string;
+  name: string;
+  slug: string;
+  count: number;
+}
+
+export interface StorefrontFacetPriceBracket {
+  label: string;
+  min_price: string;
+  max_price: string | null;
+  count: number;
+}
+
+export interface StorefrontFacetRatingBracket {
+  label: string;
+  min_rating: number;
+  count: number;
+}
+
+export interface StorefrontSearchFacets {
+  categories: StorefrontFacetCategory[];
+  brands: StorefrontFacetBrand[];
+  price_brackets: StorefrontFacetPriceBracket[];
+  rating_brackets: StorefrontFacetRatingBracket[];
+  in_stock_count: number;
+}
+
+export interface StorefrontSearchResultPage {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  facets: StorefrontSearchFacets;
+  results: StorefrontProductCard[];
+}
+
+export interface StorefrontSuggestProduct {
+  id: string;
+  title: string;
+  slug: string;
+  starting_price: string;
+  currency: string;
+  thumbnail_url: string | null;
+  category_name: string;
+}
+
+export interface StorefrontSuggestResponse {
+  query: string;
+  suggestions: string[];
+  categories: StorefrontCategory[];
+  brands: StorefrontBrand[];
+  products: StorefrontSuggestProduct[];
+}

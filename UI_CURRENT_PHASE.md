@@ -1,8 +1,8 @@
 # UI phase selector
 
-UI PHASE 25 — navigation and application shell redesign
+UI PHASE 26 — seller and platform dashboards
 
-Phase 24 is complete: shared controls, layout helpers, native dialog/drawer foundation, semantic status and accessible field errors. Frontend lint, TypeScript, all 129 tests, formatting and production build passed. Begin Phase 25 after the Phase 24 commit and push succeed.
+Phase 25 is complete: grouped capability-aware navigation, contextual breadcrumbs, responsive native navigation drawer, consistent page shell and account popover behavior. Frontend lint, TypeScript, all 136 tests, formatting and production build passed. Begin Phase 26 after the Phase 25 commit and push succeed.
 
 Roadmap: `instrutions3.md` (the supplied filename).
 

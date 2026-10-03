@@ -168,7 +168,10 @@ export function SellerOverview() {
         }
       />
       {query.kind === "loading" && (
-        <LoadingState label="Loading seller performance metrics?" />
+        <LoadingState
+          variant="dashboard"
+          label="Loading seller performance metrics…"
+        />
       )}
       {query.kind === "error" && (
         <ApiErrorState error={query.error} onRetry={query.retry} />
@@ -444,7 +447,7 @@ export function AdminOverview() {
     loadMetrics,
   );
   if (state.kind === "loading")
-    return <LoadingState label="Verifying admin session?" />;
+    return <LoadingState label="Verifying admin session…" />;
   if (!user) return null;
   if (!allowed) return <ForbiddenScreen />;
   const can = (capability: string) => hasPlatformPermission(user, capability);
@@ -458,7 +461,10 @@ export function AdminOverview() {
         }
       />
       {query.kind === "loading" && (
-        <LoadingState label="Loading platform dashboard metrics?" />
+        <LoadingState
+          variant="dashboard"
+          label="Loading platform dashboard metrics…"
+        />
       )}
       {query.kind === "error" && (
         <ApiErrorState error={query.error} onRetry={query.retry} />

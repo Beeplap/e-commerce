@@ -1,5 +1,7 @@
 "use client";
 
+import { QueryRegion } from "@/components/ui/query-region";
+
 import { useCallback } from "react";
 import { useSeller } from "@/features/workspaces/seller-workspace";
 import { ForbiddenScreen } from "@/features/workspaces/forbidden-screen";
@@ -163,29 +165,33 @@ function TransactionsList({ sellerId }: { sellerId: string }) {
       </div>
 
       {/* Transactions Table */}
-      {query.kind === "loading" && <LoadingState />}
-      {query.kind === "error" && (
-        <ApiErrorState error={query.error} onRetry={query.retry} />
-      )}
-      {query.kind === "ready" && (
-        <div className="space-y-4">
-          <DataTable
-            mobile="scroll"
-            filtered={!!typeFilter}
-            rows={query.data.results}
-            columns={columns}
-            rowKey={(r) => r.id}
-            caption="Financial ledger entries"
-          />
+      <QueryRegion busy={query.kind === "loading"}>
+        {query.kind === "loading" && (
+          <LoadingState variant="table" label="Loading ledger entries…" />
+        )}
+        {query.kind === "error" && (
+          <ApiErrorState error={query.error} onRetry={query.retry} />
+        )}
+        {query.kind === "ready" && (
+          <div className="space-y-4">
+            <DataTable
+              mobile="scroll"
+              filtered={!!typeFilter}
+              rows={query.data.results}
+              columns={columns}
+              rowKey={(r) => r.id}
+              caption="Financial ledger entries"
+            />
 
-          <Pagination
-            page={page}
-            count={query.data.count}
-            pageSize={25}
-            onPageChange={setPage}
-          />
-        </div>
-      )}
+            <Pagination
+              page={page}
+              count={query.data.count}
+              pageSize={25}
+              onPageChange={setPage}
+            />
+          </div>
+        )}
+      </QueryRegion>
     </div>
   );
 }

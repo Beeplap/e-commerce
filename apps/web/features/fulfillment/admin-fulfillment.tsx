@@ -264,7 +264,7 @@ function AdminFulfillmentDashboard({ canRefund }: { canRefund: boolean }) {
         <button
           type="button"
           onClick={() => setActiveTab("shipments")}
-          className={`px-4 py-2 text-sm font-semibold border-b-2 -mb-px transition-colors ${
+          className={`px-4 py-2 text-sm font-semibold border-b-2 -mb-px motion-safe:transition-colors duration-[var(--ui-duration-fast)] ${
             activeTab === "shipments"
               ? "border-teal-700 text-teal-700"
               : "border-transparent text-slate-600 hover:text-slate-900"
@@ -275,7 +275,7 @@ function AdminFulfillmentDashboard({ canRefund }: { canRefund: boolean }) {
         <button
           type="button"
           onClick={() => setActiveTab("returns")}
-          className={`px-4 py-2 text-sm font-semibold border-b-2 -mb-px transition-colors ${
+          className={`px-4 py-2 text-sm font-semibold border-b-2 -mb-px motion-safe:transition-colors duration-[var(--ui-duration-fast)] ${
             activeTab === "returns"
               ? "border-teal-700 text-teal-700"
               : "border-transparent text-slate-600 hover:text-slate-900"
@@ -286,7 +286,7 @@ function AdminFulfillmentDashboard({ canRefund }: { canRefund: boolean }) {
         <button
           type="button"
           onClick={() => setActiveTab("refunds")}
-          className={`px-4 py-2 text-sm font-semibold border-b-2 -mb-px transition-colors ${
+          className={`px-4 py-2 text-sm font-semibold border-b-2 -mb-px motion-safe:transition-colors duration-[var(--ui-duration-fast)] ${
             activeTab === "refunds"
               ? "border-teal-700 text-teal-700"
               : "border-transparent text-slate-600 hover:text-slate-900"
@@ -298,7 +298,7 @@ function AdminFulfillmentDashboard({ canRefund }: { canRefund: boolean }) {
 
       {activeTab === "shipments" &&
         (shipmentsQuery.kind === "loading" ? (
-          <LoadingState />
+          <LoadingState variant="table" />
         ) : shipmentsQuery.kind === "error" ? (
           <ApiErrorState
             error={shipmentsQuery.error}
@@ -315,7 +315,7 @@ function AdminFulfillmentDashboard({ canRefund }: { canRefund: boolean }) {
 
       {activeTab === "returns" &&
         (returnsQuery.kind === "loading" ? (
-          <LoadingState />
+          <LoadingState variant="table" />
         ) : returnsQuery.kind === "error" ? (
           <ApiErrorState
             error={returnsQuery.error}
@@ -332,7 +332,7 @@ function AdminFulfillmentDashboard({ canRefund }: { canRefund: boolean }) {
 
       {activeTab === "refunds" &&
         (refundsQuery.kind === "loading" ? (
-          <LoadingState />
+          <LoadingState variant="table" />
         ) : refundsQuery.kind === "error" ? (
           <ApiErrorState
             error={refundsQuery.error}

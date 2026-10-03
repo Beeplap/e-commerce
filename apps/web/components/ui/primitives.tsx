@@ -68,14 +68,66 @@ export function Skeleton({ className = "h-5 w-full" }: { className?: string }) {
 
 export function LoadingState({
   label = "Loading your workspace…",
+  variant = "section",
 }: {
   label?: string;
+  variant?: "section" | "table" | "dashboard" | "detail";
 }) {
   return (
     <div className="min-w-0 space-y-4 py-6" role="status" aria-live="polite">
       <p className="text-ui-body text-ui-secondary">{label}</p>
-      <Skeleton className="h-5 w-2/3" />
-      <Skeleton className="h-24 w-full" />
+      {variant === "table" ? (
+        <div
+          aria-hidden="true"
+          className="space-y-4 rounded-panel border border-ui-border bg-ui-surface p-4"
+        >
+          <Skeleton className="h-5 w-1/2" />
+          {Array.from({ length: 6 }, (_, row) => (
+            <div
+              key={row}
+              className="grid grid-cols-2 gap-4 border-t border-ui-border pt-4 sm:grid-cols-4"
+            >
+              <Skeleton className="h-6 w-full" />
+              <Skeleton className="h-6 w-2/3" />
+              <Skeleton className="hidden h-6 w-full sm:block" />
+              <Skeleton className="hidden h-6 w-1/2 sm:block" />
+            </div>
+          ))}
+        </div>
+      ) : variant === "dashboard" ? (
+        <div aria-hidden="true" className="space-y-6">
+          <div className="grid gap-4 sm:grid-cols-3">
+            {[0, 1, 2].map((index) => (
+              <div key={index} className="space-y-3">
+                <Skeleton className="h-4 w-2/3" />
+                <Skeleton className="h-8 w-1/2" />
+              </div>
+            ))}
+          </div>
+          <Skeleton className="h-64 w-full" />
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Skeleton className="h-32 w-full" />
+            <Skeleton className="h-32 w-full" />
+          </div>
+        </div>
+      ) : variant === "detail" ? (
+        <div aria-hidden="true" className="grid gap-6 xl:grid-cols-3">
+          <div className="space-y-5 xl:col-span-2">
+            <Skeleton className="h-7 w-2/3" />
+            <Skeleton className="h-72 w-full" />
+            <Skeleton className="h-32 w-full" />
+          </div>
+          <div className="space-y-5">
+            <Skeleton className="h-40 w-full" />
+            <Skeleton className="h-32 w-full" />
+          </div>
+        </div>
+      ) : (
+        <>
+          <Skeleton className="h-5 w-2/3" />
+          <Skeleton className="h-24 w-full" />
+        </>
+      )}
     </div>
   );
 }
@@ -114,7 +166,7 @@ export function StatusBadge({ status }: { status: string }) {
   return (
     <span
       data-tone={tone}
-      className={`inline-flex max-w-full items-center rounded px-2 py-1 text-ui-caption font-medium capitalize ${statusStyles[tone]}`}
+      className={`inline-flex max-w-full items-center rounded px-2 py-1 text-ui-caption font-medium capitalize motion-safe:transition-colors duration-[var(--ui-duration-fast)] ${statusStyles[tone]}`}
     >
       {status.replaceAll("_", " ")}
     </span>

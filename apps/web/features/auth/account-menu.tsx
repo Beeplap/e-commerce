@@ -59,7 +59,7 @@ export function AccountMenu() {
       <summary className="min-h-11 cursor-pointer rounded-control px-3 py-2.5 text-sm font-medium text-ui-secondary hover:bg-ui-surface-muted active:bg-ui-selected">
         Account <span className="sr-only">menu for {user.email}</span>
       </summary>
-      <div className="absolute right-0 z-20 mt-2 w-72 max-w-[calc(100vw_-_2rem)] rounded-overlay border border-ui-border bg-ui-surface p-4 shadow-lg">
+      <div className="ui-popover absolute right-0 z-20 mt-2 w-72 max-w-[calc(100vw_-_2rem)] rounded-overlay border border-ui-border bg-ui-surface p-4 shadow-lg">
         <p className="truncate text-sm font-semibold">
           {user.first_name || "Your account"}
           {user.last_name ? ` ${user.last_name}` : ""}

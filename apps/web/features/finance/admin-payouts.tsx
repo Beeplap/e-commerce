@@ -1,5 +1,7 @@
 "use client";
 
+import { QueryRegion } from "@/components/ui/query-region";
+
 import { Dialog } from "@/components/ui/dialog";
 import { PayoutDetail } from "./payout-detail";
 import { Button } from "@/components/ui/button";
@@ -329,30 +331,34 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
         ]}
         onClear={table.clear}
       />
-      {query.kind === "loading" && <LoadingState />}
-      {query.kind === "error" && (
-        <ApiErrorState error={query.error} onRetry={query.retry} />
-      )}
+      <QueryRegion busy={query.kind === "loading"}>
+        {query.kind === "loading" && (
+          <LoadingState variant="table" label="Loading payouts…" />
+        )}
+        {query.kind === "error" && (
+          <ApiErrorState error={query.error} onRetry={query.retry} />
+        )}
 
-      {query.kind === "ready" && (
-        <div className="space-y-4">
-          <DataTable
-            filtered={!!statusFilter || !!appliedSellerId}
-            rows={query.data.results}
-            columns={columns}
-            rowKey={(item) => item.id}
-            caption="Seller Payouts"
-          />
-
-          {query.data.count > 25 && (
-            <Pagination
-              page={page}
-              count={query.data.count}
-              onPageChange={(p) => setPage(p)}
+        {query.kind === "ready" && (
+          <div className="space-y-4">
+            <DataTable
+              filtered={!!statusFilter || !!appliedSellerId}
+              rows={query.data.results}
+              columns={columns}
+              rowKey={(item) => item.id}
+              caption="Seller Payouts"
             />
-          )}
-        </div>
-      )}
+
+            {query.data.count > 25 && (
+              <Pagination
+                page={page}
+                count={query.data.count}
+                onPageChange={(p) => setPage(p)}
+              />
+            )}
+          </div>
+        )}
+      </QueryRegion>
 
       {/* Process Payout Modal */}
       {processingPayout && (

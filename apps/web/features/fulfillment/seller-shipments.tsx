@@ -154,7 +154,7 @@ function ShipmentsContent({
     }
   };
 
-  if (query.kind === "loading") return <LoadingState />;
+  if (query.kind === "loading") return <LoadingState variant="table" />;
   if (query.kind === "error")
     return <ApiErrorState error={query.error} onRetry={query.retry} />;
 

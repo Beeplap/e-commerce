@@ -6,6 +6,8 @@ Each phase from `instrutions3.md` requires `pnpm lint`, `pnpm typecheck`, `pnpm 
 
 Phase 28 adds form/navigation/dialog and staff-revocation regressions; the frontend suite is **164 tests across 21 files**. Form errors and failed inputs, saved/dirty baselines, duplicate pending submits, native traversal cancellation, unmount cleanup and nested dialog application state are covered. Jsdom's shared `showModal`/`close` mocks set open state only. They do not implement modality, tab containment or browser navigation. Live focus, Back/Forward across supported browsers, zoom and narrow layout remain separate required evidence.
 
+Phase 29 adds eight operational-detail regressions. Phase 30 adds four geometry/loading/clipboard checks; the current isolated UI suite is **176 tests across 23 files**. ResizeObserver is mocked to check height retention and cleanup, not actual browser reflow. Clipboard completion, failure and stale-record feedback remain honest. Reduced-motion styles require browser verification. Every frontend lint, strict TypeScript, test and production-build check passed; backend integration remains a separate gate after the concurrent work is ready.
+
 Generate local `.env`, install locked dependencies, and start PostgreSQL/Redis first (README). From the repository root:
 
 ```sh

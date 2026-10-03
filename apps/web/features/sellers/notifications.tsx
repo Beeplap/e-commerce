@@ -107,7 +107,7 @@ export function NotificationsPanel() {
         {notifications.map((notification) => (
           <div
             key={notification.id}
-            className={`rounded-xl border p-4 transition-colors ${
+            className={`rounded-xl border p-4 motion-safe:transition-colors duration-[var(--ui-duration-fast)] ${
               notification.is_read
                 ? "border-slate-200 bg-white"
                 : "border-teal-200 bg-teal-50"

@@ -72,7 +72,7 @@ export function MutationStatus({
         </div>
       )}
       {success && (
-        <p role="status" className="text-ui-body text-ui-success">
+        <p role="status" className="ui-feedback text-ui-body text-ui-success">
           Saved successfully.
         </p>
       )}

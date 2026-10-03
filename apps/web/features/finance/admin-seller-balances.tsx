@@ -1,5 +1,7 @@
 "use client";
 
+import { QueryRegion } from "@/components/ui/query-region";
+
 import { Dialog } from "@/components/ui/dialog";
 
 import Link from "next/link";
@@ -179,29 +181,33 @@ function SellerBalancesList({ canManage }: { canManage: boolean }) {
         )}
       </form>
 
-      {query.kind === "loading" && <LoadingState />}
-      {query.kind === "error" && (
-        <ApiErrorState error={query.error} onRetry={query.retry} />
-      )}
+      <QueryRegion busy={query.kind === "loading"}>
+        {query.kind === "loading" && (
+          <LoadingState variant="table" label="Loading seller balances…" />
+        )}
+        {query.kind === "error" && (
+          <ApiErrorState error={query.error} onRetry={query.retry} />
+        )}
 
-      {query.kind === "ready" && (
-        <div className="space-y-4">
-          <DataTable
-            rows={query.data.results}
-            columns={columns}
-            rowKey={(item) => item.seller_id}
-            caption="Seller Balances"
-          />
-
-          {query.data.count > 25 && (
-            <Pagination
-              page={page}
-              count={query.data.count}
-              onPageChange={(p) => setPage(p)}
+        {query.kind === "ready" && (
+          <div className="space-y-4">
+            <DataTable
+              rows={query.data.results}
+              columns={columns}
+              rowKey={(item) => item.seller_id}
+              caption="Seller Balances"
             />
-          )}
-        </div>
-      )}
+
+            {query.data.count > 25 && (
+              <Pagination
+                page={page}
+                count={query.data.count}
+                onPageChange={(p) => setPage(p)}
+              />
+            )}
+          </div>
+        )}
+      </QueryRegion>
 
       {/* Balance Adjustment Modal */}
       {adjustingSeller && (

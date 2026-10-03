@@ -46,7 +46,7 @@ export function PlatformSellerDetail({ sellerId }: { sellerId: string }) {
     load,
   );
   if (!allowed("platform.sellers.read")) return <ForbiddenScreen />;
-  if (query.kind === "loading") return <LoadingState />;
+  if (query.kind === "loading") return <LoadingState variant="detail" />;
   if (query.kind === "error")
     return <ApiErrorState error={query.error} onRetry={query.retry} />;
   const seller = query.data;

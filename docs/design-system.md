@@ -1,5 +1,13 @@
 # Operational design system
 
+## Loading and motion contract
+
+Phase 30 adds section/table/dashboard/detail skeletons with one polite loading message; decorative placeholders have no semantic rows, counts or actions. Product/order/seller and financial lists keep filters mounted. `QueryRegion` retains only the last measured content height during replacement loading, never prior API records; it cleans up ResizeObserver subscriptions and falls back without measurement support. Dialogs remain outside these regions. Verify actual geometry at the responsive checkpoint.
+
+Opening dialogs, navigation drawers, account popovers and confirmed save feedback use brief 120–180ms entrance transitions only under `prefers-reduced-motion: no-preference`. Buttons, navigation, status and existing workflow tabs use bounded color transitions. No delayed dismissal, focus changes or animated financial state is introduced. Copy confirms only a completed clipboard operation, prevents duplicate requests and ties feedback to the currently displayed identifier. A compact check replaces the icon; failures stay readable. Wide dialogs use an explicit specificity rule so the normal width cannot override them.
+
+Financial/security mutations still wait for validated Django responses. Do not optimistically approve, process, revoke, settle, refund or change authority; preserve visible errors and existing busy controls. No animation or loading helper may keep stale confidential data on screen.
+
 ## Direction and scope
 
 Phase 23 defines the contract; Phase 24 implements primitives; later phases migrate workflows. Presentation lives in `apps/web/styles/tokens.css`, shared components in `components/ui`, and domain composition in `features`. Preserve the feature/API/auth boundaries. Do not invent data, backend features, hidden authority, or screen-level token variants to evade this system.

@@ -163,3 +163,36 @@ Phase 4 adds no worker or notification infrastructure. Malware scanning integrat
   - Concurrency & locking: Outbox event processing uses `select_for_update(skip_locked=True)` in batches, preventing double-processing by concurrent Celery workers.
   - Operational reconciliation: Periodic scheduled task `reconcile_outbox_events_task` scans for unprocessed or failed retryable events, providing operational resilience against worker crashes or lost triggers.
   - Webhook delivery: Celery task `deliver_webhook_task` implements exponential backoff with jitter and retry limits.
+
+## Phase 20 customer checkout & multi-seller order splitting architecture
+
+- Saved address book & default address promotion (`apps.checkout`):
+  - `CustomerAddress` provides persistent address storage for authenticated shoppers. Setting an address as default atomically demotes all other addresses for that user within a database transaction.
+- Dynamic multi-seller checkout quote:
+  - Aggregates cart items by seller and resolves available shipping methods and rates from `apps.fulfillment` shipping rules.
+  - Validates applied promotion coupons against promotion eligibility rules, computing itemized subtotal, per-seller shipping total, discounts, and grand total.
+- Atomic multi-seller order placement:
+  - Concurrency control: Executes `select_for_update` on product variants in deterministic ID order to prevent database deadlocks.
+  - Real-time stock verification: Validates sufficient available stock (`quantity_on_hand - quantity_reserved`) across active warehouses.
+  - Inventory reservation: Atomically invokes `reserve_order_inventory` (Phase 6), allocating reservations across warehouses.
+  - Multi-seller partition: Creates the master `Order` and partitions line items into distinct child `SellerOrder` records per seller with snapshot commission rates.
+  - Transactional outbox: Emits `orders.order.created` event within the same commit.
+
+## Phase 21 payment integration & idempotency architecture
+
+- Dedicated payments module (`apps.payments`):
+  - Models: Master `Payment` entity and append-only `PaymentTransaction` records.
+  - Idempotency guard: Every payment operation requires an `idempotency_key` (16–128 characters) indexed with a unique database constraint. Replays return the existing payment status without re-charging.
+- Capture & failure workflows:
+  - Deterministic locking: Capturing a payment locks the order and associated inventory records in deterministic key order.
+  - Reservation to sale transition: On capture, `SellerOrder.inventory_committed` is set to `True`, inventory reservations are converted into immutable SALE transactions via `consume_order_inventory`, seller balances are credited net of commissions, and an outbox event `payments.payment.captured` is emitted.
+  - Failure reversal: If a payment is declined or fails, the master order and pending child seller orders are cancelled, inventory reservations are released immediately (`release_order_inventory`), and an outbox event `payments.payment.failed` is emitted.
+- Provider abstraction & signed webhooks:
+  - Gateway interface (`BasePaymentGateway`) decouples vendor specifics (e.g. MockGateway, Stripe).
+  - Mock provider declines specific test tokens (`tok_chargeDeclined`, `*_0002`) and succeeds for valid tokens (`tok_visa`, `tok_mock_*`).
+  - Webhook verification: Inbound gateway webhooks verify caller authenticity using HMAC-SHA256 signatures with `settings.PAYMENT_WEBHOOK_SECRET`, strictly failing closed if unverified or unsigned.
+- Frontend payment processing:
+  - Pure client-side validation for Luhn algorithm, expiration dates, and CVC security codes.
+  - Zero sensitive data transmission: Raw card digits and CVC codes are converted into an opaque token and never dispatched to Django or stored in browser persistence.
+  - Synchronous double-click guard prevents concurrent form submission.
+  - Clear decline guidance informs the customer of order cancellation and stock release with recovery navigation.

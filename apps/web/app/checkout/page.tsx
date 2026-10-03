@@ -199,10 +199,10 @@ export default function CheckoutPage() {
       // Refresh cart context so cart drawer/badge count resets to 0
       await refreshCart();
 
-      // Navigate to success screen
+      // Proceed to the payment step; reservations are held until capture.
       startTransition(() => {
         router.push(
-          `/checkout/success?order_id=${res.order_id}&order_number=${res.order_number}&email=${encodeURIComponent(
+          `/checkout/pay?order_id=${res.order_id}&order_number=${res.order_number}&email=${encodeURIComponent(
             res.customer_email,
           )}&total=${res.grand_total}&currency=${res.currency}`,
         );

@@ -2207,6 +2207,64 @@ paths:
       responses:
         '204':
           description: No response body
+  /api/v1/checkout/confirm-payment/:
+    post:
+      operationId: payments_confirm
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Payments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmPaymentInput'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentOutput'
+          description: ''
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentOutput'
+          description: Payment declined.
+  /api/v1/checkout/payment-intent/:
+    post:
+      operationId: payments_create_intent
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Payments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentIntentInput'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentOutput'
+          description: ''
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentOutput'
+          description: ''
   /api/v1/checkout/place-order/:
     post:
       operationId: checkout_place_order
@@ -5498,6 +5556,22 @@ paths:
               schema:
                 $ref: '#/components/schemas/StorefrontSellerDetail'
           description: ''
+  /api/v1/webhooks/payment/:
+    post:
+      operationId: payments_webhook
+      description: Server-to-server gateway callback authenticated only by its HMAC-SHA256
+        signature.
+      tags:
+      - Payments
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookResult'
+          description: ''
 components:
   schemas:
     AddTrackingEventInput:
@@ -6620,6 +6694,23 @@ components:
           default: true
       required:
       - percentage
+    ConfirmPaymentInput:
+      type: object
+      properties:
+        payment_id:
+          type: string
+          format: uuid
+        idempotency_key:
+          type: string
+          maxLength: 128
+          minLength: 16
+        payment_token:
+          type: string
+          maxLength: 64
+      required:
+      - idempotency_key
+      - payment_id
+      - payment_token
     Coupon:
       type: object
       properties:
@@ -7878,6 +7969,62 @@ components:
         role_id:
           type: string
           format: uuid
+    PaymentIntentInput:
+      type: object
+      properties:
+        order_id:
+          type: string
+          format: uuid
+        idempotency_key:
+          type: string
+          maxLength: 128
+          minLength: 16
+        provider:
+          allOf:
+          - $ref: '#/components/schemas/ProviderEnum'
+          default: mock
+      required:
+      - idempotency_key
+      - order_id
+    PaymentOutput:
+      type: object
+      properties:
+        payment_id:
+          type: string
+          format: uuid
+        order_id:
+          type: string
+          format: uuid
+        order_number:
+          type: string
+        amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+        currency:
+          type: string
+        status:
+          type: string
+        provider:
+          type: string
+        error_code:
+          type: string
+        error_message:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - amount
+      - created_at
+      - currency
+      - error_code
+      - error_message
+      - order_id
+      - order_number
+      - payment_id
+      - provider
+      - status
     Payout:
       type: object
       properties:
@@ -8886,6 +9033,11 @@ components:
       description: |-
         * `platform` - Platform
         * `seller` - Seller
+    ProviderEnum:
+      enum:
+      - mock
+      type: string
+      description: '* `mock` - mock'
     Readiness:
       type: object
       properties:
@@ -11444,6 +11596,16 @@ components:
           maxLength: 500
         is_active:
           type: boolean
+    WebhookResult:
+      type: object
+      properties:
+        received:
+          type: boolean
+        status:
+          type: string
+      required:
+      - received
+      - status
   securitySchemes:
     cookieAuth:
       type: apiKey

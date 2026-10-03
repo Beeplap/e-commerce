@@ -262,9 +262,11 @@ def create_shipment(
             quantity=quantity,
         )
 
-        # Consume inventory if order was still CONFIRMED or PROCESSING
+        # Consume inventory if order was still CONFIRMED or PROCESSING and payment
+        # capture has not already committed the reservation.
         if (
             seller_order.status in [SellerOrder.Status.CONFIRMED, SellerOrder.Status.PROCESSING]
+            and not seller_order.inventory_committed
             and order_item.warehouse
             and order_item.variant
         ):

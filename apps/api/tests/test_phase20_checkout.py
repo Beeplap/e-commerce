@@ -25,8 +25,7 @@ pytestmark = pytest.mark.django_db
 PASSWORD = "Test-secure-password-123!"
 
 
-@pytest.fixture
-def checkout_setup_data() -> dict[str, Any]:
+def build_checkout_setup_data() -> dict[str, Any]:
     # Customers
     customer_user = User.objects.create_user("customer1@example.com", PASSWORD)
     other_customer = User.objects.create_user("customer2@example.com", PASSWORD)
@@ -228,6 +227,11 @@ def checkout_setup_data() -> dict[str, Any]:
         "sm_standard_2": sm_standard_2,
         "coupon_1": coupon_1,
     }
+
+
+@pytest.fixture
+def checkout_setup_data() -> dict[str, Any]:
+    return build_checkout_setup_data()
 
 
 # ---------------------------------------------------------------------------

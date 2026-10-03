@@ -1,4 +1,10 @@
-import type { CurrentUser, Page, SellerMembership } from "./types";
+import type {
+  CurrentUser,
+  Page,
+  PaymentRecord,
+  PaymentStatus,
+  SellerMembership,
+} from "./types";
 
 export function record(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -22,6 +28,45 @@ export function isUuid(value: unknown): value is string {
 
 function invalidResponse(): never {
   throw new Error("The server returned an unexpected response.");
+}
+
+const PAYMENT_STATUSES: readonly PaymentStatus[] = [
+  "pending",
+  "authorized",
+  "captured",
+  "failed",
+  "refunded",
+];
+const DECIMAL = /^-?\d+(?:\.\d+)?$/;
+
+export function parsePayment(value: unknown): PaymentRecord {
+  if (
+    !record(value) ||
+    !isUuid(value.payment_id) ||
+    !isUuid(value.order_id) ||
+    typeof value.order_number !== "string" ||
+    typeof value.amount !== "string" ||
+    !DECIMAL.test(value.amount) ||
+    typeof value.currency !== "string" ||
+    !PAYMENT_STATUSES.includes(value.status as PaymentStatus) ||
+    typeof value.provider !== "string" ||
+    typeof value.error_code !== "string" ||
+    typeof value.error_message !== "string" ||
+    typeof value.created_at !== "string"
+  )
+    return invalidResponse();
+  return {
+    payment_id: value.payment_id,
+    order_id: value.order_id,
+    order_number: value.order_number,
+    amount: value.amount,
+    currency: value.currency,
+    status: value.status as PaymentStatus,
+    provider: value.provider,
+    error_code: value.error_code,
+    error_message: value.error_message,
+    created_at: value.created_at,
+  };
 }
 
 export function parseUser(value: unknown): CurrentUser {

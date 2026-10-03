@@ -116,6 +116,8 @@ class SellerOrder(models.Model):
         default=Status.PENDING,
         db_index=True,
     )
+    # Set when payment capture converts the reservation into sale ledger entries.
+    inventory_committed = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True)
 

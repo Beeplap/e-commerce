@@ -542,3 +542,19 @@ export interface PlaceOrderInput {
   coupon_code?: string | null;
   idempotency_key?: string | null;
 }
+
+export type PaymentStatus =
+  "pending" | "authorized" | "captured" | "failed" | "refunded";
+
+export interface PaymentRecord {
+  payment_id: string;
+  order_id: string;
+  order_number: string;
+  amount: string;
+  currency: string;
+  status: PaymentStatus;
+  provider: string;
+  error_code: string;
+  error_message: string;
+  created_at: string;
+}

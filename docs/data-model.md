@@ -185,3 +185,39 @@ PostgreSQL migration `0002_reviews_integrity` enforces:
   - **Marketplace Breakdown**: Super Admin metrics aggregate GMV by product category (`ProductCategory`) and top sellers (`Seller`), calculating AOV across all marketplace orders.
   - **Daily Trends**: Daily sales-over-time trends aggregated using PostgreSQL `TruncDate('created_at')` to guarantee timezone consistency.
 - Strict tenant isolation: Seller analytics views execute queries filtered strictly by `seller=request_seller`. Foreign seller data is completely unreachable.
+
+## Customer Checkout & Addresses (Phase 20)
+
+`checkout` implements saved customer address management and multi-seller checkout quotes:
+
+- `CustomerAddress`: Saved shipping/billing addresses for registered customers (`user` FK to `accounts.User`, `full_name`, `phone`, `line1`, `line2`, `city`, `state`, `postal_code`, `country`, `is_default`, `created_at`, `updated_at`).
+  - Constraint: Exactly one default address per customer enforced via transactional promotion service.
+  - Ownership: Scoped strictly to `request.user`; foreign addresses cannot be read or linked to orders.
+
+## Payments & Idempotency (Phase 21)
+
+`payments` implements financial transaction processing, idempotency guards, and payment gateway abstractions:
+
+- `Payment`: Financial transaction master record linked 1:1 or 1:N to master `Order`:
+  - `order`: `models.ForeignKey("orders.Order", on_delete=models.PROTECT)`
+  - `amount`: Exact `Decimal` amount snapshot with non-negative check constraint.
+  - `currency`: ISO 4217 currency code (e.g. `USD`).
+  - `status`: `PENDING`, `AUTHORIZED`, `CAPTURED`, `FAILED`, `REFUNDED`.
+  - `provider`: Choice of payment provider (`mock`, `stripe`).
+  - `reference_id`: Gateway transaction or intent reference ID.
+  - `idempotency_key`: Client-supplied unique key (16–128 characters) indexed with a unique constraint.
+  - `error_code`, `error_message`: Sanitized error details from gateway.
+  - Constraint `payment_one_active_per_order`: Partial unique index ensuring at most one active (`PENDING`, `AUTHORIZED`, `CAPTURED`) payment exists per order.
+- `PaymentTransaction`: Append-only ledger of individual gateway interactions and webhook events:
+  - `payment`: `models.ForeignKey("payments.Payment", on_delete=models.PROTECT)`
+  - `transaction_type`: `INTENT_CREATED`, `AUTHORIZED`, `CAPTURED`, `FAILED`, `REFUNDED`.
+  - `gateway_reference`: External transaction reference from provider.
+  - `amount`, `currency`: Snapshot of transaction value.
+  - `success`: Boolean result flag.
+  - `details`: Safe JSON metadata (excluding any card numbers or PII).
+  - `webhook_event_id`: External event identifier for signed webhook deduping.
+  - Constraint `payment_txn_unique_webhook_event`: Partial unique index preventing duplicate webhook processing.
+- PostgreSQL migration `0002_append_only`:
+  - Immutability trigger `payments_transaction_immutable`: Enforces append-only semantics by raising a database exception on any `UPDATE` or `DELETE` on `payments_paymenttransaction`.
+- `orders.SellerOrder.inventory_committed`:
+  - Boolean flag added in migration `0003_sellerorder_inventory_committed`. Tracks whether inventory consumption (`consume_order_inventory`) has occurred at payment capture time, preventing double consumption during shipment or incorrect releases during cancellation.

@@ -554,14 +554,18 @@ def place_order(
     # Map (item, inventory_record)
     item_inventory_assignments: dict[UUID, Inventory] = {}
 
-    for item in cart_items:
+    # Lock in deterministic (variant, inventory pk) order; payment capture uses the same
+    # ordering so concurrent checkout and capture transactions cannot deadlock.
+    for item in sorted(cart_items, key=lambda cart_item: cart_item.variant_id):
         variant = item.variant
         inventories = list(
-            Inventory.objects.select_for_update().filter(
+            Inventory.objects.select_for_update()
+            .filter(
                 variant=variant,
                 warehouse__seller=variant.product.seller,
                 warehouse__is_active=True,
             )
+            .order_by("pk")
         )
 
         total_available = sum(inv.quantity_on_hand - inv.quantity_reserved for inv in inventories)

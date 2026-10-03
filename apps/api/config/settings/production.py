@@ -9,6 +9,12 @@ from config.settings.base import SECRET_KEY, STORAGES
 
 if len(SECRET_KEY) < 50 or len(set(SECRET_KEY)) < 5:
     raise ImproperlyConfigured("DJANGO_SECRET_KEY must be a strong random secret.")
+PAYMENT_WEBHOOK_SECRET = required("PAYMENT_WEBHOOK_SECRET")
+if len(PAYMENT_WEBHOOK_SECRET) < 32 or len(set(PAYMENT_WEBHOOK_SECRET)) < 5:
+    raise ImproperlyConfigured("PAYMENT_WEBHOOK_SECRET must be a strong random secret.")
+# The mock gateway captures client-confirmed payments and must never run in production.
+# Production capture is driven by verified gateway webhooks.
+PAYMENT_MOCK_GATEWAY_ENABLED = False
 ALLOWED_HOSTS = required_list("DJANGO_ALLOWED_HOSTS")
 CSRF_TRUSTED_ORIGINS = required_list("DJANGO_CSRF_TRUSTED_ORIGINS")
 for origin in CSRF_TRUSTED_ORIGINS:

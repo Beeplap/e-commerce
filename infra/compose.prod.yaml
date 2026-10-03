@@ -61,6 +61,7 @@ services:
     environment:
       DJANGO_SETTINGS_MODULE: config.settings.production
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?Production DJANGO_SECRET_KEY required}
+      PAYMENT_WEBHOOK_SECRET:
       DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1,api,web,ingress}
       DJANGO_CSRF_TRUSTED_ORIGINS: ${DJANGO_CSRF_TRUSTED_ORIGINS:-http://localhost,http://127.0.0.1}
       POSTGRES_DB: ${POSTGRES_DB:?Production POSTGRES_DB required}
@@ -117,6 +118,7 @@ services:
     environment:
       DJANGO_SETTINGS_MODULE: config.settings.production
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?Production DJANGO_SECRET_KEY required}
+      PAYMENT_WEBHOOK_SECRET:
       DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1,api}
       DJANGO_CSRF_TRUSTED_ORIGINS: ${DJANGO_CSRF_TRUSTED_ORIGINS:-http://localhost,http://127.0.0.1}
       POSTGRES_DB: ${POSTGRES_DB:?Production POSTGRES_DB required}
@@ -160,6 +162,7 @@ services:
     environment:
       DJANGO_SETTINGS_MODULE: config.settings.production
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?Production DJANGO_SECRET_KEY required}
+      PAYMENT_WEBHOOK_SECRET:
       DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1,api}
       DJANGO_CSRF_TRUSTED_ORIGINS: ${DJANGO_CSRF_TRUSTED_ORIGINS:-http://localhost,http://127.0.0.1}
       POSTGRES_DB: ${POSTGRES_DB:?Production POSTGRES_DB required}

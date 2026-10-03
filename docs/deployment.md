@@ -117,6 +117,7 @@ Production configuration must never be committed to git. Secrets must be injecte
   - `DJANGO_CSRF_TRUSTED_ORIGINS`: Explicit HTTPS origins (e.g. `https://example.com`).
   - `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`: Production database credentials.
   - `REDIS_PASSWORD`: Strong authentication secret for Redis broker.
+  - `PAYMENT_WEBHOOK_SECRET`: High-entropy secret for HMAC-SHA256 signature verification (minimum 32 characters, fail-closed on startup).
   - `STORAGE_ENDPOINT_URL`, `STORAGE_VERIFICATION_BUCKET`, `STORAGE_REGION`, `STORAGE_ACCESS_KEY_ID`, `STORAGE_SECRET_ACCESS_KEY`: Private S3-compatible credentials.
   - `SENTRY_DSN`: Error monitoring endpoint.
 

@@ -447,8 +447,10 @@ def ship_seller_order(
             }
         )
 
-    # Consume reserved inventory for all items
+    # Consume reserved inventory unless payment capture already committed it.
     for item in seller_order.items.select_related("variant", "warehouse"):
+        if seller_order.inventory_committed:
+            break
         if item.warehouse and item.variant:
             inventory = get_object_or_404(
                 Inventory.objects.select_for_update(),
@@ -587,6 +589,16 @@ def cancel_seller_order(
                 "status": (
                     f"Cannot cancel order in status '{seller_order.status}'. "
                     "Only pending or confirmed orders can be cancelled."
+                )
+            }
+        )
+
+    if seller_order.inventory_committed:
+        raise ValidationError(
+            {
+                "status": (
+                    "This seller order has been paid and its stock committed. "
+                    "Use the refund and return workflow instead of cancellation."
                 )
             }
         )

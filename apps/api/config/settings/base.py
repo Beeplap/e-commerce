@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     "apps.storefront",
     "apps.cart",
     "apps.checkout",
+    "apps.payments",
 ]
 
 MIDDLEWARE = [
@@ -51,6 +52,13 @@ ROOT_URLCONF = "config.urls"
 WSGI_APPLICATION = "config.wsgi.application"
 ASGI_APPLICATION = "config.asgi.application"
 APPEND_SLASH = False
+
+# Payments: an empty/placeholder webhook secret rejects every webhook (fail closed).
+_payment_webhook_secret = os.environ.get("PAYMENT_WEBHOOK_SECRET", "").strip()
+PAYMENT_WEBHOOK_SECRET = (
+    "" if _payment_webhook_secret.startswith("replace-with-") else _payment_webhook_secret
+)
+PAYMENT_MOCK_GATEWAY_ENABLED = True
 
 DATABASES = {
     "default": {

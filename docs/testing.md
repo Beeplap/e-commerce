@@ -258,3 +258,43 @@ Observability and resilience coverage includes:
   - `test_order_creation_publishes_outbox_event`: verifies `create_order` atomically emits `order.created` outbox event with order ID, number, and total.
   - `test_order_confirmation_publishes_outbox_event`: verifies `confirm_seller_order` atomically emits `seller_order.confirmed` outbox event.
   - `test_payout_processing_publishes_outbox_event`: verifies `process_payout` atomically emits `payout.processed` outbox event with payout and seller details.
+
+## Phase 20 test coverage: Checkout & Multi-Seller Order Splitting
+
+Phase 20 adds 8 PostgreSQL backend tests in `apps/api/tests/test_phase20_checkout.py` and 4 frontend tests in `apps/web/tests/checkout.test.tsx`:
+
+- Address book management: verified CRUD operations, authorization boundary (customers cannot access foreign addresses), and default address promotion/unsetting.
+- Real-time checkout quote: verified logistics rate resolution across multiple sellers and coupon discount calculation.
+- Atomic multi-seller order placement:
+  - Zero overselling: verified `select_for_update` row locks on product variants prevent race conditions.
+  - Inventory reservation: verified `reserve_order_inventory` creates attributable ledger transactions without double-allocating stock.
+  - Order splitting: verified master `Order` and distinct child `SellerOrder` partition per seller with category-specific commission rates.
+  - Outbox emission: verified atomic insertion of `orders.order.created` outbox event.
+- Frontend checkout: tested address selection, multi-seller shipping options, quote reactivity, order submission, and navigation.
+
+## Phase 21 test coverage: Payments & Idempotency
+
+Phase 21 adds 11 PostgreSQL backend tests in `apps/api/tests/test_phase21_payments.py` and 5 frontend tests in `apps/web/tests/payments.test.tsx`:
+
+- Payment intent creation & idempotency:
+  - `test_successful_capture_confirms_orders_converts_reservations_and_settles`: verified end-to-end capture confirms master/child orders, converts reservations to SALE ledger entries, settles seller balances, and emits `payments.payment.captured`.
+  - `test_payment_intent_and_confirm_idempotency_replay`: verified duplicate intent creation and confirm calls replay existing records without re-charging or double-crediting balances.
+  - `test_idempotency_key_cannot_be_reused_for_another_order`: verified key conflict returns HTTP 409.
+- Payment failure & decline recovery:
+  - `test_declined_payment_marks_failed_cancels_orders_and_releases_reservations`: verified decline returns HTTP 402, cancels seller orders, releases inventory reservations, and emits `payments.payment.failed`.
+  - `test_order_with_cancelled_item_or_altered_amount_rejects_confirmation`: verified amount tampering or order alteration mid-flight is rejected with HTTP 409.
+- Webhook signature verification:
+  - `test_webhook_success_captures_payment`: verified HMAC-SHA256 signature verification and asynchronous capture via webhook.
+  - `test_webhook_failure_marks_payment_failed_and_releases_inventory`: verified failure webhook releases reservations.
+  - `test_webhook_signature_verification_enforced_fail_closed`: verified forged, missing, or mismatched HMAC signatures return HTTP 400.
+  - `test_webhook_deduplication_via_event_id`: verified duplicate webhook event IDs are rejected idempotently.
+- Authorization & security controls:
+  - `test_payment_endpoints_isolated_to_order_owner_or_guest_session`: verified cross-customer and unauthenticated attacks receive HTTP 404.
+  - `test_payment_endpoints_enforce_csrf_and_reject_card_data`: verified CSRF protection and rejection of raw card numbers/CVC.
+  - `test_seller_order_confirmation_rejects_committed_paid_order`: verified seller cannot re-confirm already committed orders.
+- Frontend payment form:
+  - Verified local Luhn, expiry, and CVC validation.
+  - Verified card tokenization and zero raw card data dispatch.
+  - Verified 402 decline alert rendering with clear cancellation explanation.
+  - Verified synchronous double-click prevention.
+  - Verified payment pay page navigation to order confirmation.

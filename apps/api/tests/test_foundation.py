@@ -103,6 +103,7 @@ def production_environment() -> dict[str, str]:
         "STORAGE_REGION": "test-region",
         "STORAGE_ACCESS_KEY_ID": "test-storage-id",
         "STORAGE_SECRET_ACCESS_KEY": "test-storage-secret",
+        "PAYMENT_WEBHOOK_SECRET": "whsec-test-0123456789abcdefghijklmnopqrstuvwxyzABCDEF",
     }
 
 
@@ -140,6 +141,9 @@ def test_production_settings_have_only_expected_preload_advisory() -> None:
         ("STORAGE_ENDPOINT_URL", "http://storage.example.com"),
         ("STORAGE_VERIFICATION_BUCKET", ""),
         ("STORAGE_SECRET_ACCESS_KEY", "replace-with-storage-secret-key"),
+        ("PAYMENT_WEBHOOK_SECRET", ""),
+        ("PAYMENT_WEBHOOK_SECRET", "replace-with-generated-local-secret"),
+        ("PAYMENT_WEBHOOK_SECRET", "short"),
     ],
 )
 def test_production_rejects_unsafe_configuration(variable: str, value: str) -> None:

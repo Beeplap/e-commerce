@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from apps.accounts.serializers import EmptySerializer
 from apps.accounts.views import BrowserAPIView
 from apps.cart.services import get_or_create_cart
+from apps.payments.services import remember_guest_order
 
 from . import services
 from .serializers import (
@@ -146,4 +147,6 @@ class PlaceOrderView(BrowserAPIView):
             coupon_code=data.get("coupon_code"),
             idempotency_key=data.get("idempotency_key"),
         )
+        if not request.user.is_authenticated:
+            remember_guest_order(request, UUID(str(result["order_id"])))
         return Response(result, status=status.HTTP_201_CREATED)

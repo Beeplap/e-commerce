@@ -75,3 +75,15 @@ Phase 12 conducted an exhaustive security audit and hardening pass across the re
 - **Content-Security-Policy (CSP)**: Added strict CSP headers in `apps/web/next.config.ts` enforcing `default-src 'self'`, `frame-ancestors 'none'`, `object-src 'none'`, and restricted script/style sources.
 - **Dependency Audit**: Verified production dependencies with `pnpm audit --prod`, confirming 0 known vulnerabilities.
 - **Adversarial Test Suite**: Added 12 rigorous adversarial test cases in `apps/api/tests/test_phase12_security.py` directly targeting multi-tenant data leaks, horizontal privilege escalation, mass assignment via `StrictSerializer`, CSRF bypass attempts, path traversal, pagination exhaustion, and financial workflow replay attacks.
+
+## Phase 21 payment security & webhook integrity
+
+Phase 21 introduces payment processing and webhook ingestion under strict financial and data security invariants:
+
+- **Zero Raw Card Data Ingestion**: Backend serializers strictly forbid card numbers, expiration dates, and security codes (CVC). Any smuggled card fields are rejected by `StrictSerializer`. Only opaque client-side gateway tokens (e.g. `tok_mock_*` or provider-hosted tokens) are accepted.
+- **Client-Side Tokenization & Memory Sanitization**: In the web frontend, card validation runs entirely locally in memory. Upon submission, card digits are tokenized, and sensitive input fields are wiped from component state immediately. Card numbers and CVCs are never written to `localStorage`, `sessionStorage`, cookies, or browser logs.
+- **Deterministic Idempotency Key Guards**: Every payment attempt requires a caller-supplied `idempotency_key` (16–128 characters). Idempotency keys are scoped strictly to the order. Duplicate submissions with the same key safely replay the recorded outcome without charging twice. Submissions using the same key across different orders or conflicting keys on an existing payment are rejected with `409 Conflict`.
+- **Database Partial Unique Constraints**: Concurrency races are prevented at the PostgreSQL engine level via `payment_one_active_per_order` (only one PENDING, AUTHORIZED, or CAPTURED payment per order) and `payment_txn_unique_webhook_event` (deduplicating webhook event IDs).
+- **Append-Only Payment Transactions**: A PostgreSQL trigger `payments_transaction_immutable` rejects any `UPDATE` or `DELETE` operations on `PaymentTransaction` records, maintaining an unalterable audit ledger of all gateway attempts.
+- **Fail-Closed Webhook Verification**: Inbound payment webhooks (`POST /api/v1/webhooks/payment/`) require an `X-Payment-Signature` header computed via HMAC-SHA256. In production, `PAYMENT_WEBHOOK_SECRET` must be at least 32 characters with high entropy. If the secret is missing or placeholder, startup fails closed and webhook requests are rejected with `400 Bad Request`.
+- **Automated Reversal on Decline**: If a payment is declined, the order is transitioned to `FAILED`/`CANCELLED` and reserved inventory items are released immediately (`release_order_inventory`), preventing deadlocks on scarce stock.

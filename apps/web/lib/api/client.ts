@@ -25,6 +25,7 @@ import type {
   PlacedOrderResult,
   CheckoutQuoteInput,
   PlaceOrderInput,
+  PaymentRecord,
 } from "./types";
 
 import {
@@ -32,6 +33,7 @@ import {
   parseCsrf,
   parseMembership,
   parseMembershipPage,
+  parsePayment,
   parseUser,
   record,
   strings,
@@ -98,7 +100,7 @@ interface RequestOptions<T> {
   body?: unknown;
   sellerId?: string;
   signal?: AbortSignal;
-  expectedStatus?: number;
+  expectedStatus?: number | readonly number[];
   responseType?: "json" | "blob";
 }
 
@@ -171,7 +173,12 @@ export async function apiRequest<T>(
   }
   const requestId = response.headers.get("X-Request-ID");
   if (!response.ok) throw serverError(response.status, body, requestId);
-  if (response.status !== (options.expectedStatus ?? 200)) {
+  const expected = options.expectedStatus ?? 200;
+  if (
+    typeof expected === "number"
+      ? response.status !== expected
+      : !expected.includes(response.status)
+  ) {
     throw new ApiError(
       "The server returned an unexpected response.",
       response.status,
@@ -686,5 +693,29 @@ export const checkoutApi = {
       expectedStatus: 201,
       parse: (v) => v as PlacedOrderResult,
       body,
+    }),
+};
+
+export const paymentsApi = {
+  // Same key + same order replays return 200; a new intent returns 201.
+  createIntent: (orderId: string, idempotencyKey: string) =>
+    apiRequest<PaymentRecord>("/api/v1/checkout/payment-intent/", {
+      method: "POST",
+      expectedStatus: [200, 201],
+      parse: parsePayment,
+      body: { order_id: orderId, idempotency_key: idempotencyKey },
+    }),
+
+  // Only an opaque gateway token is sent; card numbers and CVC never leave the browser.
+  // Declines surface as ApiError with status 402.
+  confirm: (paymentId: string, idempotencyKey: string, paymentToken: string) =>
+    apiRequest<PaymentRecord>("/api/v1/checkout/confirm-payment/", {
+      method: "POST",
+      parse: parsePayment,
+      body: {
+        payment_id: paymentId,
+        idempotency_key: idempotencyKey,
+        payment_token: paymentToken,
+      },
     }),
 };

@@ -4,6 +4,8 @@
 
 The UI roadmap in `instrutions3.md` runs on the isolated `ui-overhaul` branch/worktree with its own `UI_CURRENT_PHASE.md`. The concurrent backend selector remains independent. UI Phase 23 establishes semantic CSS tokens in `apps/web/styles/tokens.css` and the concrete design contract in `docs/design-system.md`; feature-oriented routes/components and all Django authority/API boundaries are retained. Later presentation primitives live in `components/ui` and are consumed deliberately by domain features. Security/backend work merges first, then the clean, tested UI branch is rebased onto it. Visual evidence and unavailable browser access are recorded separately from code/test validation.
 
+UI phases 23-33 retain small Server Component route entry points and client-side interactive API reads; they introduce no confidential server-load shortcut around Django. Shared semantic tables, fields, native overlays, tabs and actual timelines compose domain-specific workflows. Financial overview requests honor separate payout capability. Route-selected fulfillment views reset by destination/user identity. Account rendering lives outside the dashboard module to avoid shipping chart code on `/account`. The final implementation, artifact measurements and outstanding visual/integration evidence are recorded in `docs/ui-final-review.md`; implementation completion is not production/visual acceptance.
+
 ## Current foundation
 
 The repository is a modular monolith. `apps/api` owns the Django API and all business authority; `apps/web` is a Next.js App Router application. PostgreSQL is authoritative. Redis is reserved for future caching and workers. Seller onboarding/lifecycle management is implemented; catalog, commerce workflows and customer storefront are later phases.

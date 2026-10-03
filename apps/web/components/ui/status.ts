@@ -1,6 +1,7 @@
 export type StatusTone = "neutral" | "success" | "warning" | "danger" | "info";
 const statusTones: Record<string, StatusTone> = {
   active: "success",
+  published: "success",
   verified: "success",
   approved: "success",
   delivered: "success",
@@ -15,6 +16,7 @@ const statusTones: Record<string, StatusTone> = {
   refund_pending: "warning",
   on_hold: "warning",
   rejected: "danger",
+  removed: "danger",
   suspended: "danger",
   failed: "danger",
   cancelled: "danger",

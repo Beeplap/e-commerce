@@ -10,6 +10,7 @@ import { AuthProvider } from "@/features/auth/auth-provider";
 import { SellerWorkspace } from "@/features/workspaces/seller-workspace";
 import { SellerFinanceOverview } from "@/features/finance/seller-finance-overview";
 import { SellerPromotions } from "@/features/sellers/promotions";
+import { AdminPromotions } from "@/features/sellers/admin-promotions";
 import type { Promotion } from "@/lib/api/types";
 import { csrf, json, membership, page, user } from "./fixtures";
 
@@ -59,6 +60,65 @@ function setup(
 }
 
 describe("financial and promotion workflow preservation", () => {
+  it("names platform promotion states without relying on color and preserves bounded pagination", async () => {
+    const inactive = {
+      ...promotion,
+      id: "80000000-0000-4000-8000-000000000002",
+      name: "Previous discount",
+      is_active: false,
+    };
+    const fetch = vi.fn((input: RequestInfo | URL) => {
+      const url = String(input);
+      if (url.includes("/auth/me"))
+        return json({
+          ...user,
+          platform_permissions: ["platform.promotions.read"],
+        });
+      if (url.includes("/api/v1/admin/promotions/")) {
+        const secondPage = url.endsWith("page=2");
+        return json({
+          count: 26,
+          next: secondPage ? null : "/api/v1/admin/promotions/?page=2",
+          previous: secondPage ? "/api/v1/admin/promotions/?page=1" : null,
+          results: secondPage ? [inactive] : [promotion, inactive],
+        });
+      }
+      return json({ detail: "Not found" }, 404);
+    });
+    vi.stubGlobal("fetch", fetch);
+    render(
+      <AuthProvider>
+        <AdminPromotions />
+      </AuthProvider>,
+    );
+    const table = await screen.findByRole("table", {
+      name: "Platform promotions",
+    });
+    expect(within(table).getByText("Active")).toBeInTheDocument();
+    expect(within(table).getByText("Inactive")).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "New platform promotion" }),
+    ).not.toBeInTheDocument();
+    const pages = screen.getByRole("navigation", { name: "Pagination" });
+    expect(
+      within(pages).getByRole("button", { name: "Previous" }),
+    ).toBeDisabled();
+    fireEvent.click(within(pages).getByRole("button", { name: "Next" }));
+    await waitFor(() =>
+      expect(
+        screen.getByRole("navigation", { name: "Pagination" }),
+      ).toHaveTextContent("Page 2 of 2"),
+    );
+    expect(screen.queryByText("Seasonal discount")).not.toBeInTheDocument();
+    expect(screen.getByText("Previous discount")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Next" })).toBeDisabled();
+    expect(
+      fetch.mock.calls.some(([url]) =>
+        String(url).endsWith("/api/v1/admin/promotions/?page=2"),
+      ),
+    ).toBe(true);
+  });
+
   it("does not request payout evidence or offer payout commands without its separate capability", async () => {
     const fetch = setup(["finance.read"], (url) => {
       if (url.includes("/finance/balance"))

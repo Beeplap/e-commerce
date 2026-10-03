@@ -2,6 +2,8 @@
 
 ## UI overhaul validation
 
+Phase 33 adds two final promotion-state/pagination and fulfillment-destination regressions; the final isolated UI suite is **187 tests across 25 files**. Lint, strict TypeScript, production build, repository formatting and `git diff --check` pass. `node scripts/audit_ui_build.mjs` verifies all 51 source pages against production entries and measures static script/CSS artifacts; it is not a browser performance or hydration test. The warehouse error-focus assertion now waits for the existing passive effect while keeping the same expected focus. The complete gate was rerun after separating account rendering from dashboards. See `docs/ui-final-review.md` for remaining visual/integration evidence; PostgreSQL/Compose/proxy validation must follow the security-first integration.
+
 Phase 32 adds three financial/promotion workflow regressions; the suite is **185 tests across 25 files**. A finance-only member does not request payout evidence or see payout commands; read-only promotion staff retains exact discount/usage/coupon evidence without mutation actions; a denied promotion change preserves visible failure, seller context, fresh CSRF and the original PATCH payload. Existing tests remain intact. Initial new-test failures came from incomplete pagination envelopes and incorrect mocked promotion paths; fixtures were corrected to the real contract, not the runtime validator.
 
 Phase 31 added six accessibility workflow tests. See `docs/ui-accessibility.md` for source/contrast evidence and every unverified viewport/manual check. The user directed continued implementation after being informed of unavailable browser access; no screenshot or screen-reader pass is claimed.

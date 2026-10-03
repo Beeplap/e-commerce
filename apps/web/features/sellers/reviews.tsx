@@ -1,7 +1,10 @@
 "use client";
 
+import { Pagination } from "@/components/ui/pagination";
+
 import { Dialog } from "@/components/ui/dialog";
 import { ReviewDetail } from "./review-detail";
+import { ReviewRating } from "./review-rating";
 import { Button } from "@/components/ui/button";
 import { DateDisplay } from "@/components/ui/displays";
 
@@ -9,6 +12,7 @@ import { useCallback, useState } from "react";
 import {
   ApiErrorState,
   PageHeader,
+  StatusBadge,
   TextareaField,
   LoadingState,
   primaryButton,
@@ -19,35 +23,6 @@ import { errorMessage, sellerApi } from "@/lib/api/client";
 import type { ProductReview } from "@/lib/api/types";
 import { useApiQuery } from "@/lib/api/use-api-query";
 import { useSeller } from "@/features/workspaces/seller-workspace";
-
-function StarRating({ rating }: { rating: number }) {
-  return (
-    <span
-      role="img"
-      aria-label={`${rating} out of 5 stars`}
-      className="text-ui-warning"
-    >
-      {"★".repeat(rating)}
-      {"☆".repeat(5 - rating)}
-    </span>
-  );
-}
-
-function StatusBadge({ status }: { status: ProductReview["status"] }) {
-  const cls =
-    status === "published"
-      ? "bg-emerald-50 text-ui-success"
-      : status === "pending"
-        ? "bg-amber-50 text-amber-700"
-        : "bg-red-50 text-red-700";
-  return (
-    <span
-      className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${cls}`}
-    >
-      {status}
-    </span>
-  );
-}
 
 export function SellerReviews() {
   const access = useSeller();
@@ -161,7 +136,7 @@ export function SellerReviews() {
             <div className="flex flex-col items-start justify-between gap-4 sm:flex-row">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <StarRating rating={review.rating} />
+                  <ReviewRating rating={review.rating} />
                   <StatusBadge status={review.status} />
                   {review.verified_purchase && (
                     <span className="text-ui-caption text-ui-secondary">
@@ -194,9 +169,7 @@ export function SellerReviews() {
                     </p>
                     {review.seller_response_at && (
                       <p className="mt-1 text-xs text-ui-accent">
-                        {new Date(
-                          review.seller_response_at,
-                        ).toLocaleDateString()}
+                        <DateDisplay value={review.seller_response_at} />
                       </p>
                     )}
                   </div>
@@ -235,27 +208,11 @@ export function SellerReviews() {
       </div>
 
       {reviewsQuery.data.count > 25 && (
-        <div className="mt-4 flex items-center justify-between text-sm text-ui-secondary">
-          <button
-            type="button"
-            disabled={page === 1}
-            onClick={() => setPage((p) => p - 1)}
-            className={secondaryButton}
-          >
-            Previous
-          </button>
-          <span>
-            Page {page} of {Math.ceil(reviewsQuery.data.count / 25)}
-          </span>
-          <button
-            type="button"
-            disabled={page * 25 >= reviewsQuery.data.count}
-            onClick={() => setPage((p) => p + 1)}
-            className={secondaryButton}
-          >
-            Next
-          </button>
-        </div>
+        <Pagination
+          page={page}
+          count={reviewsQuery.data.count}
+          onPageChange={setPage}
+        />
       )}
 
       {/* Respond Modal */}
@@ -272,7 +229,7 @@ export function SellerReviews() {
           error={actionError}
         >
           <div className="mt-2 rounded-lg bg-ui-surface-muted p-3 text-sm text-ui-secondary">
-            <StarRating rating={selectedReview.rating} />
+            <ReviewRating rating={selectedReview.rating} />
             <p className="mt-1 font-semibold">{selectedReview.title}</p>
             <p className="mt-1">{selectedReview.body}</p>
           </div>

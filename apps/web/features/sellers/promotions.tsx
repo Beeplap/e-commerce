@@ -1,5 +1,7 @@
 "use client";
 
+import { Pagination } from "@/components/ui/pagination";
+
 import { DataTable } from "@/components/ui/data-table";
 
 import { FormSection } from "@/components/ui/layout";
@@ -10,6 +12,7 @@ import { useCallback, useState } from "react";
 import {
   ApiErrorState,
   PageHeader,
+  StatusBadge,
   SelectField,
   LoadingState,
   primaryButton,
@@ -20,16 +23,6 @@ import { errorMessage, sellerApi } from "@/lib/api/client";
 import type { Promotion, Coupon } from "@/lib/api/types";
 import { useApiQuery } from "@/lib/api/use-api-query";
 import { useSeller } from "@/features/workspaces/seller-workspace";
-
-function StatusBadge({ active }: { active: boolean }) {
-  return (
-    <span
-      className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${active ? "bg-emerald-50 text-ui-success" : "bg-ui-surface-muted text-ui-muted"}`}
-    >
-      {active ? "Active" : "Inactive"}
-    </span>
-  );
-}
 
 export function SellerPromotions() {
   const access = useSeller();
@@ -245,7 +238,9 @@ export function SellerPromotions() {
               heading: "Status",
               cell: (promo) => (
                 <>
-                  <StatusBadge active={promo.is_active} />
+                  <StatusBadge
+                    status={promo.is_active ? "Active" : "Inactive"}
+                  />
                 </>
               ),
             },
@@ -294,27 +289,11 @@ export function SellerPromotions() {
       </div>
 
       {promotionsQuery.data.count > 25 && (
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-sm text-ui-secondary">
-          <button
-            type="button"
-            disabled={page === 1}
-            onClick={() => setPage((p) => p - 1)}
-            className={secondaryButton}
-          >
-            Previous
-          </button>
-          <span>
-            Page {page} of {Math.ceil(promotionsQuery.data.count / 25)}
-          </span>
-          <button
-            type="button"
-            disabled={page * 25 >= promotionsQuery.data.count}
-            onClick={() => setPage((p) => p + 1)}
-            className={secondaryButton}
-          >
-            Next
-          </button>
-        </div>
+        <Pagination
+          page={page}
+          count={promotionsQuery.data.count}
+          onPageChange={setPage}
+        />
       )}
 
       {/* Coupons drawer/modal */}
@@ -434,7 +413,9 @@ export function SellerPromotions() {
                           : ""}
                       </div>
                     </div>
-                    <StatusBadge active={coupon.is_active} />
+                    <StatusBadge
+                      status={coupon.is_active ? "Active" : "Inactive"}
+                    />
                   </div>
                 ))}
               </div>

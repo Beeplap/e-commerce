@@ -29,23 +29,39 @@ import {
   type Refund,
 } from "./api";
 
-export function AdminFulfillmentOverview() {
+type FulfillmentTab = "shipments" | "returns" | "refunds";
+
+export function AdminFulfillmentOverview({
+  initialTab = "shipments",
+}: {
+  initialTab?: FulfillmentTab;
+}) {
   const { state } = useAuth();
   const user = state.kind === "authenticated" ? state.user : null;
   const canRead = hasPlatformPermission(user, "platform.fulfillment.read");
   const canRefund = hasPlatformPermission(user, "platform.refunds.manage");
 
-  if (!canRead) {
+  if (!user || !canRead) {
     return <ForbiddenScreen />;
   }
 
-  return <AdminFulfillmentDashboard canRefund={Boolean(canRefund)} />;
+  return (
+    <AdminFulfillmentDashboard
+      key={`${user.id}:${initialTab}`}
+      initialTab={initialTab}
+      canRefund={Boolean(canRefund)}
+    />
+  );
 }
 
-function AdminFulfillmentDashboard({ canRefund }: { canRefund: boolean }) {
-  const [activeTab, setActiveTab] = useState<
-    "shipments" | "returns" | "refunds"
-  >("shipments");
+function AdminFulfillmentDashboard({
+  canRefund,
+  initialTab,
+}: {
+  canRefund: boolean;
+  initialTab: FulfillmentTab;
+}) {
+  const [activeTab, setActiveTab] = useState<FulfillmentTab>(initialTab);
   const [showRefundModal, setShowRefundModal] = useState(false);
   const [orderId, setOrderId] = useState("");
   const [amount, setAmount] = useState("");

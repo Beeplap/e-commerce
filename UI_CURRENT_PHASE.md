@@ -1,14 +1,16 @@
 # UI phase selector
 
-UI PHASE 33 — final UI audit
+UI PHASE 33 — IMPLEMENTATION COMPLETE
 
-Phase 32 implementation is complete: intentional finance hierarchy, restrained record rows, responsive promotion tables, shared administrative tokens and concise copy. Frontend lint, TypeScript, all 185 tests, formatting and production build passed. Begin Phase 33 after the Phase 32 commit and push succeed. Browser discovery still returns no browser. The user directed continuation after being informed of required live QA; proceed with source/automated work while recording all viewport/manual/visual checks as unverified. Do not claim visual acceptance. Produce `docs/ui-final-review.md`, run the full frontend gate, commit/push and finish the UI roadmap without inventing another phase.
+All authorized UI phases 23-33 are implemented. Phase 33 final lint, strict TypeScript, all 187 tests across 25 files, production build, repository formatting, 51-route artifact audit and diff validation passed. The final report is `docs/ui-final-review.md`. Commit/push this terminal phase after the gate succeeds, then STOP. Do not start or invent another phase.
+
+Visual acceptance is outstanding. Browser discovery still returns `[]`; screenshots, seven-width live checks, native keyboard/screen-reader/zoom/reduced-motion behavior, cross-browser rendering and real hydration/performance measurements remain unverified. The user directed continued source/automated implementation after being informed of these gaps. Do not label them passed or call this a production release.
 
 Roadmap: `instrutions3.md` (the supplied filename).
 
 Work only on `ui-overhaul`, using the separate `quick-commerce-ui` worktree. The backend `CURRENT_PHASE.md` belongs to the concurrent functional/security roadmap and is not this UI selector.
 
-After a UI phase passes frontend lint, strict TypeScript, all frontend tests, production build and formatting, update its documentation/progress and this selector, commit and push, then continue automatically. A failed check or push blocks advancement. This continuation was explicitly confirmed by the user on 2026-10-03 and replaces intermediate “Then STOP” instructions in the UI roadmap. Finish at Phase 33; do not invent additional phases.
+Phases 23-32 followed frontend lint, strict TypeScript, tests, production build and formatting with documentation, selector, commit and push before automatic continuation. A failed check or push blocked advancement. The user explicitly confirmed that execution on 2026-10-03; it replaced intermediate “Then STOP” instructions. Phase 33 is terminal. Remaining manual/integration evidence requires follow-up, not an invented next UI phase.
 
 Merge integration is a separate final gate: security/backend work must be clean and tested and merged first, then rebase `ui-overhaul` onto that result. Preserve authorization, tenant isolation, CSRF, validated API responses and genuine frontend functionality during conflict resolution. Do not merge or modify the other worktree's unfinished work.
 

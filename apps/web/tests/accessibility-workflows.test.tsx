@@ -1,10 +1,18 @@
-import { act, fireEvent, render, screen, within } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import { useState } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { Tabs } from "@/components/ui/tabs";
 import { TrendChart } from "@/features/workspaces/trend-chart";
 import { SellerStaff } from "@/features/sellers/staff";
 import { SellerWarehouses } from "@/features/inventory/warehouses";
+import { AdminFulfillmentOverview } from "@/features/fulfillment/admin-fulfillment";
 import { AccountMenu } from "@/features/auth/account-menu";
 import { AuthProvider } from "@/features/auth/auth-provider";
 import { SellerWorkspace } from "@/features/workspaces/seller-workspace";
@@ -40,6 +48,52 @@ function Views() {
 }
 
 describe("accessible operational workflows", () => {
+  it("opens direct fulfillment destinations on their named view and resets when the destination changes", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((input: RequestInfo | URL) => {
+        const url = String(input);
+        if (url.includes("/auth/me"))
+          return json({
+            ...user,
+            platform_permissions: ["platform.fulfillment.read"],
+          });
+        if (url.includes("/api/v1/admin/fulfillment/")) return json(page([]));
+        return json({ detail: "Not found" }, 404);
+      }),
+    );
+    const view = render(
+      <AuthProvider>
+        <AdminFulfillmentOverview initialTab="returns" />
+      </AuthProvider>,
+    );
+    expect(await screen.findByRole("tab", { name: "Returns" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
+    expect(screen.getByRole("tabpanel", { name: "Returns" })).toBeVisible();
+    expect(screen.getByRole("tab", { name: "Shipments" })).toHaveAttribute(
+      "aria-selected",
+      "false",
+    );
+    view.rerender(
+      <AuthProvider>
+        <AdminFulfillmentOverview initialTab="refunds" />
+      </AuthProvider>,
+    );
+    expect(await screen.findByRole("tab", { name: "Refunds" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
+    expect(screen.getByRole("tabpanel", { name: "Refunds" })).toBeVisible();
+    expect(
+      screen.queryByRole("tabpanel", { name: "Returns" }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "Platform Refund" }),
+    ).not.toBeInTheDocument();
+  });
+
   it("gives warehouse editing native dialog dismissal and focused errors while preserving failed inputs", async () => {
     const access = {
       ...membership,
@@ -94,7 +148,10 @@ describe("accessible operational workflows", () => {
     expect(await within(dialog).findByRole("alert")).toHaveTextContent(
       "Warehouse access denied",
     );
-    expect(within(dialog).getByRole("alert")).toHaveFocus();
+    // The alert is rendered before the dialog's passive focus effect runs.
+    await waitFor(() =>
+      expect(within(dialog).getByRole("alert")).toHaveFocus(),
+    );
     expect(
       within(dialog).getByRole("textbox", { name: "Warehouse name" }),
     ).toHaveValue("Local hub");

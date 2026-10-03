@@ -1,6 +1,17 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useState, type ReactNode } from "react";
+import Link from "next/link";
+import {
+  DetailSection,
+  DetailGrid,
+  SplitLayout,
+} from "@/components/ui/detail-layout";
+import { Timeline, type TimelineEntry } from "@/components/ui/timeline";
+import { RecordDetails } from "@/components/ui/record-details";
+import { DateDisplay, Money } from "@/components/ui/displays";
+import { Identifier } from "@/components/ui/identifier";
+import { getAdminSellerBalance } from "@/features/finance/api";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Pagination } from "@/components/ui/pagination";
 import {
@@ -41,78 +52,239 @@ export function PlatformSellerDetail({ sellerId }: { sellerId: string }) {
   const seller = query.data;
   return (
     <>
-      <PageHeader title={seller.display_name} description={seller.legal_name} />
-      <div className="mb-6 flex gap-3">
-        <StatusBadge status={seller.status} />
-        <StatusBadge status={seller.verification_status} />
-      </div>
-      <div className="space-y-6">
-        <section className={panel}>
-          <h2 className="mb-4 text-xl font-semibold">Business profile</h2>
-          <dl className="grid gap-4 sm:grid-cols-2">
-            {Object.entries({
-              Email: seller.email,
-              Phone: seller.phone || "Not supplied",
-              Currency: seller.default_currency,
-              Timezone: seller.timezone,
-              Description: seller.profile.description || "Not supplied",
-              Website: seller.profile.website || "Not supplied",
-              "Support email": seller.settings.support_email || "Not supplied",
-            }).map(([label, value]) => (
-              <div key={label}>
-                <dt className="text-xs text-slate-500">{label}</dt>
-                <dd className="mt-1 break-words text-sm">{value}</dd>
-              </div>
-            ))}
-          </dl>
-          <h3 className="mt-6 font-semibold">Addresses</h3>
-          {seller.addresses.length === 0 && (
-            <p className="mt-2 text-sm">No addresses supplied.</p>
-          )}
-          {seller.addresses.map((address) => (
-            <p key={address.id} className="mt-3 text-sm">
-              <strong className="capitalize">{address.kind}: </strong>
-              {[
-                address.line1,
-                address.line2,
-                address.city,
-                address.region,
-                address.postal_code,
-                address.country,
-              ]
-                .filter(Boolean)
-                .join(", ")}
-            </p>
-          ))}
-        </section>
-        {allowed("platform.sellers.manage") && (
+      <PageHeader
+        title={seller.display_name}
+        description={seller.legal_name}
+        actions={
+          <>
+            <StatusBadge status={seller.status} />
+            <StatusBadge status={seller.verification_status} />
+          </>
+        }
+      />
+      <DetailGrid
+        items={[
+          { label: "Currency", value: seller.default_currency },
+          {
+            label: "Registered",
+            value: (
+              <DateDisplay
+                value={seller.created_at}
+                timezone={seller.timezone}
+              />
+            ),
+          },
+        ]}
+      />
+      {allowed("platform.sellers.manage") && (
+        <div className="my-6">
           <SellerActions
             key={`${sellerId}:${seller.status}`}
             seller={seller}
             onSaved={query.retry}
           />
-        )}
-        {allowed("platform.sellers.documents.read") && (
-          <DocumentPanel
-            key={sellerId}
+        </div>
+      )}
+      <div className="mt-6">
+        <SplitLayout
+          asideLabel="Seller financial summary and metadata"
+          aside={
+            <>
+              {allowed("platform.finance.read") && (
+                <SellerFinancialSummary
+                  key={`${user?.id}:${sellerId}`}
+                  sellerId={sellerId}
+                />
+              )}
+              {(allowed("platform.products.read") ||
+                allowed("platform.orders.read") ||
+                allowed("platform.finance.read")) && (
+                <DetailSection title="Related workspaces">
+                  <div className="flex flex-wrap gap-x-4 gap-y-2">
+                    {allowed("platform.products.read") && (
+                      <Link
+                        href="/admin/products"
+                        className="inline-flex min-h-11 items-center text-ui-body text-ui-accent hover:underline"
+                      >
+                        Platform catalog
+                      </Link>
+                    )}
+                    {allowed("platform.orders.read") && (
+                      <Link
+                        href="/admin/orders"
+                        className="inline-flex min-h-11 items-center text-ui-body text-ui-accent hover:underline"
+                      >
+                        Platform orders
+                      </Link>
+                    )}
+                    {allowed("platform.finance.read") && (
+                      <Link
+                        href={`/admin/finance/payouts?seller_id=${sellerId}`}
+                        className="inline-flex min-h-11 items-center text-ui-body text-ui-accent hover:underline"
+                      >
+                        Seller payouts
+                      </Link>
+                    )}
+                  </div>
+                </DetailSection>
+              )}
+              <DetailSection title="Seller metadata">
+                <DetailGrid
+                  items={[
+                    {
+                      label: "Seller ID",
+                      value: <Identifier value={seller.id} copyable />,
+                    },
+                    { label: "Timezone", value: seller.timezone },
+                    {
+                      label: "Last updated",
+                      value: (
+                        <DateDisplay
+                          value={seller.updated_at}
+                          timezone={seller.timezone}
+                        />
+                      ),
+                    },
+                    {
+                      label: "Approved",
+                      value: seller.approved_at ? (
+                        <DateDisplay
+                          value={seller.approved_at}
+                          timezone={seller.timezone}
+                        />
+                      ) : (
+                        "Not approved"
+                      ),
+                    },
+                  ]}
+                />
+              </DetailSection>
+            </>
+          }
+        >
+          {allowed("platform.sellers.documents.read") && (
+            <DocumentPanel
+              key={sellerId}
+              sellerId={sellerId}
+              platform
+              canUpload={false}
+              canReview={
+                seller.status === "pending" &&
+                allowed("platform.sellers.documents.review")
+              }
+            />
+          )}
+          <DetailSection title="Business profile">
+            <DetailGrid
+              items={[
+                { label: "Email", value: seller.email },
+                { label: "Phone", value: seller.phone || "Not supplied" },
+                {
+                  label: "Description",
+                  value: seller.profile.description || "Not supplied",
+                },
+                {
+                  label: "Website",
+                  value: seller.profile.website || "Not supplied",
+                },
+                {
+                  label: "Support email",
+                  value: seller.settings.support_email || "Not supplied",
+                },
+              ]}
+            />
+            <h3 className="text-sm font-semibold">Addresses</h3>
+            {!seller.addresses.length && (
+              <p className="text-ui-body text-ui-secondary">
+                No addresses supplied.
+              </p>
+            )}
+            {seller.addresses.map((address) => (
+              <div key={address.id}>
+                <h4 className="mb-1 text-ui-body font-medium capitalize">
+                  {address.kind} address
+                </h4>
+                <p className="text-ui-body text-ui-secondary">
+                  {[
+                    address.line1,
+                    address.line2,
+                    address.city,
+                    address.region,
+                    address.postal_code,
+                    address.country,
+                  ]
+                    .filter(Boolean)
+                    .join(", ")}
+                </p>
+              </div>
+            ))}
+          </DetailSection>
+          <RelatedHistory
+            key={`${user?.id}:${sellerId}:related`}
             sellerId={sellerId}
-            platform
-            canUpload={false}
-            canReview={
-              seller.status === "pending" &&
-              allowed("platform.sellers.documents.review")
-            }
+            canAudit={allowed("platform.sellers.audit.read")}
+            timezone={seller.timezone}
           />
-        )}
-        <RelatedHistory
-          key={`related:${sellerId}`}
-          sellerId={sellerId}
-          canAudit={allowed("platform.sellers.audit.read")}
-        />
+        </SplitLayout>
       </div>
     </>
   );
 }
+function SellerFinancialSummary({ sellerId }: { sellerId: string }) {
+  const load = useCallback(
+    (signal: AbortSignal) => getAdminSellerBalance(sellerId, signal),
+    [sellerId],
+  );
+  const query = useApiQuery(`${sellerId}:platform-balance`, load);
+  return (
+    <DetailSection title="Financial summary">
+      {query.kind === "loading" && (
+        <LoadingState label="Loading seller balance…" />
+      )}
+      {query.kind === "error" && (
+        <ApiErrorState error={query.error} onRetry={query.retry} />
+      )}
+      {query.kind === "ready" && (
+        <DetailGrid
+          items={[
+            {
+              label: "Current balance",
+              value: (
+                <Money
+                  amount={query.data.current_balance}
+                  currency={query.data.currency}
+                />
+              ),
+            },
+            {
+              label: "Pending balance",
+              value: (
+                <Money
+                  amount={query.data.pending_balance}
+                  currency={query.data.currency}
+                />
+              ),
+            },
+            {
+              label: "Paid out",
+              value: (
+                <Money
+                  amount={query.data.total_paid_out}
+                  currency={query.data.currency}
+                />
+              ),
+            },
+            {
+              label: "Balance updated",
+              value: <DateDisplay value={query.data.updated_at} />,
+            },
+          ]}
+        />
+      )}
+    </DetailSection>
+  );
+}
+
 function SellerActions({
   seller,
   onSaved,
@@ -197,16 +369,20 @@ function SellerActions({
     </section>
   );
 }
-function PagedSection<T>({
+function PagedSection<T extends { id: string }>({
   title,
   queryKey,
   load,
   render,
+  timeline,
+  timezone,
 }: {
   title: string;
   queryKey: string;
   load: (page: number, signal: AbortSignal) => Promise<Page<T>>;
-  render: (value: T) => React.ReactNode;
+  render?: (value: T) => ReactNode;
+  timeline?: (value: T) => TimelineEntry;
+  timezone?: string;
 }) {
   const [page, setPage] = useState(1);
   const fetchPage = useCallback(
@@ -215,8 +391,7 @@ function PagedSection<T>({
   );
   const query = useApiQuery(`${queryKey}:${page}`, fetchPage);
   return (
-    <section className={panel}>
-      <h2 className="mb-4 text-xl font-semibold">{title}</h2>
+    <DetailSection title={title}>
       {query.kind === "loading" && (
         <LoadingState label={`Loading ${title.toLowerCase()}…`} />
       )}
@@ -225,14 +400,26 @@ function PagedSection<T>({
       )}
       {query.kind === "ready" && (
         <>
-          {query.data.results.length === 0 && <p>No records yet.</p>}
-          <ul className="divide-y divide-slate-200">
-            {query.data.results.map((value, index) => (
-              <li key={index} className="py-3 text-sm">
-                {render(value)}
-              </li>
-            ))}
-          </ul>
+          <p className="text-ui-caption text-ui-secondary">
+            {query.data.count} records
+          </p>
+          {timeline ? (
+            <Timeline
+              label={title}
+              timezone={timezone}
+              entries={query.data.results.map(timeline)}
+            />
+          ) : query.data.results.length ? (
+            <ul className="divide-y divide-ui-border">
+              {query.data.results.map((value) => (
+                <li key={value.id} className="py-3">
+                  {render?.(value)}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-ui-body text-ui-secondary">No records yet.</p>
+          )}
           <Pagination
             page={page}
             count={query.data.count}
@@ -240,15 +427,17 @@ function PagedSection<T>({
           />
         </>
       )}
-    </section>
+    </DetailSection>
   );
 }
 function RelatedHistory({
   sellerId,
   canAudit,
+  timezone,
 }: {
   sellerId: string;
   canAudit: boolean;
+  timezone: string;
 }) {
   const members = useCallback(
     (page: number, signal: AbortSignal) =>
@@ -272,45 +461,71 @@ function RelatedHistory({
         queryKey={`${sellerId}:members`}
         load={members}
         render={(member) => (
-          <>
-            {member.email} · {member.role_name} · {member.status}
-          </>
+          <DetailGrid
+            items={[
+              { label: "Member", value: member.email },
+              { label: "Role", value: member.role_name },
+              {
+                label: "Status",
+                value: <StatusBadge status={member.status} />,
+              },
+              {
+                label: "Joined",
+                value: member.joined_at ? (
+                  <DateDisplay value={member.joined_at} timezone={timezone} />
+                ) : (
+                  "Not joined"
+                ),
+              },
+            ]}
+          />
         )}
       />
       <PagedSection
         title="Status history"
         queryKey={`${sellerId}:history`}
         load={history}
-        render={(entry) => (
-          <>
-            <p>
-              {entry.from_status || "New"} → {entry.to_status}
-            </p>
-            {entry.reason && <p>{entry.reason}</p>}
-            <p className="mt-1 text-xs text-slate-500">
-              {entry.created_at} · Actor {entry.actor_id}
-            </p>
-          </>
-        )}
+        timezone={timezone}
+        timeline={(entry) => ({
+          id: entry.id,
+          title: `${entry.from_status || "New"} → ${entry.to_status}`,
+          occurredAt: entry.created_at,
+          description: entry.reason,
+          actor: (
+            <>
+              Actor <Identifier value={entry.actor_id} />
+            </>
+          ),
+        })}
       />
       {canAudit && (
         <PagedSection
           title="Audit history"
           queryKey={`${sellerId}:audit`}
           load={audit}
-          render={(entry) => (
-            <>
-              <p>
-                {entry.action} · {entry.target_type}
-              </p>
-              <pre className="mt-2 overflow-auto whitespace-pre-wrap text-xs">
-                {JSON.stringify(entry.changes, null, 2)}
-              </pre>
-              <p className="mt-1 text-xs text-slate-500">
-                {entry.created_at} · Actor {entry.actor_id}
-              </p>
-            </>
-          )}
+          timezone={timezone}
+          timeline={(entry) => ({
+            id: entry.id,
+            title: entry.action.replaceAll(".", " ").replaceAll("_", " "),
+            occurredAt: entry.created_at,
+            description: (
+              <>
+                <p className="mb-2 text-ui-caption">
+                  {entry.target_type.replaceAll("_", " ")}{" "}
+                  <Identifier value={entry.target_id} />
+                </p>
+                <RecordDetails
+                  value={entry.changes}
+                  emptyMessage="No field changes recorded."
+                />
+              </>
+            ),
+            actor: (
+              <>
+                Actor <Identifier value={entry.actor_id} />
+              </>
+            ),
+          })}
         />
       )}
     </>

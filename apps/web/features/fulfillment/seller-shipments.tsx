@@ -1,5 +1,7 @@
 "use client";
 
+import { Timeline } from "@/components/ui/timeline";
+import { DetailGrid } from "@/components/ui/detail-layout";
 import { Dialog } from "@/components/ui/dialog";
 
 import { useCallback, useState } from "react";
@@ -388,6 +390,38 @@ function ShipmentsContent({
             </div>
           </div>
 
+          <DetailGrid
+            items={[
+              {
+                label: "Created",
+                value: <DateDisplay value={selectedShipment.created_at} />,
+              },
+              {
+                label: "Shipped",
+                value: selectedShipment.shipped_at ? (
+                  <DateDisplay value={selectedShipment.shipped_at} />
+                ) : (
+                  "Not shipped"
+                ),
+              },
+              {
+                label: "Expected delivery",
+                value: selectedShipment.estimated_delivery_at ? (
+                  <DateDisplay value={selectedShipment.estimated_delivery_at} />
+                ) : (
+                  "Not supplied"
+                ),
+              },
+              {
+                label: "Delivered",
+                value: selectedShipment.delivered_at ? (
+                  <DateDisplay value={selectedShipment.delivered_at} />
+                ) : (
+                  "Not delivered"
+                ),
+              },
+            ]}
+          />
           <div className="mt-6">
             <h3 className="text-sm font-semibold text-slate-900">
               Shipment Items
@@ -419,24 +453,20 @@ function ShipmentsContent({
                 </button>
               )}
             </div>
-            <ul className="mt-2 space-y-3">
-              {selectedShipment.tracking_events.map((evt) => (
-                <li key={evt.id} className="rounded-lg bg-slate-50 p-3 text-sm">
-                  <div className="flex items-center justify-between font-medium text-slate-900">
-                    <span className="capitalize">{evt.status}</span>
-                    <span className="text-xs text-slate-500 font-normal">
-                      <DateDisplay value={evt.timestamp} />
-                    </span>
-                  </div>
-                  {evt.location && (
-                    <div className="text-xs text-slate-600">{evt.location}</div>
-                  )}
-                  <div className="text-xs text-slate-500 mt-1">
-                    {evt.description}
-                  </div>
-                </li>
-              ))}
-            </ul>
+            <Timeline
+              label="Shipment tracking events"
+              entries={selectedShipment.tracking_events.map((event) => ({
+                id: event.id,
+                title: event.status.replaceAll("_", " "),
+                occurredAt: event.timestamp,
+                description: (
+                  <>
+                    {event.location && <p>{event.location}</p>}
+                    {event.description}
+                  </>
+                ),
+              }))}
+            />
           </div>
 
           <div className="mt-6 flex justify-end gap-3">

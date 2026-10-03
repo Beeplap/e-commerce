@@ -1,6 +1,9 @@
 "use client";
 
 import { Dialog } from "@/components/ui/dialog";
+import { ReviewDetail } from "./review-detail";
+import { Button } from "@/components/ui/button";
+import { DateDisplay } from "@/components/ui/displays";
 
 import { useCallback, useState } from "react";
 import {
@@ -57,6 +60,10 @@ export function AdminReviews() {
   const canModerate = hasPlatformPermission(user, "platform.reviews.moderate");
 
   const [page, setPage] = useState(1);
+  const [inspecting, setInspecting] = useState<{
+    scope: string | undefined;
+    review: ProductReview;
+  } | null>(null);
   const [statusFilter, setStatusFilter] = useState("");
   const [selectedReview, setSelectedReview] = useState<ProductReview | null>(
     null,
@@ -160,6 +167,12 @@ export function AdminReviews() {
             No reviews match the current filter.
           </p>
         )}
+        {inspecting && inspecting.scope === user?.id && (
+          <ReviewDetail
+            review={inspecting.review}
+            onClose={() => setInspecting(null)}
+          />
+        )}
         {reviews.map((review) => (
           <div
             key={review.id}
@@ -176,13 +189,19 @@ export function AdminReviews() {
                     </span>
                   )}
                 </div>
+                <Button
+                  variant="quiet"
+                  onClick={() => setInspecting({ scope: user?.id, review })}
+                >
+                  View review
+                </Button>
                 <div className="mt-1 font-semibold text-slate-900">
                   {review.title}
                 </div>
                 <p className="mt-1 text-sm text-slate-700">{review.body}</p>
                 <div className="mt-2 text-xs text-slate-500">
                   By {review.customer.email} · {review.product.name} ·{" "}
-                  {new Date(review.created_at).toLocaleDateString()}
+                  <DateDisplay value={review.created_at} />
                 </div>
                 {review.seller_response && (
                   <div className="mt-2 rounded-lg bg-slate-50 p-3">

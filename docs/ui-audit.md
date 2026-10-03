@@ -133,3 +133,14 @@ No screenshots or real narrow-width table rendering are claimed. The single-mark
 - Roles/staff: role permissions group by actual capability area with native checkbox labels. Delegation remains backend controlled. Revoke identifies the member and seller, supports cancellation and keeps a rejected backend operation visible; invitations and role mutations prevent repeated submissions.
 
 No custom fixed workflow overlays remain in feature files. Existing native-dialog test mocks that did not set open state were removed in favor of the shared stateful jsdom fixture; assertions were retained. Live screenshots, native focus containment, keyboard traversal and narrow-width scrolling remain unverified.
+
+## Phase 29 operational-detail review
+
+- Seller/platform order detail: clear identity, fulfillment/payment where actually supplied, verified seller context, current command controls, responsive shared item table, immutable totals, labeled shipping/billing records, secondary full IDs and one coherent history presentation. Related seller-order fulfillment/after-sales evidence is bounded, permission-specific and loaded on demand; failure is not an empty success.
+- Platform seller detail: status and verification beside identity, lifecycle controls near the header, private document review, business/contact/address content, actual membership totals, exact scoped financial balances when permitted, secondary metadata and attributable status/audit timelines. Related catalog/order workspaces are capability-gated links; seller-specific catalog/order counters cannot be supplied by the existing APIs and are not fabricated.
+- Product detail: meaningful section navigation for existing editor features, publication controls near identity, main general/variants/attributes/media content, secondary metadata and shared review history. Existing draft/publication and tenant constraints remain.
+- Return and shipment inspection: status/identity, customer/carrier and actual lifecycle dates, all existing item/restock/financial facts, attributable return history and actual tracking events. Return refund values retain exact decimals without the old unsupported USD label.
+- Payout inspection: full request notes, exact amount/currency, period and rejection evidence, public identifiers and only timestamped request/approval/disbursement events. Both seller and platform lists expose the same useful read view.
+- Review inspection: full customer/product/rating/verification evidence, body and actual response history. Inspection is tied to the verified membership/user identity so a context change cannot display another context's selected review. No unsupported detail route or moderation event was invented.
+
+Real screenshots remain unavailable: browser discovery was retried and returned `[]`. Source layout and behavior tests are evidence of implementation, not a visual approval or native accessibility audit.

@@ -17,6 +17,12 @@ import {
 } from "@/components/ui/primitives";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { DateDisplay } from "@/components/ui/displays";
+import {
+  DetailSection,
+  DetailGrid,
+  SplitLayout,
+} from "@/components/ui/detail-layout";
+import { Identifier } from "@/components/ui/identifier";
 import { panel, useMutation, MutationStatus } from "@/features/sellers/forms";
 import { catalogApi, type Context, type Product } from "./api";
 import { ProductForm } from "./product-form";
@@ -102,7 +108,28 @@ function Detail({
           Updated <DateDisplay value={product.updated_at} timezone={timezone} />
         </span>
       </div>
-      <div className="space-y-6">
+      <nav
+        aria-label="Product sections"
+        className="mb-6 flex flex-wrap gap-4 border-b border-ui-border"
+      >
+        {[
+          ["general", "General"],
+          ["variants", "Variants and pricing"],
+          ["attributes", "Attributes"],
+          ["media", "Media"],
+          ["history", "History"],
+        ].map(([id, label]) => (
+          <a
+            key={id}
+            href={`#product-${id}`}
+            className="inline-flex min-h-11 items-center text-ui-body font-medium text-ui-accent hover:underline"
+          >
+            {label}
+          </a>
+        ))}
+      </nav>
+      <div className="mb-6">
+        {" "}
         <ProductActions
           context={context}
           product={product}
@@ -111,39 +138,90 @@ function Detail({
           canModerate={canModerate}
           onSaved={query.retry}
         />
-        {sellerId ? (
-          <ProductForm
-            key={product.updated_at}
-            sellerId={sellerId}
+      </div>
+      <SplitLayout
+        asideLabel="Product metadata"
+        aside={
+          <>
+            <DetailSection title="Product metadata">
+              <DetailGrid
+                items={[
+                  {
+                    label: "Product ID",
+                    value: <Identifier value={product.id} copyable />,
+                  },
+                  { label: "Category", value: product.category.name },
+                  { label: "Brand", value: product.brand?.name ?? "None" },
+                  { label: "Currency", value: product.currency },
+                  {
+                    label: "Created",
+                    value: (
+                      <DateDisplay
+                        value={product.created_at}
+                        timezone={timezone}
+                      />
+                    ),
+                  },
+                  {
+                    label: "Approved",
+                    value: product.approved_at ? (
+                      <DateDisplay
+                        value={product.approved_at}
+                        timezone={timezone}
+                      />
+                    ) : (
+                      "Not approved"
+                    ),
+                  },
+                ]}
+              />
+            </DetailSection>
+          </>
+        }
+      >
+        <div id="product-general" className="scroll-mt-6">
+          {sellerId ? (
+            <ProductForm
+              key={product.updated_at}
+              sellerId={sellerId}
+              product={product}
+              canEdit={editable}
+              onSaved={query.retry}
+            />
+          ) : (
+            <DetailSection title="Product details">
+              <p className="text-ui-body">{product.short_description}</p>
+              <p className="whitespace-pre-wrap text-ui-body">
+                {product.description || "No description supplied."}
+              </p>
+            </DetailSection>
+          )}
+        </div>
+        <div id="product-variants" className="scroll-mt-6">
+          <Variants context={context} product={product} canEdit={editable} />
+        </div>
+        <div id="product-attributes" className="scroll-mt-6">
+          <AttributeValues
+            context={context}
             product={product}
             canEdit={editable}
-            onSaved={query.retry}
           />
-        ) : (
-          <section className={panel}>
-            <h2 className="text-xl font-semibold">Product details</h2>
-            <p className="mt-3">{product.short_description}</p>
-            <p className="mt-4 whitespace-pre-wrap">
-              {product.description || "No description supplied."}
-            </p>
-            <p className="mt-3 text-sm">
-              Brand: {product.brand?.name ?? "None"}
-            </p>
-          </section>
-        )}
-        <Variants context={context} product={product} canEdit={editable} />
-        <AttributeValues
-          context={context}
-          product={product}
-          canEdit={editable}
-        />
-        <ProductImages context={context} product={product} canEdit={editable} />
-        <ProductHistory
-          context={context}
-          productId={productId}
-          timezone={timezone}
-        />
-      </div>
+        </div>
+        <div id="product-media" className="scroll-mt-6">
+          <ProductImages
+            context={context}
+            product={product}
+            canEdit={editable}
+          />
+        </div>
+        <div id="product-history" className="scroll-mt-6">
+          <ProductHistory
+            context={context}
+            productId={productId}
+            timezone={timezone}
+          />
+        </div>
+      </SplitLayout>
     </>
   );
 }

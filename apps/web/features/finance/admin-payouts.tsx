@@ -1,6 +1,8 @@
 "use client";
 
 import { Dialog } from "@/components/ui/dialog";
+import { PayoutDetail } from "./payout-detail";
+import { Button } from "@/components/ui/button";
 
 import Link from "next/link";
 import { useCallback, useRef, useState } from "react";
@@ -50,12 +52,12 @@ export function AdminPayouts() {
 function PayoutsList({ canManage }: { canManage: boolean }) {
   const table = useTableQuery({
     status: ["PENDING", "APPROVED", "PROCESSED", "REJECTED"],
+    seller_id: 36,
   });
   const { page, setPage } = table;
   const statusFilter = table.values.status;
   const setStatusFilter = (status: string) => table.setFilters({ status });
-  const [sellerIdInput, setSellerIdInput] = useState<string>("");
-  const [appliedSellerId, setAppliedSellerId] = useState<string>("");
+  const appliedSellerId = table.values.seller_id;
 
   const [processingPayout, setProcessingPayout] = useState<Payout | null>(null);
   const [rejectingPayout, setRejectingPayout] = useState<Payout | null>(null);
@@ -104,7 +106,18 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
     }
   };
 
+  const [inspectingPayout, setInspectingPayout] = useState<Payout | null>(null);
+
   const columns: Column<Payout>[] = [
+    {
+      id: "inspect",
+      heading: "Inspect",
+      cell: (item) => (
+        <Button variant="quiet" onClick={() => setInspectingPayout(item)}>
+          View details
+        </Button>
+      ),
+    },
     {
       id: "payout_number",
       heading: "Payout #",
@@ -248,6 +261,12 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
         </Link>
       </div>
 
+      {inspectingPayout && (
+        <PayoutDetail
+          payout={inspectingPayout}
+          onClose={() => setInspectingPayout(null)}
+        />
+      )}
       <PageHeader
         title="Seller Payouts Management"
         description="Review seller withdrawal requests, authorize disbursement approvals, and record completed settlement references."
@@ -296,42 +315,18 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
           </select>
         </div>
 
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            setPage(1);
-            setAppliedSellerId(sellerIdInput.trim());
-          }}
-          className="flex gap-2"
-        >
-          <input
-            type="text"
-            value={sellerIdInput}
-            onChange={(e) => setSellerIdInput(e.target.value)}
-            placeholder="Filter by Seller UUID…"
-            className={`w-64 ${inputStyle}`}
-          />
-          <button type="submit" className={secondaryButton}>
-            Filter
-          </button>
-          {appliedSellerId && (
-            <button
-              type="button"
-              onClick={() => {
-                setSellerIdInput("");
-                setAppliedSellerId("");
-                setPage(1);
-              }}
-              className="text-sm font-medium text-slate-600 hover:text-slate-900"
-            >
-              Clear
-            </button>
-          )}
-        </form>
+        <SellerPayoutFilter
+          key={appliedSellerId}
+          value={appliedSellerId}
+          onApply={(seller_id) => table.setFilters({ seller_id })}
+        />
       </div>
 
       <FilterSummary
-        filters={statusFilter ? [`Status: ${statusFilter.toLowerCase()}`] : []}
+        filters={[
+          ...(statusFilter ? [`Status: ${statusFilter.toLowerCase()}`] : []),
+          ...(appliedSellerId ? [`Seller: ${appliedSellerId}`] : []),
+        ]}
         onClear={table.clear}
       />
       {query.kind === "loading" && <LoadingState />}
@@ -342,7 +337,7 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
       {query.kind === "ready" && (
         <div className="space-y-4">
           <DataTable
-            filtered={!!statusFilter}
+            filtered={!!statusFilter || !!appliedSellerId}
             rows={query.data.results}
             columns={columns}
             rowKey={(item) => item.id}
@@ -383,6 +378,49 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
         />
       )}
     </div>
+  );
+}
+
+function SellerPayoutFilter({
+  value,
+  onApply,
+}: {
+  value: string;
+  onApply: (value: string) => void;
+}) {
+  const [draft, setDraft] = useState(value);
+  return (
+    <form
+      className="flex max-w-full flex-wrap items-end gap-2"
+      onSubmit={(event) => {
+        event.preventDefault();
+        onApply(draft.trim());
+      }}
+    >
+      <label className="min-w-0 text-ui-caption text-ui-secondary">
+        Seller ID
+        <input
+          type="text"
+          value={draft}
+          maxLength={36}
+          onChange={(event) => setDraft(event.target.value)}
+          placeholder="Filter by Seller UUID…"
+          className={`mt-1 w-full sm:w-64 ${inputStyle}`}
+        />
+      </label>
+      <button type="submit" className={secondaryButton}>
+        Filter
+      </button>
+      {value && (
+        <button
+          type="button"
+          className={secondaryButton}
+          onClick={() => onApply("")}
+        >
+          Clear seller
+        </button>
+      )}
+    </form>
   );
 }
 

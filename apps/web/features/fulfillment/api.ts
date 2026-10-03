@@ -331,6 +331,7 @@ export function refundParser(value: unknown): Refund {
 export async function sellerListShipments(
   sellerId: string,
   params?: { page?: number; status?: string; seller_order_id?: string },
+  signal?: AbortSignal,
 ): Promise<Page<Shipment>> {
   const searchParams = new URLSearchParams();
   if (params?.page) searchParams.set("page", String(params.page));
@@ -341,6 +342,7 @@ export async function sellerListShipments(
 
   return apiRequest(`/api/v1/seller/fulfillment/shipments${q ? `?${q}` : ""}`, {
     sellerId,
+    signal,
     parse: pageParser(shipmentParser),
   });
 }
@@ -411,6 +413,7 @@ export async function sellerDeliverShipment(
 export async function sellerListReturns(
   sellerId: string,
   params?: { page?: number; status?: string; seller_order_id?: string },
+  signal?: AbortSignal,
 ): Promise<Page<ReturnRequest>> {
   const searchParams = new URLSearchParams();
   if (params?.page) searchParams.set("page", String(params.page));
@@ -421,6 +424,7 @@ export async function sellerListReturns(
 
   return apiRequest(`/api/v1/seller/fulfillment/returns${q ? `?${q}` : ""}`, {
     sellerId,
+    signal,
     parse: pageParser(returnRequestParser),
   });
 }
@@ -502,6 +506,7 @@ export async function sellerReceiveReturn(
 export async function sellerListRefunds(
   sellerId: string,
   params?: { page?: number; status?: string; seller_order_id?: string },
+  signal?: AbortSignal,
 ): Promise<Page<Refund>> {
   const searchParams = new URLSearchParams();
   if (params?.page) searchParams.set("page", String(params.page));
@@ -512,6 +517,7 @@ export async function sellerListRefunds(
 
   return apiRequest(`/api/v1/seller/fulfillment/refunds${q ? `?${q}` : ""}`, {
     sellerId,
+    signal,
     parse: pageParser(refundParser),
   });
 }

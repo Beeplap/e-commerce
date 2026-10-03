@@ -1,12 +1,15 @@
 "use client";
 
+import { Timeline } from "@/components/ui/timeline";
+import { Identifier } from "@/components/ui/identifier";
+import { DetailGrid } from "@/components/ui/detail-layout";
 import { Dialog } from "@/components/ui/dialog";
 
 import { useCallback, useState } from "react";
 import { useSeller } from "@/features/workspaces/seller-workspace";
 import { ForbiddenScreen } from "@/features/workspaces/forbidden-screen";
 import { useApiQuery } from "@/lib/api/use-api-query";
-import { DateDisplay, Money } from "@/components/ui/displays";
+import { DateDisplay } from "@/components/ui/displays";
 import {
   ApiErrorState,
   FormField,
@@ -287,6 +290,26 @@ function ReturnsContent({
             )}
           </div>
 
+          <DetailGrid
+            items={[
+              {
+                label: "Requested",
+                value: <DateDisplay value={selectedReturn.requested_at} />,
+              },
+              {
+                label: "Customer",
+                value: selectedReturn.customer_email || "Not supplied",
+              },
+              {
+                label: "Return carrier",
+                value: selectedReturn.return_carrier || "Not supplied",
+              },
+              {
+                label: "Tracking",
+                value: selectedReturn.return_tracking_number || "Not supplied",
+              },
+            ]}
+          />
           <div className="mt-6">
             <h3 className="text-sm font-semibold text-slate-900">
               Returned Items
@@ -311,7 +334,10 @@ function ReturnsContent({
                       x{item.quantity}
                     </div>
                     <div className="text-xs text-slate-600 font-mono">
-                      <Money amount={item.refund_amount} currency="USD" />
+                      <span className="tabular-nums">
+                        {item.refund_amount}{" "}
+                        <span className="font-sans">(order currency)</span>
+                      </span>
                     </div>
                   </div>
                 </li>
@@ -323,24 +349,20 @@ function ReturnsContent({
             <h3 className="text-sm font-semibold text-slate-900">
               Status History
             </h3>
-            <ul className="mt-2 space-y-2">
-              {selectedReturn.status_history.map((hist) => (
-                <li
-                  key={hist.id}
-                  className="rounded-lg bg-slate-50 p-2 text-xs"
-                >
-                  <div className="flex justify-between font-medium text-slate-900">
-                    <span>{hist.to_status}</span>
-                    <span className="text-slate-500 font-normal">
-                      <DateDisplay value={hist.created_at} />
-                    </span>
-                  </div>
-                  {hist.notes && (
-                    <div className="text-slate-600 mt-0.5">{hist.notes}</div>
-                  )}
-                </li>
-              ))}
-            </ul>
+            <Timeline
+              label="Return state changes"
+              entries={selectedReturn.status_history.map((hist) => ({
+                id: hist.id,
+                title: hist.to_status.replaceAll("_", " "),
+                occurredAt: hist.created_at,
+                description: hist.notes,
+                actor: hist.actor_id ? (
+                  <>
+                    Actor <Identifier value={hist.actor_id} />
+                  </>
+                ) : undefined,
+              }))}
+            />
           </div>
 
           <div className="mt-6 flex flex-wrap justify-end gap-3">

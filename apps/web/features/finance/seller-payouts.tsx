@@ -6,6 +6,9 @@ import { ForbiddenScreen } from "@/features/workspaces/forbidden-screen";
 import { useApiQuery } from "@/lib/api/use-api-query";
 import { DataTable, type Column } from "@/components/ui/data-table";
 import { Pagination } from "@/components/ui/pagination";
+import { FilterBar, FilterSummary } from "@/components/ui/filter-bar";
+import { SelectField } from "@/components/ui/form-fields";
+import { useTableQuery } from "@/components/ui/use-table-query";
 import { Money, DateDisplay } from "@/components/ui/displays";
 import {
   ApiErrorState,
@@ -15,7 +18,6 @@ import {
   primaryButton,
   secondaryButton,
 } from "@/components/ui/primitives";
-import { selectStyle } from "@/features/sellers/forms";
 import {
   getSellerBalance,
   getSellerPayouts,
@@ -37,8 +39,11 @@ export function SellerPayouts() {
 }
 
 function PayoutsList({ sellerId }: { sellerId: string }) {
-  const [page, setPage] = useState(1);
-  const [statusFilter, setStatusFilter] = useState<string>("");
+  const table = useTableQuery({
+    status: ["PENDING", "APPROVED", "PROCESSED", "REJECTED"],
+  });
+  const { page, setPage } = table;
+  const statusFilter = table.values.status;
   const [showModal, setShowModal] = useState(false);
   const [payoutAmount, setPayoutAmount] = useState("");
   const [payoutNotes, setPayoutNotes] = useState("");
@@ -114,6 +119,7 @@ function PayoutsList({ sellerId }: { sellerId: string }) {
     },
     {
       id: "amount",
+      align: "right" as const,
       heading: "Amount",
       cell: (payout) => (
         <span className="font-semibold text-slate-900">
@@ -194,28 +200,29 @@ function PayoutsList({ sellerId }: { sellerId: string }) {
         </div>
       )}
 
-      {/* Filter Bar */}
-      <div className="flex flex-wrap items-center gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-        <div className="w-48">
-          <label htmlFor="payout-status-filter" className="sr-only">
-            Filter by Status
-          </label>
-          <select
-            id="payout-status-filter"
+      <div>
+        <FilterBar>
+          <SelectField
+            label="Filter by Status"
             value={statusFilter}
-            onChange={(e) => {
-              setStatusFilter(e.target.value);
-              setPage(1);
-            }}
-            className={selectStyle}
+            onChange={(event) =>
+              table.setFilters({ status: event.target.value })
+            }
           >
-            <option value="">All Statuses</option>
-            <option value="PENDING">Pending</option>
-            <option value="APPROVED">Approved</option>
-            <option value="PROCESSED">Processed</option>
-            <option value="REJECTED">Rejected</option>
-          </select>
-        </div>
+            <option value="">All statuses</option>
+            {["PENDING", "APPROVED", "PROCESSED", "REJECTED"].map((value) => (
+              <option key={value} value={value}>
+                {value.toLowerCase()}
+              </option>
+            ))}
+          </SelectField>
+        </FilterBar>
+        <FilterSummary
+          filters={
+            statusFilter ? [`Status: ${statusFilter.toLowerCase()}`] : []
+          }
+          onClear={table.clear}
+        />
       </div>
 
       {/* Payouts Table */}
@@ -230,6 +237,7 @@ function PayoutsList({ sellerId }: { sellerId: string }) {
         <div className="space-y-4">
           <div className="rounded-xl border border-slate-200 bg-white shadow-sm">
             <DataTable
+              filtered={!!statusFilter}
               rows={payoutsQuery.data.results}
               columns={columns}
               rowKey={(r) => r.id}

@@ -1,8 +1,8 @@
 # UI phase selector
 
-UI PHASE 27 — operational tables, search and filters
+UI PHASE 28 — forms and complex workflows
 
-Phase 26 is complete: operational priorities, grouped performance metrics, explicit reporting periods and accessible exact-value trends. Frontend lint, TypeScript, all 145 tests, formatting and production build passed. The requested desktop/mobile screenshot critique remains pending because browser discovery returned no browsers. Begin Phase 27 after the Phase 26 commit and push succeed.
+Phase 27 is complete: audited responsive operational tables, numeric alignment, full identifier copy, bounded shareable URL filters and history restoration. Frontend lint, TypeScript, all 154 tests, formatting and production build passed. Real visual/browser checks remain pending because no browser is available. Begin Phase 28 after the Phase 27 commit and push succeed.
 
 Roadmap: `instrutions3.md` (the supplied filename).
 

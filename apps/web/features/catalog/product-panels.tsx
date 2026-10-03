@@ -110,6 +110,7 @@ export function Variants({
               },
               {
                 id: "price",
+                align: "right" as const,
                 heading: "Price",
                 cell: (r) => (
                   <Money amount={r.price} currency={product.currency} />

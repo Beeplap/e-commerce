@@ -26,10 +26,24 @@ beforeEach(() => {
 afterEach(() => vi.unstubAllGlobals());
 
 describe("workspace navigation", () => {
+  it("requires payout read access separately from finance access", () => {
+    render(
+      <WorkspaceFrame mode="seller" sellerCanReadFinance>
+        <h1>Finance only</h1>
+      </WorkspaceFrame>,
+    );
+    const nav = within(
+      screen.getByRole("navigation", { name: "Workspace navigation" }),
+    );
+    expect(nav.getByRole("link", { name: "Finance" })).toBeInTheDocument();
+    expect(
+      nav.queryByRole("link", { name: "Payouts" }),
+    ).not.toBeInTheDocument();
+  });
   it("keeps the most specific section active on nested routes", () => {
     navigation.pathname = "/seller/finance/payouts";
     render(
-      <WorkspaceFrame mode="seller" sellerCanReadFinance>
+      <WorkspaceFrame mode="seller" sellerCanReadFinance sellerCanReadPayouts>
         <h1>Payout requests</h1>
       </WorkspaceFrame>,
     );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { useSeller } from "@/features/workspaces/seller-workspace";
 import { ForbiddenScreen } from "@/features/workspaces/forbidden-screen";
 import { useApiQuery } from "@/lib/api/use-api-query";
@@ -13,7 +13,9 @@ import {
   PageHeader,
   StatusBadge,
 } from "@/components/ui/primitives";
-import { selectStyle } from "@/features/sellers/forms";
+import { SelectField } from "@/components/ui/form-fields";
+import { FilterBar, FilterSummary } from "@/components/ui/filter-bar";
+import { useTableQuery } from "@/components/ui/use-table-query";
 import { getSellerLedger, type SellerLedgerEntry } from "./api";
 
 export function SellerTransactions() {
@@ -29,8 +31,10 @@ export function SellerTransactions() {
 }
 
 function TransactionsList({ sellerId }: { sellerId: string }) {
-  const [page, setPage] = useState(1);
-  const [typeFilter, setTypeFilter] = useState<string>("");
+  const entryTypes = ["SALE", "COMMISSION", "REFUND", "PAYOUT", "ADJUSTMENT"];
+  const table = useTableQuery({ entry_type: entryTypes });
+  const { page, setPage } = table;
+  const typeFilter = table.values.entry_type;
 
   const load = useCallback(
     (signal: AbortSignal) =>
@@ -56,6 +60,7 @@ function TransactionsList({ sellerId }: { sellerId: string }) {
     },
     {
       id: "amount",
+      align: "right" as const,
       heading: "Amount",
       cell: (entry) => {
         const isNegative = entry.amount.startsWith("-");
@@ -75,6 +80,7 @@ function TransactionsList({ sellerId }: { sellerId: string }) {
     },
     {
       id: "balance_after",
+      align: "right" as const,
       heading: "Balance After",
       cell: (entry) => (
         <span className="font-mono text-sm">
@@ -133,29 +139,27 @@ function TransactionsList({ sellerId }: { sellerId: string }) {
         description="Immutable record of all sales settlements, marketplace commissions, payouts, and adjustments."
       />
 
-      {/* Filter Bar */}
-      <div className="flex flex-wrap items-center gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-        <div className="w-48">
-          <label htmlFor="tx-type-filter" className="sr-only">
-            Filter by Type
-          </label>
-          <select
-            id="tx-type-filter"
+      <div>
+        <FilterBar>
+          <SelectField
+            label="Filter by Type"
             value={typeFilter}
-            onChange={(e) => {
-              setTypeFilter(e.target.value);
-              setPage(1);
-            }}
-            className={selectStyle}
+            onChange={(event) =>
+              table.setFilters({ entry_type: event.target.value })
+            }
           >
-            <option value="">All Types</option>
-            <option value="SALE">Sale Settlements</option>
-            <option value="COMMISSION">Commissions</option>
-            <option value="REFUND">Refunds</option>
-            <option value="PAYOUT">Payouts</option>
-            <option value="ADJUSTMENT">Adjustments</option>
-          </select>
-        </div>
+            <option value="">All types</option>
+            {entryTypes.map((value) => (
+              <option key={value} value={value}>
+                {value.toLowerCase().replaceAll("_", " ")}
+              </option>
+            ))}
+          </SelectField>
+        </FilterBar>
+        <FilterSummary
+          filters={typeFilter ? [`Type: ${typeFilter.toLowerCase()}`] : []}
+          onClear={table.clear}
+        />
       </div>
 
       {/* Transactions Table */}
@@ -165,14 +169,14 @@ function TransactionsList({ sellerId }: { sellerId: string }) {
       )}
       {query.kind === "ready" && (
         <div className="space-y-4">
-          <div className="rounded-xl border border-slate-200 bg-white shadow-sm">
-            <DataTable
-              rows={query.data.results}
-              columns={columns}
-              rowKey={(r) => r.id}
-              caption="Financial ledger entries"
-            />
-          </div>
+          <DataTable
+            mobile="scroll"
+            filtered={!!typeFilter}
+            rows={query.data.results}
+            columns={columns}
+            rowKey={(r) => r.id}
+            caption="Financial ledger entries"
+          />
 
           <Pagination
             page={page}

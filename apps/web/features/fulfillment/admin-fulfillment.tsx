@@ -207,6 +207,7 @@ function AdminFulfillmentDashboard({ canRefund }: { canRefund: boolean }) {
     },
     {
       id: "amount",
+      align: "right" as const,
       heading: "Amount",
       cell: (row) => (
         <span className="font-semibold text-red-600">
@@ -216,6 +217,7 @@ function AdminFulfillmentDashboard({ canRefund }: { canRefund: boolean }) {
     },
     {
       id: "commission",
+      align: "right" as const,
       heading: "Comm. Reversal",
       cell: (row) => (
         <span className="text-teal-700 font-mono text-xs">

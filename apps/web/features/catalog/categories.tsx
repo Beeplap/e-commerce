@@ -119,6 +119,7 @@ function CategoriesList({ canManage }: { canManage: boolean }) {
                   },
                   {
                     id: "sort",
+                    align: "right" as const,
                     heading: "Sort order",
                     cell: (r) => r.sort_order,
                   },

@@ -8,6 +8,8 @@ import { hasPlatformPermission } from "@/lib/permissions";
 import { useApiQuery } from "@/lib/api/use-api-query";
 import { DataTable, type Column } from "@/components/ui/data-table";
 import { Pagination } from "@/components/ui/pagination";
+import { FilterSummary } from "@/components/ui/filter-bar";
+import { useTableQuery } from "@/components/ui/use-table-query";
 import { Money, DateDisplay } from "@/components/ui/displays";
 import {
   ApiErrorState,
@@ -39,12 +41,16 @@ export function AdminPayouts() {
 
   const canManage = hasPlatformPermission(user, "platform.finance.manage");
 
-  return <PayoutsList canManage={canManage} />;
+  return <PayoutsList key={user?.id} canManage={canManage} />;
 }
 
 function PayoutsList({ canManage }: { canManage: boolean }) {
-  const [page, setPage] = useState(1);
-  const [statusFilter, setStatusFilter] = useState<string>("");
+  const table = useTableQuery({
+    status: ["PENDING", "APPROVED", "PROCESSED", "REJECTED"],
+  });
+  const { page, setPage } = table;
+  const statusFilter = table.values.status;
+  const setStatusFilter = (status: string) => table.setFilters({ status });
   const [sellerIdInput, setSellerIdInput] = useState<string>("");
   const [appliedSellerId, setAppliedSellerId] = useState<string>("");
 
@@ -108,6 +114,7 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
     },
     {
       id: "amount",
+      align: "right" as const,
       heading: "Amount",
       cell: (item) => (
         <span className="font-bold text-slate-900">
@@ -291,6 +298,10 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
         </form>
       </div>
 
+      <FilterSummary
+        filters={statusFilter ? [`Status: ${statusFilter.toLowerCase()}`] : []}
+        onClear={table.clear}
+      />
       {query.kind === "loading" && <LoadingState />}
       {query.kind === "error" && (
         <ApiErrorState error={query.error} onRetry={query.retry} />
@@ -299,6 +310,7 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
       {query.kind === "ready" && (
         <div className="space-y-4">
           <DataTable
+            filtered={!!statusFilter}
             rows={query.data.results}
             columns={columns}
             rowKey={(item) => item.id}

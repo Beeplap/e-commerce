@@ -50,3 +50,44 @@ body {
 .ui-drawer::backdrop {
   background: rgb(32 37 43 / 40%);
 }
+
+@media (width < 768px) {
+  .ui-data-table-stacked,
+  .ui-data-table-stacked tbody {
+    display: block;
+  }
+  .ui-data-table-stacked thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .ui-data-table-stacked tbody tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 12px 16px;
+    padding: 16px;
+  }
+  .ui-data-table-stacked tbody td {
+    display: block;
+    min-width: 0;
+    padding: 0;
+  }
+  .ui-data-table-stacked tbody td:first-child,
+  .ui-data-table-stacked tbody td:last-child {
+    grid-column: 1 / -1;
+  }
+  .ui-data-table-stacked .ui-data-label {
+    display: block;
+    margin-bottom: 4px;
+  }
+  .ui-data-table-stacked [data-align="right"] {
+    text-align: left;
+  }
+  .ui-data-table-stacked .ui-data-value .text-right {
+    text-align: left;
+  }
+}

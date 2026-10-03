@@ -1,6 +1,7 @@
 import type { SVGProps } from "react";
 
 const paths = {
+  copy: "M9 9h12v12H9zM15 5V3H3v12h2",
   overview: "M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z",
   orders: "M6 7h12l2 14H4L6 7ZM9 7V5a3 3 0 0 1 6 0v2",
   products: "m12 3 9 5-9 5-9-5 9-5ZM3 8v9l9 5 9-5V8M12 13v9M7 5.8l9 5",

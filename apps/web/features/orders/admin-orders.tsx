@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { useAuth } from "@/features/auth/auth-provider";
 import { ForbiddenScreen } from "@/features/workspaces/forbidden-screen";
 import { hasPlatformPermission } from "@/lib/permissions";
@@ -14,13 +14,18 @@ import {
   LoadingState,
   PageHeader,
   StatusBadge,
-  primaryButton,
 } from "@/components/ui/primitives";
-import { selectStyle } from "@/features/sellers/forms";
+import {
+  FilterBar,
+  FilterSummary,
+  SearchInput,
+} from "@/components/ui/filter-bar";
+import { SelectField } from "@/components/ui/form-fields";
+import {
+  useTableQuery,
+  useDebouncedValue,
+} from "@/components/ui/use-table-query";
 import { listPlatformOrders, type PlatformOrderSummary } from "./api";
-
-const searchInputStyle =
-  "min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-teal-700 focus:outline-none";
 
 export function AdminOrders() {
   const { state } = useAuth();
@@ -30,15 +35,33 @@ export function AdminOrders() {
     return <ForbiddenScreen />;
   }
 
-  return <AdminOrdersList />;
+  return <AdminOrdersList key={user?.id} />;
 }
 
 function AdminOrdersList() {
-  const [page, setPage] = useState(1);
-  const [paymentStatus, setPaymentStatus] = useState("");
-  const [fulfillmentStatus, setFulfillmentStatus] = useState("");
-  const [searchInput, setSearchInput] = useState("");
-  const [appliedSearch, setAppliedSearch] = useState("");
+  const payments = ["pending", "authorized", "paid", "failed", "refunded"];
+  const fulfillments = [
+    "unfulfilled",
+    "partially_fulfilled",
+    "fulfilled",
+    "cancelled",
+  ];
+  const table = useTableQuery({
+    search: 100,
+    payment_status: payments,
+    fulfillment_status: fulfillments,
+  });
+  const { page, setPage } = table;
+  const paymentStatus = table.values.payment_status,
+    fulfillmentStatus = table.values.fulfillment_status;
+  const appliedSearch = useDebouncedValue(table.values.search);
+  const activeFilters = [
+    table.values.search ? `Search: ${table.values.search}` : "",
+    paymentStatus ? `Payment: ${paymentStatus}` : "",
+    fulfillmentStatus
+      ? `Fulfillment: ${fulfillmentStatus.replaceAll("_", " ")}`
+      : "",
+  ].filter(Boolean);
 
   const load = useCallback(
     (signal: AbortSignal) =>
@@ -77,6 +100,7 @@ function AdminOrdersList() {
     },
     {
       id: "grand_total",
+      align: "right" as const,
       heading: "Grand Total",
       cell: (item) => (
         <Money amount={item.grand_total} currency={item.currency} />
@@ -128,80 +152,45 @@ function AdminOrdersList() {
         description="Monitor marketplace orders across all sellers, inspection of fulfillment, and customer inquiries."
       />
 
-      <div className="flex flex-col gap-4 rounded-xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
-        <form
-          className="flex flex-1 gap-2"
-          onSubmit={(e) => {
-            e.preventDefault();
-            setPage(1);
-            setAppliedSearch(searchInput);
-          }}
-        >
-          <input
-            type="search"
-            aria-label="Search orders"
-            placeholder="Search by order number or customer email..."
-            className={searchInputStyle}
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
+      <div>
+        <FilterBar>
+          <SearchInput
+            label="Search orders"
+            value={table.values.search}
+            onChange={(value) => table.setFilters({ search: value }, true)}
           />
-          <button type="submit" className={primaryButton}>
-            Search
-          </button>
-        </form>
-
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-2">
-            <label
-              htmlFor="payment-filter"
-              className="text-sm font-medium text-slate-700 whitespace-nowrap"
-            >
-              Payment:
-            </label>
-            <select
-              id="payment-filter"
-              aria-label="Filter orders by payment status"
-              className={selectStyle}
-              value={paymentStatus}
-              onChange={(e) => {
-                setPage(1);
-                setPaymentStatus(e.target.value);
-              }}
-            >
-              <option value="">All</option>
-              <option value="pending">Pending</option>
-              <option value="authorized">Authorized</option>
-              <option value="paid">Paid</option>
-              <option value="failed">Failed</option>
-              <option value="refunded">Refunded</option>
-            </select>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <label
-              htmlFor="fulfillment-filter"
-              className="text-sm font-medium text-slate-700 whitespace-nowrap"
-            >
-              Fulfillment:
-            </label>
-            <select
-              id="fulfillment-filter"
-              aria-label="Filter orders by fulfillment status"
-              className={selectStyle}
-              value={fulfillmentStatus}
-              onChange={(e) => {
-                setPage(1);
-                setFulfillmentStatus(e.target.value);
-              }}
-            >
-              <option value="">All</option>
-              <option value="unfulfilled">Unfulfilled</option>
-              <option value="partially_fulfilled">Partially Fulfilled</option>
-              <option value="fulfilled">Fulfilled</option>
-              <option value="cancelled">Cancelled</option>
-            </select>
-          </div>
-        </div>
+          <SelectField
+            label="Payment"
+            aria-label="Filter orders by payment status"
+            value={paymentStatus}
+            onChange={(event) =>
+              table.setFilters({ payment_status: event.target.value })
+            }
+          >
+            <option value="">All payment states</option>
+            {payments.map((value) => (
+              <option key={value} value={value}>
+                {value}
+              </option>
+            ))}
+          </SelectField>
+          <SelectField
+            label="Fulfillment"
+            aria-label="Filter orders by fulfillment status"
+            value={fulfillmentStatus}
+            onChange={(event) =>
+              table.setFilters({ fulfillment_status: event.target.value })
+            }
+          >
+            <option value="">All fulfillment states</option>
+            {fulfillments.map((value) => (
+              <option key={value} value={value}>
+                {value.replaceAll("_", " ")}
+              </option>
+            ))}
+          </SelectField>
+        </FilterBar>
+        <FilterSummary filters={activeFilters} onClear={table.clear} />
       </div>
 
       {query.kind === "loading" && <LoadingState label="Loading orders…" />}
@@ -213,6 +202,7 @@ function AdminOrdersList() {
         <>
           <DataTable
             caption="Platform Orders"
+            filtered={activeFilters.length > 0}
             columns={columns}
             rows={query.data.results}
             rowKey={(item) => item.id}

@@ -152,6 +152,7 @@ export function SellerWorkspace({ children }: { children: ReactNode }) {
         )}
         sellerCanReadReturns={current.permissions.includes("returns.read")}
         sellerCanReadFinance={current.permissions.includes("finance.read")}
+        sellerCanReadPayouts={current.permissions.includes("payouts.read")}
         sellerCanReadStaff={
           current.permissions.includes("seller.staff.read") ||
           current.permissions.includes("seller.staff.manage")

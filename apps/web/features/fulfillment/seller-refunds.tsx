@@ -112,6 +112,7 @@ function RefundsContent({
     },
     {
       id: "amount",
+      align: "right" as const,
       heading: "Refund Amount",
       cell: (row) => (
         <span className="font-semibold text-red-600">
@@ -121,6 +122,7 @@ function RefundsContent({
     },
     {
       id: "commission",
+      align: "right" as const,
       heading: "Comm. Reversal",
       cell: (row) => (
         <span className="text-teal-700 font-mono text-xs">
@@ -130,6 +132,7 @@ function RefundsContent({
     },
     {
       id: "net",
+      align: "right" as const,
       heading: "Net Deduction",
       cell: (row) => (
         <span className="font-medium text-slate-900 font-mono text-xs">

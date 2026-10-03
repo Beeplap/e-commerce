@@ -102,3 +102,19 @@ Implement the concrete values and policies in `design-system.md`. Phase 23 adds 
 11. **33:** final route/state/performance review and `ui-final-review.md`; record actual visual evidence and remaining limitations.
 
 Every phase must pass frontend lint, TypeScript, the unweakened frontend suite, formatting and production build before commit/push/advancement. Security/backend work merges first; UI rebase happens only after both branches are clean and tested. Follow `UI_CURRENT_PHASE.md` without altering the concurrent backend selector.
+
+## Phase 27 operational table review
+
+Every shared table consumer was reviewed by feature family. All retain bounded backend pagination where that contract exists; no bulk/sort operation was fabricated.
+
+- Catalog categories, brands and attributes: retain semantic columns and per-row capability actions; share the stacked mobile layout. Category sort order and variant prices align numerically. Product/moderation lists have bounded debounced search, allowlisted statuses, shareable URL state and clear active filters.
+- Seller/platform order lists: human order number remains the primary link, the parent number is secondary and copyable, amounts/counts align right, all financial fields remain present on mobile. Existing payment/fulfillment/seller-order statuses are independently allowlisted. Important search/status/page state restores from URL/history.
+- Platform seller management: keeps explicit Apply, exposes readable active filters, preserves route context during pagination, restores form values on Back/Forward and never derives authority from URL state.
+- Live inventory: product identity precedes the secondary copyable SKU. Reorder, on-hand, reserved and available quantities align right. Search/low-stock/page preferences are shareable; controls remain mounted during loading or failed queries.
+- Inventory transaction and financial ledgers: retain every audit/reference/financial field and use local horizontal scrolling on narrow screens. Inventory timestamps now use the explicit UTC display helper, transaction labels use the shared neutral status presentation and ledger type/page filters are URL-backed. Removed the nested frame around the financial ledger.
+- Seller/admin payouts and seller balances: keep amounts and balances exact/right aligned; stacked mobile rows retain financial data and real actions. Payout status/page preferences are URL-backed. Payout navigation now checks the separate `payouts.read` capability instead of assuming `finance.read` grants it.
+- Fulfillment shipment/return/refund and platform oversight tables: use stacked mobile rows with the same semantic status labels; amounts/counts align right and mutations remain guarded by their existing capabilities.
+- Dashboard top-products/top-sellers/category tables and workspace memberships: use the same stacked rows and explicit numeric alignment. Chart data remains separate from the table contract.
+- Raw tables in promotion/staff/commission editors and order details retain native semantics and local overflow. Their form/action or entity-detail composition belongs to Phases 28/29; those workflow migrations must preserve authoritative API calls and immutable financial/history displays.
+
+No screenshots or real narrow-width table rendering are claimed. The single-markup mobile layout, history behavior and complete financial data are covered by automated behavior checks; actual visual, Safari table semantics and assistive-technology review remain pending.

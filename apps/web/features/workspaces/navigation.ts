@@ -17,6 +17,7 @@ export type SellerNavigationAccess = {
   sellerCanReadFulfillment?: boolean;
   sellerCanReadReturns?: boolean;
   sellerCanReadFinance?: boolean;
+  sellerCanReadPayouts?: boolean;
   sellerCanReadStaff?: boolean;
   sellerCanReadPromotions?: boolean;
   sellerCanReadReviews?: boolean;
@@ -67,7 +68,7 @@ export function workspaceNavigation(
         link("/seller/finance", "Finance", "wallet"),
       access.sellerCanReadFinance &&
         link("/seller/finance/transactions", "Transactions", "catalog"),
-      access.sellerCanReadFinance &&
+      access.sellerCanReadPayouts &&
         link("/seller/finance/payouts", "Payouts", "wallet"),
     ]);
     group("Organization", [

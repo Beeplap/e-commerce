@@ -379,6 +379,7 @@ export function SellerOverview() {
                 },
                 {
                   id: "units",
+                  align: "right" as const,
                   heading: "Units sold",
                   cell: (product) => (
                     <span className="block text-right tabular-nums">
@@ -388,6 +389,7 @@ export function SellerOverview() {
                 },
                 {
                   id: "revenue",
+                  align: "right" as const,
                   heading: "Revenue",
                   cell: (product) => (
                     <span className="block text-right">
@@ -625,6 +627,7 @@ export function AdminOverview() {
                   },
                   {
                     id: "orders",
+                    align: "right" as const,
                     heading: "Orders",
                     cell: (seller) => (
                       <span className="block text-right tabular-nums">
@@ -634,6 +637,7 @@ export function AdminOverview() {
                   },
                   {
                     id: "gross",
+                    align: "right" as const,
                     heading: "Gross sales",
                     cell: (seller) => (
                       <span className="block text-right">
@@ -660,6 +664,7 @@ export function AdminOverview() {
                   },
                   {
                     id: "gmv",
+                    align: "right" as const,
                     heading: "GMV",
                     cell: (category) => (
                       <span className="block text-right">

@@ -110,6 +110,7 @@ function FinanceDashboard({ sellerId }: { sellerId: string }) {
     },
     {
       id: "amount",
+      align: "right" as const,
       heading: "Amount",
       cell: (entry) => {
         const isNegative = entry.amount.startsWith("-");
@@ -129,6 +130,7 @@ function FinanceDashboard({ sellerId }: { sellerId: string }) {
     },
     {
       id: "balance_after",
+      align: "right" as const,
       heading: "Balance After",
       cell: (entry) => (
         <Money amount={entry.balance_after} currency={entry.currency} />
@@ -172,6 +174,7 @@ function FinanceDashboard({ sellerId }: { sellerId: string }) {
     },
     {
       id: "amount",
+      align: "right" as const,
       heading: "Amount",
       cell: (payout) => (
         <Money amount={payout.amount} currency={payout.currency} />

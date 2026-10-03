@@ -83,6 +83,7 @@ function SellerBalancesList({ canManage }: { canManage: boolean }) {
     },
     {
       id: "current_balance",
+      align: "right" as const,
       heading: "Available Balance",
       cell: (item) => (
         <span className="font-semibold text-emerald-700">
@@ -92,6 +93,7 @@ function SellerBalancesList({ canManage }: { canManage: boolean }) {
     },
     {
       id: "pending_balance",
+      align: "right" as const,
       heading: "Pending Escrow",
       cell: (item) => (
         <span className="text-slate-600">
@@ -101,6 +103,7 @@ function SellerBalancesList({ canManage }: { canManage: boolean }) {
     },
     {
       id: "total_paid_out",
+      align: "right" as const,
       heading: "Total Paid Out",
       cell: (item) => (
         <span className="text-slate-900">

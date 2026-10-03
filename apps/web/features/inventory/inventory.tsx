@@ -10,18 +10,24 @@ import { useApiQuery } from "@/lib/api/use-api-query";
 import { DataTable, type Column } from "@/components/ui/data-table";
 import { Pagination } from "@/components/ui/pagination";
 import {
+  FilterBar,
+  FilterSummary,
+  SearchInput,
+} from "@/components/ui/filter-bar";
+import { Identifier } from "@/components/ui/identifier";
+import {
+  useTableQuery,
+  useDebouncedValue,
+} from "@/components/ui/use-table-query";
+import {
   ApiErrorState,
   FormField,
-  LoadingState,
   PageHeader,
   primaryButton,
   secondaryButton,
 } from "@/components/ui/primitives";
 import { selectStyle } from "@/features/sellers/forms";
 import { inventoryApi, type InventoryItem } from "./api";
-
-const searchInputStyle =
-  "min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-teal-700 focus:outline-none";
 
 export function SellerInventory() {
   const access = useSeller();
@@ -58,9 +64,14 @@ function InventoryList({
   canAdjust?: boolean;
   platform?: boolean;
 }) {
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState("");
-  const [lowStockOnly, setLowStockOnly] = useState(false);
+  const table = useTableQuery({ search: 100, low_stock: ["true"] });
+  const { page, setPage } = table;
+  const search = useDebouncedValue(table.values.search);
+  const lowStockOnly = table.values.low_stock === "true";
+  const activeFilters = [
+    table.values.search ? `Search: ${table.values.search}` : "",
+    lowStockOnly ? "Low stock only" : "",
+  ].filter(Boolean);
   const [adjustingItem, setAdjustingItem] = useState<InventoryItem | null>(
     null,
   );
@@ -86,12 +97,7 @@ function InventoryList({
 
   const query = useApiQuery(queryKey, load);
 
-  if (query.kind === "loading")
-    return <LoadingState label="Loading inventory…" />;
-  if (query.kind === "error")
-    return <ApiErrorState error={query.error} onRetry={query.retry} />;
-
-  const items = query.data.results;
+  const items = query.kind === "ready" ? query.data.results : [];
 
   return (
     <div className="space-y-6">
@@ -116,43 +122,33 @@ function InventoryList({
         }
       />
 
-      <div className="flex flex-wrap items-center gap-4 rounded-xl border border-slate-200 bg-white p-4">
-        <div className="flex-1 min-w-[200px]">
-          <label htmlFor="inventory-search" className="sr-only">
-            Search inventory
-          </label>
-          <input
-            id="inventory-search"
-            type="search"
-            placeholder="Search by SKU, barcode, product, or warehouse…"
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setPage(1);
-            }}
-            className={searchInputStyle}
+      <div>
+        <FilterBar>
+          <SearchInput
+            label="Search inventory"
+            placeholder="SKU, product or warehouse"
+            value={table.values.search}
+            onChange={(value) => table.setFilters({ search: value }, true)}
           />
-        </div>
-
-        <div className="flex items-center gap-2">
-          <input
-            id="filter-low-stock"
-            type="checkbox"
-            checked={lowStockOnly}
-            onChange={(e) => {
-              setLowStockOnly(e.target.checked);
-              setPage(1);
-            }}
-            className="h-4 w-4 rounded border-slate-300 text-teal-800 focus:ring-teal-700"
-          />
-          <label
-            htmlFor="filter-low-stock"
-            className="text-sm font-medium text-slate-700"
-          >
+          <label className="flex min-h-11 cursor-pointer items-center gap-2 text-sm font-medium">
+            <input
+              type="checkbox"
+              className="size-4 accent-ui-accent"
+              checked={lowStockOnly}
+              onChange={(event) =>
+                table.setFilters({
+                  low_stock: event.target.checked ? "true" : "",
+                })
+              }
+            />
             Low stock only
           </label>
-        </div>
+        </FilterBar>
+        <FilterSummary filters={activeFilters} onClear={table.clear} />
       </div>
+      {query.kind === "error" && (
+        <ApiErrorState error={query.error} onRetry={query.retry} />
+      )}
 
       {adjustingItem && sellerId && (
         <StockAdjustModal
@@ -173,12 +169,10 @@ function InventoryList({
             heading: "SKU / Product",
             cell: (item) => (
               <div>
-                <div className="font-mono text-xs font-semibold text-slate-900">
-                  {item.variant.sku}
-                </div>
-                <div className="text-xs text-slate-600">
+                <div className="text-sm font-medium text-ui-foreground">
                   {item.variant.product_name}
                 </div>
+                <Identifier value={item.variant.sku} label="SKU" copyable />
               </div>
             ),
           },
@@ -198,6 +192,7 @@ function InventoryList({
           },
           {
             id: "on_hand",
+            align: "right" as const,
             heading: "On Hand",
             cell: (item) => (
               <span className="font-semibold text-slate-900">
@@ -207,6 +202,7 @@ function InventoryList({
           },
           {
             id: "reserved",
+            align: "right" as const,
             heading: "Reserved",
             cell: (item) => (
               <span className="text-slate-600">{item.quantity_reserved}</span>
@@ -214,6 +210,7 @@ function InventoryList({
           },
           {
             id: "available",
+            align: "right" as const,
             heading: "Available",
             cell: (item) => (
               <span className="inline-flex items-center gap-1.5 font-bold text-teal-900">
@@ -228,6 +225,7 @@ function InventoryList({
           },
           {
             id: "reorder",
+            align: "right" as const,
             heading: "Reorder At",
             cell: (item) => (
               <span className="text-xs text-slate-500">
@@ -250,8 +248,10 @@ function InventoryList({
               ) : null,
           },
         ];
-        return (
+        return query.kind === "error" ? null : (
           <DataTable
+            loading={query.kind === "loading"}
+            filtered={activeFilters.length > 0}
             caption="Inventory items"
             rows={items}
             rowKey={(item) => item.id}
@@ -260,10 +260,11 @@ function InventoryList({
         );
       })()}
 
-      {query.data.count > 25 && (
+      {query.kind === "ready" && query.data.count > 25 && (
         <Pagination
           page={page}
-          count={query.data.count}
+          busy={query.kind !== "ready"}
+          count={query.kind === "ready" ? query.data.count : 0}
           onPageChange={setPage}
         />
       )}

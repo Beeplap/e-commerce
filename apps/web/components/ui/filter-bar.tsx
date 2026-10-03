@@ -3,6 +3,30 @@
 import type { ReactNode } from "react";
 import { FormField } from "./form-fields";
 import { Toolbar } from "./layout";
+import { Button } from "./button";
+
+export function FilterSummary({
+  filters,
+  onClear,
+}: {
+  filters: readonly string[];
+  onClear: () => void;
+}) {
+  if (!filters.length) return null;
+  return (
+    <div className="mt-3 flex flex-wrap items-center gap-2 text-ui-caption text-ui-secondary">
+      <span>Filtered by:</span>
+      {filters.map((filter) => (
+        <span key={filter} className="rounded-sm bg-ui-surface-muted px-2 py-1">
+          {filter}
+        </span>
+      ))}
+      <Button variant="quiet" onClick={onClear}>
+        Clear filters
+      </Button>
+    </div>
+  );
+}
 
 export function FilterBar({ children }: { children: ReactNode }) {
   return (

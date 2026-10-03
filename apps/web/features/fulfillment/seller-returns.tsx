@@ -178,6 +178,7 @@ function ReturnsContent({
     },
     {
       id: "items",
+      align: "right" as const,
       heading: "Items",
       cell: (row) => (
         <span className="text-slate-600">

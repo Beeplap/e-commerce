@@ -17,6 +17,9 @@ import type {
   StorefrontSellerDetail,
   StorefrontSearchResultPage,
   StorefrontSuggestResponse,
+  CartResponse,
+  CartStockValidationResponse,
+  CouponValidationResult,
 } from "./types";
 
 import {
@@ -349,6 +352,16 @@ export const sellerApi = {
       sellerId,
       body,
     }),
+  validateCoupon: (
+    code: string,
+    sellerId: string | null = null,
+    orderSubtotal = "0.00",
+  ) =>
+    apiRequest("/api/v1/promotions/validate", {
+      method: "POST",
+      parse: (v) => v as CouponValidationResult,
+      body: { code, seller_id: sellerId, order_subtotal: orderSubtotal },
+    }),
 
   // Reviews
   reviews: (sellerId: string, page = 1, signal?: AbortSignal) =>
@@ -569,4 +582,58 @@ export const storefrontApi = {
       signal,
     });
   },
+};
+
+export const cartApi = {
+  get: (signal?: AbortSignal) =>
+    apiRequest("/api/v1/cart/", {
+      parse: (v) => v as CartResponse,
+      signal,
+    }),
+
+  addItem: (variantId: string, quantity = 1) =>
+    apiRequest("/api/v1/cart/items/", {
+      method: "POST",
+      expectedStatus: 201,
+      parse: (v) => v as CartResponse,
+      body: { variant_id: variantId, quantity },
+    }),
+
+  updateQuantity: (itemId: string, quantity: number) =>
+    apiRequest(`/api/v1/cart/items/${itemId}/`, {
+      method: "PATCH",
+      parse: (v) => v as CartResponse,
+      body: { quantity },
+    }),
+
+  removeItem: (itemId: string) =>
+    apiRequest(`/api/v1/cart/items/${itemId}/`, {
+      method: "DELETE",
+      parse: (v) => v as CartResponse,
+    }),
+
+  clear: () =>
+    apiRequest("/api/v1/cart/clear/", {
+      method: "POST",
+      parse: (v) => v as CartResponse,
+    }),
+
+  validateStock: (signal?: AbortSignal) =>
+    apiRequest("/api/v1/cart/validate/", {
+      parse: (v) => v as CartStockValidationResponse,
+      signal,
+    }),
+};
+
+export const promotionsApi = {
+  validateCoupon: (
+    code: string,
+    sellerId: string | null = null,
+    orderSubtotal = "0.00",
+  ) =>
+    apiRequest("/api/v1/promotions/validate", {
+      method: "POST",
+      parse: (v) => v as CouponValidationResult,
+      body: { code, seller_id: sellerId, order_subtotal: orderSubtotal },
+    }),
 };

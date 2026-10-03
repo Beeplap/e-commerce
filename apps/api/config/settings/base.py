@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     "apps.analytics",
     "apps.events",
     "apps.storefront",
+    "apps.cart",
 ]
 
 MIDDLEWARE = [

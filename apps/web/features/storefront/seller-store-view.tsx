@@ -98,7 +98,7 @@ export function SellerStoreView({ seller }: SellerStoreViewProps) {
           <div>
             <h2 className="text-lg font-bold text-slate-900">Store Products</h2>
             <p className="text-xs text-slate-500">
-              Showing {productsPage?.results.length || 0} of{" "}
+              Showing {productsPage?.results?.length || 0} of{" "}
               {productsPage?.count || 0} items
             </p>
           </div>

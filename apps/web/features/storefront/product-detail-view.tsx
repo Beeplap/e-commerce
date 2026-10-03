@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useCart } from "@/features/cart/cart-context";
 import type {
   StorefrontProductDetail,
   StorefrontVariant,
@@ -12,6 +13,7 @@ interface ProductDetailViewProps {
 }
 
 export function ProductDetailView({ product }: ProductDetailViewProps) {
+  const { addItem } = useCart();
   const [selectedVariant, setSelectedVariant] =
     useState<StorefrontVariant | null>(product.variants[0] || null);
   const [selectedImage, setSelectedImage] = useState<string | null>(
@@ -43,9 +45,10 @@ export function ProductDetailView({ product }: ProductDetailViewProps) {
       : null;
 
   const handleAddToCart = () => {
-    if (!isAvailable) return;
+    if (!isAvailable || !selectedVariant) return;
     setAddedToCartNotification(true);
     setTimeout(() => setAddedToCartNotification(false), 3000);
+    void addItem(selectedVariant.id, quantity).catch(() => {});
   };
 
   return (

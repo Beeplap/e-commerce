@@ -1980,6 +1980,148 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
           description: ''
+  /api/v1/cart/:
+    get:
+      operationId: cart_get
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Cart
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartOutput'
+          description: ''
+  /api/v1/cart/clear/:
+    post:
+      operationId: cart_clear
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Cart
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartOutput'
+          description: ''
+  /api/v1/cart/items/:
+    post:
+      operationId: cart_items_add
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Cart
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CartItemAddInput'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartOutput'
+          description: ''
+  /api/v1/cart/items/{item_id}/:
+    patch:
+      operationId: cart_items_update
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: item_id
+        schema:
+          type: string
+          pattern: ^[0-9a-f-]+$
+        required: true
+      tags:
+      - Cart
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCartItemUpdateInput'
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartOutput'
+          description: ''
+    delete:
+      operationId: cart_items_delete
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: item_id
+        schema:
+          type: string
+          pattern: ^[0-9a-f-]+$
+        required: true
+      tags:
+      - Cart
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartOutput'
+          description: ''
+  /api/v1/cart/validate/:
+    get:
+      operationId: cart_validate_stock
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Cart
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartStockValidation'
+          description: ''
+    post:
+      operationId: cart_validate_stock_post
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Cart
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartStockValidation'
+          description: ''
   /api/v1/health:
     get:
       operationId: health_retrieve
@@ -5650,6 +5792,140 @@ components:
           type: string
       required:
       - csrf_token
+    CartItemAddInput:
+      type: object
+      properties:
+        variant_id:
+          type: string
+          format: uuid
+        quantity:
+          type: integer
+          minimum: 1
+          default: 1
+      required:
+      - variant_id
+    CartItemOutput:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        variant_id:
+          type: string
+          format: uuid
+        product_id:
+          type: string
+          format: uuid
+        product_title:
+          type: string
+        product_slug:
+          type: string
+        variant_name:
+          type: string
+        sku:
+          type: string
+        thumbnail_url:
+          type: string
+          nullable: true
+        unit_price:
+          type: string
+        compare_at_price:
+          type: string
+          nullable: true
+        quantity:
+          type: integer
+        line_subtotal:
+          type: string
+        available_stock:
+          type: integer
+        is_available:
+          type: boolean
+        stock_warning:
+          type: string
+          nullable: true
+      required:
+      - available_stock
+      - compare_at_price
+      - id
+      - is_available
+      - line_subtotal
+      - product_id
+      - product_slug
+      - product_title
+      - quantity
+      - sku
+      - stock_warning
+      - thumbnail_url
+      - unit_price
+      - variant_id
+      - variant_name
+    CartOutput:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        total_items:
+          type: integer
+        total_unique_items:
+          type: integer
+        subtotal:
+          type: string
+        currency:
+          type: string
+        has_out_of_stock_items:
+          type: boolean
+        sellers:
+          type: array
+          items:
+            $ref: '#/components/schemas/SellerCartGroup'
+      required:
+      - currency
+      - has_out_of_stock_items
+      - id
+      - sellers
+      - subtotal
+      - total_items
+      - total_unique_items
+    CartStockIssue:
+      type: object
+      properties:
+        item_id:
+          type: string
+          format: uuid
+        variant_id:
+          type: string
+          format: uuid
+        sku:
+          type: string
+        requested_quantity:
+          type: integer
+        available_stock:
+          type: integer
+        issue:
+          type: string
+        message:
+          type: string
+      required:
+      - available_stock
+      - issue
+      - item_id
+      - message
+      - requested_quantity
+      - sku
+      - variant_id
+    CartStockValidation:
+      type: object
+      properties:
+        valid:
+          type: boolean
+        issues:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartStockIssue'
+      required:
+      - issues
+      - valid
     CatalogInput:
       oneOf:
       - $ref: '#/components/schemas/CategoryInput'
@@ -7172,6 +7448,12 @@ components:
       required:
       - new_password
       - old_password
+    PatchedCartItemUpdateInput:
+      type: object
+      properties:
+        quantity:
+          type: integer
+          minimum: 0
     PatchedCustomRoleUpdateInput:
       type: object
       properties:
@@ -8696,6 +8978,31 @@ components:
       required:
       - seller_id
       - updated_at
+    SellerCartGroup:
+      type: object
+      properties:
+        seller_id:
+          type: string
+          format: uuid
+        seller_name:
+          type: string
+        seller_slug:
+          type: string
+        subtotal:
+          type: string
+        item_count:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItemOutput'
+      required:
+      - item_count
+      - items
+      - seller_id
+      - seller_name
+      - seller_slug
+      - subtotal
     SellerCreate:
       type: object
       properties:

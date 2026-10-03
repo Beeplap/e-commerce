@@ -43,9 +43,14 @@ def verify_credentials(
 @sensitive_variables("password")
 def login_user(request: HttpRequest, *, email: str, password: str) -> User:
     user = verify_credentials(request, email, password)
+    guest_session_key = request.session.session_key if hasattr(request, "session") else None
     with transaction.atomic():
         login(request, user)
         record_event(SecurityEvent.Action.LOGIN_SUCCEEDED, request=request, actor_id=user.id)
+        if guest_session_key:
+            from apps.cart.services import merge_guest_cart_into_user_cart
+
+            merge_guest_cart_into_user_cart(guest_session_key=guest_session_key, user=user)
     return user
 
 

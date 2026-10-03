@@ -365,3 +365,68 @@ export interface StorefrontSuggestResponse {
   brands: StorefrontBrand[];
   products: StorefrontSuggestProduct[];
 }
+
+export interface CartItem {
+  id: string;
+  variant_id: string;
+  product_id: string;
+  product_title: string;
+  product_slug: string;
+  variant_name: string;
+  sku: string;
+  thumbnail_url: string | null;
+  unit_price: string;
+  compare_at_price: string | null;
+  quantity: number;
+  line_subtotal: string;
+  available_stock: number;
+  is_available: boolean;
+  stock_warning: string | null;
+}
+
+export interface SellerCartGroup {
+  seller_id: string;
+  seller_name: string;
+  seller_slug: string;
+  subtotal: string;
+  item_count: number;
+  items: CartItem[];
+}
+
+export interface CartResponse {
+  id: string;
+  total_items: number;
+  total_unique_items: number;
+  subtotal: string;
+  currency: string;
+  has_out_of_stock_items: boolean;
+  sellers: SellerCartGroup[];
+}
+
+export interface CartStockIssue {
+  item_id: string;
+  variant_id: string;
+  sku: string;
+  requested_quantity: number;
+  available_stock: number;
+  issue: string;
+  message: string;
+}
+
+export interface CartStockValidationResponse {
+  valid: boolean;
+  issues: CartStockIssue[];
+}
+
+export interface AddToCartInput {
+  variant_id: string;
+  quantity?: number;
+}
+
+export interface CouponValidationResult {
+  valid: boolean;
+  discount_amount: string;
+  error_message: string | null;
+  coupon: Coupon | null;
+  promotion: Promotion | null;
+}

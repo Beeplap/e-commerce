@@ -5,11 +5,14 @@ import { useState, useEffect } from "react";
 import { storefrontApi } from "@/lib/api/client";
 import type { StorefrontCategory } from "@/lib/api/types";
 import { useAuth } from "@/features/auth/auth-provider";
+import { useCart } from "@/features/cart/cart-context";
 import { SearchBar } from "./search-bar";
 
 export function StorefrontHeader() {
   const { state } = useAuth();
+  const { cart, openCart } = useCart();
   const user = state.kind === "authenticated" ? state.user : null;
+  const cartItemCount = cart?.total_items || 0;
   const [categories, setCategories] = useState<StorefrontCategory[]>([]);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -65,9 +68,10 @@ export function StorefrontHeader() {
 
         {/* Actions (Cart, Account, Workspaces) */}
         <div className="flex items-center gap-3">
-          {/* Cart Icon */}
-          <Link
-            href="/cart"
+          {/* Cart Icon / Drawer Toggle */}
+          <button
+            type="button"
+            onClick={openCart}
             aria-label="Shopping Cart"
             className="relative flex items-center justify-center rounded-lg p-2 text-slate-700 transition hover:bg-slate-100 hover:text-teal-700"
           >
@@ -86,11 +90,12 @@ export function StorefrontHeader() {
             </svg>
             <span
               id="cart-badge"
+              data-testid="cart-badge"
               className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-teal-600 px-1 text-[10px] font-bold text-white"
             >
-              0
+              {cartItemCount}
             </span>
-          </Link>
+          </button>
 
           {/* User Account / Workspaces */}
           {user ? (

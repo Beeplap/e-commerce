@@ -235,4 +235,3 @@ PostgreSQL migration `0002_reviews_integrity` enforces:
 - Self-service cancellation: Permitted only when order is in `pending` payment status and unfulfilled; atomically cancels master and seller orders and immediately invokes `release_order_inventory` across all order item lines with reservation locks.
 - Verified reviews (`reviews.ProductReview`): Permitted only for order items on orders with `payment_status == PAID` and `fulfillment_status == DELIVERED`.
 - Return requests (`fulfillment.ReturnRequest`): Permitted only for items on delivered orders within return windows, issuing formal RMA numbers.
-

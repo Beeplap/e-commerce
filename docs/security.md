@@ -87,3 +87,15 @@ Phase 21 introduces payment processing and webhook ingestion under strict financ
 - **Append-Only Payment Transactions**: A PostgreSQL trigger `payments_transaction_immutable` rejects any `UPDATE` or `DELETE` operations on `PaymentTransaction` records, maintaining an unalterable audit ledger of all gateway attempts.
 - **Fail-Closed Webhook Verification**: Inbound payment webhooks (`POST /api/v1/webhooks/payment/`) require an `X-Payment-Signature` header computed via HMAC-SHA256. In production, `PAYMENT_WEBHOOK_SECRET` must be at least 32 characters with high entropy. If the secret is missing or placeholder, startup fails closed and webhook requests are rejected with `400 Bad Request`.
 - **Automated Reversal on Decline**: If a payment is declined, the order is transitioned to `FAILED`/`CANCELLED` and reserved inventory items are released immediately (`release_order_inventory`), preventing deadlocks on scarce stock.
+
+## Phase 23 Customer Commerce Hardening & Adversarial Defenses
+
+Phase 23 provides end-to-end hardening and adversarial verification across all customer commerce domains (Storefront, Search, Cart, Checkout, Payments, and Customer Portal):
+
+- **Price Manipulation & Tampering Protection**: All checkout pricing, discounts, shipping fees, tax lines, and grand totals are calculated server-authoritatively. Client-supplied price, discount, or tax overrides are rejected outright by `StrictSerializer` and server calculation engines (`compute_checkout_quote` and `place_order`).
+- **Cross-Customer Tenant Isolation**:
+  - **Cart Isolation**: Carts are scoped strictly to the authenticated customer or anonymous session key. Unauthorized cross-customer cart access, item injection, or mutation returns `404 Not Found`.
+  - **Address Book Isolation**: Customer addresses are strictly isolated to the authenticated customer owner. Cross-customer mutation, deletion, or enumeration returns `404 Not Found`.
+  - **Order & Post-Purchase Isolation**: Orders, tracking packages, reviews, and return requests are strictly verified against the authenticated customer's ownership. Cross-customer read, cancellation, review creation, or return initiation returns `404 Not Found`.
+- **Concurrency & Over-Allocation Prevention**: Stock reservation during checkout leverages PostgreSQL row-level locks (`select_for_update()`) on `Inventory` rows. Concurrent checkout attempts competing for finite inventory are serialized; attempts exceeding available stock fail closed with clean stock exhaustion errors, preventing overselling.
+- **Post-Purchase Lifecycle Integrity**: Product reviews and RMA return requests are enforced at the business logic layer to require completed delivery (`status='delivered'`). Reviewing or returning an item in `pending`, `confirmed`, or `shipped` state is rejected with `400 Bad Request`. Delivered orders generate verified purchase review badges and immutable return records.

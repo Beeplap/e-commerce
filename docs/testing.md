@@ -325,3 +325,24 @@ Phase 22 adds 9 PostgreSQL backend tests in `apps/api/tests/test_phase22_custome
   - Delivery stepper component: verified 5-stage milestone progression and tracking event details.
   - Review & return modals: verified rating/title/body inputs and reason/quantity/notes inputs with API submissions.
 
+## Phase 23 test coverage: Customer Commerce Hardening, E2E Integration & Release Verification
+
+Phase 23 adds 7 comprehensive PostgreSQL backend hardening tests in `apps/api/tests/test_phase23_hardening.py` and 8 full-stack customer journey end-to-end tests in `apps/web/tests/customer-e2e-flows.test.tsx`:
+
+- Backend Adversarial Hardening Suite (`test_phase23_hardening.py`):
+  - `test_client_price_tampering_rejected_in_checkout`: verified checkout rejects smuggled prices, discounts, or modified line totals via `StrictSerializer` and server-authoritative calculations.
+  - `test_cross_customer_cart_isolation_and_tampering_denied`: verified cross-customer cart access, injection, and tampering fail closed with HTTP 404.
+  - `test_cross_customer_address_tampering_denied`: verified cross-customer address mutations fail closed with HTTP 404.
+  - `test_cross_customer_order_tampering_denied`: verified foreign order reads, cancellations, review submissions, and return requests fail closed with HTTP 404.
+  - `test_concurrent_checkout_prevents_stock_overselling`: verified row-level locking (`select_for_update()`) on `Inventory` serializes concurrent checkouts and prevents overselling when available stock is exhausted.
+  - `test_payment_idempotency_prevents_duplicate_charge`: verified payment intent and capture idempotency keys prevent duplicate charges and safely replay existing transaction records.
+  - `test_verified_reviews_and_returns_lifecycle_integrity`: verified post-purchase actions (reviews and RMA returns) are rejected prior to delivery and succeed post-delivery with verified purchase badges.
+- Frontend Customer Commerce E2E Suite (`customer-e2e-flows.test.tsx`):
+  - `Flow 1: Customer browses catalog, selects variant, and adds item to cart`: verified variant attributes selection, reactive price recalculation ($120 -> $130), quantity increments, and dispatching cart mutation.
+  - `Flow 2: Customer searches for product with full-text search and faceted filters`: verified real-time query suggestions via `/suggest` endpoint and faceted sidebar filtering (category, brand, price, rating, in-stock).
+  - `Flow 3: Customer updates cart quantities, applies coupon code, and verifies discount`: verified cart view, item line total updates, promotional coupon validation (`/api/v1/promotions/validate`), and instant discount banner rendering.
+  - `Flow 4: Customer completes checkout with address book and multi-seller shipping selection`: verified saved shipping address selection, multi-seller shipping method calculation, quote generation, and order placement.
+  - `Flow 5: Customer processes idempotent payment with zero raw card leakage`: verified in-browser card validation, local tokenization to `tok_mock_4242`, zero raw card digits dispatched over HTTP, and idempotent capture.
+  - `Flow 6: Verifies multi-seller order splitting and partition into seller packages`: verified marketplace master order correctly splits into individual seller orders and fulfillment packages.
+  - `Flow 7: Customer views order in account history and inspects tracking timeline`: verified customer order detail page renders master order, seller package tracking numbers, carrier details, and delivery timeline events.
+  - `Flow 8: Customer submits verified product review and initiates RMA return request`: verified verified review submission dialog and return authorization (RMA) modal with defective notes and reason selection.

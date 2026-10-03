@@ -215,4 +215,3 @@ Phase 4 adds no worker or notification infrastructure. Malware scanning integrat
   - Account screens integrated into `<WorkspaceFrame mode="account">` with sub-navigation for Orders, Addresses, and Profile.
   - Delivery stepper component renders milestone progression from Order Placed through Delivered.
   - Accessible modal dialogs for writing product reviews and requesting item returns.
-

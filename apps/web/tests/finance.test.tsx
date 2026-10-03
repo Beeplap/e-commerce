@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { AuthProvider } from "@/features/auth/auth-provider";
 import { SellerWorkspace } from "@/features/workspaces/seller-workspace";
 import { SellerFinanceOverview } from "@/features/finance/seller-finance-overview";
@@ -118,11 +118,6 @@ const mockAdminSellerBalance: AdminSellerBalance = {
   total_paid_out: "5000.00",
   updated_at: "2026-10-02T12:00:00Z",
 };
-
-beforeAll(() => {
-  HTMLDialogElement.prototype.showModal = vi.fn();
-  HTMLDialogElement.prototype.close = vi.fn();
-});
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -625,6 +620,11 @@ describe("Admin Finance UI", () => {
 
     // Approve the payout
     fireEvent.click(screen.getByRole("button", { name: "Approve" }));
+    expect(approvedId).toBeNull();
+    expect(
+      screen.getByRole("dialog", { name: "Approve payout" }),
+    ).toHaveTextContent(mockPayout.payout_number);
+    fireEvent.click(screen.getByRole("button", { name: "Approve payout" }));
 
     await waitFor(() => {
       expect(approvedId).toBe(mockPayout.id);

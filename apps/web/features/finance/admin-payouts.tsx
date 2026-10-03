@@ -1,7 +1,10 @@
 "use client";
 
+import { Dialog } from "@/components/ui/dialog";
+
 import Link from "next/link";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useAuth } from "@/features/auth/auth-provider";
 import { ForbiddenScreen } from "@/features/workspaces/forbidden-screen";
 import { hasPlatformPermission } from "@/lib/permissions";
@@ -61,6 +64,8 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
     message: string;
   } | null>(null);
   const [approvingId, setApprovingId] = useState<string | null>(null);
+  const [approvalTarget, setApprovalTarget] = useState<Payout | null>(null);
+  const approvalInFlight = useRef(false);
 
   const loadPayouts = useCallback(
     (signal: AbortSignal) =>
@@ -79,10 +84,13 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
   const query = useApiQuery(queryKey, loadPayouts);
 
   const handleApprove = async (payout: Payout) => {
+    if (approvalInFlight.current) return;
+    approvalInFlight.current = true;
     setActionError(null);
     setApprovingId(payout.id);
     try {
       await approvePayout(payout.id);
+      setApprovalTarget(null);
       query.retry();
     } catch (err) {
       setActionError({
@@ -91,6 +99,7 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
           err instanceof Error ? err.message : "Failed to approve payout",
       });
     } finally {
+      approvalInFlight.current = false;
       setApprovingId(null);
     }
   };
@@ -172,7 +181,10 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
                   <button
                     type="button"
                     disabled={isApproving}
-                    onClick={() => handleApprove(item)}
+                    onClick={() => {
+                      setActionError(null);
+                      setApprovalTarget(item);
+                    }}
                     className="rounded-lg bg-teal-800 px-2.5 py-1 text-xs font-semibold text-white hover:bg-teal-700 disabled:opacity-50"
                   >
                     {isApproving ? "Approving…" : "Approve"}
@@ -211,7 +223,7 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
               )}
             </div>
 
-            {hasError && (
+            {hasError && !approvalTarget && (
               <p
                 role="alert"
                 className="text-xs font-medium text-rose-700 max-w-xs"
@@ -239,6 +251,26 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
       <PageHeader
         title="Seller Payouts Management"
         description="Review seller withdrawal requests, authorize disbursement approvals, and record completed settlement references."
+      />
+      <ConfirmDialog
+        open={approvalTarget !== null}
+        title="Approve payout"
+        description={
+          approvalTarget
+            ? `Approve ${approvalTarget.payout_number} for ${approvalTarget.seller_name}: ${approvalTarget.amount} ${approvalTarget.currency}. This authorizes the requested withdrawal for processing. It does not record a completed disbursement.`
+            : ""
+        }
+        confirmLabel="Approve payout"
+        busy={approvingId !== null}
+        error={
+          actionError?.id === approvalTarget?.id
+            ? actionError?.message
+            : undefined
+        }
+        onCancel={() => setApprovalTarget(null)}
+        onConfirm={() => {
+          if (approvalTarget) void handleApprove(approvalTarget);
+        }}
       />
 
       {/* Filters */}
@@ -384,78 +416,60 @@ function ProcessPayoutModal({
   };
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="process-payout-title"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4"
-    >
-      <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
-        <h2
-          id="process-payout-title"
-          className="text-lg font-bold text-slate-900"
-        >
-          Process Payout Disbursement
-        </h2>
-        <p className="mt-1 text-sm text-slate-600">
+    <Dialog
+      open
+      title={<>Process Payout Disbursement</>}
+      description={
+        <>
           Disbursing{" "}
           <strong className="text-slate-900">
             {payout.amount} {payout.currency}
           </strong>{" "}
           to <strong className="text-slate-900">{payout.seller_name}</strong> (
           {payout.payout_number}).
-        </p>
+        </>
+      }
+      onClose={onClose}
+      busy={submitting}
+      error={error}
+    >
+      <form onSubmit={handleSubmit} className="mt-4 space-y-4">
+        <div>
+          <label
+            htmlFor="payout-reference"
+            className="block text-xs font-semibold text-slate-700"
+          >
+            Bank / ACH / Transfer Reference (Optional)
+          </label>
+          <p className="mb-1 text-xs text-slate-500">
+            Transaction ID or bank trace number for reconciliation.
+          </p>
+          <input
+            id="payout-reference"
+            type="text"
+            value={reference}
+            onChange={(e) => setReference(e.target.value)}
+            placeholder="e.g. TRF-2026-981726"
+            className={`mt-1 ${inputStyle}`}
+          />
+        </div>
 
-        <form onSubmit={handleSubmit} className="mt-4 space-y-4">
-          <div>
-            <label
-              htmlFor="payout-reference"
-              className="block text-xs font-semibold text-slate-700"
-            >
-              Bank / ACH / Transfer Reference (Optional)
-            </label>
-            <p className="mb-1 text-xs text-slate-500">
-              Transaction ID or bank trace number for reconciliation.
-            </p>
-            <input
-              id="payout-reference"
-              type="text"
-              value={reference}
-              onChange={(e) => setReference(e.target.value)}
-              placeholder="e.g. TRF-2026-981726"
-              className={`mt-1 ${inputStyle}`}
-            />
-          </div>
-
-          {error && (
-            <div
-              role="alert"
-              className="rounded-lg bg-rose-50 p-3 text-xs text-rose-800"
-            >
-              {error}
-            </div>
-          )}
-
-          <div className="flex justify-end gap-3 pt-2">
-            <button
-              type="button"
-              disabled={submitting}
-              onClick={onClose}
-              className={secondaryButton}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={submitting}
-              className={primaryButton}
-            >
-              {submitting ? "Finalizing…" : "Confirm Processed"}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+        <div className="flex justify-end gap-3 pt-2">
+          <button
+            type="button"
+            disabled={submitting}
+            onClick={onClose}
+            className={secondaryButton}
+            data-dialog-cancel
+          >
+            Cancel
+          </button>
+          <button type="submit" disabled={submitting} className={primaryButton}>
+            {submitting ? "Finalizing…" : "Confirm Processed"}
+          </button>
+        </div>
+      </form>
+    </Dialog>
   );
 }
 
@@ -491,79 +505,66 @@ function RejectPayoutModal({
   };
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="reject-payout-title"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4"
-    >
-      <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
-        <h2
-          id="reject-payout-title"
-          className="text-lg font-bold text-slate-900"
-        >
-          Reject Payout Request
-        </h2>
-        <p className="mt-1 text-sm text-slate-600">
+    <Dialog
+      open
+      title={<>Reject Payout Request</>}
+      description={
+        <>
           Rejecting{" "}
           <strong className="text-slate-900">
             {payout.amount} {payout.currency}
           </strong>{" "}
           for <strong className="text-slate-900">{payout.seller_name}</strong> (
           {payout.payout_number}).
-        </p>
-        <p className="mt-2 text-xs text-amber-700 bg-amber-50 p-2.5 rounded-lg border border-amber-200">
-          The requested amount will automatically be restored back to the
-          seller&apos;s available balance via a compensating ledger entry.
-        </p>
+        </>
+      }
+      onClose={onClose}
+      busy={submitting}
+      error={error}
+    >
+      <p className="mt-2 text-xs text-amber-700 bg-amber-50 p-2.5 rounded-lg border border-amber-200">
+        The requested amount will automatically be restored back to the
+        seller&apos;s available balance via a compensating ledger entry.
+      </p>
 
-        <form onSubmit={handleSubmit} className="mt-4 space-y-4">
-          <div>
-            <label
-              htmlFor="reject-reason"
-              className="block text-xs font-semibold text-slate-700"
-            >
-              Reason for Rejection *
-            </label>
-            <textarea
-              id="reject-reason"
-              rows={3}
-              required
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              placeholder="e.g. Invalid bank routing number or pending account verification"
-              className={`mt-1 ${inputStyle}`}
-            />
-          </div>
+      <form onSubmit={handleSubmit} className="mt-4 space-y-4">
+        <div>
+          <label
+            htmlFor="reject-reason"
+            className="block text-xs font-semibold text-slate-700"
+          >
+            Reason for Rejection *
+          </label>
+          <textarea
+            id="reject-reason"
+            rows={3}
+            required
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            placeholder="e.g. Invalid bank routing number or pending account verification"
+            className={`mt-1 ${inputStyle}`}
+          />
+        </div>
 
-          {error && (
-            <div
-              role="alert"
-              className="rounded-lg bg-rose-50 p-3 text-xs text-rose-800"
-            >
-              {error}
-            </div>
-          )}
-
-          <div className="flex justify-end gap-3 pt-2">
-            <button
-              type="button"
-              disabled={submitting}
-              onClick={onClose}
-              className={secondaryButton}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={submitting}
-              className="rounded-lg bg-rose-700 px-4 py-2 text-sm font-semibold text-white hover:bg-rose-800 disabled:opacity-50"
-            >
-              {submitting ? "Rejecting…" : "Reject Payout"}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+        <div className="flex justify-end gap-3 pt-2">
+          <button
+            type="button"
+            disabled={submitting}
+            onClick={onClose}
+            className={secondaryButton}
+            data-dialog-cancel
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={submitting}
+            className="rounded-lg bg-rose-700 px-4 py-2 text-sm font-semibold text-white hover:bg-rose-800 disabled:opacity-50"
+          >
+            {submitting ? "Rejecting…" : "Reject Payout"}
+          </button>
+        </div>
+      </form>
+    </Dialog>
   );
 }

@@ -1,5 +1,7 @@
 "use client";
 
+import { Dialog } from "@/components/ui/dialog";
+
 import { useCallback, useState } from "react";
 import { useSeller } from "@/features/workspaces/seller-workspace";
 import { ForbiddenScreen } from "@/features/workspaces/forbidden-screen";
@@ -245,250 +247,260 @@ function ReturnsContent({
 
       {/* Inspect Return Modal */}
       {selectedReturn && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
-          <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-slate-950 font-mono">
-                {selectedReturn.return_number}
-              </h2>
-              <StatusBadge status={selectedReturn.status} />
-            </div>
+        <Dialog
+          open
+          title={<>{selectedReturn.return_number}</>}
+          onClose={() => setSelectedReturn(null)}
+          busy={submitting}
+          size="wide"
+          error={!showRejectModal && !showReceiveModal ? actionError : null}
+        >
+          <div className="flex items-center justify-between">
+            <StatusBadge status={selectedReturn.status} />
+          </div>
 
-            {actionError && (
-              <div className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">
-                {actionError}
+          <div className="mt-4 space-y-2 text-sm text-slate-600">
+            <div>
+              Order:{" "}
+              <span className="font-mono text-slate-900">
+                {selectedReturn.seller_order_number}
+              </span>
+            </div>
+            <div>
+              Reason:{" "}
+              <span className="font-medium text-slate-900 capitalize">
+                {selectedReturn.reason.replaceAll("_", " ")}
+              </span>
+            </div>
+            {selectedReturn.customer_notes && (
+              <div>
+                Customer notes:{" "}
+                <span className="italic text-slate-800">
+                  {selectedReturn.customer_notes}
+                </span>
               </div>
             )}
-
-            <div className="mt-4 space-y-2 text-sm text-slate-600">
-              <div>
-                Order:{" "}
-                <span className="font-mono text-slate-900">
-                  {selectedReturn.seller_order_number}
-                </span>
+            {selectedReturn.rejection_reason && (
+              <div className="text-red-700 font-medium">
+                Rejection reason: {selectedReturn.rejection_reason}
               </div>
-              <div>
-                Reason:{" "}
-                <span className="font-medium text-slate-900 capitalize">
-                  {selectedReturn.reason.replaceAll("_", " ")}
-                </span>
-              </div>
-              {selectedReturn.customer_notes && (
-                <div>
-                  Customer notes:{" "}
-                  <span className="italic text-slate-800">
-                    {selectedReturn.customer_notes}
-                  </span>
-                </div>
-              )}
-              {selectedReturn.rejection_reason && (
-                <div className="text-red-700 font-medium">
-                  Rejection reason: {selectedReturn.rejection_reason}
-                </div>
-              )}
-            </div>
-
-            <div className="mt-6">
-              <h3 className="text-sm font-semibold text-slate-900">
-                Returned Items
-              </h3>
-              <ul className="mt-2 divide-y divide-slate-100 rounded-lg border border-slate-200 p-3">
-                {selectedReturn.items.map((item) => (
-                  <li
-                    key={item.id}
-                    className="py-2 flex items-center justify-between text-sm"
-                  >
-                    <div>
-                      <div className="font-medium text-slate-900">
-                        {item.product_name_snapshot || item.sku_snapshot}
-                      </div>
-                      <div className="text-xs text-slate-500">
-                        Condition: {item.condition} | Restock:{" "}
-                        {item.restock_inventory ? "Yes" : "No"}
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="font-semibold text-slate-900">
-                        x{item.quantity}
-                      </div>
-                      <div className="text-xs text-slate-600 font-mono">
-                        <Money amount={item.refund_amount} currency="USD" />
-                      </div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="mt-6">
-              <h3 className="text-sm font-semibold text-slate-900">
-                Status History
-              </h3>
-              <ul className="mt-2 space-y-2">
-                {selectedReturn.status_history.map((hist) => (
-                  <li
-                    key={hist.id}
-                    className="rounded-lg bg-slate-50 p-2 text-xs"
-                  >
-                    <div className="flex justify-between font-medium text-slate-900">
-                      <span>{hist.to_status}</span>
-                      <span className="text-slate-500 font-normal">
-                        <DateDisplay value={hist.created_at} />
-                      </span>
-                    </div>
-                    {hist.notes && (
-                      <div className="text-slate-600 mt-0.5">{hist.notes}</div>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="mt-6 flex flex-wrap justify-end gap-3">
-              <button
-                type="button"
-                onClick={() => setSelectedReturn(null)}
-                className={secondaryButton}
-              >
-                Close
-              </button>
-
-              {canManage && selectedReturn.status === "requested" && (
-                <>
-                  <button
-                    type="button"
-                    onClick={() => setShowRejectModal(true)}
-                    className="rounded-lg border border-red-300 bg-white px-3 py-2 text-xs font-semibold text-red-700 hover:bg-red-50"
-                  >
-                    Reject Return
-                  </button>
-                  <button
-                    type="button"
-                    disabled={submitting}
-                    onClick={() => handleApprove(selectedReturn.id)}
-                    className={primaryButton}
-                  >
-                    {submitting ? "Approving…" : "Approve Return"}
-                  </button>
-                </>
-              )}
-
-              {canManage &&
-                (selectedReturn.status === "approved" ||
-                  selectedReturn.status === "in_transit") && (
-                  <button
-                    type="button"
-                    onClick={() => setShowReceiveModal(true)}
-                    className={primaryButton}
-                  >
-                    Receive & Restock
-                  </button>
-                )}
-            </div>
+            )}
           </div>
-        </div>
+
+          <div className="mt-6">
+            <h3 className="text-sm font-semibold text-slate-900">
+              Returned Items
+            </h3>
+            <ul className="mt-2 divide-y divide-slate-100 rounded-lg border border-slate-200 p-3">
+              {selectedReturn.items.map((item) => (
+                <li
+                  key={item.id}
+                  className="py-2 flex items-center justify-between text-sm"
+                >
+                  <div>
+                    <div className="font-medium text-slate-900">
+                      {item.product_name_snapshot || item.sku_snapshot}
+                    </div>
+                    <div className="text-xs text-slate-500">
+                      Condition: {item.condition} | Restock:{" "}
+                      {item.restock_inventory ? "Yes" : "No"}
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="font-semibold text-slate-900">
+                      x{item.quantity}
+                    </div>
+                    <div className="text-xs text-slate-600 font-mono">
+                      <Money amount={item.refund_amount} currency="USD" />
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="mt-6">
+            <h3 className="text-sm font-semibold text-slate-900">
+              Status History
+            </h3>
+            <ul className="mt-2 space-y-2">
+              {selectedReturn.status_history.map((hist) => (
+                <li
+                  key={hist.id}
+                  className="rounded-lg bg-slate-50 p-2 text-xs"
+                >
+                  <div className="flex justify-between font-medium text-slate-900">
+                    <span>{hist.to_status}</span>
+                    <span className="text-slate-500 font-normal">
+                      <DateDisplay value={hist.created_at} />
+                    </span>
+                  </div>
+                  {hist.notes && (
+                    <div className="text-slate-600 mt-0.5">{hist.notes}</div>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="mt-6 flex flex-wrap justify-end gap-3">
+            <button
+              type="button"
+              onClick={() => setSelectedReturn(null)}
+              className={secondaryButton}
+              data-dialog-cancel
+            >
+              Close
+            </button>
+
+            {canManage && selectedReturn.status === "requested" && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setShowRejectModal(true)}
+                  className="rounded-lg border border-red-300 bg-white px-3 py-2 text-xs font-semibold text-red-700 hover:bg-red-50"
+                >
+                  Reject Return
+                </button>
+                <button
+                  type="button"
+                  disabled={submitting}
+                  onClick={() => handleApprove(selectedReturn.id)}
+                  className={primaryButton}
+                >
+                  {submitting ? "Approving…" : "Approve Return"}
+                </button>
+              </>
+            )}
+
+            {canManage &&
+              (selectedReturn.status === "approved" ||
+                selectedReturn.status === "in_transit") && (
+                <button
+                  type="button"
+                  onClick={() => setShowReceiveModal(true)}
+                  className={primaryButton}
+                >
+                  Receive & Restock
+                </button>
+              )}
+          </div>
+        </Dialog>
       )}
 
       {/* Reject Modal */}
       {showRejectModal && selectedReturn && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
-          <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
-            <h3 className="text-lg font-semibold text-slate-950">
-              Reject Return Request
-            </h3>
-            <p className="mt-1 text-xs text-slate-600">
-              Provide an explicit rejection reason for the customer.
-            </p>
-            <form onSubmit={handleReject} className="mt-4 space-y-3">
-              <FormField
-                label="Rejection Reason"
-                value={rejectReason}
-                onChange={(e) => setRejectReason(e.target.value)}
-                placeholder="e.g. Return window expired, item unsealed"
-                required
-              />
-              <div className="mt-4 flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowRejectModal(false)}
-                  className={secondaryButton}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white hover:bg-red-700"
-                >
-                  {submitting ? "Rejecting…" : "Confirm Rejection"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+        <Dialog
+          open
+          title={<>Reject Return Request</>}
+          error={actionError}
+          description={
+            <>
+              Reject {selectedReturn.return_number} for order{" "}
+              {selectedReturn.seller_order_number}. The customer receives the
+              recorded rejection reason.
+            </>
+          }
+          onClose={() => setShowRejectModal(false)}
+          busy={submitting}
+          size="wide"
+        >
+          <form onSubmit={handleReject} className="mt-4 space-y-3">
+            <FormField
+              label="Rejection Reason"
+              value={rejectReason}
+              onChange={(e) => setRejectReason(e.target.value)}
+              placeholder="e.g. Return window expired, item unsealed"
+              required
+            />
+            <div className="mt-4 flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setShowRejectModal(false)}
+                className={secondaryButton}
+                data-dialog-cancel
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={submitting}
+                className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white hover:bg-red-700"
+              >
+                {submitting ? "Rejecting…" : "Confirm Rejection"}
+              </button>
+            </div>
+          </form>
+        </Dialog>
       )}
 
       {/* Receive Modal */}
       {showReceiveModal && selectedReturn && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
-          <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
-            <h3 className="text-lg font-semibold text-slate-950">
-              Receive & Inspect Package
-            </h3>
-            <p className="mt-1 text-xs text-slate-600">
-              Verify item condition and decide whether to restock into
+        <Dialog
+          open
+          title={<>Receive & Inspect Package</>}
+          error={actionError}
+          description={
+            <>
+              Receive {selectedReturn.return_number}. Verify each returned
+              item&apos;s condition before deciding whether to add it back to
               inventory.
-            </p>
-            <form onSubmit={handleReceive} className="mt-4 space-y-3">
-              <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">
-                  Item Condition
-                </label>
-                <select
-                  value={restockCondition}
-                  onChange={(e) => setRestockCondition(e.target.value)}
-                  className="w-full rounded-lg border border-slate-300 p-2 text-sm"
-                >
-                  <option value="unopened">Unopened / Like New</option>
-                  <option value="opened">Opened / Inspected</option>
-                  <option value="damaged">Damaged (Not Restockable)</option>
-                  <option value="defective">Defective</option>
-                </select>
-              </div>
-              <div className="flex items-center gap-2">
-                <input
-                  id="restock-checkbox"
-                  type="checkbox"
-                  checked={restockInventory}
-                  onChange={(e) => setRestockInventory(e.target.checked)}
-                  className="h-4 w-4 rounded border-slate-300 text-teal-600"
-                />
-                <label
-                  htmlFor="restock-checkbox"
-                  className="text-xs text-slate-700 font-medium"
-                >
-                  Restock returned items to warehouse inventory
-                </label>
-              </div>
-              <div className="mt-4 flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowReceiveModal(false)}
-                  className={secondaryButton}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className={primaryButton}
-                >
-                  {submitting ? "Processing…" : "Confirm Receipt"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+            </>
+          }
+          onClose={() => setShowReceiveModal(false)}
+          busy={submitting}
+          size="wide"
+        >
+          <form onSubmit={handleReceive} className="mt-4 space-y-3">
+            <div>
+              <label className="block text-xs font-medium text-slate-700 mb-1">
+                Item Condition
+              </label>
+              <select
+                value={restockCondition}
+                onChange={(e) => setRestockCondition(e.target.value)}
+                className="w-full rounded-lg border border-slate-300 p-2 text-sm"
+              >
+                <option value="unopened">Unopened / Like New</option>
+                <option value="opened">Opened / Inspected</option>
+                <option value="damaged">Damaged (Not Restockable)</option>
+                <option value="defective">Defective</option>
+              </select>
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                id="restock-checkbox"
+                type="checkbox"
+                checked={restockInventory}
+                onChange={(e) => setRestockInventory(e.target.checked)}
+                className="h-4 w-4 rounded border-slate-300 text-teal-600"
+              />
+              <label
+                htmlFor="restock-checkbox"
+                className="text-xs text-slate-700 font-medium"
+              >
+                Restock returned items to warehouse inventory
+              </label>
+            </div>
+            <div className="mt-4 flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setShowReceiveModal(false)}
+                className={secondaryButton}
+                data-dialog-cancel
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={submitting}
+                className={primaryButton}
+              >
+                {submitting ? "Processing…" : "Confirm Receipt"}
+              </button>
+            </div>
+          </form>
+        </Dialog>
       )}
     </section>
   );

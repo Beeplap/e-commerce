@@ -220,11 +220,7 @@ export function ProductActions({
       <ConfirmDialog
         open={action !== null}
         title={action ? label(action) : "Product action"}
-        description={
-          action === "reject"
-            ? reason
-            : "This action changes the product’s review status."
-        }
+        description={`${product.name}: ${action ? { archive: "Archive this product and remove it from active publication.", revise: "Return this product to draft. Its approval will be removed and a new review will be required.", "submit-for-review": "Submit this draft for platform review. Content editing is locked until it returns to draft.", approve: "Approve this reviewed product for active publication.", reject: `Reject this product submission. Reason: ${reason}` }[action] : "Review the selected action."}`}
         busy={mutation.busy}
         error={mutation.error ? errorMessage(mutation.error) : undefined}
         onCancel={() => setAction(null)}

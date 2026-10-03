@@ -1,6 +1,10 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { Dialog } from "@/components/ui/dialog";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { FormSection } from "@/components/ui/layout";
+
+import { useCallback, useRef, useState } from "react";
 import {
   ApiErrorState,
   LoadingState,
@@ -22,6 +26,8 @@ export function SellerRoles() {
   const [editingRole, setEditingRole] = useState<SellerRole | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<SellerRole | null>(null);
+  const actionInFlight = useRef(false);
 
   const [roleName, setRoleName] = useState("");
   const [selectedPerms, setSelectedPerms] = useState<string[]>([]);
@@ -49,6 +55,8 @@ export function SellerRoles() {
 
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
+    if (actionInFlight.current) return;
+    actionInFlight.current = true;
     setSubmitting(true);
     setActionError(null);
     try {
@@ -62,6 +70,7 @@ export function SellerRoles() {
     } catch (err) {
       setActionError(errorMessage(err));
     } finally {
+      actionInFlight.current = false;
       setSubmitting(false);
     }
   }
@@ -69,6 +78,8 @@ export function SellerRoles() {
   async function handleUpdate(e: React.FormEvent) {
     e.preventDefault();
     if (!editingRole) return;
+    if (actionInFlight.current) return;
+    actionInFlight.current = true;
     setSubmitting(true);
     setActionError(null);
     try {
@@ -82,20 +93,24 @@ export function SellerRoles() {
     } catch (err) {
       setActionError(errorMessage(err));
     } finally {
+      actionInFlight.current = false;
       setSubmitting(false);
     }
   }
 
   async function handleDelete(role: SellerRole) {
-    if (!confirm(`Delete role "${role.name}"? This cannot be undone.`)) return;
+    if (actionInFlight.current) return;
+    actionInFlight.current = true;
     setSubmitting(true);
     setActionError(null);
     try {
       await sellerApi.deleteRole(sellerId, role.id);
+      setDeleteTarget(null);
       rolesQuery.retry?.();
     } catch (err) {
       setActionError(errorMessage(err));
     } finally {
+      actionInFlight.current = false;
       setSubmitting(false);
     }
   }
@@ -149,7 +164,7 @@ export function SellerRoles() {
         )}
       </div>
 
-      {actionError && (
+      {actionError && !showCreate && !editingRole && !deleteTarget && (
         <p
           role="alert"
           className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700"
@@ -208,7 +223,10 @@ export function SellerRoles() {
                   <button
                     type="button"
                     disabled={submitting}
-                    onClick={() => handleDelete(role)}
+                    onClick={() => {
+                      setActionError(null);
+                      setDeleteTarget(role);
+                    }}
                     className="rounded-lg border border-red-300 bg-white px-3 py-1.5 text-xs font-semibold text-red-700 hover:bg-red-50"
                   >
                     Delete
@@ -220,6 +238,22 @@ export function SellerRoles() {
         ))}
       </div>
 
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        title="Delete custom role"
+        description={
+          deleteTarget
+            ? `Delete ${deleteTarget.name} from ${access.seller.display_name}? This role can no longer be assigned. Django rejects deletion while members are assigned, and system or owner roles remain protected.`
+            : ""
+        }
+        confirmLabel="Delete role"
+        busy={submitting}
+        error={actionError ?? undefined}
+        onCancel={() => setDeleteTarget(null)}
+        onConfirm={() => {
+          if (deleteTarget) void handleDelete(deleteTarget);
+        }}
+      />
       {showCreate && (
         <RoleFormModal
           title="Create role"
@@ -284,56 +318,75 @@ function RoleFormModal({
   onSubmit,
   onClose,
 }: RoleFormModalProps) {
+  const permissionGroups = availablePerms.reduce<Map<string, string[]>>(
+    (groups, permission) => {
+      const area = permission.split(".")[0] ?? "Other";
+      const permissions = groups.get(area) ?? [];
+      permissions.push(permission);
+      groups.set(area, permissions);
+      return groups;
+    },
+    new Map(),
+  );
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
-      <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
-        <h3 className="text-lg font-semibold text-slate-950">{title}</h3>
-        <form onSubmit={onSubmit} className="mt-4 space-y-4">
-          <FormField
-            label="Role name"
-            value={roleName}
-            onChange={(e) => setRoleName(e.target.value)}
-            placeholder="e.g. Inventory Manager"
-            required
-          />
-          {availablePerms.length > 0 && (
-            <div>
-              <p className="mb-2 text-xs font-medium text-slate-700">
-                Permissions
-              </p>
-              <div className="max-h-48 overflow-y-auto rounded-lg border border-slate-200 p-3 space-y-2">
-                {availablePerms.map((perm) => (
-                  <label
-                    key={perm}
-                    className="flex items-center gap-2 text-xs cursor-pointer"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={selectedPerms.includes(perm)}
-                      onChange={() => togglePerm(perm)}
-                      className="h-4 w-4 rounded border-slate-300 text-teal-600"
-                    />
-                    <span className="font-mono text-slate-700">{perm}</span>
-                  </label>
-                ))}
-              </div>
+    <Dialog
+      open
+      title={<>{title}</>}
+      description="Choose only the permissions this role needs. The backend revalidates your authority to delegate each permission."
+      onClose={onClose}
+      busy={submitting}
+      error={actionError}
+    >
+      <form onSubmit={onSubmit} className="mt-4 space-y-4">
+        <FormField
+          label="Role name"
+          value={roleName}
+          onChange={(e) => setRoleName(e.target.value)}
+          placeholder="e.g. Inventory Manager"
+          required
+        />
+        {availablePerms.length > 0 && (
+          <div>
+            <p className="mb-2 text-xs font-medium text-slate-700">
+              Permissions
+            </p>
+            <div className="space-y-5">
+              {[...permissionGroups].map(([area, permissions]) => (
+                <FormSection key={area} title={area.replaceAll("_", " ")}>
+                  {permissions.map((perm) => (
+                    <label
+                      key={perm}
+                      className="flex min-h-11 items-center gap-3 text-ui-body cursor-pointer"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={selectedPerms.includes(perm)}
+                        onChange={() => togglePerm(perm)}
+                        className="h-4 w-4 rounded border-slate-300 text-teal-600"
+                      />
+                      <span className="font-mono text-slate-700">{perm}</span>
+                    </label>
+                  ))}
+                </FormSection>
+              ))}
             </div>
-          )}
-          {actionError && <p className="text-xs text-red-600">{actionError}</p>}
-          <div className="flex justify-end gap-2">
-            <button type="button" onClick={onClose} className={secondaryButton}>
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={submitting}
-              className={primaryButton}
-            >
-              {submitting ? "Saving…" : "Save role"}
-            </button>
           </div>
-        </form>
-      </div>
-    </div>
+        )}
+
+        <div className="flex justify-end gap-2">
+          <button
+            type="button"
+            onClick={onClose}
+            className={secondaryButton}
+            data-dialog-cancel
+          >
+            Cancel
+          </button>
+          <button type="submit" disabled={submitting} className={primaryButton}>
+            {submitting ? "Saving…" : "Save role"}
+          </button>
+        </div>
+      </form>
+    </Dialog>
   );
 }

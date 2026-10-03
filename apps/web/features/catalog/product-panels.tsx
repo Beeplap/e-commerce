@@ -1,6 +1,9 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { ManagedForm } from "@/features/sellers/forms";
+import { FormSection } from "@/components/ui/layout";
+import { confirmUnsavedNavigation } from "@/components/ui/unsaved-changes";
 import { DataTable } from "@/components/ui/data-table";
 import { DateDisplay, Money } from "@/components/ui/displays";
 import { Pagination } from "@/components/ui/pagination";
@@ -194,130 +197,133 @@ function VariantEditor({
   onClose: () => void;
   onSaved: () => void;
 }) {
-  const mutation = useMutation();
   return (
-    <div className="space-y-6 rounded-lg border border-slate-200 bg-slate-50 p-5">
-      <h3 className="text-lg font-medium">
-        {variant ? `Edit variant (${variant.sku})` : "New variant"}
-      </h3>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          const form = new FormData(e.currentTarget);
-          const v = values(form);
-          void mutation.run(async () => {
-            await catalogApi.saveVariant(
-              sellerId,
-              product.id,
-              {
-                sku: v.sku,
-                barcode: v.barcode || "",
-                price: v.price,
-                compare_at_price: v.compare_at_price || null,
-                cost_price: v.cost_price || null,
-                weight: v.weight || null,
-                length: v.length || null,
-                width: v.width || null,
-                height: v.height || null,
-                status: v.status || "active",
-              },
-              variant?.id,
-            );
-            onSaved();
-          });
+    <div className="space-y-6">
+      <ManagedForm
+        title={variant ? `Edit variant (${variant.sku})` : "New variant"}
+        submitLabel="Save variant"
+        warnUnsaved
+        stickyActions
+        onSave={async (data) => {
+          const v = values(data);
+          await catalogApi.saveVariant(
+            sellerId,
+            product.id,
+            {
+              sku: v.sku,
+              barcode: v.barcode || "",
+              price: v.price,
+              compare_at_price: v.compare_at_price || null,
+              cost_price: v.cost_price || null,
+              weight: v.weight || null,
+              length: v.length || null,
+              width: v.width || null,
+              height: v.height || null,
+              status: v.status || "active",
+            },
+            variant?.id,
+          );
+          onSaved();
         }}
-        className="space-y-4"
       >
-        <div className="grid gap-4 sm:grid-cols-2">
-          <FormField
-            label="SKU"
-            name="sku"
-            required
-            maxLength={80}
-            defaultValue={variant?.sku ?? ""}
-          />
-          <FormField
-            label="Barcode"
-            name="barcode"
-            maxLength={80}
-            defaultValue={variant?.barcode ?? ""}
-          />
-          <FormField
-            label={`Price (${product.currency})`}
-            name="price"
-            required
-            placeholder="0.00"
-            defaultValue={variant?.price ?? ""}
-          />
-          <FormField
-            label={`Compare at price (${product.currency})`}
-            name="compare_at_price"
-            placeholder="0.00"
-            defaultValue={variant?.compare_at_price ?? ""}
-          />
-          <FormField
-            label={`Cost price (${product.currency})`}
-            name="cost_price"
-            placeholder="0.00"
-            defaultValue={variant?.cost_price ?? ""}
-          />
-          <label className="block text-sm font-medium">
-            Status
-            <select
-              name="status"
-              className={`${selectStyle} mt-2`}
-              defaultValue={variant?.status ?? "active"}
-            >
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-            </select>
-          </label>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-4">
-          <FormField
-            label="Weight (kg)"
-            name="weight"
-            placeholder="0.000"
-            defaultValue={variant?.weight ?? ""}
-          />
-          <FormField
-            label="Length (cm)"
-            name="length"
-            placeholder="0.000"
-            defaultValue={variant?.length ?? ""}
-          />
-          <FormField
-            label="Width (cm)"
-            name="width"
-            placeholder="0.000"
-            defaultValue={variant?.width ?? ""}
-          />
-          <FormField
-            label="Height (cm)"
-            name="height"
-            placeholder="0.000"
-            defaultValue={variant?.height ?? ""}
-          />
-        </div>
-        <div className="flex gap-3">
-          <button
-            className={primaryButton}
-            type="submit"
-            disabled={mutation.busy}
-          >
-            {mutation.busy ? "Saving…" : "Save variant"}
-          </button>
-          <button
-            className={secondaryButton}
-            type="button"
-            onClick={onClose}
-            disabled={mutation.busy}
-          >
-            Cancel
-          </button>
-        </div>
-        <MutationStatus error={mutation.error} success={mutation.success} />
-      </form>
+        <FormSection
+          title="Identification"
+          description="The SKU identifies this variant in orders and inventory."
+        >
+          <div className="grid gap-4 sm:grid-cols-2">
+            <FormField
+              label="SKU"
+              name="sku"
+              required
+              maxLength={80}
+              defaultValue={variant?.sku ?? ""}
+            />
+            <FormField
+              label="Barcode"
+              name="barcode"
+              maxLength={80}
+              defaultValue={variant?.barcode ?? ""}
+            />
+          </div>
+        </FormSection>
+        <FormSection
+          title="Pricing and availability"
+          description="Enter amounts in the product currency. Saving a variant does not publish the product."
+        >
+          <div className="grid gap-4 sm:grid-cols-2">
+            <FormField
+              label={`Price (${product.currency})`}
+              name="price"
+              required
+              placeholder="0.00"
+              defaultValue={variant?.price ?? ""}
+            />
+            <FormField
+              label={`Compare at price (${product.currency})`}
+              name="compare_at_price"
+              placeholder="0.00"
+              defaultValue={variant?.compare_at_price ?? ""}
+            />
+            <FormField
+              label={`Cost price (${product.currency})`}
+              name="cost_price"
+              placeholder="0.00"
+              defaultValue={variant?.cost_price ?? ""}
+            />
+            <label className="block text-sm font-medium">
+              Status
+              <select
+                name="status"
+                className={`${selectStyle} mt-2`}
+                defaultValue={variant?.status ?? "active"}
+              >
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </label>
+          </div>
+        </FormSection>
+        <FormSection
+          title="Shipping dimensions"
+          description="Optional measurements support shipping and fulfillment."
+        >
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <FormField
+              label="Weight (kg)"
+              name="weight"
+              placeholder="0.000"
+              defaultValue={variant?.weight ?? ""}
+            />
+            <FormField
+              label="Length (cm)"
+              name="length"
+              placeholder="0.000"
+              defaultValue={variant?.length ?? ""}
+            />
+            <FormField
+              label="Width (cm)"
+              name="width"
+              placeholder="0.000"
+              defaultValue={variant?.width ?? ""}
+            />
+            <FormField
+              label="Height (cm)"
+              name="height"
+              placeholder="0.000"
+              defaultValue={variant?.height ?? ""}
+            />
+          </div>
+        </FormSection>
+        <button
+          className={secondaryButton}
+          type="button"
+          onClick={() => {
+            if (confirmUnsavedNavigation()) onClose();
+          }}
+        >
+          Cancel
+        </button>
+      </ManagedForm>
 
       {variant && (
         <div className="mt-6 border-t border-slate-200 pt-6">

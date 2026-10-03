@@ -180,11 +180,7 @@ function SellerActions({
       <ConfirmDialog
         open={confirm}
         title={`${action ?? "Update"} seller?`}
-        description={
-          needsReason
-            ? `Reason: ${reason}`
-            : "This action changes the seller’s availability. The change will be recorded in its history."
-        }
+        description={`${seller.display_name}: ${action ? { approve: "Activate this verified seller so its members can use seller operations.", reject: "Reject this registration. The seller workspace will become unavailable.", suspend: "Suspend this seller. Its members will lose access to seller operations.", reactivate: "Reactivate this seller after verifying its registration is valid." }[action] : "Review the selected action."} ${needsReason ? `Reason: ${reason}. ` : ""}This change is recorded in the seller's history.`}
         confirmLabel="Confirm action"
         busy={mutation.busy}
         error={mutation.error ? errorMessage(mutation.error) : undefined}

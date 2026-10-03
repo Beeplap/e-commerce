@@ -1,5 +1,7 @@
 "use client";
 
+import { Dialog } from "@/components/ui/dialog";
+
 import { useCallback, useState } from "react";
 import {
   ApiErrorState,
@@ -240,103 +242,113 @@ export function SellerReviews() {
 
       {/* Respond Modal */}
       {showResponse && selectedReview && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
-          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
-            <h3 className="text-lg font-semibold text-slate-950">
-              Respond to Review
-            </h3>
-            <div className="mt-2 rounded-lg bg-slate-50 p-3 text-sm text-slate-700">
-              <StarRating rating={selectedReview.rating} />
-              <p className="mt-1 font-semibold">{selectedReview.title}</p>
-              <p className="mt-1">{selectedReview.body}</p>
-            </div>
-            <form onSubmit={handleRespond} className="mt-4 space-y-3">
-              <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">
-                  Your response
-                </label>
-                <textarea
-                  value={responseText}
-                  onChange={(e) => setResponseText(e.target.value)}
-                  rows={4}
-                  required
-                  className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
-                  placeholder="Thank you for your feedback…"
-                />
-              </div>
-              {actionError && (
-                <p className="text-xs text-red-600">{actionError}</p>
-              )}
-              <div className="flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowResponse(false);
-                    setSelectedReview(null);
-                    setResponseText("");
-                  }}
-                  className={secondaryButton}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className={primaryButton}
-                >
-                  {submitting ? "Submitting…" : "Submit response"}
-                </button>
-              </div>
-            </form>
+        <Dialog
+          open
+          title={<>Respond to Review</>}
+          onClose={() => {
+            setShowResponse(false);
+            setSelectedReview(null);
+            setResponseText("");
+          }}
+          busy={submitting}
+          error={actionError}
+        >
+          <div className="mt-2 rounded-lg bg-slate-50 p-3 text-sm text-slate-700">
+            <StarRating rating={selectedReview.rating} />
+            <p className="mt-1 font-semibold">{selectedReview.title}</p>
+            <p className="mt-1">{selectedReview.body}</p>
           </div>
-        </div>
+          <form onSubmit={handleRespond} className="mt-4 space-y-3">
+            <div>
+              <label className="block text-xs font-medium text-slate-700 mb-1">
+                Your response
+              </label>
+              <textarea
+                value={responseText}
+                onChange={(e) => setResponseText(e.target.value)}
+                rows={4}
+                required
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
+                placeholder="Thank you for your feedback…"
+              />
+            </div>
+
+            <div className="flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowResponse(false);
+                  setSelectedReview(null);
+                  setResponseText("");
+                }}
+                className={secondaryButton}
+                data-dialog-cancel
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={submitting}
+                className={primaryButton}
+              >
+                {submitting ? "Submitting…" : "Submit response"}
+              </button>
+            </div>
+          </form>
+        </Dialog>
       )}
 
       {/* Report Modal */}
       {showReport && selectedReview && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
-          <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
-            <h3 className="text-lg font-semibold text-slate-950">
-              Report Review
-            </h3>
-            <p className="mt-1 text-xs text-slate-600">
+        <Dialog
+          open
+          title={<>Report Review</>}
+          description={
+            <>
               Flag this review for platform moderation. You cannot directly
               delete reviews.
-            </p>
-            <form onSubmit={handleReport} className="mt-4 space-y-3">
-              <FormField
-                label="Reason"
-                value={reportReason}
-                onChange={(e) => setReportReason(e.target.value)}
-                placeholder="e.g. Fake review, contains personal information"
-                required
-              />
-              {actionError && (
-                <p className="text-xs text-red-600">{actionError}</p>
-              )}
-              <div className="flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowReport(false);
-                    setSelectedReview(null);
-                    setReportReason("");
-                  }}
-                  className={secondaryButton}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className={primaryButton}
-                >
-                  {submitting ? "Reporting…" : "Submit report"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+            </>
+          }
+          onClose={() => {
+            setShowReport(false);
+            setSelectedReview(null);
+            setReportReason("");
+          }}
+          busy={submitting}
+          error={actionError}
+        >
+          <form onSubmit={handleReport} className="mt-4 space-y-3">
+            <FormField
+              label="Reason"
+              value={reportReason}
+              onChange={(e) => setReportReason(e.target.value)}
+              placeholder="e.g. Fake review, contains personal information"
+              required
+            />
+
+            <div className="flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowReport(false);
+                  setSelectedReview(null);
+                  setReportReason("");
+                }}
+                className={secondaryButton}
+                data-dialog-cancel
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={submitting}
+                className={primaryButton}
+              >
+                {submitting ? "Reporting…" : "Submit report"}
+              </button>
+            </div>
+          </form>
+        </Dialog>
       )}
     </section>
   );

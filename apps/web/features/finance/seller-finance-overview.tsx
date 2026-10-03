@@ -1,5 +1,7 @@
 "use client";
 
+import { Dialog } from "@/components/ui/dialog";
+
 import Link from "next/link";
 import { useCallback, useState } from "react";
 import { useSeller } from "@/features/workspaces/seller-workspace";
@@ -318,20 +320,11 @@ function FinanceDashboard({ sellerId }: { sellerId: string }) {
 
       {/* Request Payout Modal */}
       {showPayoutModal && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="payout-modal-title"
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4"
-        >
-          <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
-            <h3
-              id="payout-modal-title"
-              className="text-lg font-semibold text-slate-900"
-            >
-              Request Payout
-            </h3>
-            <p className="mt-1 text-sm text-slate-600">
+        <Dialog
+          open
+          title={<>Request Payout</>}
+          description={
+            <>
               Available balance:{" "}
               <span className="font-semibold text-slate-900">
                 <Money
@@ -339,69 +332,67 @@ function FinanceDashboard({ sellerId }: { sellerId: string }) {
                   currency={balance.currency}
                 />
               </span>
-            </p>
+            </>
+          }
+          onClose={() => setShowPayoutModal(false)}
+          busy={submitting}
+          error={payoutError}
+        >
+          <form onSubmit={handleRequestPayout} className="mt-4 space-y-4">
+            <div>
+              <label
+                htmlFor="payout-amount"
+                className="block text-sm font-medium text-slate-700"
+              >
+                Amount ({balance.currency})
+              </label>
+              <input
+                id="payout-amount"
+                type="text"
+                required
+                placeholder="0.00"
+                value={payoutAmount}
+                onChange={(e) => setPayoutAmount(e.target.value)}
+                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-teal-700 focus:outline-none"
+              />
+            </div>
 
-            {payoutError && (
-              <div className="mt-3 rounded-lg bg-rose-50 p-3 text-sm text-rose-700">
-                {payoutError}
-              </div>
-            )}
+            <div>
+              <label
+                htmlFor="payout-notes"
+                className="block text-sm font-medium text-slate-700"
+              >
+                Notes (Optional)
+              </label>
+              <textarea
+                id="payout-notes"
+                rows={2}
+                value={payoutNotes}
+                onChange={(e) => setPayoutNotes(e.target.value)}
+                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-teal-700 focus:outline-none"
+              />
+            </div>
 
-            <form onSubmit={handleRequestPayout} className="mt-4 space-y-4">
-              <div>
-                <label
-                  htmlFor="payout-amount"
-                  className="block text-sm font-medium text-slate-700"
-                >
-                  Amount ({balance.currency})
-                </label>
-                <input
-                  id="payout-amount"
-                  type="text"
-                  required
-                  placeholder="0.00"
-                  value={payoutAmount}
-                  onChange={(e) => setPayoutAmount(e.target.value)}
-                  className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-teal-700 focus:outline-none"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="payout-notes"
-                  className="block text-sm font-medium text-slate-700"
-                >
-                  Notes (Optional)
-                </label>
-                <textarea
-                  id="payout-notes"
-                  rows={2}
-                  value={payoutNotes}
-                  onChange={(e) => setPayoutNotes(e.target.value)}
-                  className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-teal-700 focus:outline-none"
-                />
-              </div>
-
-              <div className="flex justify-end gap-3 pt-2">
-                <button
-                  type="button"
-                  disabled={submitting}
-                  className={secondaryButton}
-                  onClick={() => setShowPayoutModal(false)}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className={primaryButton}
-                >
-                  {submitting ? "Submitting..." : "Submit Request"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+            <div className="flex justify-end gap-3 pt-2">
+              <button
+                type="button"
+                disabled={submitting}
+                className={secondaryButton}
+                onClick={() => setShowPayoutModal(false)}
+                data-dialog-cancel
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={submitting}
+                className={primaryButton}
+              >
+                {submitting ? "Submitting..." : "Submit Request"}
+              </button>
+            </div>
+          </form>
+        </Dialog>
       )}
     </div>
   );

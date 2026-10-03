@@ -1,5 +1,7 @@
 "use client";
 
+import { Dialog } from "@/components/ui/dialog";
+
 import { useCallback, useState } from "react";
 import {
   ApiErrorState,
@@ -264,49 +266,53 @@ export function AdminReviews() {
 
       {/* Moderation confirmation modal */}
       {selectedReview && action && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
-          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
-            <h3 className="text-lg font-semibold text-slate-950 capitalize">
-              {action} Review
-            </h3>
-            <div className="mt-3 rounded-lg bg-slate-50 p-3 text-sm text-slate-700">
-              <StarRating rating={selectedReview.rating} />
-              <p className="mt-1 font-semibold">{selectedReview.title}</p>
-              <p className="mt-1">{selectedReview.body}</p>
-            </div>
-            <form onSubmit={handleModerate} className="mt-4 space-y-3">
-              <FormField
-                label="Moderation notes (optional)"
-                value={moderationNotes}
-                onChange={(e) => setModerationNotes(e.target.value)}
-                placeholder="Internal moderation reason…"
-              />
-              {actionError && (
-                <p className="text-xs text-red-600">{actionError}</p>
-              )}
-              <div className="flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSelectedReview(null);
-                    setAction(null);
-                    setModerationNotes("");
-                  }}
-                  className={secondaryButton}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className={primaryButton}
-                >
-                  {submitting ? "Submitting…" : `Confirm ${action}`}
-                </button>
-              </div>
-            </form>
+        <Dialog
+          open
+          title={<>{action} Review</>}
+          onClose={() => {
+            setSelectedReview(null);
+            setAction(null);
+            setModerationNotes("");
+          }}
+          busy={submitting}
+          error={actionError}
+        >
+          <div className="mt-3 rounded-lg bg-slate-50 p-3 text-sm text-slate-700">
+            <StarRating rating={selectedReview.rating} />
+            <p className="mt-1 font-semibold">{selectedReview.title}</p>
+            <p className="mt-1">{selectedReview.body}</p>
           </div>
-        </div>
+          <form onSubmit={handleModerate} className="mt-4 space-y-3">
+            <FormField
+              label="Moderation notes (optional)"
+              value={moderationNotes}
+              onChange={(e) => setModerationNotes(e.target.value)}
+              placeholder="Internal moderation reason…"
+            />
+
+            <div className="flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedReview(null);
+                  setAction(null);
+                  setModerationNotes("");
+                }}
+                className={secondaryButton}
+                data-dialog-cancel
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={submitting}
+                className={primaryButton}
+              >
+                {submitting ? "Submitting…" : `Confirm ${action}`}
+              </button>
+            </div>
+          </form>
+        </Dialog>
       )}
     </section>
   );

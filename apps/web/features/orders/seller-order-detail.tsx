@@ -1,5 +1,7 @@
 "use client";
 
+import { Dialog } from "@/components/ui/dialog";
+
 import Link from "next/link";
 import { useCallback, useState } from "react";
 import { useSeller } from "@/features/workspaces/seller-workspace";
@@ -220,7 +222,7 @@ function SellerOrderDetailContent({
         </div>
       </div>
 
-      {actionError && (
+      {actionError && !shipModalOpen && !cancelModalOpen && (
         <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
           {actionError}
         </div>
@@ -412,94 +414,105 @@ function SellerOrderDetailContent({
 
       {/* Ship Modal */}
       {shipModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
-          <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
-            <h3 className="text-lg font-bold text-slate-900">
-              Fulfill & Ship Order
-            </h3>
-            <p className="mt-1 text-sm text-slate-500">
-              Provide shipment details to notify the customer and consume
-              reserved stock.
-            </p>
-            <form onSubmit={onShipSubmit} className="mt-4 space-y-4">
-              <FormField
-                label="Carrier Name (e.g. DHL, Fedex, Nepal Express)"
-                placeholder="Carrier name"
-                value={carrier}
-                onChange={(e) => setCarrier(e.target.value)}
-              />
-              <FormField
-                label="Tracking Number"
-                placeholder="Tracking code"
-                value={trackingNumber}
-                onChange={(e) => setTrackingNumber(e.target.value)}
-              />
-              <div className="mt-6 flex justify-end gap-3">
-                <button
-                  type="button"
-                  className={secondaryButton}
-                  onClick={() => setShipModalOpen(false)}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className={primaryButton}
-                  disabled={actionLoading}
-                >
-                  {actionLoading ? "Fulfilling..." : "Confirm Shipment"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+        <Dialog
+          open
+          title={<>Fulfill & Ship Order</>}
+          error={actionError}
+          description={
+            <>
+              Ship {order.seller_order_number}. Shipment details notify the
+              customer and consume reserved stock.
+            </>
+          }
+          onClose={() => setShipModalOpen(false)}
+          busy={actionLoading}
+        >
+          <form onSubmit={onShipSubmit} className="mt-4 space-y-4">
+            <FormField
+              label="Carrier Name (e.g. DHL, Fedex, Nepal Express)"
+              placeholder="Carrier name"
+              value={carrier}
+              onChange={(e) => setCarrier(e.target.value)}
+            />
+            <FormField
+              label="Tracking Number"
+              placeholder="Tracking code"
+              value={trackingNumber}
+              onChange={(e) => setTrackingNumber(e.target.value)}
+            />
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                className={secondaryButton}
+                onClick={() => setShipModalOpen(false)}
+                data-dialog-cancel
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className={primaryButton}
+                disabled={actionLoading}
+              >
+                {actionLoading ? "Fulfilling..." : "Confirm Shipment"}
+              </button>
+            </div>
+          </form>
+        </Dialog>
       )}
 
       {/* Cancel Modal */}
       {cancelModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
-          <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
-            <h3 className="text-lg font-bold text-slate-900">Cancel Order</h3>
-            <p className="mt-1 text-sm text-slate-500">
-              This will release all reserved inventory items back into available
-              stock.
-            </p>
-            <form onSubmit={onCancelSubmit} className="mt-4 space-y-4">
-              <div>
-                <label
-                  htmlFor="cancel-reason"
-                  className="mb-1 block text-sm font-medium text-slate-800"
-                >
-                  Cancellation Reason *
-                </label>
-                <textarea
-                  id="cancel-reason"
-                  rows={3}
-                  className={inputStyle}
-                  value={cancelReason}
-                  onChange={(e) => setCancelReason(e.target.value)}
-                  placeholder="Explain why this order is being cancelled..."
-                />
-              </div>
-              <div className="mt-6 flex justify-end gap-3">
-                <button
-                  type="button"
-                  className={secondaryButton}
-                  onClick={() => setCancelModalOpen(false)}
-                >
-                  Back
-                </button>
-                <button
-                  type="submit"
-                  className={dangerButton}
-                  disabled={actionLoading}
-                >
-                  {actionLoading ? "Cancelling..." : "Confirm Cancellation"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+        <Dialog
+          open
+          title={<>Cancel Order</>}
+          error={actionError}
+          description={
+            <>
+              Cancel {order.seller_order_number}. This releases reserved stock
+              and records the cancellation reason.
+            </>
+          }
+          onClose={() => setCancelModalOpen(false)}
+          busy={actionLoading}
+        >
+          <form onSubmit={onCancelSubmit} className="mt-4 space-y-4">
+            <div>
+              <label
+                htmlFor="cancel-reason"
+                className="mb-1 block text-sm font-medium text-slate-800"
+              >
+                Cancellation Reason *
+              </label>
+              <textarea
+                id="cancel-reason"
+                required
+                rows={3}
+                className={inputStyle}
+                value={cancelReason}
+                onChange={(e) => setCancelReason(e.target.value)}
+                placeholder="Explain why this order is being cancelled..."
+              />
+            </div>
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                className={secondaryButton}
+                onClick={() => setCancelModalOpen(false)}
+                data-dialog-cancel
+              >
+                Back
+              </button>
+              <button
+                type="submit"
+                className={dangerButton}
+                disabled={actionLoading}
+              >
+                {actionLoading ? "Cancelling..." : "Confirm Cancellation"}
+              </button>
+            </div>
+          </form>
+        </Dialog>
       )}
     </div>
   );

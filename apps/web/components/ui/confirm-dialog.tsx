@@ -30,14 +30,10 @@ export function ConfirmDialog({
       title={title}
       description={description}
       busy={busy}
+      error={error}
       onClose={onCancel}
       initialFocus={cancel}
     >
-      {error && (
-        <p role="alert" className="mt-3 text-ui-body text-ui-danger">
-          {error}
-        </p>
-      )}
       <div className="mt-6 flex flex-wrap justify-end gap-2">
         <Button
           ref={cancel}

@@ -155,7 +155,7 @@ function SellerOrderDetailContent({
   };
 
   if (query.kind === "loading")
-    return <LoadingState label="Loading order details…" />;
+    return <LoadingState variant="detail" label="Loading order details…" />;
   if (query.kind === "error")
     return <ApiErrorState error={query.error} onRetry={query.retry} />;
 

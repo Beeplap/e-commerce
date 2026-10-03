@@ -91,7 +91,7 @@ function Detail({
     [sellerId, productId],
   );
   const query = useApiQuery(`${sellerId ?? "platform"}:${productId}`, load);
-  if (query.kind === "loading") return <LoadingState />;
+  if (query.kind === "loading") return <LoadingState variant="detail" />;
   if (query.kind === "error")
     return <ApiErrorState error={query.error} onRetry={query.retry} />;
   const product = query.data,

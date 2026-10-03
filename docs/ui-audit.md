@@ -144,3 +144,7 @@ No custom fixed workflow overlays remain in feature files. Existing native-dialo
 - Review inspection: full customer/product/rating/verification evidence, body and actual response history. Inspection is tied to the verified membership/user identity so a context change cannot display another context's selected review. No unsupported detail route or moderation event was invented.
 
 Real screenshots remain unavailable: browser discovery was retried and returned `[]`. Source layout and behavior tests are evidence of implementation, not a visual approval or native accessibility audit.
+
+## Phase 30 interaction review
+
+Replaced generic two-bar loading in primary product/order/seller and financial lists with table-sized skeletons and measured-height continuity; dashboards and entity detail receive appropriately sized placeholders. Filters remain usable, replacement loading discards prior records, and financial dialogs retain their native modality outside query regions. Clipboard confirmation now fits inside its existing control and ignores completion for an old visible record. Save/opening feedback and existing tab/status color changes respect reduced motion. Corrected wide-dialog CSS precedence and accidental question marks in dashboard loading copy. No new optimistic financial/security behavior or dependencies. Actual motion, reflow and viewport rendering remain unverified without a browser.

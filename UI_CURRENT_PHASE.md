@@ -1,8 +1,8 @@
 # UI phase selector
 
-UI PHASE 30 — microinteractions, motion and perceived quality
+UI PHASE 31 — responsive and accessibility mastery
 
-Phase 29 is complete: composed operational detail pages, readable address/audit records, shared evidence-only timelines, on-demand related order reads, full payout/review inspection and URL-backed seller payout filters. Frontend lint, TypeScript, all 172 tests, formatting and production build passed. Real visual/browser checks remain pending because no browser is available. Begin Phase 30 after the Phase 29 commit and push succeed.
+Phase 30 is complete: sized loading placeholders, geometry-only list reload continuity, confirmed compact clipboard feedback, reduced-motion opening/save/status/tab feedback and corrected wide-dialog width. Frontend lint, TypeScript, all 176 tests, formatting and production build passed. Begin Phase 31 after the Phase 30 commit and push succeed. Phase 31 requires live viewport/manual accessibility checks; browser discovery currently returns no available browser. Record this gap and do not claim those checks passed.
 
 Roadmap: `instrutions3.md` (the supplied filename).
 

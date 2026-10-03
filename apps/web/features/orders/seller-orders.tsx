@@ -1,5 +1,7 @@
 "use client";
 
+import { QueryRegion } from "@/components/ui/query-region";
+
 import Link from "next/link";
 import { useCallback } from "react";
 import { useSeller } from "@/features/workspaces/seller-workspace";
@@ -179,28 +181,32 @@ function SellerOrdersList({ sellerId }: { sellerId: string }) {
         <FilterSummary filters={activeFilters} onClear={table.clear} />
       </div>
 
-      {query.kind === "loading" && <LoadingState label="Loading orders…" />}
-      {query.kind === "error" && (
-        <ApiErrorState error={query.error} onRetry={query.retry} />
-      )}
+      <QueryRegion busy={query.kind === "loading"}>
+        {query.kind === "loading" && (
+          <LoadingState variant="table" label="Loading orders…" />
+        )}
+        {query.kind === "error" && (
+          <ApiErrorState error={query.error} onRetry={query.retry} />
+        )}
 
-      {query.kind === "ready" && (
-        <>
-          <DataTable
-            caption="Customer Orders"
-            filtered={activeFilters.length > 0}
-            columns={columns}
-            rows={query.data.results}
-            rowKey={(item) => item.id}
-          />
-          <Pagination
-            page={page}
-            count={query.data.count}
-            pageSize={25}
-            onPageChange={setPage}
-          />
-        </>
-      )}
+        {query.kind === "ready" && (
+          <>
+            <DataTable
+              caption="Customer Orders"
+              filtered={activeFilters.length > 0}
+              columns={columns}
+              rows={query.data.results}
+              rowKey={(item) => item.id}
+            />
+            <Pagination
+              page={page}
+              count={query.data.count}
+              pageSize={25}
+              onPageChange={setPage}
+            />
+          </>
+        )}
+      </QueryRegion>
     </div>
   );
 }

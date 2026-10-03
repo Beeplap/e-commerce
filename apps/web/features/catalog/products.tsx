@@ -1,5 +1,7 @@
 "use client";
 
+import { QueryRegion } from "@/components/ui/query-region";
+
 import Link from "next/link";
 import { useCallback } from "react";
 import { useAuth } from "@/features/auth/auth-provider";
@@ -124,70 +126,74 @@ function Products({
         </FilterBar>
         <FilterSummary filters={activeFilters} onClear={table.clear} />
       </div>
-      {result.kind === "loading" && <LoadingState />}
-      {result.kind === "error" && (
-        <ApiErrorState error={result.error} onRetry={result.retry} />
-      )}
-      {result.kind === "ready" && (
-        <>
-          <DataTable
-            filtered={activeFilters.length > 0}
-            caption="Products"
-            rows={result.data.results}
-            rowKey={(row) => row.id}
-            columns={[
-              {
-                id: "name",
-                heading: "Product",
-                cell: (row) => (
-                  <Link
-                    className="font-semibold text-teal-900 underline"
-                    href={`/${platform ? "admin" : "seller"}/products/${row.id}`}
-                  >
-                    {row.name}
-                  </Link>
-                ),
-              },
-              {
-                id: "category",
-                heading: "Category",
-                cell: (row) => row.category.name,
-              },
-              {
-                id: "brand",
-                heading: "Brand",
-                cell: (row) => row.brand?.name ?? "—",
-              },
-              {
-                id: "status",
-                heading: "Status",
-                cell: (row) => <StatusBadge status={row.status} />,
-              },
-              ...(platform
-                ? [
-                    {
-                      id: "seller",
-                      heading: "Seller",
-                      cell: (row: { seller_id: string }) => (
-                        <Link
-                          className="text-teal-900 underline"
-                          href={`/admin/sellers/${row.seller_id}`}
-                        >
-                          Inspect seller
-                        </Link>
-                      ),
-                    },
-                  ]
-                : []),
-            ]}
-          />
-          <Pagination
-            page={page}
-            count={result.data.count}
-            onPageChange={setPage}
-          />
-        </>
-      )}
+      <QueryRegion busy={result.kind === "loading"}>
+        {result.kind === "loading" && (
+          <LoadingState variant="table" label="Loading products…" />
+        )}
+        {result.kind === "error" && (
+          <ApiErrorState error={result.error} onRetry={result.retry} />
+        )}
+        {result.kind === "ready" && (
+          <>
+            <DataTable
+              filtered={activeFilters.length > 0}
+              caption="Products"
+              rows={result.data.results}
+              rowKey={(row) => row.id}
+              columns={[
+                {
+                  id: "name",
+                  heading: "Product",
+                  cell: (row) => (
+                    <Link
+                      className="font-semibold text-teal-900 underline"
+                      href={`/${platform ? "admin" : "seller"}/products/${row.id}`}
+                    >
+                      {row.name}
+                    </Link>
+                  ),
+                },
+                {
+                  id: "category",
+                  heading: "Category",
+                  cell: (row) => row.category.name,
+                },
+                {
+                  id: "brand",
+                  heading: "Brand",
+                  cell: (row) => row.brand?.name ?? "—",
+                },
+                {
+                  id: "status",
+                  heading: "Status",
+                  cell: (row) => <StatusBadge status={row.status} />,
+                },
+                ...(platform
+                  ? [
+                      {
+                        id: "seller",
+                        heading: "Seller",
+                        cell: (row: { seller_id: string }) => (
+                          <Link
+                            className="text-teal-900 underline"
+                            href={`/admin/sellers/${row.seller_id}`}
+                          >
+                            Inspect seller
+                          </Link>
+                        ),
+                      },
+                    ]
+                  : []),
+              ]}
+            />
+            <Pagination
+              page={page}
+              count={result.data.count}
+              onPageChange={setPage}
+            />
+          </>
+        )}
+      </QueryRegion>
     </>
   );
 }

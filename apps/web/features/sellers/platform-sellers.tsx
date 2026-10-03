@@ -1,5 +1,7 @@
 "use client";
 
+import { QueryRegion } from "@/components/ui/query-region";
+
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { DataTable } from "@/components/ui/data-table";
@@ -137,61 +139,65 @@ export function PlatformSellers() {
           }}
         />
       </form>
-      {query.kind === "loading" && <LoadingState label="Loading sellers…" />}
-      {query.kind === "error" && (
-        <ApiErrorState error={query.error} onRetry={query.retry} />
-      )}
-      {query.kind === "ready" && (
-        <>
-          <DataTable
-            rows={query.data.results}
-            rowKey={(seller) => seller.id}
-            filtered={activeFilters.length > 0}
-            caption="Platform sellers"
-            columns={[
-              {
-                id: "name",
-                heading: "Seller",
-                cell: (seller) => (
-                  <Link
-                    href={`/admin/sellers/${seller.id}`}
-                    className="font-semibold text-teal-900 underline"
-                  >
-                    {seller.display_name}
-                  </Link>
-                ),
-              },
-              {
-                id: "legal",
-                heading: "Legal name",
-                cell: (seller) => seller.legal_name,
-              },
-              {
-                id: "email",
-                heading: "Contact",
-                cell: (seller) => seller.email,
-              },
-              {
-                id: "status",
-                heading: "Status",
-                cell: (seller) => <StatusBadge status={seller.status} />,
-              },
-              {
-                id: "verification",
-                heading: "Verification",
-                cell: (seller) => (
-                  <StatusBadge status={seller.verification_status} />
-                ),
-              },
-            ]}
-          />
-          <Pagination
-            page={filters.page}
-            count={query.data.count}
-            onPageChange={table.setPage}
-          />
-        </>
-      )}
+      <QueryRegion busy={query.kind === "loading"}>
+        {query.kind === "loading" && (
+          <LoadingState variant="table" label="Loading sellers…" />
+        )}
+        {query.kind === "error" && (
+          <ApiErrorState error={query.error} onRetry={query.retry} />
+        )}
+        {query.kind === "ready" && (
+          <>
+            <DataTable
+              rows={query.data.results}
+              rowKey={(seller) => seller.id}
+              filtered={activeFilters.length > 0}
+              caption="Platform sellers"
+              columns={[
+                {
+                  id: "name",
+                  heading: "Seller",
+                  cell: (seller) => (
+                    <Link
+                      href={`/admin/sellers/${seller.id}`}
+                      className="font-semibold text-teal-900 underline"
+                    >
+                      {seller.display_name}
+                    </Link>
+                  ),
+                },
+                {
+                  id: "legal",
+                  heading: "Legal name",
+                  cell: (seller) => seller.legal_name,
+                },
+                {
+                  id: "email",
+                  heading: "Contact",
+                  cell: (seller) => seller.email,
+                },
+                {
+                  id: "status",
+                  heading: "Status",
+                  cell: (seller) => <StatusBadge status={seller.status} />,
+                },
+                {
+                  id: "verification",
+                  heading: "Verification",
+                  cell: (seller) => (
+                    <StatusBadge status={seller.verification_status} />
+                  ),
+                },
+              ]}
+            />
+            <Pagination
+              page={filters.page}
+              count={query.data.count}
+              onPageChange={table.setPage}
+            />
+          </>
+        )}
+      </QueryRegion>
     </>
   );
 }

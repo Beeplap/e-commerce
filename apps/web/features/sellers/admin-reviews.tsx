@@ -141,7 +141,7 @@ export function AdminReviews() {
               setStatusFilter(f.value);
               setPage(1);
             }}
-            className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
+            className={`rounded-lg px-3 py-1.5 text-xs font-semibold motion-safe:transition-colors duration-[var(--ui-duration-fast)] ${
               statusFilter === f.value
                 ? "bg-teal-700 text-white"
                 : "border border-slate-300 bg-white text-slate-700 hover:bg-slate-50"

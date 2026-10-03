@@ -1,5 +1,7 @@
 "use client";
 
+import { QueryRegion } from "@/components/ui/query-region";
+
 import { Dialog } from "@/components/ui/dialog";
 import { PayoutDetail } from "./payout-detail";
 import { Button } from "@/components/ui/button";
@@ -247,33 +249,37 @@ function PayoutsList({ sellerId }: { sellerId: string }) {
       </div>
 
       {/* Payouts Table */}
-      {payoutsQuery.kind === "loading" && <LoadingState />}
-      {payoutsQuery.kind === "error" && (
-        <ApiErrorState
-          error={payoutsQuery.error}
-          onRetry={payoutsQuery.retry}
-        />
-      )}
-      {payoutsQuery.kind === "ready" && (
-        <div className="space-y-4">
-          <div className="rounded-xl border border-slate-200 bg-white shadow-sm">
-            <DataTable
-              filtered={!!statusFilter}
-              rows={payoutsQuery.data.results}
-              columns={columns}
-              rowKey={(r) => r.id}
-              caption="Payout history"
+      <QueryRegion busy={payoutsQuery.kind === "loading"}>
+        {payoutsQuery.kind === "loading" && (
+          <LoadingState variant="table" label="Loading payouts…" />
+        )}
+        {payoutsQuery.kind === "error" && (
+          <ApiErrorState
+            error={payoutsQuery.error}
+            onRetry={payoutsQuery.retry}
+          />
+        )}
+        {payoutsQuery.kind === "ready" && (
+          <div className="space-y-4">
+            <div className="rounded-xl border border-slate-200 bg-white shadow-sm">
+              <DataTable
+                filtered={!!statusFilter}
+                rows={payoutsQuery.data.results}
+                columns={columns}
+                rowKey={(r) => r.id}
+                caption="Payout history"
+              />
+            </div>
+
+            <Pagination
+              page={page}
+              count={payoutsQuery.data.count}
+              pageSize={25}
+              onPageChange={setPage}
             />
           </div>
-
-          <Pagination
-            page={page}
-            count={payoutsQuery.data.count}
-            pageSize={25}
-            onPageChange={setPage}
-          />
-        </div>
-      )}
+        )}
+      </QueryRegion>
 
       {/* Request Payout Modal */}
       {showModal && (

@@ -26,7 +26,12 @@ export function DataTable<T>({
   filtered?: boolean;
 }) {
   if (loading)
-    return <LoadingState label={`Loading ${caption.toLowerCase()}…`} />;
+    return (
+      <LoadingState
+        variant="table"
+        label={`Loading ${caption.toLowerCase()}…`}
+      />
+    );
   if (rows.length === 0)
     return (
       <EmptyState

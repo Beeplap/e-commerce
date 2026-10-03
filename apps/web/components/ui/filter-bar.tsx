@@ -1,15 +1,13 @@
 "use client";
 
-import { useId, type ReactNode } from "react";
+import type { ReactNode } from "react";
+import { FormField } from "./form-fields";
+import { Toolbar } from "./layout";
 
 export function FilterBar({ children }: { children: ReactNode }) {
   return (
-    <div
-      role="group"
-      aria-label="Filters"
-      className="mb-5 flex flex-wrap items-end gap-3"
-    >
-      {children}
+    <div className="mb-5">
+      <Toolbar label="Filters">{children}</Toolbar>
     </div>
   );
 }
@@ -25,19 +23,14 @@ export function SearchInput({
   label?: string;
   placeholder?: string;
 }) {
-  const id = useId();
   return (
-    <div className="min-w-48 flex-1">
-      <label htmlFor={id} className="mb-2 block text-sm font-medium">
-        {label}
-      </label>
-      <input
-        id={id}
+    <div className="min-w-0 basis-56 flex-1">
+      <FormField
+        label={label}
         type="search"
         value={value}
         placeholder={placeholder}
         onChange={(event) => onChange(event.target.value)}
-        className="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
       />
     </div>
   );

@@ -1,13 +1,13 @@
 "use client";
 
-import { useCallback, useId, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   ApiErrorState,
   FormField,
   LoadingState,
+  SelectField,
 } from "@/components/ui/primitives";
 import { Pagination } from "@/components/ui/pagination";
-import { selectStyle } from "@/features/sellers/forms";
 import { useApiQuery } from "@/lib/api/use-api-query";
 import { catalogApi, type Context, type Kind, type CatalogRecord } from "./api";
 
@@ -30,7 +30,6 @@ export function CatalogPicker({
   filterId?: string;
   onSelect?: (record: CatalogRecord | null) => void;
 }) {
-  const controlId = useId();
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState(initial ?? null);
@@ -70,14 +69,10 @@ export function CatalogPicker({
           }}
         />
       )}
-      <label htmlFor={controlId} className="block text-sm font-medium">
-        {label}
-      </label>
-      <select
-        id={controlId}
+      <SelectField
+        label={label}
         name={name}
         required={required}
-        className={selectStyle}
         value={selected?.id ?? ""}
         onChange={(event) => {
           const row =
@@ -102,7 +97,7 @@ export function CatalogPicker({
               {row.name}
             </option>
           ))}
-      </select>
+      </SelectField>
       {result.kind === "loading" && <LoadingState label="Loading options…" />}
       {result.kind === "error" && (
         <ApiErrorState error={result.error} onRetry={result.retry} />

@@ -16,3 +16,37 @@ body {
   outline: 3px solid var(--ui-focus);
   outline-offset: 3px;
 }
+
+.ui-dialog,
+.ui-drawer {
+  background: var(--ui-surface);
+  color: var(--ui-foreground);
+  border: 0;
+  padding: 24px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.ui-dialog {
+  width: calc(100% - 32px);
+  max-width: 32rem;
+  max-height: calc(100vh - 32px);
+  max-height: calc(100dvh - 32px);
+  margin: auto;
+  border-radius: var(--ui-radius-overlay);
+  box-shadow: 0 16px 48px rgb(32 37 43 / 16%);
+}
+
+.ui-drawer {
+  width: min(320px, calc(100% - 32px));
+  max-width: none;
+  height: 100vh;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+}
+
+.ui-dialog::backdrop,
+.ui-drawer::backdrop {
+  background: rgb(32 37 43 / 40%);
+}

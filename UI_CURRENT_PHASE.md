@@ -1,8 +1,8 @@
 # UI phase selector
 
-UI PHASE 24 — premium design system foundation
+UI PHASE 25 — navigation and application shell redesign
 
-Phase 23 is complete: `docs/ui-audit.md`, `docs/design-system.md`, presentation tokens and global font/focus integration. Frontend lint, TypeScript, all 120 tests, formatting, production build and 18 token contrast checks passed. Begin Phase 24 after the Phase 23 commit and push succeed.
+Phase 24 is complete: shared controls, layout helpers, native dialog/drawer foundation, semantic status and accessible field errors. Frontend lint, TypeScript, all 129 tests, formatting and production build passed. Begin Phase 25 after the Phase 24 commit and push succeed.
 
 Roadmap: `instrutions3.md` (the supplied filename).
 

@@ -1,12 +1,15 @@
 "use client";
 
-import { useRef, useState, type FormEvent, type ReactNode } from "react";
+import { useId, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { ApiError, errorMessage } from "@/lib/api/client";
-import { FormField, primaryButton } from "@/components/ui/primitives";
+import { FormField } from "@/components/ui/primitives";
+import { Button } from "@/components/ui/button";
+import { ContentSection } from "@/components/ui/layout";
+import { FieldErrorsProvider } from "@/components/ui/form-fields";
+import { controlStyle } from "@/components/ui/styles";
 
-export const panel = "rounded-xl border border-slate-200 bg-white p-6";
-export const selectStyle =
-  "min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3";
+export const panel = "rounded-panel border border-ui-border bg-ui-surface p-5";
+export const selectStyle = controlStyle;
 export function useMutation() {
   const busyRef = useRef(false);
   const [busy, setBusy] = useState(false);
@@ -42,7 +45,7 @@ export function MutationStatus({
       {error != null && (
         <div
           role="alert"
-          className="rounded-lg bg-red-50 p-4 text-sm text-red-900"
+          className="rounded-control bg-ui-danger-surface p-4 text-ui-body text-ui-danger"
         >
           <p>{errorMessage(error)}</p>
           {error instanceof ApiError &&
@@ -54,7 +57,7 @@ export function MutationStatus({
         </div>
       )}
       {success && (
-        <p role="status" className="text-sm text-teal-900">
+        <p role="status" className="text-ui-body text-ui-success">
           Saved successfully.
         </p>
       )}
@@ -75,25 +78,39 @@ export function ManagedForm({
   disabled?: boolean;
 }) {
   const mutation = useMutation();
+  const identity = useId();
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (disabled || mutation.busy) return;
     const data = new FormData(event.currentTarget);
     void mutation.run(() => onSave(data));
   }
   return (
-    <form className={panel} onSubmit={submit}>
-      <h2 className="mb-5 text-xl font-semibold">{title}</h2>
-      <fieldset disabled={disabled || mutation.busy} className="space-y-5">
-        {children}
-        {!disabled && (
-          <button className={primaryButton} type="submit">
-            {mutation.busy ? "Saving…" : submitLabel}
-          </button>
-        )}
-      </fieldset>
-      <div className="mt-4">
-        <MutationStatus {...mutation} />
-      </div>
+    <form
+      className={panel}
+      onSubmit={submit}
+      aria-labelledby={`${identity}-heading`}
+      aria-busy={mutation.busy}
+    >
+      <ContentSection id={identity} title={title}>
+        <FieldErrorsProvider
+          errors={
+            mutation.error instanceof ApiError ? mutation.error.fields : {}
+          }
+        >
+          <fieldset disabled={disabled || mutation.busy} className="space-y-5">
+            {children}
+            {!disabled && (
+              <Button busy={mutation.busy} type="submit">
+                {mutation.busy ? "Saving…" : submitLabel}
+              </Button>
+            )}
+          </fieldset>
+        </FieldErrorsProvider>
+        <div className="mt-4">
+          <MutationStatus {...mutation} />
+        </div>
+      </ContentSection>
     </form>
   );
 }

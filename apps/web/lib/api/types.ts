@@ -558,3 +558,105 @@ export interface PaymentRecord {
   error_message: string;
   created_at: string;
 }
+
+export interface CustomerProfile {
+  id: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  phone: string;
+  is_email_verified: boolean;
+  created_at: string;
+}
+
+export interface CustomerOrderItem {
+  id: string;
+  product_id: string;
+  product_title: string;
+  variant_id: string;
+  variant_name: string;
+  sku: string;
+  quantity: number;
+  unit_price: string;
+  total_price: string;
+  can_review: boolean;
+  can_return: boolean;
+}
+
+export interface TrackingEventRecord {
+  id: string;
+  status: string;
+  location: string;
+  description: string;
+  timestamp: string;
+}
+
+export interface CustomerPackage {
+  seller_order_id: string;
+  seller_id: string;
+  seller_name: string;
+  status: string;
+  carrier: string;
+  tracking_number: string;
+  items: CustomerOrderItem[];
+  tracking_events: TrackingEventRecord[];
+}
+
+export interface CustomerOrderListItem {
+  id: string;
+  order_number: string;
+  created_at: string;
+  status: string;
+  payment_status: string;
+  fulfillment_status: string;
+  grand_total: string;
+  currency: string;
+  total_items: number;
+  packages_count: number;
+  items_preview: Array<{
+    id: string;
+    product_title: string;
+    variant_name: string;
+    quantity: number;
+    unit_price: string;
+  }>;
+}
+
+export interface CustomerOrderDetail {
+  id: string;
+  order_number: string;
+  created_at: string;
+  status: string;
+  payment_status: string;
+  fulfillment_status: string;
+  subtotal: string;
+  shipping_total: string;
+  discount_total: string;
+  grand_total: string;
+  currency: string;
+  shipping_address: Record<string, unknown>;
+  billing_address: Record<string, unknown>;
+  packages: CustomerPackage[];
+}
+
+export interface CustomerReviewRecord {
+  id: string;
+  product_id: string;
+  rating: number;
+  title: string;
+  body: string;
+  status: string;
+  verified_purchase: boolean;
+  created_at: string;
+}
+
+export interface CustomerReturnRecord {
+  id: string;
+  return_number: string;
+  seller_order_id: string;
+  seller_name: string;
+  status: string;
+  reason: string;
+  customer_notes: string;
+  created_at: string;
+}

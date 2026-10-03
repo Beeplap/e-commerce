@@ -2309,6 +2309,240 @@ paths:
               schema:
                 $ref: '#/components/schemas/CheckoutQuoteOutput'
           description: ''
+  /api/v1/customer/addresses/:
+    get:
+      operationId: customer_addresses_list
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Customer Account
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomerAddressOutput'
+          description: ''
+    post:
+      operationId: customer_addresses_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Customer Account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerAddressInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerAddressOutput'
+          description: ''
+  /api/v1/customer/addresses/{address_id}/:
+    patch:
+      operationId: customer_addresses_update
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: address_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Customer Account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCustomerAddressInput'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerAddressOutput'
+          description: ''
+    delete:
+      operationId: customer_addresses_delete
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: address_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Customer Account
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/customer/orders/:
+    get:
+      operationId: customer_orders_list
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Customer Account
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomerOrderList'
+          description: ''
+  /api/v1/customer/orders/{order_id}/:
+    get:
+      operationId: customer_order_detail
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: order_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Customer Account
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerOrderDetail'
+          description: ''
+  /api/v1/customer/orders/{order_id}/cancel/:
+    post:
+      operationId: customer_order_cancel
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: order_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Customer Account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerCancelOrderInput'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerOrderDetail'
+          description: ''
+  /api/v1/customer/profile/:
+    get:
+      operationId: customer_profile_read
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Customer Account
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerProfile'
+          description: ''
+    patch:
+      operationId: customer_profile_update
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Customer Account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCustomerProfileUpdate'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerProfile'
+          description: ''
+  /api/v1/customer/returns/:
+    post:
+      operationId: customer_return_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Customer Account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerReturnInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerReturnOutput'
+          description: ''
+  /api/v1/customer/reviews/:
+    post:
+      operationId: customer_review_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Customer Account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerReviewInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerReviewOutput'
+          description: ''
   /api/v1/health:
     get:
       operationId: health_retrieve
@@ -7018,6 +7252,347 @@ components:
       - postal_code
       - state
       - updated_at
+    CustomerCancelOrderInput:
+      type: object
+      properties:
+        reason:
+          type: string
+          default: ''
+          maxLength: 255
+    CustomerOrderDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        order_number:
+          type: string
+          maxLength: 64
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        status:
+          type: string
+          readOnly: true
+        payment_status:
+          $ref: '#/components/schemas/OrderPaymentStatusEnum'
+        fulfillment_status:
+          $ref: '#/components/schemas/OrderFulfillmentStatusEnum'
+        subtotal:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+        shipping_total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+        discount_total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+        grand_total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+        currency:
+          type: string
+          maxLength: 3
+        shipping_address: {}
+        billing_address: {}
+        packages:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerPackage'
+      required:
+      - billing_address
+      - created_at
+      - currency
+      - id
+      - order_number
+      - packages
+      - shipping_address
+      - status
+    CustomerOrderItem:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        product_id:
+          type: string
+          format: uuid
+          nullable: true
+          readOnly: true
+        product_title:
+          type: string
+        variant_id:
+          type: string
+          format: uuid
+          nullable: true
+          readOnly: true
+        variant_name:
+          type: string
+          readOnly: true
+        sku:
+          type: string
+        quantity:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        unit_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+        total_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+        can_review:
+          type: boolean
+          readOnly: true
+        can_return:
+          type: boolean
+          readOnly: true
+      required:
+      - can_return
+      - can_review
+      - id
+      - product_id
+      - product_title
+      - quantity
+      - sku
+      - total_price
+      - unit_price
+      - variant_id
+      - variant_name
+    CustomerOrderList:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        order_number:
+          type: string
+          maxLength: 64
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        status:
+          type: string
+          readOnly: true
+        payment_status:
+          $ref: '#/components/schemas/OrderPaymentStatusEnum'
+        fulfillment_status:
+          $ref: '#/components/schemas/OrderFulfillmentStatusEnum'
+        grand_total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+        currency:
+          type: string
+          maxLength: 3
+        total_items:
+          type: integer
+          readOnly: true
+        packages_count:
+          type: integer
+          readOnly: true
+        items_preview:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          readOnly: true
+      required:
+      - created_at
+      - currency
+      - id
+      - items_preview
+      - order_number
+      - packages_count
+      - status
+      - total_items
+    CustomerPackage:
+      type: object
+      properties:
+        seller_order_id:
+          type: string
+          format: uuid
+        seller_id:
+          type: string
+          format: uuid
+        seller_name:
+          type: string
+        status:
+          $ref: '#/components/schemas/SellerOrderStatusEnum'
+        carrier:
+          type: string
+          readOnly: true
+        tracking_number:
+          type: string
+          readOnly: true
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerOrderItem'
+        tracking_events:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          readOnly: true
+      required:
+      - carrier
+      - items
+      - seller_id
+      - seller_name
+      - seller_order_id
+      - tracking_events
+      - tracking_number
+    CustomerProfile:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        first_name:
+          type: string
+        last_name:
+          type: string
+        phone:
+          type: string
+        is_email_verified:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - created_at
+      - email
+      - first_name
+      - id
+      - is_email_verified
+      - last_name
+      - phone
+    CustomerReturnInput:
+      type: object
+      properties:
+        order_item_id:
+          type: string
+          format: uuid
+        quantity:
+          type: integer
+          minimum: 1
+        reason:
+          type: string
+          maxLength: 64
+        customer_notes:
+          type: string
+          default: ''
+          maxLength: 1000
+      required:
+      - order_item_id
+      - quantity
+      - reason
+    CustomerReturnOutput:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        return_number:
+          type: string
+          maxLength: 64
+        seller_order_id:
+          type: string
+          format: uuid
+          readOnly: true
+        seller_name:
+          type: string
+        status:
+          $ref: '#/components/schemas/ReturnRequestStatusEnum'
+        reason:
+          type: string
+          maxLength: 64
+        customer_notes:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - reason
+      - return_number
+      - seller_name
+      - seller_order_id
+    CustomerReviewInput:
+      type: object
+      properties:
+        order_item_id:
+          type: string
+          format: uuid
+        rating:
+          type: integer
+          maximum: 5
+          minimum: 1
+        title:
+          type: string
+          maxLength: 200
+        body:
+          type: string
+          maxLength: 5000
+      required:
+      - body
+      - order_item_id
+      - rating
+      - title
+    CustomerReviewOutput:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        product_id:
+          type: string
+          format: uuid
+          readOnly: true
+        rating:
+          type: integer
+          maximum: 32767
+          minimum: 0
+        title:
+          type: string
+          maxLength: 200
+        body:
+          type: string
+          maxLength: 5000
+        status:
+          $ref: '#/components/schemas/ProductReviewStatusEnum'
+        verified_purchase:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - body
+      - created_at
+      - id
+      - product_id
+      - rating
+      - title
     DateRange:
       type: object
       properties:
@@ -7944,6 +8519,21 @@ components:
         is_default:
           type: boolean
           default: false
+    PatchedCustomerProfileUpdate:
+      type: object
+      properties:
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+          maxLength: 32
     PatchedPromotionUpdateInput:
       type: object
       properties:

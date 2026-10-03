@@ -298,3 +298,30 @@ Phase 21 adds 11 PostgreSQL backend tests in `apps/api/tests/test_phase21_paymen
   - Verified 402 decline alert rendering with clear cancellation explanation.
   - Verified synchronous double-click prevention.
   - Verified payment pay page navigation to order confirmation.
+
+## Phase 22 test coverage: Customer Account, Order History, Tracking & Post-Purchase
+
+Phase 22 adds 9 PostgreSQL backend tests in `apps/api/tests/test_phase22_customer_portal.py` and 10 frontend tests in `apps/web/tests/customer-portal.test.tsx`:
+
+- Customer profile & address management:
+  - `test_get_and_update_customer_profile`: verified customer profile retrieval, updating profile details, phone number persistence, and canonical email normalization.
+  - `test_customer_address_book_crud`: verified adding, reading, updating, and deleting customer saved addresses, with automatic default address promotion.
+- Order history & isolation:
+  - `test_list_and_get_customer_orders`: verified customer only sees orders associated with their account with correct package count and total items.
+  - `test_cannot_view_or_cancel_other_customer_order`: verified cross-customer order read and cancellation attempts fail closed with HTTP 404.
+- Self-service cancellation & inventory release:
+  - `test_cancel_pending_order_releases_inventory`: verified cancelling a pending order immediately updates order statuses to cancelled and releases warehouse stock reservations back to available pool.
+  - `test_cannot_cancel_already_shipped_or_delivered_order`: verified cancelling a shipped or delivered order fails with HTTP 400.
+- Post-purchase engagement:
+  - `test_submit_verified_product_review`: verified customer can submit verified product review on delivered, paid order items, automatically tagging `verified_purchase = True`.
+  - `test_cannot_submit_review_for_undelivered_item`: verified review submission for pending/shipped items is rejected with HTTP 400.
+  - `test_submit_customer_return_request`: verified customer can initiate return request (RMA) for delivered items, returning generated RMA number and status.
+- Frontend customer portal:
+  - Order history page: verified rendering orders list with order number, status badge, total amount, and items preview; verified empty state.
+  - Order detail page: verified rendering packages, multi-seller tracking numbers, and delivery progress stepper.
+  - Cancellation dialog: verified pending order cancellation with stock release confirmation.
+  - Address book page: verified saved address cards, adding new address modal, editing address, setting default address, and deletion.
+  - Profile & security page: verified profile form submission and secure password change form submission.
+  - Delivery stepper component: verified 5-stage milestone progression and tracking event details.
+  - Review & return modals: verified rating/title/body inputs and reason/quantity/notes inputs with API submissions.
+

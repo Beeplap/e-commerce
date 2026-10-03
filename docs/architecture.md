@@ -196,3 +196,23 @@ Phase 4 adds no worker or notification infrastructure. Malware scanning integrat
   - Zero sensitive data transmission: Raw card digits and CVC codes are converted into an opaque token and never dispatched to Django or stored in browser persistence.
   - Synchronous double-click guard prevents concurrent form submission.
   - Clear decline guidance informs the customer of order cancellation and stock release with recovery navigation.
+
+## Phase 22 customer account & post-purchase architecture
+
+- Dedicated customer portal module (`apps.customers`):
+  - User identity preservation: Retains `accounts.User` as the sole authentication authority. `CustomerProfile` links 1:1 to `accounts.User` for customer phone numbers and preferences.
+  - Profile update service: Validates canonical email normalization, uniqueness, and profile attributes. Password updates route to secure session-aware `apps.accounts.services.change_password`.
+- Order history & package tracking:
+  - Scoped queries: Customer order endpoints filter by `order.customer_email == user.email` or `order.customer_user == user`. Cross-tenant or foreign user order access yields 404.
+  - Multi-seller package breakdown: Orders report child seller packages independently with fulfillment statuses, tracking numbers, carriers, and historical tracking events.
+- Self-service cancellation:
+  - Permitted strictly when the order is in `pending` payment status and unfulfilled.
+  - Cancellation atomically cancels master and seller orders, releases inventory reservations via `release_order_inventory` across all order item lines, and writes `OrderStatusHistory` records.
+- Post-purchase engagement:
+  - Verified product reviews: Order items on delivered, paid orders expose review eligibility (`can_review = True`). Submitting a review attaches `verified_purchase = True` and links to the verified product.
+  - Return requests (RMA): Delivered items expose return eligibility (`can_return = True`). Submitting a return creates a formal `ReturnRequest` with an RMA number and audit trail.
+- Customer account frontend:
+  - Account screens integrated into `<WorkspaceFrame mode="account">` with sub-navigation for Orders, Addresses, and Profile.
+  - Delivery stepper component renders milestone progression from Order Placed through Delivered.
+  - Accessible modal dialogs for writing product reviews and requesting item returns.
+

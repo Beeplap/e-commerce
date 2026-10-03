@@ -26,6 +26,11 @@ import type {
   CheckoutQuoteInput,
   PlaceOrderInput,
   PaymentRecord,
+  CustomerProfile,
+  CustomerOrderListItem,
+  CustomerOrderDetail,
+  CustomerReviewRecord,
+  CustomerReturnRecord,
 } from "./types";
 
 import {
@@ -35,6 +40,11 @@ import {
   parseMembershipPage,
   parsePayment,
   parseUser,
+  parseCustomerProfile,
+  parseCustomerOrderList,
+  parseCustomerOrderDetail,
+  parseCustomerReview,
+  parseCustomerReturn,
   record,
   strings,
 } from "./validation";
@@ -223,6 +233,13 @@ export const authApi = {
     }),
   platformAccess: (signal?: AbortSignal) =>
     apiRequest("/api/v1/admin/access", { parse: parseUser, signal }),
+  changePassword: (oldPassword: string, newPassword: string) =>
+    apiRequest("/api/v1/auth/change-password", {
+      method: "POST",
+      expectedStatus: 204,
+      body: { old_password: oldPassword, new_password: newPassword },
+      parse: () => undefined,
+    }),
 };
 
 export const sellerApi = {
@@ -717,5 +734,128 @@ export const paymentsApi = {
         idempotency_key: idempotencyKey,
         payment_token: paymentToken,
       },
+    }),
+};
+
+export const customerApi = {
+  getProfile: (signal?: AbortSignal) =>
+    apiRequest<CustomerProfile>("/api/v1/customer/profile/", {
+      method: "GET",
+      parse: parseCustomerProfile,
+      signal,
+    }),
+
+  updateProfile: (
+    body: {
+      first_name?: string;
+      last_name?: string;
+      phone?: string;
+      email?: string;
+    },
+    signal?: AbortSignal,
+  ) =>
+    apiRequest<CustomerProfile>("/api/v1/customer/profile/", {
+      method: "PATCH",
+      parse: parseCustomerProfile,
+      body,
+      signal,
+    }),
+
+  getAddresses: (signal?: AbortSignal) =>
+    apiRequest<CustomerAddress[]>("/api/v1/customer/addresses/", {
+      method: "GET",
+      parse: (v) => v as CustomerAddress[],
+      signal,
+    }),
+
+  createAddress: (body: Partial<CustomerAddress>, signal?: AbortSignal) =>
+    apiRequest<CustomerAddress>("/api/v1/customer/addresses/", {
+      method: "POST",
+      expectedStatus: 201,
+      parse: (v) => v as CustomerAddress,
+      body,
+      signal,
+    }),
+
+  updateAddress: (
+    addressId: string,
+    body: Partial<CustomerAddress>,
+    signal?: AbortSignal,
+  ) =>
+    apiRequest<CustomerAddress>(`/api/v1/customer/addresses/${addressId}/`, {
+      method: "PATCH",
+      parse: (v) => v as CustomerAddress,
+      body,
+      signal,
+    }),
+
+  deleteAddress: (addressId: string, signal?: AbortSignal) =>
+    apiRequest<void>(`/api/v1/customer/addresses/${addressId}/`, {
+      method: "DELETE",
+      expectedStatus: 204,
+      parse: () => undefined,
+      signal,
+    }),
+
+  getOrders: (page = 1, signal?: AbortSignal) =>
+    apiRequest<Page<CustomerOrderListItem>>(
+      `/api/v1/customer/orders/?page=${page}`,
+      {
+        method: "GET",
+        parse: parseCustomerOrderList,
+        signal,
+      },
+    ),
+
+  getOrder: (orderId: string, signal?: AbortSignal) =>
+    apiRequest<CustomerOrderDetail>(`/api/v1/customer/orders/${orderId}/`, {
+      method: "GET",
+      parse: parseCustomerOrderDetail,
+      signal,
+    }),
+
+  cancelOrder: (orderId: string, reason = "", signal?: AbortSignal) =>
+    apiRequest<CustomerOrderDetail>(
+      `/api/v1/customer/orders/${orderId}/cancel/`,
+      {
+        method: "POST",
+        parse: parseCustomerOrderDetail,
+        body: { reason },
+        signal,
+      },
+    ),
+
+  submitReview: (
+    body: {
+      order_item_id: string;
+      rating: number;
+      title: string;
+      body: string;
+    },
+    signal?: AbortSignal,
+  ) =>
+    apiRequest<CustomerReviewRecord>("/api/v1/customer/reviews/", {
+      method: "POST",
+      expectedStatus: 201,
+      parse: parseCustomerReview,
+      body,
+      signal,
+    }),
+
+  submitReturn: (
+    body: {
+      order_item_id: string;
+      quantity: number;
+      reason: string;
+      customer_notes?: string;
+    },
+    signal?: AbortSignal,
+  ) =>
+    apiRequest<CustomerReturnRecord>("/api/v1/customer/returns/", {
+      method: "POST",
+      expectedStatus: 201,
+      parse: parseCustomerReturn,
+      body,
+      signal,
     }),
 };

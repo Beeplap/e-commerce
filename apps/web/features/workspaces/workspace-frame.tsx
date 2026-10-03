@@ -108,6 +108,11 @@ export function WorkspaceFrame({
     links.push({ href: "/admin/promotions", label: "Promotions" });
   if (mode === "admin" && hasPlatformPermission(user, "platform.reviews.read"))
     links.push({ href: "/admin/reviews", label: "Reviews" });
+  if (mode === "account") {
+    links.push({ href: "/account/orders", label: "Orders" });
+    links.push({ href: "/account/addresses", label: "Addresses" });
+    links.push({ href: "/account/profile", label: "Profile" });
+  }
   if (mode !== "workspaces")
     links.push({ href: "/workspaces", label: "Workspaces" });
   if (mode !== "account") links.push({ href: "/account", label: "My account" });

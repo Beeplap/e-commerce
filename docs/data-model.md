@@ -221,3 +221,18 @@ PostgreSQL migration `0002_reviews_integrity` enforces:
   - Immutability trigger `payments_transaction_immutable`: Enforces append-only semantics by raising a database exception on any `UPDATE` or `DELETE` on `payments_paymenttransaction`.
 - `orders.SellerOrder.inventory_committed`:
   - Boolean flag added in migration `0003_sellerorder_inventory_committed`. Tracks whether inventory consumption (`consume_order_inventory`) has occurred at payment capture time, preventing double consumption during shipment or incorrect releases during cancellation.
+
+## Customer Profile & Portal (Phase 22)
+
+`customers` implements customer self-service, order history tracking, and post-purchase engagement while strictly preserving the single-source-of-truth `accounts.User` UUID model:
+
+- `CustomerProfile`: Extended profile data linked 1:1 to `accounts.User`:
+  - `user`: `models.OneToOneField("accounts.User", on_delete=models.CASCADE, related_name="customer_profile")`
+  - `phone`: Optional international format phone number string (`max_length=32`).
+  - Core identity fields (`first_name`, `last_name`, `email`, `is_email_verified`) are maintained on authoritative `accounts.User` with canonical normalization and uniqueness enforced in `services.update_customer_profile`.
+- Saved addresses (`checkout.CustomerAddress`): Reused cleanly across checkout and customer portal via `CustomerPortalAddressListView` and `CustomerPortalAddressDetailView`.
+- Order history: Scoped strictly to `order.customer_email == user.email` or `order.customer_user == user`, preventing cross-customer enumeration and access.
+- Self-service cancellation: Permitted only when order is in `pending` payment status and unfulfilled; atomically cancels master and seller orders and immediately invokes `release_order_inventory` across all order item lines with reservation locks.
+- Verified reviews (`reviews.ProductReview`): Permitted only for order items on orders with `payment_status == PAID` and `fulfillment_status == DELIVERED`.
+- Return requests (`fulfillment.ReturnRequest`): Permitted only for items on delivered orders within return windows, issuing formal RMA numbers.
+

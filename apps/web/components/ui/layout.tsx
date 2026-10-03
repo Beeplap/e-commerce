@@ -1,5 +1,17 @@
 import type { ReactNode } from "react";
 
+export function PageShell({ children }: { children: ReactNode }) {
+  return (
+    <main
+      id="workspace-content"
+      tabIndex={-1}
+      className="min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-8"
+    >
+      {children}
+    </main>
+  );
+}
+
 export function PageActions({ children }: { children: ReactNode }) {
   return (
     <div className="flex max-w-full flex-wrap items-center gap-2">

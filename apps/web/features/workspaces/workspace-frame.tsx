@@ -2,215 +2,250 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, type ReactNode } from "react";
-import { hasPlatformPermission } from "@/lib/permissions";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { Button } from "@/components/ui/button";
+import { Dialog } from "@/components/ui/dialog";
+import { Icon } from "@/components/ui/icon";
+import { PageShell } from "@/components/ui/layout";
 import { useAuth } from "@/features/auth/auth-provider";
 import { AccountMenu } from "@/features/auth/account-menu";
+import {
+  activeNavigationLink,
+  workspaceBreadcrumbs,
+  workspaceNavigation,
+  workspaceNames,
+  type NavigationGroup,
+  type SellerNavigationAccess,
+  type WorkspaceMode,
+} from "./navigation";
 
-export type WorkspaceMode = "seller" | "admin" | "account" | "workspaces";
-const names = {
-  seller: "Seller workspace",
-  admin: "Platform workspace",
-  account: "My account",
-  workspaces: "Workspaces",
-};
+export type { WorkspaceMode } from "./navigation";
+
+function WorkspaceNavigation({
+  groups,
+  pathname,
+  onNavigate,
+  mobile = false,
+}: {
+  groups: NavigationGroup[];
+  pathname: string;
+  onNavigate?: () => void;
+  mobile?: boolean;
+}) {
+  const active = activeNavigationLink(pathname, groups);
+  return (
+    <nav
+      aria-label={
+        mobile ? "Mobile workspace navigation" : "Workspace navigation"
+      }
+      className="space-y-5"
+    >
+      {groups.map((group) => (
+        <div key={group.label}>
+          {group.label !== "Overview" && (
+            <p className="mb-1 px-3 text-ui-caption font-medium text-ui-muted">
+              {group.label}
+            </p>
+          )}
+          <ul className="space-y-0.5">
+            {group.links.map((link) => {
+              const current = active?.href === link.href;
+              return (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    onClick={onNavigate}
+                    aria-current={
+                      current
+                        ? pathname === link.href
+                          ? "page"
+                          : "location"
+                        : undefined
+                    }
+                    className={`flex min-h-11 items-center gap-3 rounded-control px-3 py-2 text-sm lg:min-h-10 motion-safe:transition-colors ${current ? "bg-ui-selected font-semibold text-ui-accent" : "text-ui-secondary hover:bg-ui-surface-muted hover:text-ui-foreground active:bg-ui-selected"}`}
+                  >
+                    <Icon name={link.icon} />
+                    {link.label}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ))}
+    </nav>
+  );
+}
+
+function MobileNavigation({
+  groups,
+  pathname,
+  mode,
+  sellerPicker,
+}: {
+  groups: NavigationGroup[];
+  pathname: string;
+  mode: WorkspaceMode;
+  sellerPicker?: ReactNode;
+}) {
+  const [open, setOpen] = useState(false);
+  const closeButton = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (typeof window.matchMedia !== "function") return;
+    const desktop = window.matchMedia("(min-width: 1024px)");
+    const closeOnDesktop = () => {
+      if (desktop.matches) setOpen(false);
+    };
+    desktop.addEventListener("change", closeOnDesktop);
+    return () => desktop.removeEventListener("change", closeOnDesktop);
+  }, []);
+  return (
+    <>
+      <Button
+        variant="quiet"
+        className="shrink-0 gap-2 lg:hidden"
+        aria-expanded={open}
+        aria-haspopup="dialog"
+        onClick={() => setOpen(true)}
+      >
+        <Icon name="menu" size={20} />
+        Menu
+      </Button>
+      {open && (
+        <Dialog
+          open
+          title={workspaceNames[mode]}
+          variant="drawer"
+          onClose={() => setOpen(false)}
+          initialFocus={closeButton}
+        >
+          <Button
+            ref={closeButton}
+            variant="quiet"
+            className="mt-3 w-full gap-2"
+            onClick={() => setOpen(false)}
+          >
+            <Icon name="close" />
+            Close navigation
+          </Button>
+          {sellerPicker && (
+            <div className="my-5 border-b border-ui-border pb-5">
+              {sellerPicker}
+            </div>
+          )}
+          <div className="mt-5">
+            <WorkspaceNavigation
+              groups={groups}
+              pathname={pathname}
+              mobile
+              onNavigate={() => setOpen(false)}
+            />
+          </div>
+        </Dialog>
+      )}
+    </>
+  );
+}
 
 export function WorkspaceFrame({
   mode,
   children,
   sellerPicker,
-  sellerCanReadSettings = false,
-  sellerCanReadProducts = false,
-  sellerCanReadInventory = false,
-  sellerCanReadOrders = false,
-  sellerCanReadFulfillment = false,
-  sellerCanReadReturns = false,
-  sellerCanReadFinance = false,
-  sellerCanReadStaff = false,
-  sellerCanReadPromotions = false,
-  sellerCanReadReviews = false,
-}: {
+  ...access
+}: SellerNavigationAccess & {
   mode: WorkspaceMode;
   children: ReactNode;
   sellerPicker?: ReactNode;
-  sellerCanReadSettings?: boolean;
-  sellerCanReadProducts?: boolean;
-  sellerCanReadInventory?: boolean;
-  sellerCanReadOrders?: boolean;
-  sellerCanReadFulfillment?: boolean;
-  sellerCanReadReturns?: boolean;
-  sellerCanReadFinance?: boolean;
-  sellerCanReadStaff?: boolean;
-  sellerCanReadPromotions?: boolean;
-  sellerCanReadReviews?: boolean;
 }) {
   const pathname = usePathname();
   const { state } = useAuth();
-  const [menuOpen, setMenuOpen] = useState(false);
-  const user = state.kind === "authenticated" ? state.user : null;
-  const links = [{ href: `/${mode}`, label: "Overview" }];
-  if (mode === "seller" && sellerCanReadOrders)
-    links.push({ href: "/seller/orders", label: "Orders" });
-  if (mode === "seller" && sellerCanReadFulfillment)
-    links.push({ href: "/seller/shipments", label: "Shipments" });
-  if (mode === "seller" && sellerCanReadReturns) {
-    links.push({ href: "/seller/returns", label: "Returns" });
-    links.push({ href: "/seller/refunds", label: "Refunds" });
-  }
-  if (mode === "seller" && sellerCanReadProducts)
-    links.push({ href: "/seller/products", label: "Products" });
-  if (mode === "seller" && sellerCanReadInventory) {
-    links.push({ href: "/seller/inventory", label: "Inventory" });
-    links.push({ href: "/seller/warehouses", label: "Warehouses" });
-  }
-  if (mode === "seller" && sellerCanReadFinance)
-    links.push({ href: "/seller/finance", label: "Finance" });
-  if (mode === "seller" && sellerCanReadPromotions)
-    links.push({ href: "/seller/promotions", label: "Promotions" });
-  if (mode === "seller" && sellerCanReadReviews)
-    links.push({ href: "/seller/reviews", label: "Reviews" });
-  if (mode === "seller" && sellerCanReadStaff) {
-    links.push({ href: "/seller/staff", label: "Staff" });
-    links.push({ href: "/seller/staff/roles", label: "Roles" });
-  }
-  if (mode === "seller" && sellerCanReadSettings)
-    links.push({ href: "/seller/settings", label: "Seller settings" });
-  if (mode === "admin" && hasPlatformPermission(user, "platform.orders.read"))
-    links.push({ href: "/admin/orders", label: "Orders" });
-  if (
-    mode === "admin" &&
-    hasPlatformPermission(user, "platform.fulfillment.read")
-  )
-    links.push({ href: "/admin/fulfillment", label: "Fulfillment" });
-  if (mode === "admin" && hasPlatformPermission(user, "platform.sellers.read"))
-    links.push({ href: "/admin/sellers", label: "Sellers" });
-  if (mode === "admin" && hasPlatformPermission(user, "platform.finance.read"))
-    links.push({ href: "/admin/finance", label: "Finance" });
-  if (mode === "admin" && hasPlatformPermission(user, "platform.products.read"))
-    links.push({ href: "/admin/products", label: "Moderation queue" });
-  if (
-    mode === "admin" &&
-    hasPlatformPermission(user, "platform.inventory.read")
-  )
-    links.push({ href: "/admin/inventory", label: "Inventory" });
-  if (
-    mode === "admin" &&
-    hasPlatformPermission(user, "platform.catalog.read")
-  ) {
-    links.push({ href: "/admin/categories", label: "Categories" });
-    links.push({ href: "/admin/attributes", label: "Attributes" });
-    links.push({ href: "/admin/brands", label: "Brands" });
-  }
-  if (
-    mode === "admin" &&
-    hasPlatformPermission(user, "platform.promotions.read")
-  )
-    links.push({ href: "/admin/promotions", label: "Promotions" });
-  if (mode === "admin" && hasPlatformPermission(user, "platform.reviews.read"))
-    links.push({ href: "/admin/reviews", label: "Reviews" });
-  if (mode === "account") {
-    links.push({ href: "/account/orders", label: "Orders" });
-    links.push({ href: "/account/addresses", label: "Addresses" });
-    links.push({ href: "/account/profile", label: "Profile" });
-  }
-  if (mode !== "workspaces")
-    links.push({ href: "/workspaces", label: "Workspaces" });
-  if (mode !== "account") links.push({ href: "/account", label: "My account" });
-  if (mode !== "admin" && hasPlatformPermission(user, "platform.access"))
-    links.push({ href: "/admin", label: "Platform workspace" });
-
+  const groups = workspaceNavigation(mode, user, access);
+  const crumbs = workspaceBreadcrumbs(mode, pathname, groups);
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-ui-canvas text-ui-foreground">
       <a
         href="#workspace-content"
-        className="sr-only fixed top-2 left-2 z-50 rounded bg-teal-900 p-3 text-white focus:not-sr-only"
+        className="sr-only fixed top-2 left-2 z-50 rounded-control bg-ui-accent p-3 text-white focus:not-sr-only"
       >
         Skip to content
       </a>
-      <header className="sticky top-0 z-10 flex h-18 items-center justify-between border-b border-slate-200 bg-white px-4 sm:px-7">
-        <Link
-          href="/workspaces"
-          className="flex items-center gap-3 text-lg font-semibold tracking-tight"
-        >
-          <span
-            aria-hidden="true"
-            className="flex h-9 w-9 items-center justify-center rounded-lg bg-teal-800 text-white"
-          >
-            Q
-          </span>
-          <span>Quick Commerce</span>
-        </Link>
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            className="min-h-11 rounded-lg px-3 text-sm md:hidden"
-            aria-expanded={menuOpen}
-            aria-controls="workspace-navigation"
-            onClick={() => setMenuOpen((open) => !open)}
-          >
-            Menu
-          </button>
-          <AccountMenu />
-        </div>
-      </header>
-      <div className="mx-auto flex max-w-[1600px] flex-col md:flex-row">
-        <aside
-          className={`${menuOpen ? "block" : "hidden"} border-b border-slate-200 bg-white px-4 py-7 md:block md:min-h-[calc(100vh-4.5rem)] md:w-60 md:shrink-0 md:border-r md:border-b-0`}
-        >
-          <p className="px-3 text-xs font-semibold tracking-wider text-slate-500 uppercase">
-            {names[mode]}
-          </p>
-          <nav
-            id="workspace-navigation"
-            aria-label="Workspace navigation"
-            className="mt-4"
-          >
-            <ul className="space-y-1">
-              {links.map((link) => {
-                const current = pathname === link.href;
-                return (
-                  <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      aria-current={current ? "page" : undefined}
-                      onClick={() => setMenuOpen(false)}
-                      className={`flex min-h-11 items-center rounded-lg px-3 text-sm font-medium ${current ? "bg-teal-50 text-teal-900" : "text-slate-700 hover:bg-slate-50"}`}
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </nav>
-          {sellerPicker && (
-            <div className="mt-7 border-t border-slate-100 pt-6">
-              {sellerPicker}
-            </div>
-          )}
+      <div className="mx-auto flex min-h-screen max-w-(--ui-page-width)">
+        <aside className="hidden w-(--ui-sidebar-width) shrink-0 border-r border-ui-border bg-ui-surface lg:block">
+          <div className="sticky top-0 max-h-dvh overflow-y-auto px-3 pb-6">
+            <Link
+              href="/workspaces"
+              className="flex h-(--ui-topbar-height) items-center px-3 text-sm font-semibold tracking-tight"
+            >
+              Quick Commerce
+            </Link>
+            <p className="mb-4 px-3 text-ui-caption text-ui-muted">
+              {workspaceNames[mode]}
+            </p>
+            {sellerPicker && (
+              <div className="mb-5 border-b border-ui-border px-3 pb-5">
+                {sellerPicker}
+              </div>
+            )}
+            <WorkspaceNavigation groups={groups} pathname={pathname} />
+          </div>
         </aside>
-        <main
-          id="workspace-content"
-          tabIndex={-1}
-          className="min-w-0 flex-1 px-5 py-7 sm:px-9 sm:py-9"
-        >
-          <nav aria-label="Breadcrumb" className="mb-6 text-xs text-slate-500">
-            <ol className="flex items-center gap-2">
-              <li>
-                <Link href="/workspaces" className="hover:text-slate-900">
-                  Workspaces
-                </Link>
-              </li>
-              {mode !== "workspaces" && (
-                <>
-                  <li aria-hidden="true">/</li>
-                  <li aria-current="page">{names[mode]}</li>
-                </>
-              )}
-            </ol>
-          </nav>
-          {children}
-        </main>
+        <div className="flex min-w-0 flex-1 flex-col">
+          <header className="sticky top-0 z-10 flex min-h-(--ui-topbar-height) items-center justify-between gap-2 border-b border-ui-border bg-ui-surface px-4 sm:px-6 lg:px-8">
+            <MobileNavigation
+              key={pathname}
+              groups={groups}
+              pathname={pathname}
+              mode={mode}
+              sellerPicker={sellerPicker}
+            />
+            <nav
+              aria-label="Breadcrumb"
+              className="min-w-0 flex-1 text-ui-caption text-ui-secondary"
+            >
+              <ol className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 py-2">
+                {crumbs.map((crumb, index) => (
+                  <li
+                    key={crumb.href}
+                    className={`flex min-w-0 items-center gap-2 ${index === 0 && crumbs.length > 1 ? "hidden sm:flex" : ""}`}
+                  >
+                    {index > 0 && (
+                      <span aria-hidden="true" className="text-ui-muted">
+                        /
+                      </span>
+                    )}
+                    {index === crumbs.length - 1 ? (
+                      <span
+                        aria-current="page"
+                        className="truncate text-ui-foreground"
+                      >
+                        {crumb.label}
+                      </span>
+                    ) : (
+                      <Link
+                        href={crumb.href}
+                        className="truncate hover:text-ui-accent"
+                      >
+                        {crumb.label}
+                      </Link>
+                    )}
+                  </li>
+                ))}
+              </ol>
+            </nav>
+            {mode === "seller" && (
+              <Link
+                href="/seller/notifications"
+                aria-label="Notifications"
+                title="Notifications"
+                className="flex size-11 shrink-0 items-center justify-center rounded-control text-ui-secondary hover:bg-ui-surface-muted"
+              >
+                <Icon name="bell" size={20} />
+              </Link>
+            )}
+            <AccountMenu />
+          </header>
+          <PageShell>{children}</PageShell>
+        </div>
       </div>
     </div>
   );

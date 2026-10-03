@@ -58,6 +58,8 @@ Operational tables use available content width. Form content is generally capped
 
 Breadcrumbs identify actual section/entity context, not merely workspace mode. Parent destinations stay active on detail routes. Workspace switching/account actions are separate from commerce navigation.
 
+Phase 25 navigation derives groups from existing seller access flags and explicit platform capabilities. It never grants authority or introduces unavailable platform routes. Finance subsections and fulfillment queues have direct links; the longest matching route receives the active state. Generic detail breadcrumbs deliberately avoid raw UUID headings until the domain page supplies the entity identity. Notifications are account-scoped and show no invented unread count. The sidebar persists at 1024px; below that threshold a native drawer closes on navigation, Escape or desktop resize. Route-keyed drawer state cannot reopen when returning with Back. The account popover retains native `details` behavior, closes on Escape/outside interaction, and preserves logout errors.
+
 ## Tables and filtering
 
 Prefer a primary entity column with secondary identifier; right-align amounts/counts; use consistent column spacing (16px), header text (12px/18px, weight 600) and 48px normal rows. A readable hover highlights a row without implying that every cell is clickable. Selection only exists for backend-supported workflows. Keep semantic table/caption/header markup and keyboard overflow regions.

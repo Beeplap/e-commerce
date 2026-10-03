@@ -1,5 +1,7 @@
 # Stack decisions
 
+UI overhaul Phase 23 adds no dependencies. Presentation tokens extend existing Tailwind CSS 4 theme aliases; typography uses locally available system fonts. Keep native form controls/dialog behavior and existing runtime response parsers. Additional table/form/chart/icon dependencies require an implemented use case and verified stable support rather than cosmetic justification.
+
 Official support pages and package registries were checked on 2026-09-29 before installation. Direct dependencies are pinned, and `pnpm-lock.yaml` plus `apps/api/uv.lock` capture transitive resolutions. Use stable releases only and recheck security advisories before deployment or upgrades.
 
 ## Runtime choices

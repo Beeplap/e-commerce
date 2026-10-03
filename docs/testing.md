@@ -1,5 +1,9 @@
 # Validation
 
+## UI overhaul validation
+
+Each phase from `instrutions3.md` requires `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build` and formatting before commit/push/advancement. Phase 23 passes all 120 existing frontend tests and calculates 18 contrast pairings for the new presentation tokens. Backend/API behavior is not changed by this foundation. Browser screenshots, keyboard/zoom/screen-reader behavior and responsive/cross-browser QA are distinct evidence: code inspection and jsdom tests do not establish them. Record route, viewport, state and image path at the Phase 26 dashboard checkpoint and later visual passes; explicitly record unavailable browser access. Test the integrated UI again after the security-first rebase.
+
 Generate local `.env`, install locked dependencies, and start PostgreSQL/Redis first (README). From the repository root:
 
 ```sh

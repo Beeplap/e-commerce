@@ -1,0 +1,79 @@
+/* Shared presentation tokens. Domain colors and layouts migrate in UI Phase 24+. */
+:root {
+  --ui-canvas: #f7f8fa;
+  --ui-surface: #ffffff;
+  --ui-surface-muted: #f0f2f4;
+  --ui-foreground: #20252b;
+  --ui-secondary: #56606d;
+  --ui-muted: #64707d;
+  --ui-border: #dce1e6;
+  --ui-control-border: #89939f;
+  --ui-accent: #176b57;
+  --ui-accent-hover: #125744;
+  --ui-selected: #e8f3ee;
+  --ui-focus: #177a68;
+  --ui-success: #176346;
+  --ui-success-surface: #edf7f0;
+  --ui-warning: #855400;
+  --ui-warning-surface: #fff5df;
+  --ui-danger: #a63535;
+  --ui-danger-surface: #fff0ef;
+  --ui-info: #285d89;
+  --ui-info-surface: #edf4fa;
+  --ui-disabled: #606a76;
+  --ui-font-sans:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, Helvetica, sans-serif;
+  --ui-radius-control: 0.375rem;
+  --ui-radius-panel: 0.5rem;
+  --ui-radius-overlay: 0.625rem;
+  --ui-page-width: 90rem;
+  --ui-form-width: 48rem;
+  --ui-sidebar-width: 15rem;
+  --ui-topbar-height: 3.5rem;
+  --ui-duration-fast: 120ms;
+  --ui-duration-normal: 180ms;
+  --ui-ease: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@theme inline {
+  --color-ui-canvas: var(--ui-canvas);
+  --color-ui-surface: var(--ui-surface);
+  --color-ui-surface-muted: var(--ui-surface-muted);
+  --color-ui-foreground: var(--ui-foreground);
+  --color-ui-secondary: var(--ui-secondary);
+  --color-ui-muted: var(--ui-muted);
+  --color-ui-border: var(--ui-border);
+  --color-ui-control-border: var(--ui-control-border);
+  --color-ui-accent: var(--ui-accent);
+  --color-ui-accent-hover: var(--ui-accent-hover);
+  --color-ui-selected: var(--ui-selected);
+  --color-ui-focus: var(--ui-focus);
+  --color-ui-success: var(--ui-success);
+  --color-ui-success-surface: var(--ui-success-surface);
+  --color-ui-warning: var(--ui-warning);
+  --color-ui-warning-surface: var(--ui-warning-surface);
+  --color-ui-danger: var(--ui-danger);
+  --color-ui-danger-surface: var(--ui-danger-surface);
+  --color-ui-info: var(--ui-info);
+  --color-ui-info-surface: var(--ui-info-surface);
+  --color-ui-disabled: var(--ui-disabled);
+  --font-ui: var(--ui-font-sans);
+  --radius-control: var(--ui-radius-control);
+  --radius-panel: var(--ui-radius-panel);
+  --radius-overlay: var(--ui-radius-overlay);
+  --text-ui-page: 1.625rem;
+  --text-ui-page--line-height: 2rem;
+  --text-ui-section: 1.125rem;
+  --text-ui-section--line-height: 1.5rem;
+  --text-ui-body: 0.875rem;
+  --text-ui-body--line-height: 1.375rem;
+  --text-ui-caption: 0.75rem;
+  --text-ui-caption--line-height: 1.125rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --ui-duration-fast: 0ms;
+    --ui-duration-normal: 0ms;
+  }
+}

@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "../styles/tokens.css";
 
 :root {
   color-scheme: light;
@@ -6,12 +7,12 @@
 
 body {
   margin: 0;
-  background: #f8fafc;
-  color: #0f172a;
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--ui-canvas);
+  color: var(--ui-foreground);
+  font-family: var(--ui-font-sans);
 }
 
 :focus-visible {
-  outline: 3px solid #2563eb;
-  outline-offset: 4px;
+  outline: 3px solid var(--ui-focus);
+  outline-offset: 3px;
 }

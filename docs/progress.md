@@ -1,5 +1,13 @@
 # Project progress
 
+## UI overhaul — separate `ui-overhaul` branch
+
+- Roadmap: `instrutions3.md`; UI selector: `UI_CURRENT_PHASE.md`. User confirmed automatic validation → documentation → commit → push → next UI phase on 2026-10-03. Concurrent backend scope remains in `CURRENT_PHASE.md`.
+- UI Phase 23 complete: audited all 51 existing page routes and all frontend feature families at published baseline `97c240b`; documented concrete design/UX/accessibility/responsive findings in `docs/ui-audit.md` and the typography, density, colors, layout and interaction contract in `docs/design-system.md`. Introduced semantic presentation tokens, local system typography and token-based keyboard focus. No business/API/auth changes or new dependencies.
+- Phase 23 validation: `pnpm install --frozen-lockfile`, `pnpm lint`, `pnpm typecheck`, `pnpm test` (**120 passed across 15 files**), `pnpm build`, targeted Prettier check, 18 calculated token contrast checks and `git diff --check` passed. Production build retains every existing route.
+- Visual limitation: browser discovery returned no available browsers. Source/CSS responsive findings are explicitly inferred; screenshots, real browser keyboard/screen-reader checks and cross-browser rendering have not been claimed. Phase 26 screenshot critique and Phase 31/32/33 visual QA remain explicit checkpoints when access/screenshots are available.
+- Next: UI Phase 24 implements shared accessible design/layout/control primitives. Phase 22 security work is external to this branch; merge it only when clean/tested, then rebase/test the UI branch and preserve secure frontend contracts.
+
 ## Completed
 
 - Phase 0: monorepo, Next.js App Router/Tailwind and Django/DRF foundations, initial UUID/email user migration boundary, PostgreSQL/Redis development infrastructure, generated local environment, strict tooling, liveness endpoints and offline OpenAPI.

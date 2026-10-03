@@ -63,14 +63,16 @@ export function StatGroup({
           <dt className="text-ui-caption font-medium text-ui-secondary">
             {item.label}
           </dt>
-          <dd
-            className={`mt-1 break-words font-semibold tracking-tight tabular-nums ${item.primary ? "text-[28px] leading-[34px]" : "text-xl leading-7"}`}
-          >
-            {item.value}
+          <dd className="mt-1">
+            <div
+              className={`break-words font-semibold tracking-tight tabular-nums ${item.primary ? "text-[28px] leading-[34px]" : "text-xl leading-7"}`}
+            >
+              {item.value}
+            </div>
+            {item.hint && (
+              <p className="mt-1 text-ui-caption text-ui-muted">{item.hint}</p>
+            )}
           </dd>
-          {item.hint && (
-            <p className="mt-1 text-ui-caption text-ui-muted">{item.hint}</p>
-          )}
         </div>
       ))}
     </dl>

@@ -1,5 +1,7 @@
 # UI accessibility and responsive evidence
 
+Phase 33 consolidates review/promotion statuses, gives platform promotions explicit Active/Inactive text, keeps metric hints inside their definition description and fixes direct fulfillment destination selection. Both review workspaces share the named rating pattern and six paginated lists share the same navigation semantics. The final suite has 187 passing tests across 25 files. These changes do not fill the live evidence gaps below; see `ui-final-review.md` for final source, compatibility and artifact evidence.
+
 ## Phase 31 implementation
 
 Eight legacy controls lacked explicit accessible labels: balance search, return condition, tracking status, promotion discount type in both workspaces, review response, inline staff role and invite role. They now use associated shared fields or a member-specific accessible name. A TypeScript JSX source audit covered 50 remaining raw administration controls and found zero missing explicit associations. This audit does not validate rendered accessible names by itself.

@@ -23,7 +23,6 @@ import { useApiQuery } from "@/lib/api/use-api-query";
 import { hasPlatformPermission } from "@/lib/permissions";
 import { ForbiddenScreen } from "./forbidden-screen";
 import { useSeller } from "./seller-workspace";
-import { WorkspaceFrame } from "./workspace-frame";
 import { TrendChart } from "./trend-chart";
 
 type PresetRange = "7d" | "30d" | "90d";
@@ -700,33 +699,5 @@ function Detail({
       <dt className="mb-2 text-xs font-medium text-ui-muted">{label}</dt>
       <dd className="text-sm font-medium text-ui-foreground">{children}</dd>
     </div>
-  );
-}
-
-export function AccountOverview() {
-  const { state } = useAuth();
-  if (state.kind !== "authenticated") return null;
-  const user = state.user;
-  return (
-    <WorkspaceFrame mode="account">
-      <PageHeader
-        title="My account"
-        description="Your account identity and email verification status."
-      />
-      <section className="border-t border-ui-border py-5">
-        <dl className="grid gap-6 sm:grid-cols-2">
-          <Detail label="Name">
-            {[user.first_name, user.last_name].filter(Boolean).join(" ") ||
-              "Not set"}
-          </Detail>
-          <Detail label="Email address">{user.email}</Detail>
-          <Detail label="Email verification">
-            <StatusBadge
-              status={user.is_email_verified ? "verified" : "pending"}
-            />
-          </Detail>
-        </dl>
-      </section>
-    </WorkspaceFrame>
   );
 }

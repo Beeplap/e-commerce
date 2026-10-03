@@ -1,5 +1,7 @@
 "use client";
 
+import { Pagination } from "@/components/ui/pagination";
+
 import { Dialog } from "@/components/ui/dialog";
 
 import { useCallback, useRef, useState } from "react";
@@ -304,27 +306,11 @@ export function SellerStaff() {
       </div>
 
       {staffQuery.data.count > 25 && (
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-sm text-ui-secondary">
-          <button
-            type="button"
-            disabled={page === 1}
-            onClick={() => setPage((p) => p - 1)}
-            className={secondaryButton}
-          >
-            Previous
-          </button>
-          <span>
-            Page {page} of {Math.ceil(staffQuery.data.count / 25)}
-          </span>
-          <button
-            type="button"
-            disabled={page * 25 >= staffQuery.data.count}
-            onClick={() => setPage((p) => p + 1)}
-            className={secondaryButton}
-          >
-            Next
-          </button>
-        </div>
+        <Pagination
+          page={page}
+          count={staffQuery.data.count}
+          onPageChange={setPage}
+        />
       )}
 
       {/* Invite Modal */}

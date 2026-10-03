@@ -1,5 +1,7 @@
 "use client";
 
+import { Pagination } from "@/components/ui/pagination";
+
 import { DataTable } from "@/components/ui/data-table";
 
 import { FormSection } from "@/components/ui/layout";
@@ -10,6 +12,7 @@ import { useCallback, useState } from "react";
 import {
   ApiErrorState,
   PageHeader,
+  StatusBadge,
   SelectField,
   LoadingState,
   primaryButton,
@@ -206,11 +209,11 @@ export function AdminPromotions() {
             },
             {
               id: "status",
-              heading: "Active",
+              heading: "Status",
               cell: (promo) => (
                 <>
-                  <span
-                    className={`inline-block h-2 w-2 rounded-full ${promo.is_active ? "bg-emerald-500" : "bg-slate-300"}`}
+                  <StatusBadge
+                    status={promo.is_active ? "Active" : "Inactive"}
                   />
                 </>
               ),
@@ -220,27 +223,11 @@ export function AdminPromotions() {
       </div>
 
       {promotionsQuery.data.count > 25 && (
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-sm text-ui-secondary">
-          <button
-            type="button"
-            disabled={page === 1}
-            onClick={() => setPage((p) => p - 1)}
-            className={secondaryButton}
-          >
-            Previous
-          </button>
-          <span>
-            Page {page} of {Math.ceil(promotionsQuery.data.count / 25)}
-          </span>
-          <button
-            type="button"
-            disabled={page * 25 >= promotionsQuery.data.count}
-            onClick={() => setPage((p) => p + 1)}
-            className={secondaryButton}
-          >
-            Next
-          </button>
-        </div>
+        <Pagination
+          page={page}
+          count={promotionsQuery.data.count}
+          onPageChange={setPage}
+        />
       )}
 
       {showCreate && (

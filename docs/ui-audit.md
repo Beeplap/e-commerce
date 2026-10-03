@@ -151,6 +151,8 @@ Replaced generic two-bar loading in primary product/order/seller and financial l
 
 ## Phase 32 human-design cleanup
 
+The final route, consistency and artifact review is in `ui-final-review.md`. Source/automated implementation is complete through Phase 33; live visual approval remains outstanding.
+
 This is a source/composition review of every major route family, not a visual inspection. No browser was available; the user directed continuation with the missing visual evidence recorded. Actual 1440px/mobile dashboard critique and seven-width/cross-browser approval remain outstanding.
 
 - Finance overview: prioritize pending payout work and current seller funds, then quieter lifetime totals and related configuration. Replace repeated equal cards and navigation boxes with grouped values, separators and short links. Seller available funds lead the balance group; ledger and payout previews stand independently. Remove duplicate finance-page gutters. Keep exact decimal strings and the existing aggregate USD convention; these APIs still need explicit platform reporting-currency metadata.

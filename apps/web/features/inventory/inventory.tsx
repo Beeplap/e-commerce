@@ -1,5 +1,8 @@
 "use client";
 
+import { Dialog } from "@/components/ui/dialog";
+import { FormSection } from "@/components/ui/layout";
+
 import Link from "next/link";
 import { useCallback, useState } from "react";
 import { useAuth } from "@/features/auth/auth-provider";
@@ -333,101 +336,92 @@ function StockAdjustModal({
   };
 
   return (
-    <div
-      role="dialog"
-      aria-labelledby="stock-adjust-title"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4"
-    >
-      <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl space-y-4">
-        <h2
-          id="stock-adjust-title"
-          className="text-lg font-semibold text-slate-900"
-        >
-          Adjust Stock: {item.variant.sku}
-        </h2>
-        <p className="text-xs text-slate-500">
+    <Dialog
+      open
+      title={<>Adjust Stock: {item.variant.sku}</>}
+      description={
+        <>
           Warehouse: {item.warehouse.name} ({item.warehouse.code}) | On hand:{" "}
           {item.quantity_on_hand} | Reserved: {item.quantity_reserved} |
           Available: {item.available_quantity}
-        </p>
-
-        {error && (
-          <div
-            role="alert"
-            className="rounded-lg border border-red-200 bg-red-50 p-3 text-xs text-red-800"
+        </>
+      }
+      onClose={onClose}
+      busy={submitting}
+      error={error}
+    >
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label
+            htmlFor="stock-action-type"
+            className="mb-2 block text-xs font-semibold text-slate-700"
           >
-            {error}
+            Action type
+          </label>
+          <select
+            id="stock-action-type"
+            value={mode}
+            onChange={(e) =>
+              setMode(e.target.value as "adjust" | "reserve" | "release")
+            }
+            className={`${selectStyle} w-full`}
+          >
+            <option value="adjust">Stock Count Adjustment (+ / -)</option>
+            <option value="reserve">Hold / Reserve Quantity</option>
+            <option value="release">Release Reserved Quantity</option>
+          </select>
+        </div>
+
+        {mode === "adjust" ? (
+          <div>
+            <FormField
+              label="Adjustment delta (+ or - quantity)"
+              type="number"
+              required
+              value={delta || ""}
+              onChange={(e) => setDelta(parseInt(e.target.value, 10) || 0)}
+              hint="Use positive numbers to add stock, negative to write off."
+            />
+          </div>
+        ) : (
+          <div>
+            <FormField
+              label={
+                mode === "reserve"
+                  ? "Quantity to reserve"
+                  : "Quantity to release"
+              }
+              type="number"
+              min={1}
+              required
+              value={qty}
+              onChange={(e) =>
+                setQty(Math.max(1, parseInt(e.target.value, 10) || 1))
+              }
+              hint={
+                mode === "reserve"
+                  ? `Max available to reserve: ${item.available_quantity}`
+                  : `Max reserved to release: ${item.quantity_reserved}`
+              }
+            />
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label
-              htmlFor="stock-action-type"
-              className="mb-2 block text-xs font-semibold text-slate-700"
-            >
-              Action type
-            </label>
-            <select
-              id="stock-action-type"
-              value={mode}
-              onChange={(e) =>
-                setMode(e.target.value as "adjust" | "reserve" | "release")
-              }
-              className={`${selectStyle} w-full`}
-            >
-              <option value="adjust">Stock Count Adjustment (+ / -)</option>
-              <option value="reserve">Hold / Reserve Quantity</option>
-              <option value="release">Release Reserved Quantity</option>
-            </select>
-          </div>
+        <div>
+          <FormField
+            label="Reason for adjustment"
+            required
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            placeholder="e.g. Audit variance, damage, stock arrival"
+          />
+        </div>
 
-          {mode === "adjust" ? (
-            <div>
-              <FormField
-                label="Adjustment delta (+ or - quantity)"
-                type="number"
-                required
-                value={delta || ""}
-                onChange={(e) => setDelta(parseInt(e.target.value, 10) || 0)}
-                hint="Use positive numbers to add stock, negative to write off."
-              />
-            </div>
-          ) : (
-            <div>
-              <FormField
-                label={
-                  mode === "reserve"
-                    ? "Quantity to reserve"
-                    : "Quantity to release"
-                }
-                type="number"
-                min={1}
-                required
-                value={qty}
-                onChange={(e) =>
-                  setQty(Math.max(1, parseInt(e.target.value, 10) || 1))
-                }
-                hint={
-                  mode === "reserve"
-                    ? `Max available to reserve: ${item.available_quantity}`
-                    : `Max reserved to release: ${item.quantity_reserved}`
-                }
-              />
-            </div>
-          )}
-
-          <div>
-            <FormField
-              label="Reason for adjustment"
-              required
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              placeholder="e.g. Audit variance, damage, stock arrival"
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
+        <FormSection
+          title="Transaction reference"
+          description="Optional references connect this ledger entry to a purchase order, return or audit."
+        >
+          <div className="grid gap-3 sm:grid-cols-2">
             <FormField
               label="Reference type (optional)"
               value={refType}
@@ -441,30 +435,28 @@ function StockAdjustModal({
               placeholder="e.g. PO-8921"
             />
           </div>
-
-          <div className="flex justify-end gap-3 pt-3">
-            <button
-              type="button"
-              onClick={onClose}
-              className={secondaryButton}
-              disabled={submitting}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className={primaryButton}
-              disabled={
-                submitting ||
-                (mode === "adjust" && delta === 0) ||
-                !reason.trim()
-              }
-            >
-              {submitting ? "Processing…" : "Submit adjustment"}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+        </FormSection>
+        <div className="flex justify-end gap-3 pt-3">
+          <button
+            type="button"
+            onClick={onClose}
+            className={secondaryButton}
+            disabled={submitting}
+            data-dialog-cancel
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className={primaryButton}
+            disabled={
+              submitting || (mode === "adjust" && delta === 0) || !reason.trim()
+            }
+          >
+            {submitting ? "Processing…" : "Submit adjustment"}
+          </button>
+        </div>
+      </form>
+    </Dialog>
   );
 }

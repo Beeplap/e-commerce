@@ -1,6 +1,15 @@
 "use client";
 
-import { useId, useRef, useState, type FormEvent, type ReactNode } from "react";
+import {
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type FormEvent,
+  type ReactNode,
+  type RefObject,
+} from "react";
+import { useUnsavedChanges } from "@/components/ui/unsaved-changes";
 import { ApiError, errorMessage } from "@/lib/api/client";
 import { FormField } from "@/components/ui/primitives";
 import { Button } from "@/components/ui/button";
@@ -16,7 +25,7 @@ export function useMutation() {
   const [error, setError] = useState<unknown>(null);
   const [success, setSuccess] = useState(false);
   async function run(action: () => Promise<void>) {
-    if (busyRef.current) return;
+    if (busyRef.current) return false;
     busyRef.current = true;
     setBusy(true);
     setError(null);
@@ -24,8 +33,10 @@ export function useMutation() {
     try {
       await action();
       setSuccess(true);
+      return true;
     } catch (caught) {
-      setError(caught);
+      setError(caught ?? new Error("Request failed"));
+      return false;
     } finally {
       busyRef.current = false;
       setBusy(false);
@@ -36,14 +47,18 @@ export function useMutation() {
 export function MutationStatus({
   error,
   success,
+  summaryRef,
 }: {
   error: unknown;
   success: boolean;
+  summaryRef?: RefObject<HTMLDivElement | null>;
 }) {
   return (
     <>
       {error != null && (
         <div
+          ref={summaryRef}
+          tabIndex={-1}
           role="alert"
           className="rounded-control bg-ui-danger-surface p-4 text-ui-body text-ui-danger"
         >
@@ -70,24 +85,78 @@ export function ManagedForm({
   onSave,
   children,
   disabled = false,
+  warnUnsaved = false,
+  stickyActions = false,
 }: {
   title: string;
   submitLabel?: string;
   onSave: (data: FormData) => Promise<void>;
   children: ReactNode;
   disabled?: boolean;
+  warnUnsaved?: boolean;
+  stickyActions?: boolean;
 }) {
   const mutation = useMutation();
+  const form = useRef<HTMLFormElement>(null);
+  const errorSummary = useRef<HTMLDivElement>(null);
+  const baseline = useRef<string | null>(null);
+  const focused = useRef(false);
+  const [dirty, setDirty] = useState(false);
+  useUnsavedChanges(title, warnUnsaved && dirty && !disabled);
+  function snapshot(element: HTMLFormElement | FormData) {
+    return JSON.stringify(
+      [
+        ...(element instanceof FormData
+          ? element
+          : new FormData(element)
+        ).entries(),
+      ].map(([name, value]) => [
+        name,
+        typeof value === "string"
+          ? value
+          : `${value.name}:${value.size}:${value.lastModified}`,
+      ]),
+    );
+  }
+  useEffect(() => {
+    if (form.current) baseline.current = snapshot(form.current);
+  }, []);
+  useEffect(() => {
+    if (mutation.error !== null)
+      (
+        form.current?.querySelector<HTMLElement>('[aria-invalid="true"]') ??
+        errorSummary.current
+      )?.focus();
+  }, [mutation.error]);
   const identity = useId();
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (disabled || mutation.busy) return;
-    const data = new FormData(event.currentTarget);
-    void mutation.run(() => onSave(data));
+    const element = event.currentTarget;
+    const data = new FormData(element);
+    const submitted = snapshot(data);
+    void mutation
+      .run(() => onSave(data))
+      .then((saved) => {
+        if (saved) {
+          baseline.current = submitted;
+          setDirty(false);
+        }
+      });
   }
   return (
     <form
-      className={panel}
+      ref={form}
+      className={`${panel} max-w-(--ui-form-width)`}
+      onFocusCapture={() => {
+        if (!focused.current && form.current && !dirty) {
+          baseline.current = snapshot(form.current);
+          focused.current = true;
+        }
+      }}
+      onChange={() => {
+        if (form.current) setDirty(snapshot(form.current) !== baseline.current);
+      }}
       onSubmit={submit}
       aria-labelledby={`${identity}-heading`}
       aria-busy={mutation.busy}
@@ -101,14 +170,27 @@ export function ManagedForm({
           <fieldset disabled={disabled || mutation.busy} className="space-y-5">
             {children}
             {!disabled && (
-              <Button busy={mutation.busy} type="submit">
-                {mutation.busy ? "Saving…" : submitLabel}
-              </Button>
+              <div
+                className={`flex flex-wrap items-center gap-3 ${stickyActions ? "sticky bottom-0 z-10 border-t border-ui-border bg-ui-surface py-3" : ""}`}
+              >
+                <Button busy={mutation.busy} type="submit">
+                  {mutation.busy ? "Saving…" : submitLabel}
+                </Button>
+                {dirty && (
+                  <span className="text-ui-caption text-ui-secondary">
+                    Unsaved changes
+                  </span>
+                )}
+              </div>
             )}
           </fieldset>
         </FieldErrorsProvider>
         <div className="mt-4">
-          <MutationStatus {...mutation} />
+          <MutationStatus
+            summaryRef={errorSummary}
+            error={mutation.error}
+            success={mutation.success && !dirty}
+          />
         </div>
       </ContentSection>
     </form>

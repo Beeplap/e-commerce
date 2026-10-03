@@ -1,5 +1,7 @@
 "use client";
 
+import { Dialog } from "@/components/ui/dialog";
+
 import { useCallback, useState } from "react";
 import { useSeller } from "@/features/workspaces/seller-workspace";
 import { ForbiddenScreen } from "@/features/workspaces/forbidden-screen";
@@ -256,93 +258,81 @@ function PayoutsList({ sellerId }: { sellerId: string }) {
 
       {/* Request Payout Modal */}
       {showModal && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="payout-req-title"
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4"
+        <Dialog
+          open
+          title={<>Request Disbursement</>}
+          onClose={() => setShowModal(false)}
+          busy={submitting}
+          error={payoutError}
         >
-          <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
-            <h3
-              id="payout-req-title"
-              className="text-lg font-semibold text-slate-900"
-            >
-              Request Disbursement
-            </h3>
-            {balance && (
-              <p className="mt-1 text-sm text-slate-600">
-                Current available:{" "}
-                <span className="font-semibold text-slate-900">
-                  <Money
-                    amount={balance.current_balance}
-                    currency={balance.currency}
-                  />
-                </span>
-              </p>
-            )}
-
-            {payoutError && (
-              <div className="mt-3 rounded-lg bg-rose-50 p-3 text-sm text-rose-700">
-                {payoutError}
-              </div>
-            )}
-
-            <form onSubmit={handleRequestPayout} className="mt-4 space-y-4">
-              <div>
-                <label
-                  htmlFor="req-amount"
-                  className="block text-sm font-medium text-slate-700"
-                >
-                  Amount ({balance?.currency ?? "USD"})
-                </label>
-                <input
-                  id="req-amount"
-                  type="text"
-                  required
-                  placeholder="0.00"
-                  value={payoutAmount}
-                  onChange={(e) => setPayoutAmount(e.target.value)}
-                  className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-teal-700 focus:outline-none"
+          {balance && (
+            <p className="mt-1 text-sm text-slate-600">
+              Current available:{" "}
+              <span className="font-semibold text-slate-900">
+                <Money
+                  amount={balance.current_balance}
+                  currency={balance.currency}
                 />
-              </div>
+              </span>
+            </p>
+          )}
 
-              <div>
-                <label
-                  htmlFor="req-notes"
-                  className="block text-sm font-medium text-slate-700"
-                >
-                  Disbursement Notes
-                </label>
-                <textarea
-                  id="req-notes"
-                  rows={2}
-                  placeholder="Optional reference or banking memo"
-                  value={payoutNotes}
-                  onChange={(e) => setPayoutNotes(e.target.value)}
-                  className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-teal-700 focus:outline-none"
-                />
-              </div>
+          <form onSubmit={handleRequestPayout} className="mt-4 space-y-4">
+            <div>
+              <label
+                htmlFor="req-amount"
+                className="block text-sm font-medium text-slate-700"
+              >
+                Amount ({balance?.currency ?? "USD"})
+              </label>
+              <input
+                id="req-amount"
+                type="text"
+                required
+                placeholder="0.00"
+                value={payoutAmount}
+                onChange={(e) => setPayoutAmount(e.target.value)}
+                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-teal-700 focus:outline-none"
+              />
+            </div>
 
-              <div className="flex justify-end gap-3 pt-2">
-                <button
-                  type="button"
-                  disabled={submitting}
-                  className={secondaryButton}
-                  onClick={() => setShowModal(false)}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className={primaryButton}
-                >
-                  {submitting ? "Submitting..." : "Submit Payout Request"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+            <div>
+              <label
+                htmlFor="req-notes"
+                className="block text-sm font-medium text-slate-700"
+              >
+                Disbursement Notes
+              </label>
+              <textarea
+                id="req-notes"
+                rows={2}
+                placeholder="Optional reference or banking memo"
+                value={payoutNotes}
+                onChange={(e) => setPayoutNotes(e.target.value)}
+                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-teal-700 focus:outline-none"
+              />
+            </div>
+
+            <div className="flex justify-end gap-3 pt-2">
+              <button
+                type="button"
+                disabled={submitting}
+                className={secondaryButton}
+                onClick={() => setShowModal(false)}
+                data-dialog-cancel
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={submitting}
+                className={primaryButton}
+              >
+                {submitting ? "Submitting..." : "Submit Payout Request"}
+              </button>
+            </div>
+          </form>
+        </Dialog>
       )}
     </div>
   );

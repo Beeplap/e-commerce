@@ -118,3 +118,18 @@ Every shared table consumer was reviewed by feature family. All retain bounded b
 - Raw tables in promotion/staff/commission editors and order details retain native semantics and local overflow. Their form/action or entity-detail composition belongs to Phases 28/29; those workflow migrations must preserve authoritative API calls and immutable financial/history displays.
 
 No screenshots or real narrow-width table rendering are claimed. The single-markup mobile layout, history behavior and complete financial data are covered by automated behavior checks; actual visual, Safari table semantics and assistive-technology review remain pending.
+
+## Phase 28 form audit and remediation
+
+- Onboarding: separates fixed business identity from contact/regional data, explains required registration details and protects unsaved edits.
+- Product creation/edit: general and description groups with draft/publication guidance; shared server field errors and sticky save. Variant editor groups SKU identity, exact pricing/status and shipping dimensions, with the same validation/pending/unsaved behavior. Attributes/media retain their real separate save operations.
+- Profile/settings/addresses: grouped contact/profile and address controls, multiline business description, explicit fixed legal/currency and verified address guidance. Existing read-only rules remain.
+- Inventory: identifies SKU/warehouse and actual stock totals, explains delta/reserve/release effects, and separates optional attributable transaction references.
+- Seller/product moderation: confirmations identify entity, action, reason and availability/publication consequences. Backend self-review and delegation restrictions remain unchanged.
+- Orders: native shipment/cancellation dialogs identify the order and inventory effect. Mutation errors remain inside the active dialog; cancellation has a native required reason.
+- Returns/shipments: native nested inspection/action dialogs retain all items, tracking and backend actions. Reject/receive failures are focused in the active child dialog rather than hidden behind it.
+- Refunds/payouts/finance: preserve precise money and existing forms; refund review names the order/amount and ledger consequence without hardcoded USD. Payout approval now has a cancellable, specific confirmation and synchronous duplicate guard. Commission/balance/request/process/reject forms share native pending/error handling.
+- Promotions: meaningful promotion details, discount/eligibility and schedule/usage groups; coupon and moderation/review dialogs share native focus and pending behavior.
+- Roles/staff: role permissions group by actual capability area with native checkbox labels. Delegation remains backend controlled. Revoke identifies the member and seller, supports cancellation and keeps a rejected backend operation visible; invitations and role mutations prevent repeated submissions.
+
+No custom fixed workflow overlays remain in feature files. Existing native-dialog test mocks that did not set open state were removed in favor of the shared stateful jsdom fixture; assertions were retained. Live screenshots, native focus containment, keyboard traversal and narrow-width scrolling remain unverified.

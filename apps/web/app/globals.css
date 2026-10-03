@@ -19,12 +19,17 @@ body {
 
 .ui-dialog,
 .ui-drawer {
+  text-align: left;
   background: var(--ui-surface);
   color: var(--ui-foreground);
   border: 0;
   padding: 24px;
   overflow-y: auto;
   overscroll-behavior: contain;
+}
+
+.ui-dialog-wide {
+  max-width: var(--ui-form-width);
 }
 
 .ui-dialog {

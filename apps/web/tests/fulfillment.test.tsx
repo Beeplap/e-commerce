@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { AuthProvider } from "@/features/auth/auth-provider";
 import { SellerWorkspace } from "@/features/workspaces/seller-workspace";
 import { SellerShipments } from "@/features/fulfillment/seller-shipments";
@@ -135,11 +135,6 @@ const mockRefund: Refund = {
   created_at: "2026-10-02T11:30:00Z",
   completed_at: "2026-10-02T11:30:00Z",
 };
-
-beforeAll(() => {
-  HTMLDialogElement.prototype.showModal = vi.fn();
-  HTMLDialogElement.prototype.close = vi.fn();
-});
 
 afterEach(() => {
   vi.restoreAllMocks();

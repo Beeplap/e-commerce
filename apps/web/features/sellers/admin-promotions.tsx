@@ -1,5 +1,9 @@
 "use client";
 
+import { FormSection } from "@/components/ui/layout";
+
+import { Dialog } from "@/components/ui/dialog";
+
 import { useCallback, useState } from "react";
 import {
   ApiErrorState,
@@ -258,12 +262,19 @@ export function AdminPromotions() {
       )}
 
       {showCreate && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
-          <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl max-h-[90vh] overflow-y-auto">
-            <h3 className="text-lg font-semibold text-slate-950">
-              Create Platform Promotion
-            </h3>
-            <form onSubmit={handleCreate} className="mt-4 space-y-3">
+        <Dialog
+          open
+          title={<>Create Platform Promotion</>}
+          onClose={() => setShowCreate(false)}
+          busy={submitting}
+          size="wide"
+          error={actionError}
+        >
+          <form onSubmit={handleCreate} className="mt-4 space-y-3">
+            <FormSection
+              title="Promotion details"
+              description="Give this promotion a recognizable name and optional description."
+            >
               <FormField
                 label="Name"
                 value={promoName}
@@ -277,6 +288,11 @@ export function AdminPromotions() {
                 onChange={(e) => setPromoDescription(e.target.value)}
                 placeholder="Optional description"
               />
+            </FormSection>
+            <FormSection
+              title="Discount and eligibility"
+              description="Choose the discount and any order thresholds. Rules are validated by the backend."
+            >
               <div>
                 <label className="block text-xs font-medium text-slate-700 mb-1">
                   Discount type
@@ -314,6 +330,11 @@ export function AdminPromotions() {
                 onChange={(e) => setMinOrder(e.target.value)}
                 placeholder="0.00"
               />
+            </FormSection>
+            <FormSection
+              title="Schedule and usage"
+              description="Set when the promotion applies and optional usage limits."
+            >
               <FormField
                 label="Starts at"
                 type="datetime-local"
@@ -334,28 +355,26 @@ export function AdminPromotions() {
                 onChange={(e) => setUsageLimit(e.target.value)}
                 placeholder="0 = unlimited"
               />
-              {actionError && (
-                <p className="text-xs text-red-600">{actionError}</p>
-              )}
-              <div className="flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowCreate(false)}
-                  className={secondaryButton}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className={primaryButton}
-                >
-                  {submitting ? "Creating…" : "Create promotion"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+            </FormSection>
+            <div className="flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setShowCreate(false)}
+                className={secondaryButton}
+                data-dialog-cancel
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={submitting}
+                className={primaryButton}
+              >
+                {submitting ? "Creating…" : "Create promotion"}
+              </button>
+            </div>
+          </form>
+        </Dialog>
       )}
     </section>
   );

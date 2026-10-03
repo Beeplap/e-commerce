@@ -1,8 +1,8 @@
 # UI phase selector
 
-UI PHASE 28 — forms and complex workflows
+UI PHASE 29 — detail pages and operational workflow polish
 
-Phase 27 is complete: audited responsive operational tables, numeric alignment, full identifier copy, bounded shareable URL filters and history restoration. Frontend lint, TypeScript, all 154 tests, formatting and production build passed. Real visual/browser checks remain pending because no browser is available. Begin Phase 28 after the Phase 27 commit and push succeed.
+Phase 28 is complete: grouped important forms, focused server errors, honest saved state, in-memory unsaved-edit guards, native workflow dialogs and specific consequential confirmations. Frontend lint, TypeScript, all 164 tests, formatting and production build passed. Real visual/browser checks remain pending because no browser is available. Begin Phase 29 after the Phase 28 commit and push succeed.
 
 Roadmap: `instrutions3.md` (the supplied filename).
 

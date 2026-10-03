@@ -1,5 +1,7 @@
 "use client";
 
+import { Dialog } from "@/components/ui/dialog";
+
 import Link from "next/link";
 import { useCallback, useState } from "react";
 import { useAuth } from "@/features/auth/auth-provider";
@@ -250,99 +252,81 @@ function AdjustBalanceModal({
   };
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="adjust-balance-title"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4"
-    >
-      <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
-        <h2
-          id="adjust-balance-title"
-          className="text-lg font-bold text-slate-900"
-        >
-          Adjust Seller Balance
-        </h2>
-        <p className="mt-1 text-xs text-slate-500">
+    <Dialog
+      open
+      title={<>Adjust Seller Balance</>}
+      description={
+        <>
           Target:{" "}
           <strong className="text-slate-800">{seller.seller_name}</strong> (
           {seller.currency})
-        </p>
+        </>
+      }
+      onClose={onClose}
+      busy={submitting}
+      error={error}
+    >
+      <form onSubmit={handleSubmit} className="mt-4 space-y-4">
+        <div>
+          <label
+            htmlFor="adjust-amount"
+            className="block text-xs font-semibold text-slate-700"
+          >
+            Adjustment Amount ({seller.currency}) *
+          </label>
+          <p className="mb-1 text-xs text-slate-500">
+            Enter a positive amount to credit (e.g. 50.00) or negative to debit
+            (e.g. -25.00).
+          </p>
+          <input
+            id="adjust-amount"
+            type="text"
+            required
+            pattern="^-?\d+(\.\d{1,2})?$"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            placeholder="e.g. 50.00 or -25.00"
+            className={`mt-1 ${inputStyle}`}
+          />
+        </div>
 
-        <form onSubmit={handleSubmit} className="mt-4 space-y-4">
-          <div>
-            <label
-              htmlFor="adjust-amount"
-              className="block text-xs font-semibold text-slate-700"
-            >
-              Adjustment Amount ({seller.currency}) *
-            </label>
-            <p className="mb-1 text-xs text-slate-500">
-              Enter a positive amount to credit (e.g. 50.00) or negative to
-              debit (e.g. -25.00).
-            </p>
-            <input
-              id="adjust-amount"
-              type="text"
-              required
-              pattern="^-?\d+(\.\d{1,2})?$"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              placeholder="e.g. 50.00 or -25.00"
-              className={`mt-1 ${inputStyle}`}
-            />
-          </div>
+        <div>
+          <label
+            htmlFor="adjust-description"
+            className="block text-xs font-semibold text-slate-700"
+          >
+            Description *
+          </label>
+          <p className="mb-1 text-xs text-slate-500">
+            State the reason for this compensating ledger entry for accounting
+            records.
+          </p>
+          <textarea
+            id="adjust-description"
+            rows={3}
+            required
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="e.g. Manual credit for promotional fee refund"
+            className={`mt-1 ${inputStyle}`}
+          />
+        </div>
 
-          <div>
-            <label
-              htmlFor="adjust-description"
-              className="block text-xs font-semibold text-slate-700"
-            >
-              Description *
-            </label>
-            <p className="mb-1 text-xs text-slate-500">
-              State the reason for this compensating ledger entry for accounting
-              records.
-            </p>
-            <textarea
-              id="adjust-description"
-              rows={3}
-              required
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="e.g. Manual credit for promotional fee refund"
-              className={`mt-1 ${inputStyle}`}
-            />
-          </div>
-
-          {error && (
-            <div
-              role="alert"
-              className="rounded-lg bg-rose-50 p-3 text-xs text-rose-800"
-            >
-              {error}
-            </div>
-          )}
-
-          <div className="flex justify-end gap-3 pt-2">
-            <button
-              type="button"
-              disabled={submitting}
-              onClick={onClose}
-              className={secondaryButton}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={submitting}
-              className={primaryButton}
-            >
-              {submitting ? "Applying…" : "Apply Adjustment"}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+        <div className="flex justify-end gap-3 pt-2">
+          <button
+            type="button"
+            disabled={submitting}
+            onClick={onClose}
+            className={secondaryButton}
+            data-dialog-cancel
+          >
+            Cancel
+          </button>
+          <button type="submit" disabled={submitting} className={primaryButton}>
+            {submitting ? "Applying…" : "Apply Adjustment"}
+          </button>
+        </div>
+      </form>
+    </Dialog>
   );
 }

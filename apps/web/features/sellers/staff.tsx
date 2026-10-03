@@ -1,6 +1,9 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { Dialog } from "@/components/ui/dialog";
+
+import { useCallback, useRef, useState } from "react";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import {
   ApiErrorState,
   LoadingState,
@@ -22,6 +25,8 @@ export function SellerStaff() {
   const [showInvite, setShowInvite] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
+  const [revokeTarget, setRevokeTarget] = useState<StaffMember | null>(null);
+  const actionInFlight = useRef(false);
 
   // Invite form state
   const [inviteEmail, setInviteEmail] = useState("");
@@ -46,6 +51,8 @@ export function SellerStaff() {
   async function handleInvite(e: React.FormEvent) {
     e.preventDefault();
     if (!inviteEmail || !inviteRoleId) return;
+    if (actionInFlight.current) return;
+    actionInFlight.current = true;
     setSubmitting(true);
     setActionError(null);
     try {
@@ -60,12 +67,15 @@ export function SellerStaff() {
     } catch (err) {
       setActionError(errorMessage(err));
     } finally {
+      actionInFlight.current = false;
       setSubmitting(false);
     }
   }
 
   async function handleRoleChange(membershipId: string) {
     if (!newRoleId) return;
+    if (actionInFlight.current) return;
+    actionInFlight.current = true;
     setSubmitting(true);
     setActionError(null);
     try {
@@ -78,20 +88,24 @@ export function SellerStaff() {
     } catch (err) {
       setActionError(errorMessage(err));
     } finally {
+      actionInFlight.current = false;
       setSubmitting(false);
     }
   }
 
   async function handleRevoke(membershipId: string) {
-    if (!confirm("Revoke this member's access? This cannot be undone.")) return;
+    if (actionInFlight.current) return;
+    actionInFlight.current = true;
     setSubmitting(true);
     setActionError(null);
     try {
       await sellerApi.revokeStaff(sellerId, membershipId);
+      setRevokeTarget(null);
       staffQuery.retry?.();
     } catch (err) {
       setActionError(errorMessage(err));
     } finally {
+      actionInFlight.current = false;
       setSubmitting(false);
     }
   }
@@ -146,7 +160,7 @@ export function SellerStaff() {
         )}
       </div>
 
-      {actionError && (
+      {actionError && !showInvite && !revokeTarget && (
         <p
           role="alert"
           className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700"
@@ -260,7 +274,10 @@ export function SellerStaff() {
                       <button
                         type="button"
                         disabled={submitting}
-                        onClick={() => handleRevoke(member.id)}
+                        onClick={() => {
+                          setActionError(null);
+                          setRevokeTarget(member);
+                        }}
                         className="rounded-lg border border-red-300 bg-white px-3 py-1.5 text-xs font-semibold text-red-700 hover:bg-red-50"
                       >
                         Revoke
@@ -304,66 +321,80 @@ export function SellerStaff() {
       )}
 
       {/* Invite Modal */}
+      <ConfirmDialog
+        open={revokeTarget !== null}
+        title="Revoke staff access"
+        description={
+          revokeTarget
+            ? `Revoke ${revokeTarget.user.email}'s access to ${access.seller.display_name}? This member will lose access to this seller workspace. Their other seller memberships are unaffected.`
+            : ""
+        }
+        confirmLabel="Revoke access"
+        busy={submitting}
+        error={actionError ?? undefined}
+        onCancel={() => setRevokeTarget(null)}
+        onConfirm={() => {
+          if (revokeTarget) void handleRevoke(revokeTarget.id);
+        }}
+      />
       {showInvite && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
-          <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
-            <h3 className="text-lg font-semibold text-slate-950">
-              Invite Team Member
-            </h3>
-            <p className="mt-1 text-xs text-slate-600">
-              Send an invitation to a user by email.
-            </p>
-            <form onSubmit={handleInvite} className="mt-4 space-y-3">
-              <FormField
-                label="Email address"
-                type="email"
-                value={inviteEmail}
-                onChange={(e) => setInviteEmail(e.target.value)}
-                placeholder="colleague@example.com"
+        <Dialog
+          open
+          title={<>Invite Team Member</>}
+          description={<>Send an invitation to a user by email.</>}
+          onClose={() => setShowInvite(false)}
+          busy={submitting}
+          error={actionError}
+        >
+          <form onSubmit={handleInvite} className="mt-4 space-y-3">
+            <FormField
+              label="Email address"
+              type="email"
+              value={inviteEmail}
+              onChange={(e) => setInviteEmail(e.target.value)}
+              placeholder="colleague@example.com"
+              required
+            />
+            <div>
+              <label className="block text-xs font-medium text-slate-700 mb-1">
+                Role
+              </label>
+              <select
+                value={inviteRoleId}
+                onChange={(e) => setInviteRoleId(e.target.value)}
                 required
-              />
-              <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">
-                  Role
-                </label>
-                <select
-                  value={inviteRoleId}
-                  onChange={(e) => setInviteRoleId(e.target.value)}
-                  required
-                  className="min-h-9 w-full rounded-lg border border-slate-300 px-2 py-1.5 text-sm"
-                >
-                  <option value="">Select a role…</option>
-                  {roles
-                    .filter((r) => !r.is_owner)
-                    .map((r) => (
-                      <option key={r.id} value={r.id}>
-                        {r.name}
-                      </option>
-                    ))}
-                </select>
-              </div>
-              {actionError && (
-                <p className="text-xs text-red-600">{actionError}</p>
-              )}
-              <div className="mt-4 flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowInvite(false)}
-                  className={secondaryButton}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className={primaryButton}
-                >
-                  {submitting ? "Inviting…" : "Send invitation"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+                className="min-h-9 w-full rounded-lg border border-slate-300 px-2 py-1.5 text-sm"
+              >
+                <option value="">Select a role…</option>
+                {roles
+                  .filter((r) => !r.is_owner)
+                  .map((r) => (
+                    <option key={r.id} value={r.id}>
+                      {r.name}
+                    </option>
+                  ))}
+              </select>
+            </div>
+
+            <div className="mt-4 flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setShowInvite(false)}
+                className={secondaryButton}
+                data-dialog-cancel
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={submitting}
+                className={primaryButton}
+              >
+                {submitting ? "Inviting…" : "Send invitation"}
+              </button>
+            </div>
+          </form>
+        </Dialog>
       )}
     </section>
   );

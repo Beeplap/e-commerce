@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/primitives";
 import { Pagination } from "@/components/ui/pagination";
 import { SelectField } from "@/components/ui/form-fields";
+import { confirmUnsavedNavigation } from "@/components/ui/unsaved-changes";
 import { sellerApi } from "@/lib/api/client";
 import type { SellerMembership } from "@/lib/api/types";
 import { useApiQuery } from "@/lib/api/use-api-query";
@@ -103,7 +104,9 @@ export function SellerWorkspace({ children }: { children: ReactNode }) {
       <SelectField
         label="Seller workspace"
         value={current.seller.id}
-        onChange={(event) => setSelectedId(event.target.value)}
+        onChange={(event) => {
+          if (confirmUnsavedNavigation()) setSelectedId(event.target.value);
+        }}
         disabled={memberships.kind === "loading"}
       >
         {!options.some((item) => item.seller.id === current.seller.id) && (

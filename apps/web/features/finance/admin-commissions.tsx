@@ -1,7 +1,10 @@
 "use client";
 
+import { Dialog } from "@/components/ui/dialog";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+
 import Link from "next/link";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useAuth } from "@/features/auth/auth-provider";
 import { ForbiddenScreen } from "@/features/workspaces/forbidden-screen";
 import { hasPlatformPermission } from "@/lib/permissions";
@@ -268,17 +271,22 @@ function RuleRow({
 }) {
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const deleteInFlight = useRef(false);
 
   const handleDelete = async () => {
-    if (!confirm("Are you sure you want to delete this commission rule?"))
-      return;
+    if (deleteInFlight.current) return;
+    deleteInFlight.current = true;
     setDeleting(true);
     setError(null);
     try {
       await deleteCommissionRule(rule.id);
+      setConfirmDelete(false);
       onDeleted();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to delete rule");
+    } finally {
+      deleteInFlight.current = false;
       setDeleting(false);
     }
   };
@@ -309,15 +317,29 @@ function RuleRow({
       </td>
       {canManage && (
         <td className="px-3 py-3 text-right">
-          {error && <span className="mr-2 text-xs text-rose-600">{error}</span>}
           <button
             type="button"
             disabled={deleting}
-            onClick={handleDelete}
+            onClick={() => {
+              setError(null);
+              setConfirmDelete(true);
+            }}
             className="text-xs font-semibold text-rose-600 hover:text-rose-800 disabled:opacity-50"
           >
             {deleting ? "Deleting…" : "Delete"}
           </button>
+          <ConfirmDialog
+            open={confirmDelete}
+            title="Delete commission rule"
+            description={`Delete the ${scopeLabel} commission rule (${rule.percentage}%, priority ${rule.priority})? Future calculations will use the remaining rules or plan default. Existing order snapshots and ledger entries are unchanged.`}
+            confirmLabel="Delete rule"
+            busy={deleting}
+            error={error ?? undefined}
+            onCancel={() => setConfirmDelete(false)}
+            onConfirm={() => {
+              void handleDelete();
+            }}
+          />
         </td>
       )}
     </tr>
@@ -360,113 +382,97 @@ function CreatePlanModal({
   };
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="create-plan-title"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4"
+    <Dialog
+      open
+      title={<>Create Commission Plan</>}
+      onClose={onClose}
+      busy={submitting}
+      error={error}
     >
-      <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
-        <h2 id="create-plan-title" className="text-lg font-bold text-slate-900">
-          Create Commission Plan
-        </h2>
-        <form onSubmit={handleSubmit} className="mt-4 space-y-4">
-          <div>
-            <label
-              htmlFor="plan-name"
-              className="block text-xs font-semibold text-slate-700"
-            >
-              Plan Name *
-            </label>
-            <input
-              id="plan-name"
-              type="text"
-              required
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. Standard Marketplace 2026"
-              className={`mt-1 ${inputStyle}`}
-            />
-          </div>
+      <form onSubmit={handleSubmit} className="mt-4 space-y-4">
+        <div>
+          <label
+            htmlFor="plan-name"
+            className="block text-xs font-semibold text-slate-700"
+          >
+            Plan Name *
+          </label>
+          <input
+            id="plan-name"
+            type="text"
+            required
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="e.g. Standard Marketplace 2026"
+            className={`mt-1 ${inputStyle}`}
+          />
+        </div>
 
-          <div>
-            <label
-              htmlFor="plan-percentage"
-              className="block text-xs font-semibold text-slate-700"
-            >
-              Default Percentage (%) *
-            </label>
-            <input
-              id="plan-percentage"
-              type="text"
-              required
-              pattern="^\d+(\.\d{1,2})?$"
-              value={defaultPercentage}
-              onChange={(e) => setDefaultPercentage(e.target.value)}
-              placeholder="10.00"
-              className={`mt-1 ${inputStyle}`}
-            />
-          </div>
+        <div>
+          <label
+            htmlFor="plan-percentage"
+            className="block text-xs font-semibold text-slate-700"
+          >
+            Default Percentage (%) *
+          </label>
+          <input
+            id="plan-percentage"
+            type="text"
+            required
+            pattern="^\d+(\.\d{1,2})?$"
+            value={defaultPercentage}
+            onChange={(e) => setDefaultPercentage(e.target.value)}
+            placeholder="10.00"
+            className={`mt-1 ${inputStyle}`}
+          />
+        </div>
 
-          <div>
-            <label
-              htmlFor="plan-description"
-              className="block text-xs font-semibold text-slate-700"
-            >
-              Description (Optional)
-            </label>
-            <textarea
-              id="plan-description"
-              rows={3}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Details on eligible sellers or contract tiers"
-              className={`mt-1 ${inputStyle}`}
-            />
-          </div>
+        <div>
+          <label
+            htmlFor="plan-description"
+            className="block text-xs font-semibold text-slate-700"
+          >
+            Description (Optional)
+          </label>
+          <textarea
+            id="plan-description"
+            rows={3}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Details on eligible sellers or contract tiers"
+            className={`mt-1 ${inputStyle}`}
+          />
+        </div>
 
-          <div className="flex items-center gap-2">
-            <input
-              id="plan-is-default"
-              type="checkbox"
-              checked={isDefault}
-              onChange={(e) => setIsDefault(e.target.checked)}
-              className="h-4 w-4 rounded border-slate-300 text-teal-700 focus:ring-teal-500"
-            />
-            <label htmlFor="plan-is-default" className="text-sm text-slate-700">
-              Set as marketplace default plan
-            </label>
-          </div>
+        <div className="flex items-center gap-2">
+          <input
+            id="plan-is-default"
+            type="checkbox"
+            checked={isDefault}
+            onChange={(e) => setIsDefault(e.target.checked)}
+            className="h-4 w-4 rounded border-slate-300 text-teal-700 focus:ring-teal-500"
+          />
+          <label htmlFor="plan-is-default" className="text-sm text-slate-700">
+            Set as marketplace default plan
+          </label>
+        </div>
 
-          {error && (
-            <div
-              role="alert"
-              className="rounded-lg bg-rose-50 p-3 text-xs text-rose-800"
-            >
-              {error}
-            </div>
-          )}
-
-          <div className="flex justify-end gap-3 pt-2">
-            <button
-              type="button"
-              disabled={submitting}
-              onClick={onClose}
-              className={secondaryButton}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={submitting}
-              className={primaryButton}
-            >
-              {submitting ? "Creating…" : "Create Plan"}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+        <div className="flex justify-end gap-3 pt-2">
+          <button
+            type="button"
+            disabled={submitting}
+            onClick={onClose}
+            className={secondaryButton}
+            data-dialog-cancel
+          >
+            Cancel
+          </button>
+          <button type="submit" disabled={submitting} className={primaryButton}>
+            {submitting ? "Creating…" : "Create Plan"}
+          </button>
+        </div>
+      </form>
+    </Dialog>
   );
 }
 
@@ -512,129 +518,113 @@ function EditPlanModal({
   };
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="edit-plan-title"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4"
+    <Dialog
+      open
+      title={<>Edit Commission Plan</>}
+      onClose={onClose}
+      busy={submitting}
+      error={error}
     >
-      <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
-        <h2 id="edit-plan-title" className="text-lg font-bold text-slate-900">
-          Edit Commission Plan
-        </h2>
-        <form onSubmit={handleSubmit} className="mt-4 space-y-4">
-          <div>
-            <label
-              htmlFor="edit-plan-name"
-              className="block text-xs font-semibold text-slate-700"
-            >
-              Plan Name *
-            </label>
-            <input
-              id="edit-plan-name"
-              type="text"
-              required
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className={`mt-1 ${inputStyle}`}
-            />
-          </div>
+      <form onSubmit={handleSubmit} className="mt-4 space-y-4">
+        <div>
+          <label
+            htmlFor="edit-plan-name"
+            className="block text-xs font-semibold text-slate-700"
+          >
+            Plan Name *
+          </label>
+          <input
+            id="edit-plan-name"
+            type="text"
+            required
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className={`mt-1 ${inputStyle}`}
+          />
+        </div>
 
-          <div>
-            <label
-              htmlFor="edit-plan-percentage"
-              className="block text-xs font-semibold text-slate-700"
-            >
-              Default Percentage (%) *
-            </label>
-            <input
-              id="edit-plan-percentage"
-              type="text"
-              required
-              pattern="^\d+(\.\d{1,2})?$"
-              value={defaultPercentage}
-              onChange={(e) => setDefaultPercentage(e.target.value)}
-              className={`mt-1 ${inputStyle}`}
-            />
-          </div>
+        <div>
+          <label
+            htmlFor="edit-plan-percentage"
+            className="block text-xs font-semibold text-slate-700"
+          >
+            Default Percentage (%) *
+          </label>
+          <input
+            id="edit-plan-percentage"
+            type="text"
+            required
+            pattern="^\d+(\.\d{1,2})?$"
+            value={defaultPercentage}
+            onChange={(e) => setDefaultPercentage(e.target.value)}
+            className={`mt-1 ${inputStyle}`}
+          />
+        </div>
 
-          <div>
-            <label
-              htmlFor="edit-plan-description"
-              className="block text-xs font-semibold text-slate-700"
-            >
-              Description
-            </label>
-            <textarea
-              id="edit-plan-description"
-              rows={3}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className={`mt-1 ${inputStyle}`}
-            />
-          </div>
+        <div>
+          <label
+            htmlFor="edit-plan-description"
+            className="block text-xs font-semibold text-slate-700"
+          >
+            Description
+          </label>
+          <textarea
+            id="edit-plan-description"
+            rows={3}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className={`mt-1 ${inputStyle}`}
+          />
+        </div>
 
-          <div className="flex items-center gap-2">
-            <input
-              id="edit-plan-is-active"
-              type="checkbox"
-              checked={isActive}
-              onChange={(e) => setIsActive(e.target.checked)}
-              className="h-4 w-4 rounded border-slate-300 text-teal-700 focus:ring-teal-500"
-            />
-            <label
-              htmlFor="edit-plan-is-active"
-              className="text-sm text-slate-700"
-            >
-              Active plan
-            </label>
-          </div>
+        <div className="flex items-center gap-2">
+          <input
+            id="edit-plan-is-active"
+            type="checkbox"
+            checked={isActive}
+            onChange={(e) => setIsActive(e.target.checked)}
+            className="h-4 w-4 rounded border-slate-300 text-teal-700 focus:ring-teal-500"
+          />
+          <label
+            htmlFor="edit-plan-is-active"
+            className="text-sm text-slate-700"
+          >
+            Active plan
+          </label>
+        </div>
 
-          <div className="flex items-center gap-2">
-            <input
-              id="edit-plan-is-default"
-              type="checkbox"
-              checked={isDefault}
-              onChange={(e) => setIsDefault(e.target.checked)}
-              className="h-4 w-4 rounded border-slate-300 text-teal-700 focus:ring-teal-500"
-            />
-            <label
-              htmlFor="edit-plan-is-default"
-              className="text-sm text-slate-700"
-            >
-              Marketplace default plan
-            </label>
-          </div>
+        <div className="flex items-center gap-2">
+          <input
+            id="edit-plan-is-default"
+            type="checkbox"
+            checked={isDefault}
+            onChange={(e) => setIsDefault(e.target.checked)}
+            className="h-4 w-4 rounded border-slate-300 text-teal-700 focus:ring-teal-500"
+          />
+          <label
+            htmlFor="edit-plan-is-default"
+            className="text-sm text-slate-700"
+          >
+            Marketplace default plan
+          </label>
+        </div>
 
-          {error && (
-            <div
-              role="alert"
-              className="rounded-lg bg-rose-50 p-3 text-xs text-rose-800"
-            >
-              {error}
-            </div>
-          )}
-
-          <div className="flex justify-end gap-3 pt-2">
-            <button
-              type="button"
-              disabled={submitting}
-              onClick={onClose}
-              className={secondaryButton}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={submitting}
-              className={primaryButton}
-            >
-              {submitting ? "Saving…" : "Save Changes"}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+        <div className="flex justify-end gap-3 pt-2">
+          <button
+            type="button"
+            disabled={submitting}
+            onClick={onClose}
+            className={secondaryButton}
+            data-dialog-cancel
+          >
+            Cancel
+          </button>
+          <button type="submit" disabled={submitting} className={primaryButton}>
+            {submitting ? "Saving…" : "Save Changes"}
+          </button>
+        </div>
+      </form>
+    </Dialog>
   );
 }
 
@@ -678,132 +668,116 @@ function AddRuleModal({
   };
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="add-rule-title"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4"
+    <Dialog
+      open
+      title={<>Add Commission Rule to {plan.name}</>}
+      onClose={onClose}
+      busy={submitting}
+      error={error}
     >
-      <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
-        <h2 id="add-rule-title" className="text-lg font-bold text-slate-900">
-          Add Commission Rule to {plan.name}
-        </h2>
-        <form onSubmit={handleSubmit} className="mt-4 space-y-4">
-          <div>
-            <label
-              htmlFor="rule-percentage"
-              className="block text-xs font-semibold text-slate-700"
-            >
-              Percentage (%) *
-            </label>
-            <input
-              id="rule-percentage"
-              type="text"
-              required
-              pattern="^\d+(\.\d{1,2})?$"
-              value={percentage}
-              onChange={(e) => setPercentage(e.target.value)}
-              placeholder="8.00"
-              className={`mt-1 ${inputStyle}`}
-            />
-          </div>
+      <form onSubmit={handleSubmit} className="mt-4 space-y-4">
+        <div>
+          <label
+            htmlFor="rule-percentage"
+            className="block text-xs font-semibold text-slate-700"
+          >
+            Percentage (%) *
+          </label>
+          <input
+            id="rule-percentage"
+            type="text"
+            required
+            pattern="^\d+(\.\d{1,2})?$"
+            value={percentage}
+            onChange={(e) => setPercentage(e.target.value)}
+            placeholder="8.00"
+            className={`mt-1 ${inputStyle}`}
+          />
+        </div>
 
-          <div>
-            <label
-              htmlFor="rule-fixed-fee"
-              className="block text-xs font-semibold text-slate-700"
-            >
-              Fixed Fee ($)
-            </label>
-            <input
-              id="rule-fixed-fee"
-              type="text"
-              pattern="^\d+(\.\d{1,2})?$"
-              value={fixedFee}
-              onChange={(e) => setFixedFee(e.target.value)}
-              placeholder="0.00"
-              className={`mt-1 ${inputStyle}`}
-            />
-          </div>
+        <div>
+          <label
+            htmlFor="rule-fixed-fee"
+            className="block text-xs font-semibold text-slate-700"
+          >
+            Fixed Fee ($)
+          </label>
+          <input
+            id="rule-fixed-fee"
+            type="text"
+            pattern="^\d+(\.\d{1,2})?$"
+            value={fixedFee}
+            onChange={(e) => setFixedFee(e.target.value)}
+            placeholder="0.00"
+            className={`mt-1 ${inputStyle}`}
+          />
+        </div>
 
-          <div>
-            <label
-              htmlFor="rule-priority"
-              className="block text-xs font-semibold text-slate-700"
-            >
-              Priority (Higher number = evaluated first)
-            </label>
-            <input
-              id="rule-priority"
-              type="number"
-              value={priority}
-              onChange={(e) => setPriority(e.target.value)}
-              className={`mt-1 ${inputStyle}`}
-            />
-          </div>
+        <div>
+          <label
+            htmlFor="rule-priority"
+            className="block text-xs font-semibold text-slate-700"
+          >
+            Priority (Higher number = evaluated first)
+          </label>
+          <input
+            id="rule-priority"
+            type="number"
+            value={priority}
+            onChange={(e) => setPriority(e.target.value)}
+            className={`mt-1 ${inputStyle}`}
+          />
+        </div>
 
-          <div>
-            <label
-              htmlFor="rule-seller-id"
-              className="block text-xs font-semibold text-slate-700"
-            >
-              Seller UUID (Optional)
-            </label>
-            <input
-              id="rule-seller-id"
-              type="text"
-              value={sellerId}
-              onChange={(e) => setSellerId(e.target.value)}
-              placeholder="Leave blank for all sellers"
-              className={`mt-1 ${inputStyle}`}
-            />
-          </div>
+        <div>
+          <label
+            htmlFor="rule-seller-id"
+            className="block text-xs font-semibold text-slate-700"
+          >
+            Seller UUID (Optional)
+          </label>
+          <input
+            id="rule-seller-id"
+            type="text"
+            value={sellerId}
+            onChange={(e) => setSellerId(e.target.value)}
+            placeholder="Leave blank for all sellers"
+            className={`mt-1 ${inputStyle}`}
+          />
+        </div>
 
-          <div>
-            <label
-              htmlFor="rule-category-id"
-              className="block text-xs font-semibold text-slate-700"
-            >
-              Category UUID (Optional)
-            </label>
-            <input
-              id="rule-category-id"
-              type="text"
-              value={categoryId}
-              onChange={(e) => setCategoryId(e.target.value)}
-              placeholder="Leave blank for all categories"
-              className={`mt-1 ${inputStyle}`}
-            />
-          </div>
+        <div>
+          <label
+            htmlFor="rule-category-id"
+            className="block text-xs font-semibold text-slate-700"
+          >
+            Category UUID (Optional)
+          </label>
+          <input
+            id="rule-category-id"
+            type="text"
+            value={categoryId}
+            onChange={(e) => setCategoryId(e.target.value)}
+            placeholder="Leave blank for all categories"
+            className={`mt-1 ${inputStyle}`}
+          />
+        </div>
 
-          {error && (
-            <div
-              role="alert"
-              className="rounded-lg bg-rose-50 p-3 text-xs text-rose-800"
-            >
-              {error}
-            </div>
-          )}
-
-          <div className="flex justify-end gap-3 pt-2">
-            <button
-              type="button"
-              disabled={submitting}
-              onClick={onClose}
-              className={secondaryButton}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={submitting}
-              className={primaryButton}
-            >
-              {submitting ? "Adding…" : "Add Rule"}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+        <div className="flex justify-end gap-3 pt-2">
+          <button
+            type="button"
+            disabled={submitting}
+            onClick={onClose}
+            className={secondaryButton}
+            data-dialog-cancel
+          >
+            Cancel
+          </button>
+          <button type="submit" disabled={submitting} className={primaryButton}>
+            {submitting ? "Adding…" : "Add Rule"}
+          </button>
+        </div>
+      </form>
+    </Dialog>
   );
 }

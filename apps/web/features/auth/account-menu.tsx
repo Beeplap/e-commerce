@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { confirmUnsavedNavigation } from "@/components/ui/unsaved-changes";
 import { errorMessage } from "@/lib/api/client";
 import { useAuth } from "./auth-provider";
 
@@ -39,7 +40,7 @@ export function AccountMenu() {
   if (state.kind !== "authenticated") return null;
   const user = state.user;
   async function signOut() {
-    if (inFlight.current) return;
+    if (inFlight.current || !confirmUnsavedNavigation()) return;
     inFlight.current = true;
     setBusy(true);
     setError(null);

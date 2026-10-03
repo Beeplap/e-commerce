@@ -6,6 +6,7 @@ import { PageHeader, primaryButton } from "@/components/ui/primitives";
 import { WorkspaceFrame } from "@/features/workspaces/workspace-frame";
 import { sellerManagementApi } from "./api";
 import { ManagedForm, selectStyle, TextFields, values } from "./forms";
+import { FormSection } from "@/components/ui/layout";
 
 export function SellerOnboarding() {
   const [created, setCreated] = useState(false);
@@ -31,59 +32,71 @@ export function SellerOnboarding() {
       ) : (
         <ManagedForm
           title="Business details"
+          warnUnsaved
+          stickyActions
           submitLabel="Create seller workspace"
           onSave={async (data) => {
             await sellerManagementApi.create(values(data));
             setCreated(true);
           }}
         >
-          <TextFields
-            fields={[
-              {
-                name: "legal_name",
-                label: "Registered legal name",
-                required: true,
-                maxLength: 200,
-              },
-              {
-                name: "display_name",
-                label: "Store display name",
-                required: true,
-                maxLength: 120,
-              },
-              {
-                name: "email",
-                label: "Business email",
-                required: true,
-                type: "email",
-                maxLength: 254,
-              },
-              { name: "phone", label: "Business phone", maxLength: 32 },
-              {
-                name: "timezone",
-                label: "Timezone",
-                required: true,
-                maxLength: 64,
-              },
-            ]}
-            defaults={{ timezone: "UTC" }}
-          />
-          <label className="block text-sm font-medium">
-            Business currency
-            <select
-              className={`${selectStyle} mt-2`}
-              name="default_currency"
-              defaultValue="NPR"
-            >
-              {["NPR", "USD", "INR", "EUR", "GBP"].map((value) => (
-                <option key={value}>{value}</option>
-              ))}
-            </select>
-          </label>
-          <p className="text-sm text-slate-600">
-            Legal name and currency are fixed when the workspace is created. Use
-            an IANA timezone such as Asia/Kathmandu.
-          </p>
+          <FormSection
+            title="Business identity"
+            description="Enter the registered legal name exactly as it appears on your registration. Legal name and currency are fixed after creation."
+          >
+            <TextFields
+              fields={[
+                {
+                  name: "legal_name",
+                  label: "Registered legal name",
+                  required: true,
+                  maxLength: 200,
+                },
+                {
+                  name: "display_name",
+                  label: "Store display name",
+                  required: true,
+                  maxLength: 120,
+                },
+              ]}
+            />
+          </FormSection>
+          <FormSection
+            title="Contact and regional settings"
+            description="These details support platform review and business communication. Use an IANA timezone such as Asia/Kathmandu."
+          >
+            <TextFields
+              fields={[
+                {
+                  name: "email",
+                  label: "Business email",
+                  required: true,
+                  type: "email",
+                  maxLength: 254,
+                },
+                { name: "phone", label: "Business phone", maxLength: 32 },
+                {
+                  name: "timezone",
+                  label: "Timezone",
+                  required: true,
+                  maxLength: 64,
+                },
+              ]}
+              defaults={{ timezone: "UTC" }}
+            />
+            <label className="block text-sm font-medium">
+              Business currency
+              <select
+                className={`${selectStyle} mt-2`}
+                name="default_currency"
+                defaultValue="NPR"
+              >
+                {["NPR", "USD", "INR", "EUR", "GBP"].map((value) => (
+                  <option key={value}>{value}</option>
+                ))}
+              </select>
+            </label>
+          </FormSection>
         </ManagedForm>
       )}
     </WorkspaceFrame>

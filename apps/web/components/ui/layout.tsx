@@ -20,6 +20,28 @@ export function PageActions({ children }: { children: ReactNode }) {
   );
 }
 
+export function FormSection({
+  title,
+  description,
+  children,
+}: {
+  title: string;
+  description?: string;
+  children: ReactNode;
+}) {
+  return (
+    <fieldset className="min-w-0 space-y-4 border-0 p-0">
+      <legend className="mb-3 text-sm font-semibold text-ui-foreground">
+        {title}
+      </legend>
+      {description && (
+        <p className="text-ui-caption text-ui-secondary">{description}</p>
+      )}
+      {children}
+    </fieldset>
+  );
+}
+
 export function StatGroup({
   items,
 }: {

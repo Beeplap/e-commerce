@@ -19,6 +19,37 @@ export function PageActions({ children }: { children: ReactNode }) {
     </div>
   );
 }
+
+export function StatGroup({
+  items,
+}: {
+  items: readonly {
+    label: string;
+    value: ReactNode;
+    hint?: string;
+    primary?: boolean;
+  }[];
+}) {
+  return (
+    <dl className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 xl:grid-cols-4">
+      {items.map((item) => (
+        <div key={item.label} className="min-w-0">
+          <dt className="text-ui-caption font-medium text-ui-secondary">
+            {item.label}
+          </dt>
+          <dd
+            className={`mt-1 break-words font-semibold tracking-tight tabular-nums ${item.primary ? "text-[28px] leading-[34px]" : "text-xl leading-7"}`}
+          >
+            {item.value}
+          </dd>
+          {item.hint && (
+            <p className="mt-1 text-ui-caption text-ui-muted">{item.hint}</p>
+          )}
+        </div>
+      ))}
+    </dl>
+  );
+}
 export function ContentSection({
   title,
   description,

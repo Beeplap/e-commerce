@@ -264,3 +264,92 @@ describe("AdminOverview dashboard", () => {
     expect(screen.getByText("Review needed")).toBeDefined();
   });
 });
+
+describe("dashboard redesign contracts", () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  it("places current operational work before period performance without inventing a return queue", async () => {
+    setupFetch();
+    renderSellerOverview();
+    const attention = await screen.findByRole("heading", {
+      name: "Needs attention",
+    });
+    const performance = await screen.findByRole("heading", {
+      name: "Business performance",
+    });
+    expect(
+      attention.compareDocumentPosition(performance) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      screen.getByText("Submitted in the selected period"),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(/returns awaiting response/i),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "All time" }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Last 30 days" }),
+    ).toHaveAttribute("aria-pressed", "true");
+  });
+
+  it("avoids platform analytics requests without the explicit capability", async () => {
+    const fetcher = setupFetch({ isAdmin: false });
+    renderAdminOverview();
+    await screen.findByRole("heading", { name: "You don’t have access" });
+    expect(
+      fetcher.mock.calls.some((call) =>
+        String(call[0]).includes("admin/analytics"),
+      ),
+    ).toBe(false);
+    expect(screen.queryByText("Platform GMV")).not.toBeInTheDocument();
+  });
+
+  it("uses actual category revenue even when the live payload has order counts rather than units", async () => {
+    setupFetch({
+      isAdmin: true,
+      adminMetrics: {
+        ...mockPlatformDashboard,
+        top_categories: [
+          {
+            id: "cat-live",
+            name: "Live category",
+            revenue: "15.00",
+            orders_count: 3,
+          },
+        ],
+      } as unknown as PlatformDashboardMetrics,
+    });
+    renderAdminOverview();
+    await screen.findByText("Live category");
+    expect(screen.getByText("15.00 USD")).toBeInTheDocument();
+    expect(screen.queryByText("undefined")).not.toBeInTheDocument();
+  });
+
+  it("shows empty activity and absent payouts without fabricated financial state", async () => {
+    setupFetch({
+      sellerMetrics: {
+        ...mockSellerDashboard,
+        top_products: [],
+        sales_over_time: [],
+        pending_orders: 0,
+        low_stock_variants: 0,
+        payout_info: {
+          total_paid_out: "0.00",
+          last_payout_amount: null,
+          last_payout_date: null,
+          last_payout_status: null,
+        },
+      },
+    });
+    renderSellerOverview();
+    await screen.findByText("No payout requested yet");
+    expect(
+      screen.getByRole("heading", { name: "No sales activity" }),
+    ).toBeInTheDocument();
+    expect(screen.queryByText("Action needed")).not.toBeInTheDocument();
+    expect(screen.queryByText("processed")).not.toBeInTheDocument();
+  });
+});

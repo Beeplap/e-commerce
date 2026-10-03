@@ -1,6 +1,9 @@
 "use client";
 
 import { Dialog } from "@/components/ui/dialog";
+import { ReviewDetail } from "./review-detail";
+import { Button } from "@/components/ui/button";
+import { DateDisplay } from "@/components/ui/displays";
 
 import { useCallback, useState } from "react";
 import {
@@ -47,6 +50,10 @@ export function SellerReviews() {
   const canReport = access.permissions.includes("reviews.report");
 
   const [page, setPage] = useState(1);
+  const [inspecting, setInspecting] = useState<{
+    scope: string | undefined;
+    review: ProductReview;
+  } | null>(null);
   const [selectedReview, setSelectedReview] = useState<ProductReview | null>(
     null,
   );
@@ -135,6 +142,12 @@ export function SellerReviews() {
         </p>
       )}
 
+      {inspecting && inspecting.scope === access.id && (
+        <ReviewDetail
+          review={inspecting.review}
+          onClose={() => setInspecting(null)}
+        />
+      )}
       <div className="mt-6 space-y-4">
         {reviews.length === 0 && (
           <p className="py-12 text-center text-sm text-slate-500">
@@ -157,13 +170,19 @@ export function SellerReviews() {
                     </span>
                   )}
                 </div>
+                <Button
+                  variant="quiet"
+                  onClick={() => setInspecting({ scope: access.id, review })}
+                >
+                  View review
+                </Button>
                 <div className="mt-1 font-semibold text-slate-900">
                   {review.title}
                 </div>
                 <p className="mt-1 text-sm text-slate-700">{review.body}</p>
                 <div className="mt-2 text-xs text-slate-500">
                   By {review.customer.email} · {review.product.name} ·{" "}
-                  {new Date(review.created_at).toLocaleDateString()}
+                  <DateDisplay value={review.created_at} />
                 </div>
 
                 {review.seller_response && (

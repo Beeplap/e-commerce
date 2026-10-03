@@ -1,6 +1,8 @@
 "use client";
 
 import { Dialog } from "@/components/ui/dialog";
+import { PayoutDetail } from "./payout-detail";
+import { Button } from "@/components/ui/button";
 
 import { useCallback, useState } from "react";
 import { useSeller } from "@/features/workspaces/seller-workspace";
@@ -104,7 +106,18 @@ function PayoutsList({ sellerId }: { sellerId: string }) {
   const balance: SellerBalance | undefined =
     balanceQuery.kind === "ready" ? balanceQuery.data : undefined;
 
+  const [inspectingPayout, setInspectingPayout] = useState<Payout | null>(null);
+
   const columns: Column<Payout>[] = [
+    {
+      id: "inspect",
+      heading: "Inspect",
+      cell: (item) => (
+        <Button variant="quiet" onClick={() => setInspectingPayout(item)}>
+          View details
+        </Button>
+      ),
+    },
     {
       id: "payout_number",
       heading: "Payout Reference",
@@ -162,6 +175,12 @@ function PayoutsList({ sellerId }: { sellerId: string }) {
 
   return (
     <div className="space-y-6">
+      {inspectingPayout && (
+        <PayoutDetail
+          payout={inspectingPayout}
+          onClose={() => setInspectingPayout(null)}
+        />
+      )}
       <PageHeader
         title="Payouts"
         description="View past disbursements and submit new payout requests against your available balance."

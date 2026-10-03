@@ -3,11 +3,21 @@
 import { Dialog } from "@/components/ui/dialog";
 
 import Link from "next/link";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useSeller } from "@/features/workspaces/seller-workspace";
 import { ForbiddenScreen } from "@/features/workspaces/forbidden-screen";
 import { useApiQuery } from "@/lib/api/use-api-query";
-import { Money, DateDisplay } from "@/components/ui/displays";
+import { DateDisplay } from "@/components/ui/displays";
+import { Identifier } from "@/components/ui/identifier";
+import {
+  DetailSection,
+  DetailGrid,
+  SplitLayout,
+} from "@/components/ui/detail-layout";
+import { Timeline } from "@/components/ui/timeline";
+import { RecordDetails } from "@/components/ui/record-details";
+import { OrderItems, OrderTotals } from "./order-sections";
+import { RelatedOrderWork } from "./related-order-work";
 import {
   ApiErrorState,
   FormField,
@@ -24,7 +34,6 @@ import {
   shipSellerOrder,
   deliverSellerOrder,
   cancelSellerOrder,
-  type OrderItem,
 } from "./api";
 
 const inputStyle =
@@ -32,21 +41,6 @@ const inputStyle =
 
 const dangerButton =
   "inline-flex min-h-11 items-center justify-center rounded-lg bg-red-700 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-red-800 disabled:cursor-not-allowed disabled:opacity-50";
-
-function Card({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-xs">
-      <h2 className="mb-4 text-base font-semibold text-slate-950">{title}</h2>
-      {children}
-    </section>
-  );
-}
 
 export function SellerOrderDetailView({ orderId }: { orderId: string }) {
   const access = useSeller();
@@ -66,6 +60,9 @@ export function SellerOrderDetailView({ orderId }: { orderId: string }) {
       orderId={orderId}
       canUpdate={canUpdate}
       canCancel={canCancel}
+      sellerName={access.seller.display_name}
+      canReadShipments={access.permissions.includes("fulfillment.read")}
+      canReadReturns={access.permissions.includes("returns.read")}
     />
   );
 }
@@ -75,11 +72,17 @@ function SellerOrderDetailContent({
   orderId,
   canUpdate,
   canCancel,
+  sellerName,
+  canReadShipments,
+  canReadReturns,
 }: {
   sellerId: string;
   orderId: string;
   canUpdate: boolean;
   canCancel: boolean;
+  sellerName: string;
+  canReadShipments: boolean;
+  canReadReturns: boolean;
 }) {
   const load = useCallback(
     (signal: AbortSignal) => getSellerOrder(sellerId, orderId, signal),
@@ -88,6 +91,7 @@ function SellerOrderDetailContent({
   const query = useApiQuery(`${sellerId}:order:${orderId}`, load);
 
   const [actionLoading, setActionLoading] = useState(false);
+  const actionInFlight = useRef(false);
   const [actionError, setActionError] = useState<string | null>(null);
 
   // Ship modal state
@@ -100,6 +104,8 @@ function SellerOrderDetailContent({
   const [cancelReason, setCancelReason] = useState("");
 
   const handleAction = async (actionFn: () => Promise<unknown>) => {
+    if (actionInFlight.current) return;
+    actionInFlight.current = true;
     try {
       setActionLoading(true);
       setActionError(null);
@@ -110,6 +116,7 @@ function SellerOrderDetailContent({
         err instanceof Error ? err.message : "Failed to perform order action.",
       );
     } finally {
+      actionInFlight.current = false;
       setActionLoading(false);
     }
   };
@@ -156,14 +163,14 @@ function SellerOrderDetailContent({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <Link
           href="/seller/orders"
           className="text-sm font-semibold text-teal-800 hover:underline"
         >
           &larr; Back to orders
         </Link>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {canUpdate && order.status === "pending" && (
             <button
               type="button"
@@ -230,187 +237,95 @@ function SellerOrderDetailContent({
 
       <PageHeader
         title={order.seller_order_number}
-        description={`Parent Order: ${order.order_number} • Customer: ${order.customer_email}`}
+        description={`${sellerName} · Customer: ${order.customer_email}`}
         actions={
           <div className="flex items-center gap-2">
-            <StatusBadge status={order.status} />
-            {order.status === "cancelled" && (
-              <span className="inline-flex rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-bold text-red-800 uppercase">
-                CANCELLED
-              </span>
-            )}
+            <StatusBadge
+              status={order.status === "cancelled" ? "CANCELLED" : order.status}
+            />
           </div>
         }
       />
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        {/* Left Column: Items and Timeline */}
-        <div className="space-y-6 lg:col-span-2">
-          {/* Order Items Table */}
-          <Card title="Order Items">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm text-slate-700">
-                <thead className="border-b border-slate-200 bg-slate-50 text-xs font-semibold uppercase text-slate-500">
-                  <tr>
-                    <th className="px-4 py-3">Item</th>
-                    <th className="px-4 py-3">Quantity</th>
-                    <th className="px-4 py-3">Unit Price</th>
-                    <th className="px-4 py-3">Tax</th>
-                    <th className="px-4 py-3">Total</th>
-                    <th className="px-4 py-3">Net Amount</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {order.items.map((item: OrderItem) => (
-                    <tr key={item.id} className="hover:bg-slate-50">
-                      <td className="px-4 py-3">
-                        <div className="font-medium text-slate-900">
-                          {item.product_name_snapshot}
-                        </div>
-                        <div className="text-xs text-slate-500">
-                          SKU: {item.sku_snapshot}
-                        </div>
-                      </td>
-                      <td className="px-4 py-3">{item.quantity}</td>
-                      <td className="px-4 py-3">
-                        <Money
-                          amount={item.unit_price}
-                          currency={order.currency}
-                        />
-                      </td>
-                      <td className="px-4 py-3">
-                        <Money
-                          amount={item.tax_amount}
-                          currency={order.currency}
-                        />
-                      </td>
-                      <td className="px-4 py-3 font-medium text-slate-900">
-                        <Money amount={item.total} currency={order.currency} />
-                      </td>
-                      <td className="px-4 py-3 font-medium text-teal-800">
-                        <Money
-                          amount={item.seller_net_amount}
-                          currency={order.currency}
-                        />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </Card>
-
-          {/* Timeline / Status History */}
-          <Card title="Order Status History">
-            {order.status_history.length === 0 ? (
-              <p className="text-sm text-slate-500">
-                No status transitions recorded.
-              </p>
-            ) : (
-              <ul className="space-y-4">
-                {order.status_history.map((h) => (
-                  <li
-                    key={h.id}
-                    className="flex flex-col gap-1 rounded-lg border border-slate-100 bg-slate-50 p-3 sm:flex-row sm:items-center sm:justify-between"
-                  >
-                    <div>
-                      <span className="font-semibold text-slate-800">
-                        {h.from_status.toUpperCase()} &rarr;{" "}
-                        {h.to_status.toUpperCase()}
-                      </span>
-                      {h.notes && (
-                        <p className="mt-1 text-xs text-slate-600">{h.notes}</p>
-                      )}
-                    </div>
-                    <div className="text-xs text-slate-400">
-                      <DateDisplay value={h.created_at} />
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </Card>
-        </div>
-
-        {/* Right Column: Financial Breakdown & Addresses */}
-        <div className="space-y-6">
-          {/* Financial Breakdown */}
-          <Card title="Financial Summary">
-            <div className="space-y-3 text-sm">
-              <div className="flex justify-between text-slate-600">
-                <span>Subtotal:</span>
-                <Money amount={order.subtotal} currency={order.currency} />
-              </div>
-              <div className="flex justify-between text-slate-600">
-                <span>Discounts:</span>
-                <span>
-                  -
-                  <Money
-                    amount={order.discount_total}
-                    currency={order.currency}
-                  />
-                </span>
-              </div>
-              <div className="flex justify-between text-slate-600">
-                <span>Tax:</span>
-                <Money amount={order.tax_total} currency={order.currency} />
-              </div>
-              <div className="flex justify-between text-slate-600">
-                <span>Shipping:</span>
-                <Money
-                  amount={order.shipping_total}
-                  currency={order.currency}
-                />
-              </div>
-              <div className="flex justify-between text-slate-600">
-                <span>Platform Commission:</span>
-                <span>
-                  -
-                  <Money
-                    amount={order.commission_total}
-                    currency={order.currency}
-                  />
-                </span>
-              </div>
-              <div className="flex justify-between border-t border-slate-200 pt-3 font-bold text-slate-900">
-                <span>Seller Net Total:</span>
-                <span className="text-teal-800">
-                  <Money
-                    amount={order.seller_net_total}
-                    currency={order.currency}
-                  />
-                </span>
-              </div>
-            </div>
-          </Card>
-
-          {/* Shipping Address */}
-          <Card title="Shipping Address">
-            {Object.keys(order.shipping_address_snapshot).length === 0 ? (
-              <p className="text-sm text-slate-500">
-                No shipping address recorded.
-              </p>
-            ) : (
-              <pre className="font-sans text-xs whitespace-pre-wrap text-slate-700">
-                {JSON.stringify(order.shipping_address_snapshot, null, 2)}
-              </pre>
-            )}
-          </Card>
-
-          {/* Billing Address */}
-          <Card title="Billing Address">
-            {Object.keys(order.billing_address_snapshot).length === 0 ? (
-              <p className="text-sm text-slate-500">
-                No billing address recorded.
-              </p>
-            ) : (
-              <pre className="font-sans text-xs whitespace-pre-wrap text-slate-700">
-                {JSON.stringify(order.billing_address_snapshot, null, 2)}
-              </pre>
-            )}
-          </Card>
-        </div>
-      </div>
+      <DetailGrid
+        items={[
+          {
+            label: "Parent Order",
+            value: <Identifier value={order.order_number} copyable />,
+          },
+          { label: "Created", value: <DateDisplay value={order.created_at} /> },
+        ]}
+      />
+      <SplitLayout
+        asideLabel="Financial and customer information"
+        aside={
+          <>
+            <DetailSection title="Financial Summary">
+              <OrderTotals
+                values={order}
+                currency={order.currency}
+                total={order.seller_net_total}
+                totalLabel="Seller Net Total"
+              />
+            </DetailSection>
+            <DetailSection title="Shipping Address">
+              <RecordDetails
+                value={order.shipping_address_snapshot}
+                emptyMessage="No shipping address recorded."
+              />
+            </DetailSection>
+            <DetailSection title="Billing Address">
+              <RecordDetails
+                value={order.billing_address_snapshot}
+                emptyMessage="No billing address recorded."
+              />
+            </DetailSection>
+            <DetailSection title="Order metadata">
+              <DetailGrid
+                items={[
+                  {
+                    label: "Seller Order ID",
+                    value: <Identifier value={order.id} copyable />,
+                  },
+                  {
+                    label: "Updated",
+                    value: <DateDisplay value={order.updated_at} />,
+                  },
+                ]}
+              />
+            </DetailSection>
+          </>
+        }
+      >
+        <DetailSection title="Order Items">
+          <OrderItems items={order.items} currency={order.currency} />
+        </DetailSection>
+        <DetailSection title="Order Status History">
+          <Timeline
+            label="Order state changes"
+            emptyMessage="No status transitions recorded."
+            entries={order.status_history.map((h) => ({
+              id: h.id,
+              title: `${h.from_status.replaceAll("_", " ")} → ${h.to_status.replaceAll("_", " ")}`,
+              occurredAt: h.created_at,
+              description: h.notes,
+              actor: h.actor_id ? (
+                <>
+                  Actor <Identifier value={h.actor_id} />
+                </>
+              ) : undefined,
+            }))}
+          />
+        </DetailSection>
+        {(canReadShipments || canReadReturns) && (
+          <RelatedOrderWork
+            sellerId={sellerId}
+            orderId={orderId}
+            canReadShipments={canReadShipments}
+            canReadReturns={canReadReturns}
+          />
+        )}
+      </SplitLayout>
 
       {/* Ship Modal */}
       {shipModalOpen && (

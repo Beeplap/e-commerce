@@ -5,7 +5,10 @@ import { ManagedForm } from "@/features/sellers/forms";
 import { FormSection } from "@/components/ui/layout";
 import { confirmUnsavedNavigation } from "@/components/ui/unsaved-changes";
 import { DataTable } from "@/components/ui/data-table";
-import { DateDisplay, Money } from "@/components/ui/displays";
+import { Timeline } from "@/components/ui/timeline";
+import { DetailSection } from "@/components/ui/detail-layout";
+import { Identifier } from "@/components/ui/identifier";
+import { Money } from "@/components/ui/displays";
 import { Pagination } from "@/components/ui/pagination";
 import {
   ApiErrorState,
@@ -965,42 +968,24 @@ export function ProductHistory({
     return <ApiErrorState error={query.error} onRetry={query.retry} />;
 
   return (
-    <section className={panel}>
-      <h2 className="mb-2 text-xl font-semibold">Status history</h2>
-      <p className="mb-4 text-sm text-slate-600">
-        Audit trail of all review, approval, rejection, and revision
-        transitions.
-      </p>
-
-      <DataTable
-        caption="Product status history"
-        rows={query.data.results}
-        rowKey={(r) => r.id}
-        columns={[
-          {
-            id: "from",
-            heading: "From",
-            cell: (r) =>
-              r.from_status ? <StatusBadge status={r.from_status} /> : "Draft",
-          },
-          {
-            id: "to",
-            heading: "To",
-            cell: (r) => <StatusBadge status={r.to_status} />,
-          },
-          {
-            id: "reason",
-            heading: "Reason / Notes",
-            cell: (r) => r.reason || "—",
-          },
-          {
-            id: "date",
-            heading: "Date",
-            cell: (r) => (
-              <DateDisplay value={r.created_at} timezone={timezone} />
-            ),
-          },
-        ]}
+    <DetailSection
+      title="Status history"
+      description="Recorded review, approval, rejection and revision transitions."
+    >
+      <Timeline
+        label="Product status history"
+        timezone={timezone}
+        entries={query.data.results.map((entry) => ({
+          id: entry.id,
+          title: `${entry.from_status || "Draft"} → ${entry.to_status.replaceAll("_", " ")}`,
+          occurredAt: entry.created_at,
+          description: entry.reason,
+          actor: (
+            <>
+              Actor <Identifier value={entry.actor_id} />
+            </>
+          ),
+        }))}
       />
       {query.data.count > 25 && (
         <Pagination
@@ -1009,6 +994,6 @@ export function ProductHistory({
           onPageChange={setPage}
         />
       )}
-    </section>
+    </DetailSection>
   );
 }

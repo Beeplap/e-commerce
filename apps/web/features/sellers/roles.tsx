@@ -181,9 +181,9 @@ export function SellerRoles() {
         )}
         {roles.map((role) => (
           <div key={role.id} className="rounded-xl border border-slate-200 p-4">
-            <div className="flex items-start justify-between">
-              <div>
-                <div className="flex items-center gap-2">
+            <div className="flex flex-col items-start justify-between gap-3 sm:flex-row">
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-2">
                   <span className="font-semibold text-slate-900">
                     {role.name}
                   </span>
@@ -203,7 +203,7 @@ export function SellerRoles() {
                     {role.permissions.map((perm) => (
                       <span
                         key={perm}
-                        className="rounded bg-teal-50 px-1.5 py-0.5 font-mono text-xs text-teal-700"
+                        className="rounded bg-teal-50 px-1.5 py-0.5 font-mono text-xs break-all text-teal-700"
                       >
                         {perm}
                       </span>

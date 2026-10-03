@@ -15,6 +15,7 @@ import { Pagination } from "@/components/ui/pagination";
 import { Money, DateDisplay } from "@/components/ui/displays";
 import {
   ApiErrorState,
+  FormField,
   LoadingState,
   PageHeader,
   primaryButton,
@@ -133,7 +134,7 @@ function SellerBalancesList({ canManage }: { canManage: boolean }) {
             Adjust Balance
           </button>
         ) : (
-          <span className="text-xs text-slate-400">View only</span>
+          <span className="text-xs text-ui-muted">View only</span>
         ),
     },
   ];
@@ -155,14 +156,19 @@ function SellerBalancesList({ canManage }: { canManage: boolean }) {
       />
 
       {/* Search Bar */}
-      <form onSubmit={handleSearchSubmit} className="mb-6 flex gap-3">
-        <input
-          type="text"
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-          placeholder="Search by seller name or slug…"
-          className={`max-w-md ${inputStyle}`}
-        />
+      <form
+        onSubmit={handleSearchSubmit}
+        className="mb-6 flex flex-wrap items-end gap-3"
+      >
+        <div className="min-w-0 flex-1 max-w-md">
+          <FormField
+            label="Search sellers"
+            type="search"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            placeholder="Search by seller name or slug…"
+          />
+        </div>
         <button type="submit" className={secondaryButton}>
           Search
         </button>

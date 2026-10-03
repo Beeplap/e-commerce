@@ -22,7 +22,11 @@ import { ForbiddenScreen } from "@/features/workspaces/forbidden-screen";
 
 function StarRating({ rating }: { rating: number }) {
   return (
-    <span aria-label={`${rating} out of 5 stars`} className="text-amber-500">
+    <span
+      role="img"
+      aria-label={`${rating} out of 5 stars`}
+      className="text-ui-warning"
+    >
       {"★".repeat(rating)}
       {"☆".repeat(5 - rating)}
     </span>
@@ -132,11 +136,16 @@ export function AdminReviews() {
         </div>
       </div>
 
-      <div className="mt-4 flex gap-2">
+      <div
+        role="group"
+        aria-label="Review status"
+        className="mt-4 flex flex-wrap gap-2"
+      >
         {STATUS_FILTERS.map((f) => (
           <button
             key={f.value}
             type="button"
+            aria-pressed={statusFilter === f.value}
             onClick={() => {
               setStatusFilter(f.value);
               setPage(1);
@@ -178,7 +187,7 @@ export function AdminReviews() {
             key={review.id}
             className="rounded-xl border border-slate-200 p-4"
           >
-            <div className="flex items-start justify-between gap-4">
+            <div className="flex flex-col items-start justify-between gap-4 sm:flex-row">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <StarRating rating={review.rating} />
@@ -215,7 +224,7 @@ export function AdminReviews() {
                 )}
               </div>
               {canModerate && (
-                <div className="flex flex-col gap-2 shrink-0">
+                <div className="flex flex-wrap gap-2 sm:shrink-0">
                   {review.status !== "published" && (
                     <button
                       type="button"

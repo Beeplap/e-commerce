@@ -12,6 +12,7 @@ import { useApiQuery } from "@/lib/api/use-api-query";
 import { DateDisplay } from "@/components/ui/displays";
 import {
   ApiErrorState,
+  SelectField,
   FormField,
   LoadingState,
   PageHeader,
@@ -474,21 +475,16 @@ function ReturnsContent({
           size="wide"
         >
           <form onSubmit={handleReceive} className="mt-4 space-y-3">
-            <div>
-              <label className="block text-xs font-medium text-slate-700 mb-1">
-                Item Condition
-              </label>
-              <select
-                value={restockCondition}
-                onChange={(e) => setRestockCondition(e.target.value)}
-                className="w-full rounded-lg border border-slate-300 p-2 text-sm"
-              >
-                <option value="unopened">Unopened / Like New</option>
-                <option value="opened">Opened / Inspected</option>
-                <option value="damaged">Damaged (Not Restockable)</option>
-                <option value="defective">Defective</option>
-              </select>
-            </div>
+            <SelectField
+              label="Item Condition"
+              value={restockCondition}
+              onChange={(e) => setRestockCondition(e.target.value)}
+            >
+              <option value="unopened">Unopened / Like New</option>
+              <option value="opened">Opened / Inspected</option>
+              <option value="damaged">Damaged (Not Restockable)</option>
+              <option value="defective">Defective</option>
+            </SelectField>
             <div className="flex items-center gap-2">
               <input
                 id="restock-checkbox"

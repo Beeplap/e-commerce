@@ -113,7 +113,7 @@ export function NotificationsPanel() {
                 : "border-teal-200 bg-teal-50"
             }`}
           >
-            <div className="flex items-start justify-between gap-4">
+            <div className="flex flex-col items-start justify-between gap-4 sm:flex-row">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   {!notification.is_read && (
@@ -132,7 +132,7 @@ export function NotificationsPanel() {
                 <p className="mt-1 text-sm text-slate-700">
                   {notification.body}
                 </p>
-                <p className="mt-1.5 text-xs text-slate-400">
+                <p className="mt-1.5 text-xs text-ui-muted">
                   {new Date(notification.created_at).toLocaleString()}
                 </p>
               </div>

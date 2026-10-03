@@ -1,6 +1,8 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { Dialog } from "@/components/ui/dialog";
+
+import { useCallback, useRef, useState } from "react";
 import { useSeller } from "@/features/workspaces/seller-workspace";
 import { ForbiddenScreen } from "@/features/workspaces/forbidden-screen";
 import { useApiQuery } from "@/lib/api/use-api-query";
@@ -185,9 +187,12 @@ function WarehouseForm({
   const [isActive, setIsActive] = useState(warehouse?.is_active ?? true);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const pending = useRef(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (pending.current) return;
+    pending.current = true;
     setError(null);
     setSubmitting(true);
 
@@ -210,32 +215,19 @@ function WarehouseForm({
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to save warehouse");
     } finally {
+      pending.current = false;
       setSubmitting(false);
     }
   };
 
   return (
-    <div
-      role="dialog"
-      aria-labelledby="warehouse-dialog-title"
-      className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
+    <Dialog
+      open
+      title={isEditing ? "Edit Warehouse" : "Create Warehouse"}
+      onClose={onClose}
+      busy={submitting}
+      error={error}
     >
-      <h2
-        id="warehouse-dialog-title"
-        className="text-lg font-semibold text-slate-900 mb-4"
-      >
-        {isEditing ? "Edit Warehouse" : "Create Warehouse"}
-      </h2>
-
-      {error && (
-        <div
-          role="alert"
-          className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800"
-        >
-          {error}
-        </div>
-      )}
-
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <FormField
@@ -301,6 +293,7 @@ function WarehouseForm({
           <button
             type="button"
             onClick={onClose}
+            data-dialog-cancel
             className={secondaryButton}
             disabled={submitting}
           >
@@ -321,6 +314,6 @@ function WarehouseForm({
           </button>
         </div>
       </form>
-    </div>
+    </Dialog>
   );
 }

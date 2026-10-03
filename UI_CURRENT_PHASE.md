@@ -1,8 +1,8 @@
 # UI phase selector
 
-UI PHASE 31 — responsive and accessibility mastery
+UI PHASE 32 — human-design cleanup
 
-Phase 30 is complete: sized loading placeholders, geometry-only list reload continuity, confirmed compact clipboard feedback, reduced-motion opening/save/status/tab feedback and corrected wide-dialog width. Frontend lint, TypeScript, all 176 tests, formatting and production build passed. Begin Phase 31 after the Phase 30 commit and push succeed. Phase 31 requires live viewport/manual accessibility checks; browser discovery currently returns no available browser. Record this gap and do not claim those checks passed.
+Phase 31 implementation is complete: named controls, keyboard tabs, full exact chart alternatives, native warehouse modality, focus/touch/contrast and responsive triage improvements. Frontend lint, TypeScript, all 182 tests, formatting and production build passed. Begin Phase 32 after the Phase 31 commit and push succeed. Browser discovery still returns no browser. The user directed continuation after being informed of required live QA; proceed with source/automated work while recording all viewport/manual/visual checks as unverified in `docs/ui-accessibility.md`. Do not claim visual acceptance.
 
 Roadmap: `instrutions3.md` (the supplied filename).
 

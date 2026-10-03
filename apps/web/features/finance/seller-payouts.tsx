@@ -170,7 +170,7 @@ function PayoutsList({ sellerId }: { sellerId: string }) {
         payout.processed_at ? (
           <DateDisplay value={payout.processed_at} />
         ) : (
-          <span className="text-xs text-slate-400">—</span>
+          <span className="text-xs text-ui-muted">—</span>
         ),
     },
   ];

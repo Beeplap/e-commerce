@@ -17,6 +17,54 @@ body {
   outline-offset: 3px;
 }
 
+/* Legacy workflow controls share the same readable input size as the primitives. */
+.ui-workspace
+  :where(
+    input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+    select,
+    textarea
+  ) {
+  min-height: 2.75rem;
+  font-size: 1rem;
+}
+
+.ui-workspace
+  :where(
+    button,
+    input:not([type="checkbox"]):not([type="radio"]),
+    select,
+    textarea
+  ):disabled {
+  background-color: var(--ui-surface-muted);
+  border-color: var(--ui-border);
+  color: var(--ui-disabled);
+  opacity: 1;
+}
+
+.ui-workspace
+  :where(a[href], button, summary, input, select, textarea, [tabindex]),
+.ui-workspace [id^="product-"] {
+  scroll-margin-block: calc(var(--ui-topbar-height) + 1rem);
+}
+
+@media (pointer: coarse) {
+  .ui-workspace :where(button, summary) {
+    min-height: 2.75rem;
+    min-width: 2.75rem;
+  }
+  .ui-workspace label:has(input[type="checkbox"], input[type="radio"]),
+  .ui-workspace :where(input[type="checkbox"], input[type="radio"]) + label {
+    min-height: 2.75rem;
+    display: flex;
+    align-items: center;
+  }
+  .ui-workspace .ui-data-value a[href] {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+  }
+}
+
 .ui-dialog,
 .ui-drawer {
   text-align: left;

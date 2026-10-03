@@ -84,6 +84,8 @@ Prefer:
 
 Use the existing design/component stack unless there is a strong reason to extend it.
 
+Work on `ui-overhaul` using `UI_CURRENT_PHASE.md`. Do not modify the concurrent backend worktree. User-confirmed execution on 2026-10-03: after each UI phase passes its checks, update progress/design documentation and the UI selector, commit and push, then continue automatically. A failed check or push blocks advancement. Security/backend work merges first; rebase the clean, tested UI branch onto it afterward. After Phase 26, critique actual Seller Dashboard screenshots at 1440px and mobile when available before further dashboard edits. Record missing visual evidence honestly. Finish at Phase 33.
+
 Every UI phase must end by running:
 
 - frontend lint
@@ -235,7 +237,7 @@ At completion print:
 
 UI PHASE 23 COMPLETE
 
-Then STOP.
+After all checks pass, update documentation and `UI_CURRENT_PHASE.md`, commit and push to `ui-overhaul`, then continue to the next UI phase.
 
 ---
 
@@ -371,7 +373,7 @@ Print:
 
 UI PHASE 24 COMPLETE
 
-Then STOP.
+After all checks pass, update documentation and `UI_CURRENT_PHASE.md`, commit and push to `ui-overhaul`, then continue to the next UI phase.
 
 ---
 
@@ -509,7 +511,7 @@ Print:
 
 UI PHASE 25 COMPLETE
 
-Then STOP.
+After all checks pass, update documentation and `UI_CURRENT_PHASE.md`, commit and push to `ui-overhaul`, then continue to the next UI phase.
 
 ---
 
@@ -619,7 +621,7 @@ Print:
 
 UI PHASE 26 COMPLETE
 
-Then STOP.
+After all checks pass, update documentation and `UI_CURRENT_PHASE.md`, commit and push to `ui-overhaul`, then continue to the next UI phase.
 
 ---
 
@@ -719,7 +721,7 @@ Print:
 
 UI PHASE 27 COMPLETE
 
-Then STOP.
+After all checks pass, update documentation and `UI_CURRENT_PHASE.md`, commit and push to `ui-overhaul`, then continue to the next UI phase.
 
 ---
 
@@ -828,7 +830,7 @@ Print:
 
 UI PHASE 28 COMPLETE
 
-Then STOP.
+After all checks pass, update documentation and `UI_CURRENT_PHASE.md`, commit and push to `ui-overhaul`, then continue to the next UI phase.
 
 ---
 
@@ -926,7 +928,7 @@ Print:
 
 UI PHASE 29 COMPLETE
 
-Then STOP.
+After all checks pass, update documentation and `UI_CURRENT_PHASE.md`, commit and push to `ui-overhaul`, then continue to the next UI phase.
 
 ---
 
@@ -994,7 +996,7 @@ Print:
 
 UI PHASE 30 COMPLETE
 
-Then STOP.
+After all checks pass, update documentation and `UI_CURRENT_PHASE.md`, commit and push to `ui-overhaul`, then continue to the next UI phase.
 
 ---
 
@@ -1064,7 +1066,7 @@ Print:
 
 UI PHASE 31 COMPLETE
 
-Then STOP.
+After all checks pass, update documentation and `UI_CURRENT_PHASE.md`, commit and push to `ui-overhaul`, then continue to the next UI phase.
 
 ---
 
@@ -1142,7 +1144,7 @@ Print:
 
 UI PHASE 32 COMPLETE
 
-Then STOP.
+After all checks pass, update documentation and `UI_CURRENT_PHASE.md`, commit and push to `ui-overhaul`, then continue to the next UI phase.
 
 ---
 

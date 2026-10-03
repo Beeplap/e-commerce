@@ -7,6 +7,7 @@ import { Dialog } from "@/components/ui/dialog";
 import { useCallback, useState } from "react";
 import {
   ApiErrorState,
+  SelectField,
   LoadingState,
   primaryButton,
   secondaryButton,
@@ -293,24 +294,17 @@ export function AdminPromotions() {
               title="Discount and eligibility"
               description="Choose the discount and any order thresholds. Rules are validated by the backend."
             >
-              <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">
-                  Discount type
-                </label>
-                <select
-                  value={discountType}
-                  onChange={(e) =>
-                    setDiscountType(
-                      e.target.value as Promotion["discount_type"],
-                    )
-                  }
-                  className="min-h-9 w-full rounded-lg border border-slate-300 px-2 py-1.5 text-sm"
-                >
-                  <option value="PERCENTAGE">Percentage</option>
-                  <option value="FIXED_AMOUNT">Fixed amount</option>
-                  <option value="FREE_SHIPPING">Free shipping</option>
-                </select>
-              </div>
+              <SelectField
+                label="Discount type"
+                value={discountType}
+                onChange={(e) =>
+                  setDiscountType(e.target.value as Promotion["discount_type"])
+                }
+              >
+                <option value="PERCENTAGE">Percentage</option>
+                <option value="FIXED_AMOUNT">Fixed amount</option>
+                <option value="FREE_SHIPPING">Free shipping</option>
+              </SelectField>
               {discountType !== "FREE_SHIPPING" && (
                 <FormField
                   label="Discount value"

@@ -8,6 +8,7 @@ import { DateDisplay } from "@/components/ui/displays";
 import { useCallback, useState } from "react";
 import {
   ApiErrorState,
+  TextareaField,
   LoadingState,
   primaryButton,
   secondaryButton,
@@ -20,7 +21,11 @@ import { useSeller } from "@/features/workspaces/seller-workspace";
 
 function StarRating({ rating }: { rating: number }) {
   return (
-    <span aria-label={`${rating} out of 5 stars`} className="text-amber-500">
+    <span
+      role="img"
+      aria-label={`${rating} out of 5 stars`}
+      className="text-ui-warning"
+    >
       {"★".repeat(rating)}
       {"☆".repeat(5 - rating)}
     </span>
@@ -159,7 +164,7 @@ export function SellerReviews() {
             key={review.id}
             className="rounded-xl border border-slate-200 p-4"
           >
-            <div className="flex items-start justify-between gap-4">
+            <div className="flex flex-col items-start justify-between gap-4 sm:flex-row">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <StarRating rating={review.rating} />
@@ -204,7 +209,7 @@ export function SellerReviews() {
                 )}
               </div>
 
-              <div className="flex flex-col gap-2 shrink-0">
+              <div className="flex flex-wrap gap-2 sm:shrink-0">
                 {canRespond && !review.seller_response && (
                   <button
                     type="button"
@@ -278,19 +283,14 @@ export function SellerReviews() {
             <p className="mt-1">{selectedReview.body}</p>
           </div>
           <form onSubmit={handleRespond} className="mt-4 space-y-3">
-            <div>
-              <label className="block text-xs font-medium text-slate-700 mb-1">
-                Your response
-              </label>
-              <textarea
-                value={responseText}
-                onChange={(e) => setResponseText(e.target.value)}
-                rows={4}
-                required
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
-                placeholder="Thank you for your feedback…"
-              />
-            </div>
+            <TextareaField
+              label="Your response"
+              value={responseText}
+              onChange={(e) => setResponseText(e.target.value)}
+              rows={4}
+              required
+              placeholder="Thank you for your feedback…"
+            />
 
             <div className="flex justify-end gap-2">
               <button

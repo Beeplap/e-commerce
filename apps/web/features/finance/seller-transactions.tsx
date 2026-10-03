@@ -111,7 +111,7 @@ function TransactionsList({ sellerId }: { sellerId: string }) {
           {!entry.seller_order_number &&
             !entry.payout_number &&
             !entry.payment_reference && (
-              <span className="text-slate-400">—</span>
+              <span className="text-ui-muted">—</span>
             )}
         </div>
       ),

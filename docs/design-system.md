@@ -10,6 +10,8 @@ Financial/security mutations still wait for validated Django responses. Do not o
 
 ## Direction and scope
 
+Phase 31 accessibility rules are detailed in `docs/ui-accessibility.md`: named legacy controls, coherent keyboard tabs, a complete trend-data alternative, native warehouse modality and keyboard account dismissal. Workspace-scoped minimum input sizes, touch targets, readable disabled colors and sticky-header focus margins include legacy workflows without altering public merchandising layouts. Responsive triage actions stack; complex configuration/ledgers retain complete evidence through local scrolling. Preserve these contracts during Phase 32 cleanup and integration. Live visual/accessibility acceptance remains outstanding.
+
 Phase 23 defines the contract; Phase 24 implements primitives; later phases migrate workflows. Presentation lives in `apps/web/styles/tokens.css`, shared components in `components/ui`, and domain composition in `features`. Preserve the feature/API/auth boundaries. Do not invent data, backend features, hidden authority, or screen-level token variants to evade this system.
 
 Design for long merchant/platform work sessions: compact hierarchy, aligned data, calm neutrals, visible keyboard focus and specific actions. Public storefront layouts may retain merchandising density while sharing colors, controls and accessibility.

@@ -163,7 +163,7 @@ export function WorkspaceFrame({
   const groups = workspaceNavigation(mode, user, access);
   const crumbs = workspaceBreadcrumbs(mode, pathname, groups);
   return (
-    <div className="min-h-screen bg-ui-canvas text-ui-foreground">
+    <div className="ui-workspace min-h-screen bg-ui-canvas text-ui-foreground">
       <a
         href="#workspace-content"
         className="sr-only fixed top-2 left-2 z-50 rounded-control bg-ui-accent p-3 text-white focus:not-sr-only"

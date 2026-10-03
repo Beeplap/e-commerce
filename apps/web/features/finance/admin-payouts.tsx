@@ -182,7 +182,7 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
       heading: "Actions",
       cell: (item) => {
         if (!canManage) {
-          return <span className="text-xs text-slate-400">View only</span>;
+          return <span className="text-xs text-ui-muted">View only</span>;
         }
 
         const isApproving = approvingId === item.id;
@@ -234,7 +234,7 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
               )}
 
               {(item.status === "PROCESSED" || item.status === "REJECTED") && (
-                <span className="text-xs text-slate-400">Finalized</span>
+                <span className="text-xs text-ui-muted">Finalized</span>
               )}
             </div>
 

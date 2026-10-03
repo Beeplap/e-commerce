@@ -11,6 +11,7 @@ import { useApiQuery } from "@/lib/api/use-api-query";
 import { DateDisplay } from "@/components/ui/displays";
 import {
   ApiErrorState,
+  SelectField,
   FormField,
   LoadingState,
   PageHeader,
@@ -493,20 +494,15 @@ function ShipmentsContent({
           error={formError}
         >
           <form onSubmit={handleAddEvent} className="mt-4 space-y-3">
-            <div>
-              <label className="block text-xs font-medium text-slate-700 mb-1">
-                Status
-              </label>
-              <select
-                value={eventStatus}
-                onChange={(e) => setEventStatus(e.target.value)}
-                className="w-full rounded-lg border border-slate-300 p-2 text-sm"
-              >
-                <option value="in_transit">In Transit</option>
-                <option value="out_for_delivery">Out for Delivery</option>
-                <option value="delivered">Delivered</option>
-              </select>
-            </div>
+            <SelectField
+              label="Status"
+              value={eventStatus}
+              onChange={(e) => setEventStatus(e.target.value)}
+            >
+              <option value="in_transit">In Transit</option>
+              <option value="out_for_delivery">Out for Delivery</option>
+              <option value="delivered">Delivered</option>
+            </SelectField>
             <FormField
               label="Location"
               value={eventLocation}

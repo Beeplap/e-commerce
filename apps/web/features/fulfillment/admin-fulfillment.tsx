@@ -1,5 +1,6 @@
 "use client";
 
+import { Tabs } from "@/components/ui/tabs";
 import { Dialog } from "@/components/ui/dialog";
 
 import { useCallback, useState } from "react";
@@ -257,95 +258,73 @@ function AdminFulfillmentDashboard({ canRefund }: { canRefund: boolean }) {
         }
       />
 
-      <nav
-        aria-label="Fulfillment navigation"
-        className="mb-6 flex gap-2 border-b border-slate-200"
-      >
-        <button
-          type="button"
-          onClick={() => setActiveTab("shipments")}
-          className={`px-4 py-2 text-sm font-semibold border-b-2 -mb-px motion-safe:transition-colors duration-[var(--ui-duration-fast)] ${
-            activeTab === "shipments"
-              ? "border-teal-700 text-teal-700"
-              : "border-transparent text-slate-600 hover:text-slate-900"
-          }`}
-        >
-          Shipments
-        </button>
-        <button
-          type="button"
-          onClick={() => setActiveTab("returns")}
-          className={`px-4 py-2 text-sm font-semibold border-b-2 -mb-px motion-safe:transition-colors duration-[var(--ui-duration-fast)] ${
-            activeTab === "returns"
-              ? "border-teal-700 text-teal-700"
-              : "border-transparent text-slate-600 hover:text-slate-900"
-          }`}
-        >
-          Returns
-        </button>
-        <button
-          type="button"
-          onClick={() => setActiveTab("refunds")}
-          className={`px-4 py-2 text-sm font-semibold border-b-2 -mb-px motion-safe:transition-colors duration-[var(--ui-duration-fast)] ${
-            activeTab === "refunds"
-              ? "border-teal-700 text-teal-700"
-              : "border-transparent text-slate-600 hover:text-slate-900"
-          }`}
-        >
-          Refunds
-        </button>
-      </nav>
-
-      {activeTab === "shipments" &&
-        (shipmentsQuery.kind === "loading" ? (
-          <LoadingState variant="table" />
-        ) : shipmentsQuery.kind === "error" ? (
-          <ApiErrorState
-            error={shipmentsQuery.error}
-            onRetry={shipmentsQuery.retry}
-          />
-        ) : (
-          <DataTable
-            caption="Marketplace Shipments"
-            columns={shipmentCols}
-            rows={shipmentsQuery.data.results}
-            rowKey={(r) => r.id}
-          />
-        ))}
-
-      {activeTab === "returns" &&
-        (returnsQuery.kind === "loading" ? (
-          <LoadingState variant="table" />
-        ) : returnsQuery.kind === "error" ? (
-          <ApiErrorState
-            error={returnsQuery.error}
-            onRetry={returnsQuery.retry}
-          />
-        ) : (
-          <DataTable
-            caption="Marketplace Returns"
-            columns={returnCols}
-            rows={returnsQuery.data.results}
-            rowKey={(r) => r.id}
-          />
-        ))}
-
-      {activeTab === "refunds" &&
-        (refundsQuery.kind === "loading" ? (
-          <LoadingState variant="table" />
-        ) : refundsQuery.kind === "error" ? (
-          <ApiErrorState
-            error={refundsQuery.error}
-            onRetry={refundsQuery.retry}
-          />
-        ) : (
-          <DataTable
-            caption="Marketplace Refunds"
-            columns={refundCols}
-            rows={refundsQuery.data.results}
-            rowKey={(r) => r.id}
-          />
-        ))}
+      <Tabs
+        label="Fulfillment views"
+        value={activeTab}
+        onChange={setActiveTab}
+        items={[
+          {
+            value: "shipments",
+            label: "Shipments",
+            content:
+              shipmentsQuery.kind === "loading" ? (
+                <LoadingState variant="table" />
+              ) : shipmentsQuery.kind === "error" ? (
+                <ApiErrorState
+                  error={shipmentsQuery.error}
+                  onRetry={shipmentsQuery.retry}
+                />
+              ) : (
+                <DataTable
+                  caption="Marketplace Shipments"
+                  columns={shipmentCols}
+                  rows={shipmentsQuery.data.results}
+                  rowKey={(row) => row.id}
+                />
+              ),
+          },
+          {
+            value: "returns",
+            label: "Returns",
+            content:
+              returnsQuery.kind === "loading" ? (
+                <LoadingState variant="table" />
+              ) : returnsQuery.kind === "error" ? (
+                <ApiErrorState
+                  error={returnsQuery.error}
+                  onRetry={returnsQuery.retry}
+                />
+              ) : (
+                <DataTable
+                  caption="Marketplace Returns"
+                  columns={returnCols}
+                  rows={returnsQuery.data.results}
+                  rowKey={(row) => row.id}
+                />
+              ),
+          },
+          {
+            value: "refunds",
+            label: "Refunds",
+            content:
+              refundsQuery.kind === "loading" ? (
+                <LoadingState variant="table" />
+              ) : refundsQuery.kind === "error" ? (
+                <ApiErrorState
+                  error={refundsQuery.error}
+                  onRetry={refundsQuery.retry}
+                />
+              ) : (
+                <DataTable
+                  caption="Marketplace Refunds"
+                  columns={refundCols}
+                  rows={refundsQuery.data.results}
+                  rowKey={(row) => row.id}
+                />
+              ),
+          },
+        ]}
+      />
 
       {/* Platform Refund Modal */}
       {showRefundModal && (

@@ -16,13 +16,19 @@ export function AccountMenu() {
   const inFlight = useRef(false);
   const menu = useRef<HTMLDetailsElement>(null);
   useEffect(() => {
-    function dismissOutside(event: PointerEvent) {
+    function dismissOutside(event: PointerEvent | FocusEvent) {
       if (
         event.target instanceof Node &&
         !menu.current?.contains(event.target) &&
-        menu.current
-      )
+        menu.current?.open
+      ) {
+        if (
+          event.type === "pointerdown" &&
+          menu.current.contains(document.activeElement)
+        )
+          menu.current.querySelector("summary")?.focus();
         menu.current.open = false;
+      }
     }
     function dismissOnEscape(event: KeyboardEvent) {
       if (event.key === "Escape" && menu.current?.open) {
@@ -31,9 +37,11 @@ export function AccountMenu() {
       }
     }
     document.addEventListener("pointerdown", dismissOutside);
+    document.addEventListener("focusin", dismissOutside);
     document.addEventListener("keydown", dismissOnEscape);
     return () => {
       document.removeEventListener("pointerdown", dismissOutside);
+      document.removeEventListener("focusin", dismissOutside);
       document.removeEventListener("keydown", dismissOnEscape);
     };
   }, []);

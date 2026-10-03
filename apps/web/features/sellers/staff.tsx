@@ -6,6 +6,7 @@ import { useCallback, useRef, useState } from "react";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import {
   ApiErrorState,
+  SelectField,
   LoadingState,
   primaryButton,
   secondaryButton,
@@ -212,8 +213,9 @@ export function SellerStaff() {
                 </td>
                 <td className="px-4 py-3 text-slate-700">
                   {changingMemberId === member.id ? (
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       <select
+                        aria-label={`Role for ${member.user.email}`}
                         value={newRoleId}
                         onChange={(e) => setNewRoleId(e.target.value)}
                         className="rounded-lg border border-slate-300 px-2 py-1 text-xs"
@@ -287,7 +289,7 @@ export function SellerStaff() {
                 )}
                 {canManage && member.role.is_owner && (
                   <td className="px-4 py-3 text-right">
-                    <span className="text-xs text-slate-400">Protected</span>
+                    <span className="text-xs text-ui-muted">Protected</span>
                   </td>
                 )}
               </tr>
@@ -355,26 +357,21 @@ export function SellerStaff() {
               placeholder="colleague@example.com"
               required
             />
-            <div>
-              <label className="block text-xs font-medium text-slate-700 mb-1">
-                Role
-              </label>
-              <select
-                value={inviteRoleId}
-                onChange={(e) => setInviteRoleId(e.target.value)}
-                required
-                className="min-h-9 w-full rounded-lg border border-slate-300 px-2 py-1.5 text-sm"
-              >
-                <option value="">Select a role…</option>
-                {roles
-                  .filter((r) => !r.is_owner)
-                  .map((r) => (
-                    <option key={r.id} value={r.id}>
-                      {r.name}
-                    </option>
-                  ))}
-              </select>
-            </div>
+            <SelectField
+              label="Role"
+              value={inviteRoleId}
+              onChange={(e) => setInviteRoleId(e.target.value)}
+              required
+            >
+              <option value="">Select a role…</option>
+              {roles
+                .filter((r) => !r.is_owner)
+                .map((r) => (
+                  <option key={r.id} value={r.id}>
+                    {r.name}
+                  </option>
+                ))}
+            </SelectField>
 
             <div className="mt-4 flex justify-end gap-2">
               <button

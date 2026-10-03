@@ -2,6 +2,7 @@
 
 import { useId, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { DataTable } from "@/components/ui/data-table";
 import { formatMoney } from "@/components/ui/displays";
 import { EmptyState } from "@/components/ui/primitives";
 
@@ -63,6 +64,7 @@ export function TrendChart({
     "sales",
   );
   const [selected, setSelected] = useState(0);
+  const [showData, setShowData] = useState(false);
   const identity = useId();
   const data = points.map((point, index) => ({
     ...point,
@@ -241,6 +243,53 @@ export function TrendChart({
       <p className="text-ui-caption text-ui-muted">
         Recorded order days only. Missing dates are not filled with estimates.
       </p>
+      <details
+        className="mt-3"
+        onToggle={(event) => setShowData(event.currentTarget.open)}
+      >
+        <summary className="flex min-h-11 cursor-pointer items-center text-ui-body font-medium text-ui-accent hover:underline">
+          View trend data
+        </summary>
+        {showData && (
+          <DataTable
+            caption="Recorded daily trend data"
+            mobile="scroll"
+            rows={points.map((point, index) => ({
+              ...point,
+              secondary: secondaryValues[index]!,
+            }))}
+            rowKey={(point) => point.date}
+            columns={[
+              {
+                id: "date",
+                heading: "Date",
+                cell: (point) => (
+                  <time dateTime={point.date}>{point.date}</time>
+                ),
+              },
+              {
+                id: "sales",
+                heading: label,
+                align: "right",
+                cell: (point) => formatMoney(point.value, currency),
+              },
+              {
+                id: "secondary",
+                heading: secondaryLabel,
+                align: "right",
+                cell: (point) => formatMoney(point.secondary, currency),
+              },
+              {
+                id: "orders",
+                heading: "Orders",
+                align: "right",
+                cell: (point) =>
+                  new Intl.NumberFormat("en-US").format(point.orders),
+              },
+            ]}
+          />
+        )}
+      </details>
     </figure>
   );
 }

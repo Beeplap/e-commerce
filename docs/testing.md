@@ -2,6 +2,8 @@
 
 ## UI overhaul validation
 
+Phase 31 adds six accessibility workflow tests; the suite is **182 tests across 24 files**. See `docs/ui-accessibility.md` for source/contrast evidence and every unverified viewport/manual check. The user directed continued implementation after being informed of unavailable browser access; no screenshot or screen-reader pass is claimed.
+
 Each phase from `instrutions3.md` requires `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build` and formatting before commit/push/advancement. Phase 23 passes all 120 existing frontend tests and calculates 18 contrast pairings for the new presentation tokens. Backend/API behavior is not changed by this foundation. Browser screenshots, keyboard/zoom/screen-reader behavior and responsive/cross-browser QA are distinct evidence: code inspection and jsdom tests do not establish them. Record route, viewport, state and image path at the Phase 26 dashboard checkpoint and later visual passes; explicitly record unavailable browser access. Test the integrated UI again after the security-first rebase.
 
 Phase 28 adds form/navigation/dialog and staff-revocation regressions; the frontend suite is **164 tests across 21 files**. Form errors and failed inputs, saved/dirty baselines, duplicate pending submits, native traversal cancellation, unmount cleanup and nested dialog application state are covered. Jsdom's shared `showModal`/`close` mocks set open state only. They do not implement modality, tab containment or browser navigation. Live focus, Back/Forward across supported browsers, zoom and narrow layout remain separate required evidence.

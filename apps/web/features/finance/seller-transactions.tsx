@@ -70,8 +70,8 @@ function TransactionsList({ sellerId }: { sellerId: string }) {
           <span
             className={
               isNegative
-                ? "font-medium text-rose-700"
-                : "font-medium text-emerald-700"
+                ? "font-medium text-ui-danger"
+                : "font-medium text-ui-success"
             }
           >
             {isNegative ? "" : "+"}
@@ -96,17 +96,17 @@ function TransactionsList({ sellerId }: { sellerId: string }) {
       cell: (entry) => (
         <div className="text-xs">
           {entry.seller_order_number && (
-            <div className="font-medium text-slate-700">
+            <div className="font-medium text-ui-secondary">
               Order: {entry.seller_order_number}
             </div>
           )}
           {entry.payout_number && (
-            <div className="font-medium text-slate-700">
+            <div className="font-medium text-ui-secondary">
               Payout: {entry.payout_number}
             </div>
           )}
           {entry.payment_reference && (
-            <div className="text-slate-500">Ref: {entry.payment_reference}</div>
+            <div className="text-ui-muted">Ref: {entry.payment_reference}</div>
           )}
           {!entry.seller_order_number &&
             !entry.payout_number &&
@@ -120,14 +120,14 @@ function TransactionsList({ sellerId }: { sellerId: string }) {
       id: "description",
       heading: "Description",
       cell: (entry) => (
-        <span className="text-sm text-slate-800">{entry.description}</span>
+        <span className="text-sm text-ui-foreground">{entry.description}</span>
       ),
     },
     {
       id: "date",
       heading: "Timestamp",
       cell: (entry) => (
-        <span className="text-xs text-slate-500">
+        <span className="text-xs text-ui-muted">
           <DateDisplay value={entry.created_at} />
         </span>
       ),

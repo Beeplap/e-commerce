@@ -70,7 +70,7 @@ export function Variants({
       <div className="mb-4 flex items-center justify-between">
         <div>
           <h2 className="text-xl font-semibold">Variants</h2>
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-ui-secondary">
             Manage SKUs, prices, dimensions, and variant-specific attributes.
           </p>
         </div>
@@ -329,7 +329,7 @@ function VariantEditor({
       </ManagedForm>
 
       {variant && (
-        <div className="mt-6 border-t border-slate-200 pt-6">
+        <div className="mt-6 border-t border-ui-border pt-6">
           <VariantAttributeValues
             context={context}
             product={product}
@@ -452,7 +452,7 @@ function VariantAttributeValues({
 
       {canEdit && sellerId && variantLinks.length > 0 && (
         <form
-          className="mt-4 flex flex-wrap items-end gap-3 rounded-lg border border-slate-200 bg-white p-4"
+          className="mt-4 flex flex-wrap items-end gap-3 rounded-lg border border-ui-border bg-ui-surface p-4"
           onSubmit={(e) => {
             e.preventDefault();
             if (!selectedAttrId) return;
@@ -644,7 +644,7 @@ export function AttributeValues({
   return (
     <section className={panel}>
       <h2 className="mb-2 text-xl font-semibold">Product attributes</h2>
-      <p className="mb-4 text-sm text-slate-600">
+      <p className="mb-4 text-sm text-ui-secondary">
         Configurable specifications tied to the category (
         {product.category.name}).
       </p>
@@ -697,7 +697,7 @@ export function AttributeValues({
 
       {canEdit && sellerId && productLinks.length > 0 && (
         <form
-          className="mt-6 flex flex-wrap items-end gap-3 rounded-lg border border-slate-200 bg-slate-50 p-4"
+          className="mt-6 flex flex-wrap items-end gap-3 rounded-lg border border-ui-border bg-ui-surface-muted p-4"
           onSubmit={(e) => {
             e.preventDefault();
             if (!selectedAttrId) return;
@@ -823,7 +823,7 @@ export function ProductImages({
   return (
     <section className={panel}>
       <h2 className="mb-2 text-xl font-semibold">Images</h2>
-      <p className="mb-4 text-sm text-slate-600">
+      <p className="mb-4 text-sm text-ui-secondary">
         Private product images. Only JPEG and PNG formats are accepted.
       </p>
 
@@ -891,7 +891,7 @@ export function ProductImages({
 
       {canEdit && sellerId && (
         <form
-          className="mt-6 space-y-4 rounded-lg border border-slate-200 bg-slate-50 p-4"
+          className="mt-6 space-y-4 rounded-lg border border-ui-border bg-ui-surface-muted p-4"
           onSubmit={(e) => {
             e.preventDefault();
             const formData = new FormData(e.currentTarget);

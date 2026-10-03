@@ -84,7 +84,7 @@ function SellerOrdersList({ sellerId }: { sellerId: string }) {
         <div>
           <Link
             href={`/seller/orders/${item.id}`}
-            className="font-medium text-teal-800 hover:underline"
+            className="font-medium text-ui-accent hover:underline"
           >
             {item.seller_order_number}
           </Link>
@@ -139,7 +139,7 @@ function SellerOrdersList({ sellerId }: { sellerId: string }) {
       cell: (item) => (
         <Link
           href={`/seller/orders/${item.id}`}
-          className="text-xs font-semibold text-teal-700 hover:text-teal-900"
+          className="text-xs font-semibold text-ui-accent hover:text-ui-accent"
         >
           View Details &rarr;
         </Link>
@@ -151,7 +151,7 @@ function SellerOrdersList({ sellerId }: { sellerId: string }) {
     <div className="space-y-6">
       <PageHeader
         title="Orders"
-        description="Manage customer orders, fulfill shipments, and track delivery status."
+        description="Review and fulfill customer orders."
       />
 
       {/* Filter and Search Bar */}

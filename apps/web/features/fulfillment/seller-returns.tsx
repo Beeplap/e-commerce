@@ -147,7 +147,7 @@ function ReturnsContent({
       id: "number",
       heading: "Return #",
       cell: (row) => (
-        <span className="font-mono text-xs font-semibold text-slate-900">
+        <span className="font-mono text-xs font-semibold text-ui-foreground">
           {row.return_number}
         </span>
       ),
@@ -156,7 +156,7 @@ function ReturnsContent({
       id: "order",
       heading: "Order #",
       cell: (row) => (
-        <span className="font-mono text-xs text-slate-600">
+        <span className="font-mono text-xs text-ui-secondary">
           {row.seller_order_number}
         </span>
       ),
@@ -166,11 +166,11 @@ function ReturnsContent({
       heading: "Reason",
       cell: (row) => (
         <div>
-          <div className="font-medium text-slate-900 capitalize">
+          <div className="font-medium text-ui-foreground capitalize">
             {row.reason.replaceAll("_", " ")}
           </div>
           {row.customer_notes && (
-            <div className="text-xs text-slate-500 line-clamp-1">
+            <div className="text-xs text-ui-muted line-clamp-1">
               {row.customer_notes}
             </div>
           )}
@@ -187,7 +187,7 @@ function ReturnsContent({
       align: "right" as const,
       heading: "Items",
       cell: (row) => (
-        <span className="text-slate-600">
+        <span className="text-ui-secondary">
           {row.items.reduce((acc, it) => acc + it.quantity, 0)} units
         </span>
       ),
@@ -204,7 +204,7 @@ function ReturnsContent({
         <button
           type="button"
           onClick={() => setSelectedReturn(row)}
-          className="text-xs font-medium text-teal-700 hover:text-teal-900"
+          className="text-xs font-medium text-ui-accent hover:text-ui-accent"
         >
           Inspect & Process
         </button>
@@ -216,7 +216,7 @@ function ReturnsContent({
     <section>
       <PageHeader
         title="Returns & RMA Management"
-        description="Inspect customer return requests, approve authorizations, and inspect returned stock for warehouse restocking."
+        description="Review returns and receive returned stock."
       />
 
       <div className="mb-6 flex flex-wrap items-center gap-4">
@@ -228,7 +228,7 @@ function ReturnsContent({
             id="returns-status-filter"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-950"
+            className="rounded-lg border border-ui-control-border bg-ui-surface px-3 py-2 text-sm text-ui-foreground"
           >
             <option value="">All statuses</option>
             <option value="requested">Requested</option>
@@ -263,23 +263,23 @@ function ReturnsContent({
             <StatusBadge status={selectedReturn.status} />
           </div>
 
-          <div className="mt-4 space-y-2 text-sm text-slate-600">
+          <div className="mt-4 space-y-2 text-sm text-ui-secondary">
             <div>
               Order:{" "}
-              <span className="font-mono text-slate-900">
+              <span className="font-mono text-ui-foreground">
                 {selectedReturn.seller_order_number}
               </span>
             </div>
             <div>
               Reason:{" "}
-              <span className="font-medium text-slate-900 capitalize">
+              <span className="font-medium text-ui-foreground capitalize">
                 {selectedReturn.reason.replaceAll("_", " ")}
               </span>
             </div>
             {selectedReturn.customer_notes && (
               <div>
                 Customer notes:{" "}
-                <span className="italic text-slate-800">
+                <span className="italic text-ui-foreground">
                   {selectedReturn.customer_notes}
                 </span>
               </div>
@@ -312,29 +312,29 @@ function ReturnsContent({
             ]}
           />
           <div className="mt-6">
-            <h3 className="text-sm font-semibold text-slate-900">
+            <h3 className="text-sm font-semibold text-ui-foreground">
               Returned Items
             </h3>
-            <ul className="mt-2 divide-y divide-slate-100 rounded-lg border border-slate-200 p-3">
+            <ul className="mt-2 divide-y divide-ui-border rounded-lg border border-ui-border p-3">
               {selectedReturn.items.map((item) => (
                 <li
                   key={item.id}
                   className="py-2 flex items-center justify-between text-sm"
                 >
                   <div>
-                    <div className="font-medium text-slate-900">
+                    <div className="font-medium text-ui-foreground">
                       {item.product_name_snapshot || item.sku_snapshot}
                     </div>
-                    <div className="text-xs text-slate-500">
+                    <div className="text-xs text-ui-muted">
                       Condition: {item.condition} | Restock:{" "}
                       {item.restock_inventory ? "Yes" : "No"}
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="font-semibold text-slate-900">
+                    <div className="font-semibold text-ui-foreground">
                       x{item.quantity}
                     </div>
-                    <div className="text-xs text-slate-600 font-mono">
+                    <div className="text-xs text-ui-secondary font-mono">
                       <span className="tabular-nums">
                         {item.refund_amount}{" "}
                         <span className="font-sans">(order currency)</span>
@@ -347,7 +347,7 @@ function ReturnsContent({
           </div>
 
           <div className="mt-6">
-            <h3 className="text-sm font-semibold text-slate-900">
+            <h3 className="text-sm font-semibold text-ui-foreground">
               Status History
             </h3>
             <Timeline
@@ -381,7 +381,7 @@ function ReturnsContent({
                 <button
                   type="button"
                   onClick={() => setShowRejectModal(true)}
-                  className="rounded-lg border border-red-300 bg-white px-3 py-2 text-xs font-semibold text-red-700 hover:bg-red-50"
+                  className="rounded-lg border border-red-300 bg-ui-surface px-3 py-2 text-xs font-semibold text-red-700 hover:bg-red-50"
                 >
                   Reject Return
                 </button>
@@ -491,11 +491,11 @@ function ReturnsContent({
                 type="checkbox"
                 checked={restockInventory}
                 onChange={(e) => setRestockInventory(e.target.checked)}
-                className="h-4 w-4 rounded border-slate-300 text-teal-600"
+                className="h-4 w-4 rounded border-ui-control-border text-ui-accent"
               />
               <label
                 htmlFor="restock-checkbox"
-                className="text-xs text-slate-700 font-medium"
+                className="text-xs text-ui-secondary font-medium"
               >
                 Restock returned items to warehouse inventory
               </label>

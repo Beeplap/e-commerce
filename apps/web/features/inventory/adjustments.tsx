@@ -70,7 +70,7 @@ function AdjustmentsList({ sellerId }: { sellerId: string }) {
     <div className="space-y-6">
       <PageHeader
         title="Inventory Audit Ledger"
-        description="Immutable record of all stock adjustments, reservations, shipments, and returns."
+        description="Stock movements, reservations and returns."
         actions={
           <div className="flex gap-2">
             <Link href="/seller/inventory" className={secondaryButton}>
@@ -107,7 +107,7 @@ function AdjustmentsList({ sellerId }: { sellerId: string }) {
             id: "timestamp",
             heading: "Date & Time",
             cell: (tx) => (
-              <span className="text-xs text-slate-600">
+              <span className="text-xs text-ui-secondary">
                 <DateDisplay value={tx.created_at} />
               </span>
             ),
@@ -125,10 +125,10 @@ function AdjustmentsList({ sellerId }: { sellerId: string }) {
               <span
                 className={`font-mono text-xs font-bold ${
                   tx.quantity_delta > 0
-                    ? "text-emerald-700"
+                    ? "text-ui-success"
                     : tx.quantity_delta < 0
-                      ? "text-rose-700"
-                      : "text-slate-700"
+                      ? "text-ui-danger"
+                      : "text-ui-secondary"
                 }`}
               >
                 {tx.quantity_delta > 0
@@ -141,7 +141,7 @@ function AdjustmentsList({ sellerId }: { sellerId: string }) {
             id: "reason",
             heading: "Reason",
             cell: (tx) => (
-              <span className="text-xs font-medium text-slate-900">
+              <span className="text-xs font-medium text-ui-foreground">
                 {tx.reason || "—"}
               </span>
             ),
@@ -150,7 +150,7 @@ function AdjustmentsList({ sellerId }: { sellerId: string }) {
             id: "reference",
             heading: "Reference",
             cell: (tx) => (
-              <span className="text-xs font-mono text-slate-500">
+              <span className="text-xs font-mono text-ui-muted">
                 {tx.reference_type && tx.reference_id
                   ? `${tx.reference_type}: ${tx.reference_id}`
                   : tx.reference_id || tx.reference_type || "—"}

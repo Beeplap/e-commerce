@@ -1,5 +1,6 @@
 "use client";
 
+import { ContentSection, StatGroup } from "@/components/ui/layout";
 import { Dialog } from "@/components/ui/dialog";
 
 import Link from "next/link";
@@ -36,10 +37,22 @@ export function SellerFinanceOverview() {
     return <ForbiddenScreen />;
   }
 
-  return <FinanceDashboard key={access.id} sellerId={sellerId} />;
+  return (
+    <FinanceDashboard
+      key={access.id}
+      sellerId={sellerId}
+      canReadPayouts={access.permissions.includes("payouts.read")}
+    />
+  );
 }
 
-function FinanceDashboard({ sellerId }: { sellerId: string }) {
+function FinanceDashboard({
+  sellerId,
+  canReadPayouts,
+}: {
+  sellerId: string;
+  canReadPayouts: boolean;
+}) {
   const [showPayoutModal, setShowPayoutModal] = useState(false);
   const [payoutAmount, setPayoutAmount] = useState("");
   const [payoutNotes, setPayoutNotes] = useState("");
@@ -65,7 +78,7 @@ function FinanceDashboard({ sellerId }: { sellerId: string }) {
     loadLedger,
   );
   const payoutsQuery = useApiQuery(
-    `${sellerId}:finance:recent-payouts`,
+    canReadPayouts ? `${sellerId}:finance:recent-payouts` : null,
     loadPayouts,
   );
 
@@ -120,8 +133,8 @@ function FinanceDashboard({ sellerId }: { sellerId: string }) {
           <span
             className={
               isNegative
-                ? "font-medium text-rose-700"
-                : "font-medium text-emerald-700"
+                ? "font-medium text-ui-danger"
+                : "font-medium text-ui-success"
             }
           >
             {isNegative ? "" : "+"}
@@ -143,14 +156,14 @@ function FinanceDashboard({ sellerId }: { sellerId: string }) {
       heading: "Description",
       cell: (entry) => (
         <div>
-          <div className="text-sm text-slate-900">{entry.description}</div>
+          <div className="text-sm text-ui-foreground">{entry.description}</div>
           {entry.seller_order_number && (
-            <div className="text-xs text-slate-500">
+            <div className="text-xs text-ui-muted">
               Order: {entry.seller_order_number}
             </div>
           )}
           {entry.payout_number && (
-            <div className="text-xs text-slate-500">
+            <div className="text-xs text-ui-muted">
               Payout: {entry.payout_number}
             </div>
           )}
@@ -198,125 +211,122 @@ function FinanceDashboard({ sellerId }: { sellerId: string }) {
     <div className="space-y-6">
       <PageHeader
         title="Finance Overview"
-        description="Monitor your account balances, settlement transactions, and payout requests."
+        description="Balances, transactions and payout requests."
         actions={
-          <button
-            type="button"
-            className={primaryButton}
-            onClick={() => setShowPayoutModal(true)}
-          >
-            Request Payout
-          </button>
+          canReadPayouts && (
+            <button
+              type="button"
+              className={primaryButton}
+              onClick={() => setShowPayoutModal(true)}
+            >
+              Request Payout
+            </button>
+          )
         }
       />
 
-      {/* Balance Summary Cards */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="text-sm font-medium text-slate-500">
-            Available Balance
-          </div>
-          <div className="mt-2 text-3xl font-semibold text-slate-900">
-            <Money
-              amount={balance.current_balance}
-              currency={balance.currency}
-            />
-          </div>
-          <div className="mt-1 text-xs text-slate-500">
-            Ready for disbursement
-          </div>
-        </div>
+      <StatGroup
+        columns={3}
+        items={[
+          {
+            label: "Available Balance",
+            primary: true,
+            value: (
+              <Money
+                amount={balance.current_balance}
+                currency={balance.currency}
+              />
+            ),
+            hint: "Available for payout",
+          },
+          {
+            label: "Pending Balance",
+            value: (
+              <Money
+                amount={balance.pending_balance}
+                currency={balance.currency}
+              />
+            ),
+            hint: "Awaiting order fulfillment",
+          },
+          {
+            label: "Total Paid Out",
+            value: (
+              <Money
+                amount={balance.total_paid_out}
+                currency={balance.currency}
+              />
+            ),
+            hint: "Lifetime payouts",
+          },
+        ]}
+      />
 
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="text-sm font-medium text-slate-500">
-            Pending Balance
-          </div>
-          <div className="mt-2 text-3xl font-semibold text-slate-900">
-            <Money
-              amount={balance.pending_balance}
-              currency={balance.currency}
+      <div className="border-t border-ui-border pt-6">
+        <ContentSection
+          id="finance-ledger"
+          title="Recent Transactions"
+          actions={
+            <Link
+              href="/seller/finance/transactions"
+              className="inline-flex min-h-11 items-center text-ui-body text-ui-accent hover:underline"
+            >
+              View all transactions
+            </Link>
+          }
+        >
+          {ledgerQuery.kind === "loading" && <LoadingState variant="table" />}
+          {ledgerQuery.kind === "error" && (
+            <ApiErrorState
+              error={ledgerQuery.error}
+              onRetry={ledgerQuery.retry}
             />
-          </div>
-          <div className="mt-1 text-xs text-slate-500">
-            Held pending order fulfillment
-          </div>
-        </div>
-
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="text-sm font-medium text-slate-500">
-            Total Paid Out
-          </div>
-          <div className="mt-2 text-3xl font-semibold text-slate-900">
-            <Money
-              amount={balance.total_paid_out}
-              currency={balance.currency}
+          )}
+          {ledgerQuery.kind === "ready" && (
+            <DataTable
+              mobile="scroll"
+              rows={ledgerQuery.data.results.slice(0, 5)}
+              columns={ledgerColumns}
+              rowKey={(row) => row.id}
+              caption="Recent ledger transactions"
             />
-          </div>
-          <div className="mt-1 text-xs text-slate-500">
-            Lifetime payouts disbursed
-          </div>
-        </div>
+          )}
+        </ContentSection>
       </div>
-
-      {/* Recent Transactions Preview */}
-      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-slate-900">
-            Recent Transactions
-          </h2>
-          <Link
-            href="/seller/finance/transactions"
-            className="text-sm font-medium text-teal-700 hover:text-teal-800"
+      {canReadPayouts && (
+        <div className="border-t border-ui-border pt-6">
+          <ContentSection
+            id="finance-payouts"
+            title="Recent Payouts"
+            actions={
+              <Link
+                href="/seller/finance/payouts"
+                className="inline-flex min-h-11 items-center text-ui-body text-ui-accent hover:underline"
+              >
+                View all payouts
+              </Link>
+            }
           >
-            View all transactions &rarr;
-          </Link>
+            {payoutsQuery.kind === "loading" && (
+              <LoadingState variant="table" />
+            )}
+            {payoutsQuery.kind === "error" && (
+              <ApiErrorState
+                error={payoutsQuery.error}
+                onRetry={payoutsQuery.retry}
+              />
+            )}
+            {payoutsQuery.kind === "ready" && (
+              <DataTable
+                rows={payoutsQuery.data.results.slice(0, 5)}
+                columns={payoutColumns}
+                rowKey={(row) => row.id}
+                caption="Recent payouts"
+              />
+            )}
+          </ContentSection>
         </div>
-        {ledgerQuery.kind === "loading" && <LoadingState />}
-        {ledgerQuery.kind === "error" && (
-          <ApiErrorState
-            error={ledgerQuery.error}
-            onRetry={ledgerQuery.retry}
-          />
-        )}
-        {ledgerQuery.kind === "ready" && (
-          <DataTable
-            rows={ledgerQuery.data.results.slice(0, 5)}
-            columns={ledgerColumns}
-            rowKey={(r) => r.id}
-            caption="Recent ledger transactions"
-          />
-        )}
-      </div>
-
-      {/* Recent Payouts Preview */}
-      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-slate-900">
-            Recent Payouts
-          </h2>
-          <Link
-            href="/seller/finance/payouts"
-            className="text-sm font-medium text-teal-700 hover:text-teal-800"
-          >
-            View all payouts &rarr;
-          </Link>
-        </div>
-        {payoutsQuery.kind === "loading" && <LoadingState />}
-        {payoutsQuery.kind === "error" && (
-          <ApiErrorState
-            error={payoutsQuery.error}
-            onRetry={payoutsQuery.retry}
-          />
-        )}
-        {payoutsQuery.kind === "ready" && (
-          <DataTable
-            rows={payoutsQuery.data.results.slice(0, 5)}
-            columns={payoutColumns}
-            rowKey={(r) => r.id}
-            caption="Recent payouts"
-          />
-        )}
-      </div>
+      )}
 
       {/* Request Payout Modal */}
       {showPayoutModal && (
@@ -326,7 +336,7 @@ function FinanceDashboard({ sellerId }: { sellerId: string }) {
           description={
             <>
               Available balance:{" "}
-              <span className="font-semibold text-slate-900">
+              <span className="font-semibold text-ui-foreground">
                 <Money
                   amount={balance.current_balance}
                   currency={balance.currency}
@@ -342,7 +352,7 @@ function FinanceDashboard({ sellerId }: { sellerId: string }) {
             <div>
               <label
                 htmlFor="payout-amount"
-                className="block text-sm font-medium text-slate-700"
+                className="block text-sm font-medium text-ui-secondary"
               >
                 Amount ({balance.currency})
               </label>
@@ -353,14 +363,14 @@ function FinanceDashboard({ sellerId }: { sellerId: string }) {
                 placeholder="0.00"
                 value={payoutAmount}
                 onChange={(e) => setPayoutAmount(e.target.value)}
-                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-teal-700 focus:outline-none"
+                className="mt-1 w-full rounded-lg border border-ui-control-border px-3 py-2 text-sm text-ui-foreground focus:border-teal-700 focus:outline-none"
               />
             </div>
 
             <div>
               <label
                 htmlFor="payout-notes"
-                className="block text-sm font-medium text-slate-700"
+                className="block text-sm font-medium text-ui-secondary"
               >
                 Notes (Optional)
               </label>
@@ -369,7 +379,7 @@ function FinanceDashboard({ sellerId }: { sellerId: string }) {
                 rows={2}
                 value={payoutNotes}
                 onChange={(e) => setPayoutNotes(e.target.value)}
-                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-teal-700 focus:outline-none"
+                className="mt-1 w-full rounded-lg border border-ui-control-border px-3 py-2 text-sm text-ui-foreground focus:border-teal-700 focus:outline-none"
               />
             </div>
 

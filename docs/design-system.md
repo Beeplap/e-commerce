@@ -1,5 +1,11 @@
 # Operational design system
 
+## Human-oriented hierarchy
+
+Use framing to separate tasks, not to decorate every record. Phase 32 gives finance work distinct pending-action, current-funds and lifetime-activity groups; exact amounts retain shared decimal display. Reviews, roles and notifications use separated rows, and promotion scope/discount evidence does not need another badge. Specialized staff/commission editors retain named local scroll regions; ordinary promotions use the shared stacked table. Shared headers and shell gutters own page spacing. Preserve different table/form/detail/dashboard compositions and concise action wording. Apply tokens to administrative surfaces without changing the public storefront.
+
+Finance visibility follows existing Django capabilities: `finance.read` does not imply `payouts.read`. A finance-only overview must remain useful without fetching payout evidence or offering its commands. This presentation rule cannot authorize any backend operation. Cross-seller financial summaries still lack reporting-currency metadata; retaining the existing USD convention is not a conversion guarantee.
+
 ## Loading and motion contract
 
 Phase 30 adds section/table/dashboard/detail skeletons with one polite loading message; decorative placeholders have no semantic rows, counts or actions. Product/order/seller and financial lists keep filters mounted. `QueryRegion` retains only the last measured content height during replacement loading, never prior API records; it cleans up ResizeObserver subscriptions and falls back without measurement support. Dialogs remain outside these regions. Verify actual geometry at the responsive checkpoint.

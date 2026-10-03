@@ -65,7 +65,7 @@ function AttributesManager({ canManage }: { canManage: boolean }) {
     <>
       <PageHeader
         title="Attributes"
-        description="Configure dynamic product specifications and variant axes."
+        description="Define product specifications and variant options."
         actions={
           canManage &&
           !editing &&
@@ -138,7 +138,7 @@ function AttributesManager({ canManage }: { canManage: boolean }) {
                           className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
                             r.is_active
                               ? "bg-green-100 text-green-800"
-                              : "bg-slate-100 text-slate-800"
+                              : "bg-ui-surface-muted text-ui-foreground"
                           }`}
                         >
                           {r.is_active ? "Active" : "Inactive"}
@@ -333,7 +333,7 @@ function AttributeOptionsManager({
           <h2 className="text-xl font-semibold">
             Options for {attribute.name}
           </h2>
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-ui-secondary">
             Predefined choices available for selection on products or variants.
           </p>
         </div>
@@ -376,7 +376,7 @@ function AttributeOptionsManager({
 
       {canManage && (
         <form
-          className="mt-6 flex flex-wrap items-end gap-3 rounded-lg border border-slate-200 bg-slate-50 p-4"
+          className="mt-6 flex flex-wrap items-end gap-3 rounded-lg border border-ui-border bg-ui-surface-muted p-4"
           onSubmit={(e) => {
             e.preventDefault();
             const form = new FormData(e.currentTarget);
@@ -454,7 +454,7 @@ function CategoryLinkManager() {
       <h3 className="mb-2 text-xl font-semibold">
         Category attributes assignment
       </h3>
-      <p className="mb-4 text-sm text-slate-600">
+      <p className="mb-4 text-sm text-ui-secondary">
         Assign configurable attributes to specific categories and enforce
         requirement rules.
       </p>
@@ -524,7 +524,7 @@ function CategoryLinkManager() {
           )}
 
           <form
-            className="mt-6 flex flex-wrap items-end gap-3 rounded-lg border border-slate-200 bg-slate-50 p-4"
+            className="mt-6 flex flex-wrap items-end gap-3 rounded-lg border border-ui-border bg-ui-surface-muted p-4"
             onSubmit={(e) => {
               e.preventDefault();
               if (!selectedAttrId) return;
@@ -553,7 +553,7 @@ function CategoryLinkManager() {
                 type="checkbox"
                 checked={isRequired}
                 onChange={(e) => setIsRequired(e.target.checked)}
-                className="h-4 w-4 rounded border-slate-300 text-teal-800"
+                className="h-4 w-4 rounded border-ui-control-border text-ui-accent"
               />
               Is required for products in this category
             </label>

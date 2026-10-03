@@ -160,7 +160,7 @@ export function PlatformSellers() {
                   cell: (seller) => (
                     <Link
                       href={`/admin/sellers/${seller.id}`}
-                      className="font-semibold text-teal-900 underline"
+                      className="font-semibold text-ui-accent underline"
                     >
                       {seller.display_name}
                     </Link>

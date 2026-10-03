@@ -49,18 +49,18 @@ export function LoginForm() {
       <div className="w-full max-w-md">
         <Link
           href="/"
-          className="mb-8 inline-flex items-center gap-3 text-lg font-semibold tracking-tight text-teal-900"
+          className="mb-8 inline-flex items-center gap-3 text-lg font-semibold tracking-tight text-ui-accent"
         >
           <span
             aria-hidden="true"
-            className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-800 text-white"
+            className="flex h-10 w-10 items-center justify-center rounded-panel bg-ui-accent text-white"
           >
             Q
           </span>
           Quick Commerce
         </Link>
         <section
-          className="rounded-2xl border border-slate-200 bg-white p-7 shadow-sm sm:p-9"
+          className="rounded-panel border border-ui-border bg-ui-surface p-7  sm:p-9"
           aria-labelledby="login-heading"
         >
           <h1
@@ -69,7 +69,7 @@ export function LoginForm() {
           >
             Welcome back
           </h1>
-          <p className="mt-2 text-sm leading-6 text-slate-600">
+          <p className="mt-2 text-sm leading-6 text-ui-secondary">
             Sign in to your seller or platform workspace.
           </p>
           {state.kind === "error" && !error && (
@@ -86,7 +86,7 @@ export function LoginForm() {
             <p className="mt-4 text-sm">
               <Link
                 href="/workspaces"
-                className="font-medium text-teal-800 underline"
+                className="font-medium text-ui-accent underline"
               >
                 Continue with your current account
               </Link>
@@ -137,7 +137,7 @@ export function LoginForm() {
             </button>
           </form>
         </section>
-        <p className="mt-6 text-center text-xs text-slate-500">
+        <p className="mt-6 text-center text-xs text-ui-muted">
           One account. The workspaces you’re authorized to manage.
         </p>
       </div>

@@ -146,7 +146,7 @@ function Products({
                   heading: "Product",
                   cell: (row) => (
                     <Link
-                      className="font-semibold text-teal-900 underline"
+                      className="font-semibold text-ui-accent underline"
                       href={`/${platform ? "admin" : "seller"}/products/${row.id}`}
                     >
                       {row.name}
@@ -175,7 +175,7 @@ function Products({
                         heading: "Seller",
                         cell: (row: { seller_id: string }) => (
                           <Link
-                            className="text-teal-900 underline"
+                            className="text-ui-accent underline"
                             href={`/admin/sellers/${row.seller_id}`}
                           >
                             Inspect seller

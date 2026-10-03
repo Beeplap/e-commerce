@@ -119,7 +119,7 @@ function BrandsList({ canManage }: { canManage: boolean }) {
                         className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
                           r.is_active
                             ? "bg-green-100 text-green-800"
-                            : "bg-slate-100 text-slate-800"
+                            : "bg-ui-surface-muted text-ui-foreground"
                         }`}
                       >
                         {r.is_active ? "Active" : "Inactive"}

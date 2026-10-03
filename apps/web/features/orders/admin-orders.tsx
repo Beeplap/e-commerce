@@ -89,7 +89,7 @@ function AdminOrdersList() {
       cell: (item) => (
         <Link
           href={`/admin/orders/${item.id}`}
-          className="font-medium text-teal-800 hover:underline"
+          className="font-medium text-ui-accent hover:underline"
         >
           {item.order_number}
         </Link>
@@ -139,7 +139,7 @@ function AdminOrdersList() {
       cell: (item) => (
         <Link
           href={`/admin/orders/${item.id}`}
-          className="text-xs font-semibold text-teal-700 hover:text-teal-900"
+          className="text-xs font-semibold text-ui-accent hover:text-ui-accent"
         >
           Inspect &rarr;
         </Link>

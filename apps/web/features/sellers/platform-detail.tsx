@@ -308,7 +308,7 @@ function SellerActions({
   return (
     <section className={panel}>
       <h2 className="mb-4 text-xl font-semibold">Seller lifecycle</h2>
-      <p className="mb-4 text-sm text-slate-600">
+      <p className="mb-4 text-sm text-ui-secondary">
         Approval requires a verified registration document and registered
         address. Members of this seller cannot perform these platform actions.
       </p>

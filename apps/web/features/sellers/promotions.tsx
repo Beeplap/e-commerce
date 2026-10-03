@@ -1,5 +1,7 @@
 "use client";
 
+import { DataTable } from "@/components/ui/data-table";
+
 import { FormSection } from "@/components/ui/layout";
 
 import { Dialog } from "@/components/ui/dialog";
@@ -7,6 +9,7 @@ import { Dialog } from "@/components/ui/dialog";
 import { useCallback, useState } from "react";
 import {
   ApiErrorState,
+  PageHeader,
   SelectField,
   LoadingState,
   primaryButton,
@@ -18,24 +21,10 @@ import type { Promotion, Coupon } from "@/lib/api/types";
 import { useApiQuery } from "@/lib/api/use-api-query";
 import { useSeller } from "@/features/workspaces/seller-workspace";
 
-function DiscountBadge({ type }: { type: Promotion["discount_type"] }) {
-  const label =
-    type === "PERCENTAGE"
-      ? "Percentage"
-      : type === "FIXED_AMOUNT"
-        ? "Fixed"
-        : "Free Shipping";
-  return (
-    <span className="inline-flex items-center rounded-full bg-teal-50 px-2 py-0.5 text-xs font-medium text-teal-700">
-      {label}
-    </span>
-  );
-}
-
 function StatusBadge({ active }: { active: boolean }) {
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${active ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-500"}`}
+      className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${active ? "bg-emerald-50 text-ui-success" : "bg-ui-surface-muted text-ui-muted"}`}
     >
       {active ? "Active" : "Inactive"}
     </span>
@@ -177,26 +166,24 @@ export function SellerPromotions() {
 
   return (
     <section>
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-semibold text-slate-950">Promotions</h1>
-          <p className="mt-1 text-sm text-slate-600">
-            Manage discounts and coupon codes for your store.
-          </p>
-        </div>
-        {canManage && (
-          <button
-            type="button"
-            onClick={() => {
-              resetCreateForm();
-              setShowCreate(true);
-            }}
-            className={primaryButton}
-          >
-            New promotion
-          </button>
-        )}
-      </div>
+      <PageHeader
+        title="Promotions"
+        description="Manage discounts and coupon codes for your store."
+        actions={
+          canManage && (
+            <button
+              type="button"
+              onClick={() => {
+                resetCreateForm();
+                setShowCreate(true);
+              }}
+              className={primaryButton}
+            >
+              New promotion
+            </button>
+          )
+        }
+      />
 
       {actionError && !showCreate && !showAddCoupon && (
         <p
@@ -207,65 +194,67 @@ export function SellerPromotions() {
         </p>
       )}
 
-      <div className="mt-6 overflow-hidden rounded-xl border border-slate-200">
-        <table className="w-full text-sm">
-          <thead className="bg-slate-50">
-            <tr>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600">
-                Promotion
-              </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600">
-                Discount
-              </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600">
-                Usage
-              </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600">
-                Status
-              </th>
-              <th className="px-4 py-3 text-right text-xs font-semibold text-slate-600">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
-            {promotions.length === 0 && (
-              <tr>
-                <td
-                  colSpan={5}
-                  className="px-4 py-8 text-center text-sm text-slate-500"
-                >
-                  No promotions yet.
-                </td>
-              </tr>
-            )}
-            {promotions.map((promo) => (
-              <tr key={promo.id} className="hover:bg-slate-50">
-                <td className="px-4 py-3">
-                  <div className="font-medium text-slate-900">{promo.name}</div>
-                  <div className="text-xs text-slate-500">
+      <div className="mt-6">
+        <DataTable
+          caption="Seller promotions"
+          rows={promotions}
+          rowKey={(promo) => promo.id}
+          columns={[
+            {
+              id: "promotion",
+              heading: "Promotion",
+              cell: (promo) => (
+                <>
+                  <div className="font-medium text-ui-foreground">
+                    {promo.name}
+                  </div>
+                  <div className="text-xs text-ui-muted">
                     {promo.description}
                   </div>
-                </td>
-                <td className="px-4 py-3">
-                  <DiscountBadge type={promo.discount_type} />
-                  <div className="mt-0.5 text-xs text-slate-600">
+                </>
+              ),
+            },
+            {
+              id: "discount",
+              heading: "Discount",
+              cell: (promo) => (
+                <>
+                  <div className="mt-0.5 text-xs text-ui-secondary">
                     {promo.discount_type === "PERCENTAGE"
                       ? `${promo.discount_value}%`
                       : promo.discount_type === "FIXED_AMOUNT"
                         ? `${promo.discount_value} off`
                         : "Free shipping"}
                   </div>
-                </td>
-                <td className="px-4 py-3 text-slate-700">
+                </>
+              ),
+            },
+            {
+              id: "usage",
+              heading: "Usage",
+              align: "right",
+              cell: (promo) => (
+                <>
                   {promo.usage_count}
                   {promo.usage_limit ? ` / ${promo.usage_limit}` : ""}
-                </td>
-                <td className="px-4 py-3">
+                </>
+              ),
+            },
+            {
+              id: "status",
+              heading: "Status",
+              cell: (promo) => (
+                <>
                   <StatusBadge active={promo.is_active} />
-                </td>
-                <td className="px-4 py-3 text-right">
-                  <div className="flex justify-end gap-2">
+                </>
+              ),
+            },
+            {
+              id: "actions",
+              heading: "Actions",
+              cell: (promo) => (
+                <>
+                  <div className="flex flex-wrap gap-2 md:justify-end">
                     <button
                       type="button"
                       onClick={() => {
@@ -297,15 +286,15 @@ export function SellerPromotions() {
                       </button>
                     )}
                   </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                </>
+              ),
+            },
+          ]}
+        />
       </div>
 
       {promotionsQuery.data.count > 25 && (
-        <div className="mt-4 flex items-center justify-between text-sm text-slate-600">
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-sm text-ui-secondary">
           <button
             type="button"
             disabled={page === 1}
@@ -341,14 +330,14 @@ export function SellerPromotions() {
           size="wide"
           error={actionError}
         >
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center justify-between gap-3">
             <button
               type="button"
               onClick={() => {
                 setShowCoupons(false);
                 setSelectedPromotion(null);
               }}
-              className="text-sm text-slate-500 hover:text-slate-700"
+              className="text-sm text-ui-muted hover:text-ui-secondary"
               data-dialog-cancel
             >
               Close
@@ -360,7 +349,7 @@ export function SellerPromotions() {
               {showAddCoupon ? (
                 <form
                   onSubmit={handleAddCoupon}
-                  className="space-y-3 rounded-lg bg-slate-50 p-4"
+                  className="space-y-3 rounded-lg bg-ui-surface-muted p-4"
                 >
                   <FormField
                     label="Coupon code"
@@ -424,20 +413,20 @@ export function SellerPromotions() {
             {couponsQuery.kind === "ready" && (
               <div className="space-y-2">
                 {couponsQuery.data.results.length === 0 && (
-                  <p className="py-6 text-center text-sm text-slate-500">
+                  <p className="py-6 text-center text-sm text-ui-muted">
                     No coupons yet.
                   </p>
                 )}
                 {couponsQuery.data.results.map((coupon) => (
                   <div
                     key={coupon.id}
-                    className="flex items-center justify-between rounded-lg border border-slate-200 p-3"
+                    className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-ui-border p-3"
                   >
                     <div>
-                      <span className="font-mono font-semibold text-slate-900">
+                      <span className="font-mono font-semibold text-ui-foreground">
                         {coupon.code}
                       </span>
-                      <div className="mt-0.5 text-xs text-slate-500">
+                      <div className="mt-0.5 text-xs text-ui-muted">
                         Used: {coupon.usage_count}
                         {coupon.usage_limit ? ` / ${coupon.usage_limit}` : ""}
                         {coupon.per_customer_limit
@@ -552,7 +541,7 @@ export function SellerPromotions() {
                 placeholder="0 = unlimited"
               />
             </FormSection>
-            <div className="flex justify-end gap-2">
+            <div className="flex flex-wrap gap-2 md:justify-end">
               <button
                 type="button"
                 onClick={() => setShowCreate(false)}

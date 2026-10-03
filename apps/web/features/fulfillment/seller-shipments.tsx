@@ -166,7 +166,7 @@ function ShipmentsContent({
       id: "number",
       heading: "Shipment #",
       cell: (row) => (
-        <span className="font-mono text-xs font-semibold text-slate-900">
+        <span className="font-mono text-xs font-semibold text-ui-foreground">
           {row.shipment_number}
         </span>
       ),
@@ -175,7 +175,7 @@ function ShipmentsContent({
       id: "order",
       heading: "Order #",
       cell: (row) => (
-        <span className="font-mono text-xs text-slate-600">
+        <span className="font-mono text-xs text-ui-secondary">
           {row.seller_order_number}
         </span>
       ),
@@ -185,9 +185,9 @@ function ShipmentsContent({
       heading: "Carrier & Tracking",
       cell: (row) => (
         <div>
-          <div className="font-medium text-slate-900">{row.carrier}</div>
+          <div className="font-medium text-ui-foreground">{row.carrier}</div>
           {row.tracking_number && (
-            <div className="text-xs text-slate-500 font-mono">
+            <div className="text-xs text-ui-muted font-mono">
               {row.tracking_number}
             </div>
           )}
@@ -204,7 +204,7 @@ function ShipmentsContent({
       align: "right" as const,
       heading: "Items",
       cell: (row) => (
-        <span className="text-slate-600">
+        <span className="text-ui-secondary">
           {row.items.reduce((acc, it) => acc + it.quantity, 0)} units
         </span>
       ),
@@ -222,7 +222,7 @@ function ShipmentsContent({
           <button
             type="button"
             onClick={() => setSelectedShipment(row)}
-            className="text-xs font-medium text-teal-700 hover:text-teal-900"
+            className="text-xs font-medium text-ui-accent hover:text-ui-accent"
           >
             Inspect
           </button>
@@ -230,7 +230,7 @@ function ShipmentsContent({
             <button
               type="button"
               onClick={() => handleDeliver(row.id)}
-              className="text-xs font-medium text-slate-600 hover:text-slate-900"
+              className="text-xs font-medium text-ui-secondary hover:text-ui-foreground"
             >
               Deliver
             </button>
@@ -244,7 +244,7 @@ function ShipmentsContent({
     <section>
       <PageHeader
         title="Shipments & Fulfillment"
-        description="Track outbound packages, carrier events, and dispatch shipments for confirmed orders."
+        description="Create shipments and track delivery."
         actions={
           canManage && (
             <button
@@ -267,7 +267,7 @@ function ShipmentsContent({
             id="shipment-status-filter"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-950"
+            className="rounded-lg border border-ui-control-border bg-ui-surface px-3 py-2 text-sm text-ui-foreground"
           >
             <option value="">All statuses</option>
             <option value="pending">Pending</option>
@@ -368,24 +368,24 @@ function ShipmentsContent({
           <div className="flex items-center justify-between">
             <StatusBadge status={selectedShipment.status} />
           </div>
-          <div className="mt-4 space-y-2 text-sm text-slate-600">
+          <div className="mt-4 space-y-2 text-sm text-ui-secondary">
             <div>
               Carrier:{" "}
-              <span className="font-medium text-slate-900">
+              <span className="font-medium text-ui-foreground">
                 {selectedShipment.carrier}
               </span>
             </div>
             {selectedShipment.tracking_number && (
               <div>
                 Tracking:{" "}
-                <span className="font-mono text-slate-900">
+                <span className="font-mono text-ui-foreground">
                   {selectedShipment.tracking_number}
                 </span>
               </div>
             )}
             <div>
               Order:{" "}
-              <span className="font-mono text-slate-900">
+              <span className="font-mono text-ui-foreground">
                 {selectedShipment.seller_order_number}
               </span>
             </div>
@@ -424,14 +424,14 @@ function ShipmentsContent({
             ]}
           />
           <div className="mt-6">
-            <h3 className="text-sm font-semibold text-slate-900">
+            <h3 className="text-sm font-semibold text-ui-foreground">
               Shipment Items
             </h3>
-            <ul className="mt-2 divide-y divide-slate-100 rounded-lg border border-slate-200 p-3">
+            <ul className="mt-2 divide-y divide-ui-border rounded-lg border border-ui-border p-3">
               {selectedShipment.items.map((item) => (
                 <li key={item.id} className="py-2 flex justify-between text-sm">
                   <span>{item.product_name_snapshot || item.sku_snapshot}</span>
-                  <span className="font-semibold text-slate-900">
+                  <span className="font-semibold text-ui-foreground">
                     x{item.quantity}
                   </span>
                 </li>
@@ -441,14 +441,14 @@ function ShipmentsContent({
 
           <div className="mt-6">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-slate-900">
+              <h3 className="text-sm font-semibold text-ui-foreground">
                 Tracking Timeline
               </h3>
               {canManage && (
                 <button
                   type="button"
                   onClick={() => setShowEventModal(true)}
-                  className="text-xs font-medium text-teal-700 hover:text-teal-900"
+                  className="text-xs font-medium text-ui-accent hover:text-ui-accent"
                 >
                   + Add Event
                 </button>

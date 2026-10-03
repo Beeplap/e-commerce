@@ -1,10 +1,14 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { FormField, PageHeader } from "@/components/ui/primitives";
+import {
+  FormField,
+  PageHeader,
+  TextareaField,
+} from "@/components/ui/primitives";
 import { useSeller } from "@/features/workspaces/seller-workspace";
 import { ForbiddenScreen } from "@/features/workspaces/forbidden-screen";
-import { ManagedForm, values, selectStyle } from "@/features/sellers/forms";
+import { ManagedForm, values } from "@/features/sellers/forms";
 import { catalogApi, type Product } from "./api";
 import { CatalogPicker } from "./picker";
 
@@ -87,16 +91,13 @@ export function ProductForm({
         maxLength={500}
         defaultValue={product?.short_description ?? ""}
       />
-      <label className="block text-sm font-medium">
-        Description
-        <textarea
-          name="description"
-          maxLength={10000}
-          defaultValue={product?.description ?? ""}
-          rows={5}
-          className={`${selectStyle} mt-2 py-3`}
-        />
-      </label>
+      <TextareaField
+        label="Description"
+        name="description"
+        maxLength={10000}
+        defaultValue={product?.description ?? ""}
+        rows={5}
+      />
     </ManagedForm>
   );
 }

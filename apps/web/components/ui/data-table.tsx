@@ -34,28 +34,28 @@ export function DataTable<T>({
       role="region"
       aria-label={caption}
       tabIndex={0}
-      className="overflow-x-auto rounded-xl border border-slate-200 bg-white"
+      className="overflow-x-auto rounded-panel border border-ui-border bg-ui-surface"
     >
-      <table className="w-full border-collapse text-left text-sm">
+      <table className="w-full border-collapse text-left text-ui-body text-ui-foreground">
         <caption className="sr-only">{caption}</caption>
-        <thead className="border-b border-slate-200 bg-slate-50 text-slate-600">
+        <thead className="border-b border-ui-border bg-ui-surface-muted text-ui-secondary">
           <tr>
             {columns.map((column) => (
               <th
                 key={column.id}
                 scope="col"
-                className="px-5 py-3 text-xs font-semibold"
+                className="px-4 py-2.5 text-ui-caption font-semibold"
               >
                 {column.heading}
               </th>
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-100">
+        <tbody className="divide-y divide-ui-border">
           {rows.map((row) => (
-            <tr key={rowKey(row)}>
+            <tr key={rowKey(row)} className="hover:bg-ui-surface-muted">
               {columns.map((column) => (
-                <td key={column.id} className="px-5 py-4">
+                <td key={column.id} className="px-4 py-3">
                   {column.cell(row)}
                 </td>
               ))}

@@ -1,6 +1,6 @@
 "use client";
 
-import { secondaryButton } from "./primitives";
+import { Button } from "./button";
 
 export function Pagination({
   page,
@@ -21,26 +21,24 @@ export function Pagination({
       aria-label="Pagination"
       className="mt-5 flex flex-wrap items-center justify-between gap-3"
     >
-      <p className="text-sm text-slate-600" aria-live="polite">
+      <p className="text-ui-caption text-ui-secondary" aria-live="polite">
         Page {page} of {pages} · {count} {count === 1 ? "record" : "records"}
       </p>
       <div className="flex gap-2">
-        <button
-          type="button"
-          className={secondaryButton}
+        <Button
+          variant="secondary"
           disabled={busy || page <= 1}
           onClick={() => onPageChange(page - 1)}
         >
           Previous
-        </button>
-        <button
-          type="button"
-          className={secondaryButton}
+        </Button>
+        <Button
+          variant="secondary"
           disabled={busy || page >= pages || page >= 10000}
           onClick={() => onPageChange(page + 1)}
         >
           Next
-        </button>
+        </Button>
       </div>
     </nav>
   );

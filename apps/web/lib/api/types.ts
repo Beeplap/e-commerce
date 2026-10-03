@@ -430,3 +430,115 @@ export interface CouponValidationResult {
   coupon: Coupon | null;
   promotion: Promotion | null;
 }
+
+export interface CustomerAddress {
+  id: string;
+  full_name: string;
+  phone: string;
+  line1: string;
+  line2: string;
+  city: string;
+  state: string;
+  postal_code: string;
+  country: string;
+  is_default: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ShippingOption {
+  method_id: string;
+  name: string;
+  carrier: string;
+  code: string;
+  min_days: number;
+  max_days: number;
+  rate: string;
+}
+
+export interface CheckoutQuoteItem {
+  item_id: string;
+  variant_id: string;
+  product_id: string;
+  product_title: string;
+  sku: string;
+  quantity: number;
+  unit_price: string;
+  line_subtotal: string;
+  available_stock: number;
+  is_in_stock: boolean;
+}
+
+export interface CheckoutQuoteSeller {
+  seller_id: string;
+  seller_name: string;
+  seller_slug: string;
+  subtotal: string;
+  shipping_fee: string;
+  discount_amount: string;
+  tax_amount: string;
+  total: string;
+  available_shipping_methods: ShippingOption[];
+  selected_shipping_method: ShippingOption | null;
+  items: CheckoutQuoteItem[];
+}
+
+export interface CheckoutQuote {
+  total_items: number;
+  subtotal: string;
+  shipping_total: string;
+  discount_total: string;
+  tax_total: string;
+  grand_total: string;
+  currency: string;
+  coupon: {
+    code: string | null;
+    is_valid: boolean;
+    discount_amount: string;
+    error_message: string | null;
+  };
+  sellers: CheckoutQuoteSeller[];
+}
+
+export interface PlacedSellerOrder {
+  id: string;
+  seller_order_number: string;
+  seller_name: string;
+  subtotal: string;
+  shipping_total: string;
+  seller_net_total: string;
+}
+
+export interface PlacedOrderResult {
+  order_id: string;
+  order_number: string;
+  customer_email: string;
+  grand_total: string;
+  currency: string;
+  payment_status: string;
+  seller_orders: PlacedSellerOrder[];
+  payment_instructions: {
+    type?: string;
+    order_id?: string;
+    status?: string;
+    client_secret?: string;
+    [key: string]: unknown;
+  };
+}
+
+export interface CheckoutQuoteInput {
+  shipping_address?: Partial<CustomerAddress>;
+  address_id?: string | null;
+  shipping_selections?: Record<string, string>;
+  coupon_code?: string | null;
+}
+
+export interface PlaceOrderInput {
+  shipping_address?: Partial<CustomerAddress>;
+  address_id?: string | null;
+  billing_address?: Partial<CustomerAddress> | null;
+  customer_email?: string | null;
+  shipping_selections?: Record<string, string>;
+  coupon_code?: string | null;
+  idempotency_key?: string | null;
+}

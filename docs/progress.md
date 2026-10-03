@@ -21,13 +21,22 @@
 - Phase 16: final architecture and security audit. Conducted full repository review across architecture boundaries, tenant isolation, RBAC consistency, authentication, CSRF, session configuration, financial correctness, inventory integrity, audit trails, structured logging, outbox reliability, container configuration, and dependency health. All 446 automated tests (336 backend + 110 frontend) passed cleanly. Produced the comprehensive final audit deliverable `docs/final-audit.md` covering architecture state, security posture, test results, performance characteristics, and operational readiness. Marked the 16-phase roadmap complete.
 - Phase 17: customer storefront and browse experience (`apps.storefront`). Public read-only catalog endpoints for categories, brands, paginated product cards with active seller and approved product filtering (`status == ACTIVE` and `seller__status == ACTIVE`), comprehensive product detail with variant options, available inventory calculation (`quantity_on_hand - quantity_reserved`), verified customer review summaries with PII-masked names (`Firstname L.`), immutable image streaming, and public seller store views with contact and rating metrics; HTTP response caching (`Cache-Control: public, max-age=60, s-maxage=300`); Next.js customer commerce frontend with responsive navigation header, trust badges footer, hero landing page, category showcase pills, product cards with discounts and stock status, interactive product detail view with multi-image gallery, variant selector, quantity counter, rating distribution breakdown, verified review list, and seller storefront page (**344 backend tests** and **115 frontend tests**, **459 total automated tests**).
 - Phase 19: shopping cart and real-time reservation checks (`apps.cart`). Server-authoritative cart calculation with line subtotals and seller subtotals; guest carts identified by session key; customer carts identified by user UUID; atomic cart merging on customer login; real-time inventory verification across active warehouses (`quantity_on_hand - quantity_reserved`); cart endpoints (`GET /api/v1/cart/`, `POST /api/v1/cart/items/`, `PATCH /api/v1/cart/items/<id>/`, `DELETE /api/v1/cart/items/<id>/`, `POST /api/v1/cart/clear/`, `GET /api/v1/cart/validate/`); Next.js slide-out cart drawer, dynamic item counter badge in header, full-page cart at `/cart` with seller grouping, out-of-stock warning banner, coupon discount validation preview, and out-of-stock checkout guards (**360 backend tests** and **125 frontend tests**, **485 total automated tests**).
+- Phase 20: customer checkout and multi-seller order splitting (`apps.checkout`). Saved customer address book (`CustomerAddress`) with automatic default address promotion/unsetting; checkout quote engine resolving per-seller logistics methods and shipping rates (Phase 9) and coupon validation (Phase 10) with 2-decimal string quantization; atomic multi-seller order placement service with `select_for_update` variant stock locking, zero overselling validation, `reserve_order_inventory` ledger transactions (Phase 6), master `Order` and child `SellerOrder` partition (Phase 7), `OrderItem` snapshots with category commission rates (Phase 8), `OrderStatusHistory`, transactional outbox event `orders.order.created` (Phase 14), and atomic cart clearing; endpoints `POST /api/v1/checkout/quote/`, `POST /api/v1/checkout/place-order/`, and addresses CRUD; Next.js checkout workflow page at `/checkout` (address book or guest address, per-seller shipping method selection, itemized order review, and order placement) and order confirmation page at `/checkout/success` (**368 backend tests** and **129 frontend tests**, **497 total automated tests**).
 - Architecture, security, authorization, data-model, stack, testing, deployment and progress guidance are maintained alongside the implementation.
 
 ## Current phase
 
-Phases 1 through 19 are fully implemented, verified, and validated. Phase 20 (Checkout & Multi-Seller Order Splitting) is the next active phase.
+Phases 1 through 20 are fully implemented, verified, and validated. Phase 21 (Payment Integration & Idempotency) is the next active phase.
 
-## Phase 19 validation results
+## Phase 20 validation results
+
+- `pnpm check`: passed cleanly.
+- PostgreSQL backend test suite: **368 passed** (including **8 comprehensive checkout and multi-seller splitting test cases** in `tests/test_phase20_checkout.py`).
+- Frontend test suite: **129 passed** across 17 test files (including **4 customer checkout and multi-seller workflow tests** in `tests/checkout.test.tsx`). Total automated repository tests: **497 passed**.
+- Type safety: Strict Mypy checked 173 source files with 0 errors. TypeScript checked Next.js frontend with 0 errors.
+- Linters: Ruff formatted and linted backend with 0 errors. ESLint passed with 0 warnings (`--max-warnings 0`). Prettier checked all repository files cleanly.
+- Offline OpenAPI: drf-spectacular schema generated cleanly without warnings.
+- Production build: Next.js Turbopack built cleanly with standalone output across 48 routes.
 
 - `pnpm check`: passed cleanly.
 - PostgreSQL backend test suite: **360 passed** (including **8 comprehensive cart and real-time reservation test cases** in `tests/test_phase19_cart.py`).
@@ -36,7 +45,6 @@ Phases 1 through 19 are fully implemented, verified, and validated. Phase 20 (Ch
 - Linters: Ruff formatted and linted backend with 0 errors. ESLint passed with 0 warnings (`--max-warnings 0`). Prettier checked all repository files cleanly.
 - Offline OpenAPI: drf-spectacular schema generated cleanly without warnings.
 - Production build: Next.js Turbopack built cleanly with standalone output across 46 routes.
-
 
 ## Phase 18 validation results
 

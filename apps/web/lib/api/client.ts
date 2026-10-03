@@ -20,6 +20,11 @@ import type {
   CartResponse,
   CartStockValidationResponse,
   CouponValidationResult,
+  CustomerAddress,
+  CheckoutQuote,
+  PlacedOrderResult,
+  CheckoutQuoteInput,
+  PlaceOrderInput,
 } from "./types";
 
 import {
@@ -635,5 +640,51 @@ export const promotionsApi = {
       method: "POST",
       parse: (v) => v as CouponValidationResult,
       body: { code, seller_id: sellerId, order_subtotal: orderSubtotal },
+    }),
+};
+
+export const checkoutApi = {
+  addresses: (signal?: AbortSignal) =>
+    apiRequest("/api/v1/checkout/addresses/", {
+      parse: (v) => v as CustomerAddress[],
+      signal,
+    }),
+
+  createAddress: (body: Partial<CustomerAddress>) =>
+    apiRequest("/api/v1/checkout/addresses/", {
+      method: "POST",
+      expectedStatus: 201,
+      parse: (v) => v as CustomerAddress,
+      body,
+    }),
+
+  updateAddress: (addressId: string, body: Partial<CustomerAddress>) =>
+    apiRequest(`/api/v1/checkout/addresses/${addressId}/`, {
+      method: "PATCH",
+      parse: (v) => v as CustomerAddress,
+      body,
+    }),
+
+  deleteAddress: (addressId: string) =>
+    apiRequest(`/api/v1/checkout/addresses/${addressId}/`, {
+      method: "DELETE",
+      expectedStatus: 204,
+      parse: () => undefined,
+    }),
+
+  quote: (body: CheckoutQuoteInput, signal?: AbortSignal) =>
+    apiRequest("/api/v1/checkout/quote/", {
+      method: "POST",
+      parse: (v) => v as CheckoutQuote,
+      body,
+      signal,
+    }),
+
+  placeOrder: (body: PlaceOrderInput) =>
+    apiRequest("/api/v1/checkout/place-order/", {
+      method: "POST",
+      expectedStatus: 201,
+      parse: (v) => v as PlacedOrderResult,
+      body,
     }),
 };

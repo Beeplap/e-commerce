@@ -2122,6 +2122,135 @@ paths:
               schema:
                 $ref: '#/components/schemas/CartStockValidation'
           description: ''
+  /api/v1/checkout/addresses/:
+    get:
+      operationId: checkout_addresses_list
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Checkout
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomerAddressOutput'
+          description: ''
+    post:
+      operationId: checkout_addresses_create
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Checkout
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerAddressInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerAddressOutput'
+          description: ''
+  /api/v1/checkout/addresses/{address_id}/:
+    patch:
+      operationId: checkout_addresses_update
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: address_id
+        schema:
+          type: string
+          pattern: ^[0-9a-f-]+$
+        required: true
+      tags:
+      - Checkout
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCustomerAddressInput'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerAddressOutput'
+          description: ''
+    delete:
+      operationId: checkout_addresses_delete
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      parameters:
+      - in: path
+        name: address_id
+        schema:
+          type: string
+          pattern: ^[0-9a-f-]+$
+        required: true
+      tags:
+      - Checkout
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/checkout/place-order/:
+    post:
+      operationId: checkout_place_order
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Checkout
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlaceOrderInput'
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlaceOrderOutput'
+          description: ''
+  /api/v1/checkout/quote/:
+    post:
+      operationId: checkout_quote
+      description: CSRF applies even to anonymous unsafe browser requests, including
+        login.
+      tags:
+      - Checkout
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckoutQuoteInput'
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckoutQuoteOutput'
+          description: ''
   /api/v1/health:
     get:
       operationId: health_retrieve
@@ -6097,6 +6226,133 @@ components:
       description: |-
         * `ok` - OK
         * `error` - Error
+    CheckoutQuoteInput:
+      type: object
+      properties:
+        shipping_address:
+          type: object
+          additionalProperties: {}
+        address_id:
+          type: string
+          format: uuid
+          nullable: true
+        shipping_selections:
+          type: object
+          additionalProperties:
+            type: string
+        coupon_code:
+          type: string
+          nullable: true
+    CheckoutQuoteItem:
+      type: object
+      properties:
+        item_id:
+          type: string
+        variant_id:
+          type: string
+        product_id:
+          type: string
+        product_title:
+          type: string
+        sku:
+          type: string
+        quantity:
+          type: integer
+        unit_price:
+          type: string
+        line_subtotal:
+          type: string
+        available_stock:
+          type: integer
+        is_in_stock:
+          type: boolean
+      required:
+      - available_stock
+      - is_in_stock
+      - item_id
+      - line_subtotal
+      - product_id
+      - product_title
+      - quantity
+      - sku
+      - unit_price
+      - variant_id
+    CheckoutQuoteOutput:
+      type: object
+      properties:
+        total_items:
+          type: integer
+        subtotal:
+          type: string
+        shipping_total:
+          type: string
+        discount_total:
+          type: string
+        tax_total:
+          type: string
+        grand_total:
+          type: string
+        currency:
+          type: string
+        coupon:
+          $ref: '#/components/schemas/CouponSummary'
+        sellers:
+          type: array
+          items:
+            $ref: '#/components/schemas/CheckoutQuoteSeller'
+      required:
+      - coupon
+      - currency
+      - discount_total
+      - grand_total
+      - sellers
+      - shipping_total
+      - subtotal
+      - tax_total
+      - total_items
+    CheckoutQuoteSeller:
+      type: object
+      properties:
+        seller_id:
+          type: string
+        seller_name:
+          type: string
+        seller_slug:
+          type: string
+        subtotal:
+          type: string
+        shipping_fee:
+          type: string
+        discount_amount:
+          type: string
+        tax_amount:
+          type: string
+        total:
+          type: string
+        available_shipping_methods:
+          type: array
+          items:
+            $ref: '#/components/schemas/ShippingOption'
+        selected_shipping_method:
+          allOf:
+          - $ref: '#/components/schemas/ShippingOption'
+          nullable: true
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CheckoutQuoteItem'
+      required:
+      - available_shipping_methods
+      - discount_amount
+      - items
+      - selected_shipping_method
+      - seller_id
+      - seller_name
+      - seller_slug
+      - shipping_fee
+      - subtotal
+      - tax_amount
+      - total
     CommissionCalculationPreview:
       type: object
       properties:
@@ -6429,6 +6685,24 @@ components:
           nullable: true
       required:
       - code
+    CouponSummary:
+      type: object
+      properties:
+        code:
+          type: string
+          nullable: true
+        valid:
+          type: boolean
+        discount_amount:
+          type: string
+        error_message:
+          type: string
+          nullable: true
+      required:
+      - code
+      - discount_amount
+      - error_message
+      - valid
     CouponValidationResult:
       type: object
       properties:
@@ -6571,6 +6845,88 @@ components:
       required:
       - name
       - permissions
+    CustomerAddressInput:
+      type: object
+      properties:
+        full_name:
+          type: string
+          maxLength: 120
+        phone:
+          type: string
+          maxLength: 32
+        line1:
+          type: string
+          maxLength: 255
+        line2:
+          type: string
+          default: ''
+          maxLength: 255
+        city:
+          type: string
+          maxLength: 100
+        state:
+          type: string
+          maxLength: 100
+        postal_code:
+          type: string
+          maxLength: 32
+        country:
+          type: string
+          default: US
+          maxLength: 2
+        is_default:
+          type: boolean
+          default: false
+      required:
+      - city
+      - full_name
+      - line1
+      - phone
+      - postal_code
+      - state
+    CustomerAddressOutput:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        full_name:
+          type: string
+        phone:
+          type: string
+        line1:
+          type: string
+        line2:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        postal_code:
+          type: string
+        country:
+          type: string
+        is_default:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+      - city
+      - country
+      - created_at
+      - full_name
+      - id
+      - is_default
+      - line1
+      - line2
+      - phone
+      - postal_code
+      - state
+      - updated_at
     DateRange:
       type: object
       properties:
@@ -7465,6 +7821,38 @@ components:
           items:
             type: string
             maxLength: 100
+    PatchedCustomerAddressInput:
+      type: object
+      properties:
+        full_name:
+          type: string
+          maxLength: 120
+        phone:
+          type: string
+          maxLength: 32
+        line1:
+          type: string
+          maxLength: 255
+        line2:
+          type: string
+          default: ''
+          maxLength: 255
+        city:
+          type: string
+          maxLength: 100
+        state:
+          type: string
+          maxLength: 100
+        postal_code:
+          type: string
+          maxLength: 32
+        country:
+          type: string
+          default: US
+          maxLength: 2
+        is_default:
+          type: boolean
+          default: false
     PatchedPromotionUpdateInput:
       type: object
       properties:
@@ -7677,6 +8065,90 @@ components:
         * `APPROVED` - Approved
         * `PROCESSED` - Processed
         * `REJECTED` - Rejected
+    PlaceOrderInput:
+      type: object
+      properties:
+        shipping_address:
+          type: object
+          additionalProperties: {}
+        address_id:
+          type: string
+          format: uuid
+          nullable: true
+        billing_address:
+          type: object
+          additionalProperties: {}
+          nullable: true
+        customer_email:
+          nullable: true
+          oneOf:
+          - type: string
+            format: email
+          - type: string
+            maxLength: 0
+        shipping_selections:
+          type: object
+          additionalProperties:
+            type: string
+        coupon_code:
+          type: string
+          nullable: true
+        idempotency_key:
+          type: string
+          nullable: true
+    PlaceOrderOutput:
+      type: object
+      properties:
+        order_id:
+          type: string
+        order_number:
+          type: string
+        customer_email:
+          type: string
+        grand_total:
+          type: string
+        currency:
+          type: string
+        payment_status:
+          type: string
+        seller_orders:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlacedSellerOrder'
+        payment_instructions:
+          type: object
+          additionalProperties: {}
+      required:
+      - currency
+      - customer_email
+      - grand_total
+      - order_id
+      - order_number
+      - payment_instructions
+      - payment_status
+      - seller_orders
+    PlacedSellerOrder:
+      type: object
+      properties:
+        id:
+          type: string
+        seller_order_number:
+          type: string
+        seller_name:
+          type: string
+        subtotal:
+          type: string
+        shipping_total:
+          type: string
+        seller_net_total:
+          type: string
+      required:
+      - id
+      - seller_name
+      - seller_net_total
+      - seller_order_number
+      - shipping_total
+      - subtotal
     PlatformDashboardMetrics:
       type: object
       properties:
@@ -9924,6 +10396,31 @@ components:
         * `delivered` - Delivered
         * `failed` - Failed
         * `cancelled` - Cancelled
+    ShippingOption:
+      type: object
+      properties:
+        method_id:
+          type: string
+        name:
+          type: string
+        carrier:
+          type: string
+        code:
+          type: string
+        min_days:
+          type: integer
+        max_days:
+          type: integer
+        rate:
+          type: string
+      required:
+      - carrier
+      - code
+      - max_days
+      - method_id
+      - min_days
+      - name
+      - rate
     StaffInviteInput:
       type: object
       properties:

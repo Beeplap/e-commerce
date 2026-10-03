@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     "apps.events",
     "apps.storefront",
     "apps.cart",
+    "apps.checkout",
 ]
 
 MIDDLEWARE = [

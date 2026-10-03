@@ -358,7 +358,7 @@ export default function CartPage() {
 
                 <div className="mt-6">
                   <Link
-                    href="/cart"
+                    href="/checkout"
                     aria-disabled={hasOutOfStock || sellers.length === 0}
                     className={`block w-full text-center rounded-xl py-3.5 text-sm font-bold text-white shadow-sm transition ${
                       hasOutOfStock || sellers.length === 0

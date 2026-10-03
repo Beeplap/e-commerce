@@ -1,8 +1,8 @@
 # UI phase selector
 
-UI PHASE 26 — seller and platform dashboards
+UI PHASE 27 — operational tables, search and filters
 
-Phase 25 is complete: grouped capability-aware navigation, contextual breadcrumbs, responsive native navigation drawer, consistent page shell and account popover behavior. Frontend lint, TypeScript, all 136 tests, formatting and production build passed. Begin Phase 26 after the Phase 25 commit and push succeed.
+Phase 26 is complete: operational priorities, grouped performance metrics, explicit reporting periods and accessible exact-value trends. Frontend lint, TypeScript, all 145 tests, formatting and production build passed. The requested desktop/mobile screenshot critique remains pending because browser discovery returned no browsers. Begin Phase 27 after the Phase 26 commit and push succeed.
 
 Roadmap: `instrutions3.md` (the supplied filename).
 

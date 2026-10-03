@@ -2,7 +2,9 @@
 
 ## UI overhaul validation
 
-Phase 31 adds six accessibility workflow tests; the suite is **182 tests across 24 files**. See `docs/ui-accessibility.md` for source/contrast evidence and every unverified viewport/manual check. The user directed continued implementation after being informed of unavailable browser access; no screenshot or screen-reader pass is claimed.
+Phase 32 adds three financial/promotion workflow regressions; the suite is **185 tests across 25 files**. A finance-only member does not request payout evidence or see payout commands; read-only promotion staff retains exact discount/usage/coupon evidence without mutation actions; a denied promotion change preserves visible failure, seller context, fresh CSRF and the original PATCH payload. Existing tests remain intact. Initial new-test failures came from incomplete pagination envelopes and incorrect mocked promotion paths; fixtures were corrected to the real contract, not the runtime validator.
+
+Phase 31 added six accessibility workflow tests. See `docs/ui-accessibility.md` for source/contrast evidence and every unverified viewport/manual check. The user directed continued implementation after being informed of unavailable browser access; no screenshot or screen-reader pass is claimed.
 
 Each phase from `instrutions3.md` requires `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build` and formatting before commit/push/advancement. Phase 23 passes all 120 existing frontend tests and calculates 18 contrast pairings for the new presentation tokens. Backend/API behavior is not changed by this foundation. Browser screenshots, keyboard/zoom/screen-reader behavior and responsive/cross-browser QA are distinct evidence: code inspection and jsdom tests do not establish them. Record route, viewport, state and image path at the Phase 26 dashboard checkpoint and later visual passes; explicitly record unavailable browser access. Test the integrated UI again after the security-first rebase.
 

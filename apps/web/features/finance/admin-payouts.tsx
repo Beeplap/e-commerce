@@ -36,7 +36,7 @@ import {
 } from "./api";
 
 const inputStyle =
-  "min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-teal-700 focus:outline-none";
+  "min-h-11 w-full rounded-lg border border-ui-control-border bg-ui-surface px-3 py-2 text-sm text-ui-foreground focus:border-teal-700 focus:outline-none";
 
 export function AdminPayouts() {
   const { state } = useAuth();
@@ -124,7 +124,7 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
       id: "payout_number",
       heading: "Payout #",
       cell: (item) => (
-        <span className="font-semibold text-slate-900">
+        <span className="font-semibold text-ui-foreground">
           {item.payout_number}
         </span>
       ),
@@ -133,7 +133,9 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
       id: "seller",
       heading: "Seller",
       cell: (item) => (
-        <span className="font-medium text-slate-800">{item.seller_name}</span>
+        <span className="font-medium text-ui-foreground">
+          {item.seller_name}
+        </span>
       ),
     },
     {
@@ -141,7 +143,7 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
       align: "right" as const,
       heading: "Amount",
       cell: (item) => (
-        <span className="font-bold text-slate-900">
+        <span className="font-bold text-ui-foreground">
           <Money amount={item.amount} currency={item.currency} />
         </span>
       ),
@@ -160,9 +162,9 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
       id: "details",
       heading: "Details",
       cell: (item) => (
-        <div className="text-xs text-slate-600">
+        <div className="text-xs text-ui-secondary">
           {item.status === "REJECTED" && (
-            <span className="text-rose-700">
+            <span className="text-ui-danger">
               Reason: {item.rejection_reason}
             </span>
           )}
@@ -200,14 +202,14 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
                       setActionError(null);
                       setApprovalTarget(item);
                     }}
-                    className="rounded-lg bg-teal-800 px-2.5 py-1 text-xs font-semibold text-white hover:bg-teal-700 disabled:opacity-50"
+                    className="rounded-lg bg-ui-accent px-2.5 py-1 text-xs font-semibold text-white hover:bg-ui-accent disabled:opacity-50"
                   >
                     {isApproving ? "Approving…" : "Approve"}
                   </button>
                   <button
                     type="button"
                     onClick={() => setRejectingPayout(item)}
-                    className="rounded-lg border border-slate-300 bg-white px-2.5 py-1 text-xs font-semibold text-rose-700 hover:bg-rose-50"
+                    className="rounded-lg border border-ui-control-border bg-ui-surface px-2.5 py-1 text-xs font-semibold text-ui-danger hover:bg-rose-50"
                   >
                     Reject
                   </button>
@@ -221,12 +223,12 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
                     onClick={() => setProcessingPayout(item)}
                     className="rounded-lg bg-emerald-700 px-2.5 py-1 text-xs font-semibold text-white hover:bg-emerald-600"
                   >
-                    Process Disbursement
+                    Process payout
                   </button>
                   <button
                     type="button"
                     onClick={() => setRejectingPayout(item)}
-                    className="rounded-lg border border-slate-300 bg-white px-2.5 py-1 text-xs font-semibold text-rose-700 hover:bg-rose-50"
+                    className="rounded-lg border border-ui-control-border bg-ui-surface px-2.5 py-1 text-xs font-semibold text-ui-danger hover:bg-rose-50"
                   >
                     Reject
                   </button>
@@ -241,7 +243,7 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
             {hasError && !approvalTarget && (
               <p
                 role="alert"
-                className="text-xs font-medium text-rose-700 max-w-xs"
+                className="text-xs font-medium text-ui-danger max-w-xs"
               >
                 {actionError.message}
               </p>
@@ -253,11 +255,11 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
   ];
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <div className="space-y-6">
       <div className="mb-4">
         <Link
           href="/admin/finance"
-          className="text-sm font-medium text-teal-800 hover:underline"
+          className="text-sm font-medium text-ui-accent hover:underline"
         >
           &larr; Back to Finance Overview
         </Link>
@@ -462,14 +464,15 @@ function ProcessPayoutModal({
   return (
     <Dialog
       open
-      title={<>Process Payout Disbursement</>}
+      title={<>Process payout</>}
       description={
         <>
           Disbursing{" "}
-          <strong className="text-slate-900">
+          <strong className="text-ui-foreground">
             {payout.amount} {payout.currency}
           </strong>{" "}
-          to <strong className="text-slate-900">{payout.seller_name}</strong> (
+          to{" "}
+          <strong className="text-ui-foreground">{payout.seller_name}</strong> (
           {payout.payout_number}).
         </>
       }
@@ -481,11 +484,11 @@ function ProcessPayoutModal({
         <div>
           <label
             htmlFor="payout-reference"
-            className="block text-xs font-semibold text-slate-700"
+            className="block text-xs font-semibold text-ui-secondary"
           >
             Bank / ACH / Transfer Reference (Optional)
           </label>
-          <p className="mb-1 text-xs text-slate-500">
+          <p className="mb-1 text-xs text-ui-muted">
             Transaction ID or bank trace number for reconciliation.
           </p>
           <input
@@ -555,10 +558,11 @@ function RejectPayoutModal({
       description={
         <>
           Rejecting{" "}
-          <strong className="text-slate-900">
+          <strong className="text-ui-foreground">
             {payout.amount} {payout.currency}
           </strong>{" "}
-          for <strong className="text-slate-900">{payout.seller_name}</strong> (
+          for{" "}
+          <strong className="text-ui-foreground">{payout.seller_name}</strong> (
           {payout.payout_number}).
         </>
       }
@@ -575,7 +579,7 @@ function RejectPayoutModal({
         <div>
           <label
             htmlFor="reject-reason"
-            className="block text-xs font-semibold text-slate-700"
+            className="block text-xs font-semibold text-ui-secondary"
           >
             Reason for Rejection *
           </label>

@@ -98,7 +98,7 @@ function RefundsContent({
       id: "number",
       heading: "Refund #",
       cell: (row) => (
-        <span className="font-mono text-xs font-semibold text-slate-900">
+        <span className="font-mono text-xs font-semibold text-ui-foreground">
           {row.refund_number}
         </span>
       ),
@@ -107,7 +107,7 @@ function RefundsContent({
       id: "order",
       heading: "Order #",
       cell: (row) => (
-        <span className="font-mono text-xs text-slate-600">
+        <span className="font-mono text-xs text-ui-secondary">
           {row.seller_order_number}
         </span>
       ),
@@ -127,7 +127,7 @@ function RefundsContent({
       align: "right" as const,
       heading: "Comm. Reversal",
       cell: (row) => (
-        <span className="text-teal-700 font-mono text-xs">
+        <span className="text-ui-accent font-mono text-xs">
           +<Money amount={row.commission_reversed} currency={row.currency} />
         </span>
       ),
@@ -137,7 +137,7 @@ function RefundsContent({
       align: "right" as const,
       heading: "Net Deduction",
       cell: (row) => (
-        <span className="font-medium text-slate-900 font-mono text-xs">
+        <span className="font-medium text-ui-foreground font-mono text-xs">
           -<Money amount={row.seller_deduction} currency={row.currency} />
         </span>
       ),
@@ -146,7 +146,7 @@ function RefundsContent({
       id: "reason",
       heading: "Reason",
       cell: (row) => (
-        <span className="text-slate-600 text-xs">{row.reason}</span>
+        <span className="text-ui-secondary text-xs">{row.reason}</span>
       ),
     },
     {
@@ -165,7 +165,7 @@ function RefundsContent({
     <section>
       <PageHeader
         title="Refunds & Financial Adjustments"
-        description="Review customer refunds, automatic marketplace commission reversals, and net ledger adjustments."
+        description="Review refunds and their ledger entries."
         actions={
           canManage && (
             <button

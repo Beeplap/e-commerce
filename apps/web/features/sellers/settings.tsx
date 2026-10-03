@@ -212,7 +212,7 @@ function AddressForms({
               />
             </FormSection>
             {kind === "registered" && (
-              <p className="text-sm text-slate-600">
+              <p className="text-sm text-ui-secondary">
                 Registered address becomes locked after document verification.
               </p>
             )}

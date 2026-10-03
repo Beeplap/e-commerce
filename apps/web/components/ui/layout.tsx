@@ -44,7 +44,9 @@ export function FormSection({
 
 export function StatGroup({
   items,
+  columns = 4,
 }: {
+  columns?: 2 | 3 | 4;
   items: readonly {
     label: string;
     value: ReactNode;
@@ -53,7 +55,9 @@ export function StatGroup({
   }[];
 }) {
   return (
-    <dl className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 xl:grid-cols-4">
+    <dl
+      className={`grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 ${columns === 2 ? "" : columns === 3 ? "xl:grid-cols-3" : "xl:grid-cols-4"}`}
+    >
       {items.map((item) => (
         <div key={item.label} className="min-w-0">
           <dt className="text-ui-caption font-medium text-ui-secondary">

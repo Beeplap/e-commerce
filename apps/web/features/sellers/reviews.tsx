@@ -8,6 +8,7 @@ import { DateDisplay } from "@/components/ui/displays";
 import { useCallback, useState } from "react";
 import {
   ApiErrorState,
+  PageHeader,
   TextareaField,
   LoadingState,
   primaryButton,
@@ -35,7 +36,7 @@ function StarRating({ rating }: { rating: number }) {
 function StatusBadge({ status }: { status: ProductReview["status"] }) {
   const cls =
     status === "published"
-      ? "bg-emerald-50 text-emerald-700"
+      ? "bg-emerald-50 text-ui-success"
       : status === "pending"
         ? "bg-amber-50 text-amber-700"
         : "bg-red-50 text-red-700";
@@ -129,14 +130,10 @@ export function SellerReviews() {
 
   return (
     <section>
-      <div>
-        <h1 className="text-xl font-semibold text-slate-950">
-          Product Reviews
-        </h1>
-        <p className="mt-1 text-sm text-slate-600">
-          View, respond to, and report customer product reviews.
-        </p>
-      </div>
+      <PageHeader
+        title="Product Reviews"
+        description="View, respond to, and report customer product reviews."
+      />
 
       {actionError && (
         <p
@@ -155,22 +152,19 @@ export function SellerReviews() {
       )}
       <div className="mt-6 space-y-4">
         {reviews.length === 0 && (
-          <p className="py-12 text-center text-sm text-slate-500">
+          <p className="py-12 text-center text-sm text-ui-muted">
             No reviews yet.
           </p>
         )}
         {reviews.map((review) => (
-          <div
-            key={review.id}
-            className="rounded-xl border border-slate-200 p-4"
-          >
+          <div key={review.id} className="border-b border-ui-border py-5">
             <div className="flex flex-col items-start justify-between gap-4 sm:flex-row">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <StarRating rating={review.rating} />
                   <StatusBadge status={review.status} />
                   {review.verified_purchase && (
-                    <span className="rounded-full bg-teal-50 px-2 py-0.5 text-xs text-teal-700">
+                    <span className="text-ui-caption text-ui-secondary">
                       Verified purchase
                     </span>
                   )}
@@ -181,25 +175,25 @@ export function SellerReviews() {
                 >
                   View review
                 </Button>
-                <div className="mt-1 font-semibold text-slate-900">
+                <div className="mt-1 font-semibold text-ui-foreground">
                   {review.title}
                 </div>
-                <p className="mt-1 text-sm text-slate-700">{review.body}</p>
-                <div className="mt-2 text-xs text-slate-500">
+                <p className="mt-1 text-sm text-ui-secondary">{review.body}</p>
+                <div className="mt-2 text-xs text-ui-muted">
                   By {review.customer.email} · {review.product.name} ·{" "}
                   <DateDisplay value={review.created_at} />
                 </div>
 
                 {review.seller_response && (
-                  <div className="mt-3 rounded-lg bg-teal-50 p-3">
-                    <p className="text-xs font-semibold text-teal-800 mb-1">
+                  <div className="mt-3 rounded-lg bg-ui-selected p-3">
+                    <p className="text-xs font-semibold text-ui-accent mb-1">
                       Your response
                     </p>
-                    <p className="text-sm text-teal-900">
+                    <p className="text-sm text-ui-accent">
                       {review.seller_response}
                     </p>
                     {review.seller_response_at && (
-                      <p className="mt-1 text-xs text-teal-600">
+                      <p className="mt-1 text-xs text-ui-accent">
                         {new Date(
                           review.seller_response_at,
                         ).toLocaleDateString()}
@@ -229,7 +223,7 @@ export function SellerReviews() {
                       setSelectedReview(review);
                       setShowReport(true);
                     }}
-                    className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                    className="rounded-lg border border-ui-control-border bg-ui-surface px-3 py-1.5 text-xs font-semibold text-ui-secondary hover:bg-ui-surface-muted"
                   >
                     Report
                   </button>
@@ -241,7 +235,7 @@ export function SellerReviews() {
       </div>
 
       {reviewsQuery.data.count > 25 && (
-        <div className="mt-4 flex items-center justify-between text-sm text-slate-600">
+        <div className="mt-4 flex items-center justify-between text-sm text-ui-secondary">
           <button
             type="button"
             disabled={page === 1}
@@ -277,7 +271,7 @@ export function SellerReviews() {
           busy={submitting}
           error={actionError}
         >
-          <div className="mt-2 rounded-lg bg-slate-50 p-3 text-sm text-slate-700">
+          <div className="mt-2 rounded-lg bg-ui-surface-muted p-3 text-sm text-ui-secondary">
             <StarRating rating={selectedReview.rating} />
             <p className="mt-1 font-semibold">{selectedReview.title}</p>
             <p className="mt-1">{selectedReview.body}</p>

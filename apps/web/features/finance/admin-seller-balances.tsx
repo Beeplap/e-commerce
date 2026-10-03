@@ -28,7 +28,7 @@ import {
 } from "./api";
 
 const inputStyle =
-  "min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-teal-700 focus:outline-none";
+  "min-h-11 w-full rounded-lg border border-ui-control-border bg-ui-surface px-3 py-2 text-sm text-ui-foreground focus:border-teal-700 focus:outline-none";
 
 export function AdminSellerBalances() {
   const { state } = useAuth();
@@ -77,10 +77,10 @@ function SellerBalancesList({ canManage }: { canManage: boolean }) {
       heading: "Seller",
       cell: (item) => (
         <div>
-          <span className="font-semibold text-slate-900">
+          <span className="font-semibold text-ui-foreground">
             {item.seller_name}
           </span>
-          <span className="block text-xs text-slate-500">
+          <span className="block text-xs text-ui-muted">
             @{item.seller_slug}
           </span>
         </div>
@@ -91,7 +91,7 @@ function SellerBalancesList({ canManage }: { canManage: boolean }) {
       align: "right" as const,
       heading: "Available Balance",
       cell: (item) => (
-        <span className="font-semibold text-emerald-700">
+        <span className="font-semibold text-ui-success">
           <Money amount={item.current_balance} currency={item.currency} />
         </span>
       ),
@@ -101,7 +101,7 @@ function SellerBalancesList({ canManage }: { canManage: boolean }) {
       align: "right" as const,
       heading: "Pending Escrow",
       cell: (item) => (
-        <span className="text-slate-600">
+        <span className="text-ui-secondary">
           <Money amount={item.pending_balance} currency={item.currency} />
         </span>
       ),
@@ -111,7 +111,7 @@ function SellerBalancesList({ canManage }: { canManage: boolean }) {
       align: "right" as const,
       heading: "Total Paid Out",
       cell: (item) => (
-        <span className="text-slate-900">
+        <span className="text-ui-foreground">
           <Money amount={item.total_paid_out} currency={item.currency} />
         </span>
       ),
@@ -129,7 +129,7 @@ function SellerBalancesList({ canManage }: { canManage: boolean }) {
           <button
             type="button"
             onClick={() => setAdjustingSeller(item)}
-            className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+            className="rounded-lg border border-ui-control-border bg-ui-surface px-3 py-1.5 text-xs font-semibold text-ui-secondary hover:bg-ui-surface-muted"
           >
             Adjust Balance
           </button>
@@ -140,11 +140,11 @@ function SellerBalancesList({ canManage }: { canManage: boolean }) {
   ];
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <div className="space-y-6">
       <div className="mb-4">
         <Link
           href="/admin/finance"
-          className="text-sm font-medium text-teal-800 hover:underline"
+          className="text-sm font-medium text-ui-accent hover:underline"
         >
           &larr; Back to Finance Overview
         </Link>
@@ -152,7 +152,7 @@ function SellerBalancesList({ canManage }: { canManage: boolean }) {
 
       <PageHeader
         title="Seller Balances"
-        description="Inspect authoritatively tracked seller balances and post manual compensating adjustments with attributable audit descriptions."
+        description="Review seller balances and record adjustments."
       />
 
       {/* Search Bar */}
@@ -180,7 +180,7 @@ function SellerBalancesList({ canManage }: { canManage: boolean }) {
               setAppliedSearch("");
               setPage(1);
             }}
-            className="text-sm font-medium text-slate-600 hover:text-slate-900"
+            className="text-sm font-medium text-ui-secondary hover:text-ui-foreground"
           >
             Clear
           </button>
@@ -270,7 +270,7 @@ function AdjustBalanceModal({
       description={
         <>
           Target:{" "}
-          <strong className="text-slate-800">{seller.seller_name}</strong> (
+          <strong className="text-ui-foreground">{seller.seller_name}</strong> (
           {seller.currency})
         </>
       }
@@ -282,11 +282,11 @@ function AdjustBalanceModal({
         <div>
           <label
             htmlFor="adjust-amount"
-            className="block text-xs font-semibold text-slate-700"
+            className="block text-xs font-semibold text-ui-secondary"
           >
             Adjustment Amount ({seller.currency}) *
           </label>
-          <p className="mb-1 text-xs text-slate-500">
+          <p className="mb-1 text-xs text-ui-muted">
             Enter a positive amount to credit (e.g. 50.00) or negative to debit
             (e.g. -25.00).
           </p>
@@ -305,11 +305,11 @@ function AdjustBalanceModal({
         <div>
           <label
             htmlFor="adjust-description"
-            className="block text-xs font-semibold text-slate-700"
+            className="block text-xs font-semibold text-ui-secondary"
           >
             Description *
           </label>
-          <p className="mb-1 text-xs text-slate-500">
+          <p className="mb-1 text-xs text-ui-muted">
             State the reason for this compensating ledger entry for accounting
             records.
           </p>

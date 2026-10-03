@@ -6,6 +6,7 @@ import { useCallback, useRef, useState } from "react";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import {
   ApiErrorState,
+  PageHeader,
   SelectField,
   LoadingState,
   primaryButton,
@@ -128,10 +129,10 @@ export function SellerStaff() {
   function statusBadge(status: StaffMember["status"]) {
     const cls =
       status === "active"
-        ? "bg-emerald-50 text-emerald-700"
+        ? "bg-emerald-50 text-ui-success"
         : status === "invited"
           ? "bg-amber-50 text-amber-700"
-          : "bg-slate-100 text-slate-600";
+          : "bg-ui-surface-muted text-ui-secondary";
     return (
       <span
         className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${cls}`}
@@ -143,23 +144,21 @@ export function SellerStaff() {
 
   return (
     <section>
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-semibold text-slate-950">Staff</h1>
-          <p className="mt-1 text-sm text-slate-600">
-            Manage team members and their roles for this seller.
-          </p>
-        </div>
-        {canManage && (
-          <button
-            type="button"
-            onClick={() => setShowInvite(true)}
-            className={primaryButton}
-          >
-            Invite member
-          </button>
-        )}
-      </div>
+      <PageHeader
+        title="Staff"
+        description="Manage team members and their roles for this seller."
+        actions={
+          canManage && (
+            <button
+              type="button"
+              onClick={() => setShowInvite(true)}
+              className={primaryButton}
+            >
+              Invite member
+            </button>
+          )
+        }
+      />
 
       {actionError && !showInvite && !revokeTarget && (
         <p
@@ -170,55 +169,61 @@ export function SellerStaff() {
         </p>
       )}
 
-      <div className="mt-6 overflow-hidden rounded-xl border border-slate-200">
-        <table className="w-full text-sm">
-          <thead className="bg-slate-50">
+      <div
+        role="region"
+        aria-label="Staff members"
+        tabIndex={0}
+        className="mt-6 max-w-full overflow-x-auto rounded-panel border border-ui-border"
+      >
+        <table className="min-w-[640px] w-full text-ui-body">
+          <caption className="sr-only">Staff members</caption>
+          <thead className="bg-ui-surface-muted">
             <tr>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600">
+              <th className="px-4 py-3 text-left text-xs font-semibold text-ui-secondary">
                 Member
               </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600">
+              <th className="px-4 py-3 text-left text-xs font-semibold text-ui-secondary">
                 Role
               </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600">
+              <th className="px-4 py-3 text-left text-xs font-semibold text-ui-secondary">
                 Status
               </th>
               {canManage && (
-                <th className="px-4 py-3 text-right text-xs font-semibold text-slate-600">
+                <th className="px-4 py-3 text-right text-xs font-semibold text-ui-secondary">
                   Actions
                 </th>
               )}
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-ui-border">
             {staff.length === 0 && (
               <tr>
                 <td
                   colSpan={canManage ? 4 : 3}
-                  className="px-4 py-8 text-center text-sm text-slate-500"
+                  className="px-4 py-8 text-center text-sm text-ui-muted"
                 >
                   No staff members yet.
                 </td>
               </tr>
             )}
             {staff.map((member) => (
-              <tr key={member.id} className="hover:bg-slate-50">
+              <tr key={member.id} className="hover:bg-ui-surface-muted">
                 <td className="px-4 py-3">
-                  <div className="font-medium text-slate-900">
+                  <div className="font-medium text-ui-foreground">
                     {member.user.first_name} {member.user.last_name}
                   </div>
-                  <div className="text-xs text-slate-500">
+                  <div className="text-xs text-ui-muted">
                     {member.user.email}
                   </div>
                 </td>
-                <td className="px-4 py-3 text-slate-700">
+                <td className="px-4 py-3 text-ui-secondary">
                   {changingMemberId === member.id ? (
                     <div className="flex flex-wrap items-center gap-2">
                       <select
                         aria-label={`Role for ${member.user.email}`}
                         value={newRoleId}
                         onChange={(e) => setNewRoleId(e.target.value)}
-                        className="rounded-lg border border-slate-300 px-2 py-1 text-xs"
+                        className="rounded-lg border border-ui-control-border px-2 py-1 text-xs"
                       >
                         <option value="">Select role…</option>
                         {roles.map((r) => (
@@ -231,7 +236,7 @@ export function SellerStaff() {
                         type="button"
                         disabled={submitting || !newRoleId}
                         onClick={() => handleRoleChange(member.id)}
-                        className="rounded-lg bg-teal-700 px-2 py-1 text-xs font-semibold text-white hover:bg-teal-800 disabled:opacity-50"
+                        className="rounded-lg bg-ui-accent px-2 py-1 text-xs font-semibold text-white hover:bg-ui-accent-hover disabled:opacity-50"
                       >
                         Save
                       </button>
@@ -241,7 +246,7 @@ export function SellerStaff() {
                           setChangingMemberId(null);
                           setNewRoleId("");
                         }}
-                        className="text-xs text-slate-500 hover:text-slate-700"
+                        className="text-xs text-ui-muted hover:text-ui-secondary"
                       >
                         Cancel
                       </button>
@@ -280,7 +285,7 @@ export function SellerStaff() {
                           setActionError(null);
                           setRevokeTarget(member);
                         }}
-                        className="rounded-lg border border-red-300 bg-white px-3 py-1.5 text-xs font-semibold text-red-700 hover:bg-red-50"
+                        className="rounded-lg border border-red-300 bg-ui-surface px-3 py-1.5 text-xs font-semibold text-red-700 hover:bg-red-50"
                       >
                         Revoke
                       </button>
@@ -299,7 +304,7 @@ export function SellerStaff() {
       </div>
 
       {staffQuery.data.count > 25 && (
-        <div className="mt-4 flex items-center justify-between text-sm text-slate-600">
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-sm text-ui-secondary">
           <button
             type="button"
             disabled={page === 1}

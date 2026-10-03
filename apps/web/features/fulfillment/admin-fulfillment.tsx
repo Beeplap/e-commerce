@@ -92,7 +92,7 @@ function AdminFulfillmentDashboard({ canRefund }: { canRefund: boolean }) {
       id: "number",
       heading: "Shipment #",
       cell: (row) => (
-        <span className="font-mono text-xs font-semibold text-slate-900">
+        <span className="font-mono text-xs font-semibold text-ui-foreground">
           {row.shipment_number}
         </span>
       ),
@@ -101,14 +101,16 @@ function AdminFulfillmentDashboard({ canRefund }: { canRefund: boolean }) {
       id: "seller",
       heading: "Seller",
       cell: (row) => (
-        <span className="font-medium text-slate-900">{row.seller_name}</span>
+        <span className="font-medium text-ui-foreground">
+          {row.seller_name}
+        </span>
       ),
     },
     {
       id: "order",
       heading: "Order #",
       cell: (row) => (
-        <span className="font-mono text-xs text-slate-600">
+        <span className="font-mono text-xs text-ui-secondary">
           {row.seller_order_number}
         </span>
       ),
@@ -118,8 +120,8 @@ function AdminFulfillmentDashboard({ canRefund }: { canRefund: boolean }) {
       heading: "Carrier",
       cell: (row) => (
         <div>
-          <div className="font-medium text-slate-900">{row.carrier}</div>
-          <div className="font-mono text-xs text-slate-500">
+          <div className="font-medium text-ui-foreground">{row.carrier}</div>
+          <div className="font-mono text-xs text-ui-muted">
             {row.tracking_number}
           </div>
         </div>
@@ -142,7 +144,7 @@ function AdminFulfillmentDashboard({ canRefund }: { canRefund: boolean }) {
       id: "number",
       heading: "Return #",
       cell: (row) => (
-        <span className="font-mono text-xs font-semibold text-slate-900">
+        <span className="font-mono text-xs font-semibold text-ui-foreground">
           {row.return_number}
         </span>
       ),
@@ -151,14 +153,16 @@ function AdminFulfillmentDashboard({ canRefund }: { canRefund: boolean }) {
       id: "seller",
       heading: "Seller",
       cell: (row) => (
-        <span className="font-medium text-slate-900">{row.seller_name}</span>
+        <span className="font-medium text-ui-foreground">
+          {row.seller_name}
+        </span>
       ),
     },
     {
       id: "order",
       heading: "Order #",
       cell: (row) => (
-        <span className="font-mono text-xs text-slate-600">
+        <span className="font-mono text-xs text-ui-secondary">
           {row.seller_order_number}
         </span>
       ),
@@ -187,7 +191,7 @@ function AdminFulfillmentDashboard({ canRefund }: { canRefund: boolean }) {
       id: "number",
       heading: "Refund #",
       cell: (row) => (
-        <span className="font-mono text-xs font-semibold text-slate-900">
+        <span className="font-mono text-xs font-semibold text-ui-foreground">
           {row.refund_number}
         </span>
       ),
@@ -196,14 +200,16 @@ function AdminFulfillmentDashboard({ canRefund }: { canRefund: boolean }) {
       id: "seller",
       heading: "Seller",
       cell: (row) => (
-        <span className="font-medium text-slate-900">{row.seller_name}</span>
+        <span className="font-medium text-ui-foreground">
+          {row.seller_name}
+        </span>
       ),
     },
     {
       id: "order",
       heading: "Order #",
       cell: (row) => (
-        <span className="font-mono text-xs text-slate-600">
+        <span className="font-mono text-xs text-ui-secondary">
           {row.seller_order_number}
         </span>
       ),
@@ -223,7 +229,7 @@ function AdminFulfillmentDashboard({ canRefund }: { canRefund: boolean }) {
       align: "right" as const,
       heading: "Comm. Reversal",
       cell: (row) => (
-        <span className="text-teal-700 font-mono text-xs">
+        <span className="text-ui-accent font-mono text-xs">
           +<Money amount={row.commission_reversed} currency={row.currency} />
         </span>
       ),
@@ -244,7 +250,7 @@ function AdminFulfillmentDashboard({ canRefund }: { canRefund: boolean }) {
     <section>
       <PageHeader
         title="Marketplace Fulfillment & Logistics"
-        description="Platform-wide logistics oversight, parcel carrier tracking, customer returns, and administrative refund resolution."
+        description="Track shipments, returns and refunds."
         actions={
           canRefund && (
             <button

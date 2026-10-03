@@ -125,11 +125,11 @@ function PayoutsList({ sellerId }: { sellerId: string }) {
       heading: "Payout Reference",
       cell: (payout) => (
         <div>
-          <span className="font-mono text-sm font-semibold text-slate-900">
+          <span className="font-mono text-sm font-semibold text-ui-foreground">
             {payout.payout_number}
           </span>
           {payout.notes && (
-            <div className="mt-0.5 text-xs text-slate-500">{payout.notes}</div>
+            <div className="mt-0.5 text-xs text-ui-muted">{payout.notes}</div>
           )}
         </div>
       ),
@@ -139,7 +139,7 @@ function PayoutsList({ sellerId }: { sellerId: string }) {
       align: "right" as const,
       heading: "Amount",
       cell: (payout) => (
-        <span className="font-semibold text-slate-900">
+        <span className="font-semibold text-ui-foreground">
           <Money amount={payout.amount} currency={payout.currency} />
         </span>
       ),
@@ -199,21 +199,21 @@ function PayoutsList({ sellerId }: { sellerId: string }) {
 
       {/* Available Balance Reminder Card */}
       {balance && (
-        <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-6 py-4">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-ui-border py-5">
           <div>
-            <div className="text-xs font-medium uppercase tracking-wider text-slate-500">
+            <div className="text-ui-caption font-medium text-ui-muted">
               Available for Payout
             </div>
-            <div className="mt-1 text-2xl font-bold text-slate-900">
+            <div className="mt-1 text-2xl font-bold text-ui-foreground">
               <Money
                 amount={balance.current_balance}
                 currency={balance.currency}
               />
             </div>
           </div>
-          <div className="text-right text-xs text-slate-500">
+          <div className="text-right text-xs text-ui-muted">
             Total Paid Out to Date:{" "}
-            <span className="font-medium text-slate-700">
+            <span className="font-medium text-ui-secondary">
               <Money
                 amount={balance.total_paid_out}
                 currency={balance.currency}
@@ -261,7 +261,7 @@ function PayoutsList({ sellerId }: { sellerId: string }) {
         )}
         {payoutsQuery.kind === "ready" && (
           <div className="space-y-4">
-            <div className="rounded-xl border border-slate-200 bg-white shadow-sm">
+            <div>
               <DataTable
                 filtered={!!statusFilter}
                 rows={payoutsQuery.data.results}
@@ -285,15 +285,15 @@ function PayoutsList({ sellerId }: { sellerId: string }) {
       {showModal && (
         <Dialog
           open
-          title={<>Request Disbursement</>}
+          title={<>Request payout</>}
           onClose={() => setShowModal(false)}
           busy={submitting}
           error={payoutError}
         >
           {balance && (
-            <p className="mt-1 text-sm text-slate-600">
+            <p className="mt-1 text-sm text-ui-secondary">
               Current available:{" "}
-              <span className="font-semibold text-slate-900">
+              <span className="font-semibold text-ui-foreground">
                 <Money
                   amount={balance.current_balance}
                   currency={balance.currency}
@@ -306,7 +306,7 @@ function PayoutsList({ sellerId }: { sellerId: string }) {
             <div>
               <label
                 htmlFor="req-amount"
-                className="block text-sm font-medium text-slate-700"
+                className="block text-sm font-medium text-ui-secondary"
               >
                 Amount ({balance?.currency ?? "USD"})
               </label>
@@ -317,16 +317,16 @@ function PayoutsList({ sellerId }: { sellerId: string }) {
                 placeholder="0.00"
                 value={payoutAmount}
                 onChange={(e) => setPayoutAmount(e.target.value)}
-                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-teal-700 focus:outline-none"
+                className="mt-1 w-full rounded-lg border border-ui-control-border px-3 py-2 text-sm text-ui-foreground focus:border-teal-700 focus:outline-none"
               />
             </div>
 
             <div>
               <label
                 htmlFor="req-notes"
-                className="block text-sm font-medium text-slate-700"
+                className="block text-sm font-medium text-ui-secondary"
               >
-                Disbursement Notes
+                Payout notes
               </label>
               <textarea
                 id="req-notes"
@@ -334,7 +334,7 @@ function PayoutsList({ sellerId }: { sellerId: string }) {
                 placeholder="Optional reference or banking memo"
                 value={payoutNotes}
                 onChange={(e) => setPayoutNotes(e.target.value)}
-                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-teal-700 focus:outline-none"
+                className="mt-1 w-full rounded-lg border border-ui-control-border px-3 py-2 text-sm text-ui-foreground focus:border-teal-700 focus:outline-none"
               />
             </div>
 

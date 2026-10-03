@@ -104,7 +104,7 @@ function Detail({
       />
       <div className="mb-6 flex flex-wrap gap-3">
         <StatusBadge status={product.status} />
-        <span className="text-sm text-slate-600">
+        <span className="text-sm text-ui-secondary">
           Updated <DateDisplay value={product.updated_at} timezone={timezone} />
         </span>
       </div>
@@ -267,7 +267,7 @@ export function ProductActions({
   return (
     <section className={panel}>
       <h2 className="mb-4 text-xl font-semibold">Review and publication</h2>
-      <p className="mb-4 text-sm text-slate-600">
+      <p className="mb-4 text-sm text-ui-secondary">
         Content can be edited while in draft. Returning a product to draft
         removes its approval and requires a new review.
       </p>

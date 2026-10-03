@@ -87,7 +87,7 @@ function AdminOrderDetailContent({
         asideLabel="Order totals and customer information"
         aside={
           <>
-            <DetailSection title="Grand Financial Totals">
+            <DetailSection title="Order totals">
               <OrderTotals
                 values={order}
                 currency={order.currency}
@@ -125,7 +125,7 @@ function AdminOrderDetailContent({
         }
       >
         <DetailSection
-          title="Seller Orders Breakdown"
+          title="Seller orders"
           description="Each seller order retains its own fulfillment state, financial snapshots and history."
         >
           {order.seller_orders.map((so) => (
@@ -139,7 +139,7 @@ function AdminOrderDetailContent({
                   href={`/admin/sellers/${so.seller_id}`}
                   className="inline-flex min-h-11 items-center text-ui-body text-ui-accent hover:underline"
                 >
-                  Inspect seller workspace
+                  View seller
                 </Link>
               )}
               <OrderItems items={so.items} currency={order.currency} platform />

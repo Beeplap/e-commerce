@@ -37,7 +37,7 @@ import {
 } from "./api";
 
 const inputStyle =
-  "min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-teal-700 focus:outline-none";
+  "min-h-11 w-full rounded-lg border border-ui-control-border bg-ui-surface px-3 py-2 text-sm text-ui-foreground focus:border-teal-700 focus:outline-none";
 
 const dangerButton =
   "inline-flex min-h-11 items-center justify-center rounded-lg bg-red-700 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-red-800 disabled:cursor-not-allowed disabled:opacity-50";
@@ -166,7 +166,7 @@ function SellerOrderDetailContent({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <Link
           href="/seller/orders"
-          className="text-sm font-semibold text-teal-800 hover:underline"
+          className="text-sm font-semibold text-ui-accent hover:underline"
         >
           &larr; Back to orders
         </Link>
@@ -395,7 +395,7 @@ function SellerOrderDetailContent({
             <div>
               <label
                 htmlFor="cancel-reason"
-                className="mb-1 block text-sm font-medium text-slate-800"
+                className="mb-1 block text-sm font-medium text-ui-foreground"
               >
                 Cancellation Reason *
               </label>

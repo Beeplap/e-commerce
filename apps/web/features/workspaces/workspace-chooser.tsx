@@ -68,30 +68,24 @@ export function WorkspaceChooser() {
       )}
       <div className="mb-9 grid gap-5 lg:grid-cols-2">
         {hasPlatformPermission(user, "platform.access") && (
-          <section className="rounded-xl border border-slate-200 bg-white p-6">
-            <p className="text-xs font-semibold tracking-wide text-teal-800 uppercase">
-              Platform
-            </p>
+          <section className="border-t border-ui-border py-5">
+            <p className="text-ui-caption text-ui-secondary">Platform</p>
             <h2 className="mt-3 text-xl font-semibold">
               Platform administration
             </h2>
-            <p className="mt-2 text-sm leading-6 text-slate-600">
-              Open your platform administration workspace.
-            </p>
+
             <Link href="/admin" className={`${primaryButton} mt-5`}>
               Open platform workspace
             </Link>
           </section>
         )}
         {memberships.kind === "ready" && memberships.data.count > 0 && (
-          <section className="rounded-xl border border-slate-200 bg-white p-6">
-            <p className="text-xs font-semibold tracking-wide text-teal-800 uppercase">
-              Seller
-            </p>
+          <section className="border-t border-ui-border py-5">
+            <p className="text-ui-caption text-ui-secondary">Seller</p>
             <h2 className="mt-3 text-xl font-semibold">
               Seller administration
             </h2>
-            <p className="mt-2 text-sm leading-6 text-slate-600">
+            <p className="mt-2 text-sm leading-6 text-ui-secondary">
               {memberships.data.count}{" "}
               {memberships.data.count === 1
                 ? "seller workspace is"

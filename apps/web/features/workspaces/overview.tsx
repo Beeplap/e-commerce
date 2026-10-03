@@ -697,8 +697,8 @@ function Detail({
 }) {
   return (
     <div>
-      <dt className="mb-2 text-xs font-medium text-slate-500">{label}</dt>
-      <dd className="text-sm font-medium text-slate-900">{children}</dd>
+      <dt className="mb-2 text-xs font-medium text-ui-muted">{label}</dt>
+      <dd className="text-sm font-medium text-ui-foreground">{children}</dd>
     </div>
   );
 }
@@ -713,7 +713,7 @@ export function AccountOverview() {
         title="My account"
         description="Your account identity and email verification status."
       />
-      <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <section className="border-t border-ui-border py-5">
         <dl className="grid gap-6 sm:grid-cols-2">
           <Detail label="Name">
             {[user.first_name, user.last_name].filter(Boolean).join(" ") ||

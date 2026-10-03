@@ -8,6 +8,7 @@ import { DateDisplay } from "@/components/ui/displays";
 import { useCallback, useState } from "react";
 import {
   ApiErrorState,
+  PageHeader,
   LoadingState,
   primaryButton,
   secondaryButton,
@@ -36,7 +37,7 @@ function StarRating({ rating }: { rating: number }) {
 function StatusBadge({ status }: { status: ProductReview["status"] }) {
   const cls =
     status === "published"
-      ? "bg-emerald-50 text-emerald-700"
+      ? "bg-emerald-50 text-ui-success"
       : status === "pending"
         ? "bg-amber-50 text-amber-700"
         : "bg-red-50 text-red-700";
@@ -125,16 +126,10 @@ export function AdminReviews() {
 
   return (
     <section>
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-semibold text-slate-950">
-            Review Moderation
-          </h1>
-          <p className="mt-1 text-sm text-slate-600">
-            Moderate product reviews across the platform.
-          </p>
-        </div>
-      </div>
+      <PageHeader
+        title="Review Moderation"
+        description="Moderate product reviews across the platform."
+      />
 
       <div
         role="group"
@@ -152,8 +147,8 @@ export function AdminReviews() {
             }}
             className={`rounded-lg px-3 py-1.5 text-xs font-semibold motion-safe:transition-colors duration-[var(--ui-duration-fast)] ${
               statusFilter === f.value
-                ? "bg-teal-700 text-white"
-                : "border border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+                ? "bg-ui-accent text-white"
+                : "border border-ui-control-border bg-ui-surface text-ui-secondary hover:bg-ui-surface-muted"
             }`}
           >
             {f.label}
@@ -172,7 +167,7 @@ export function AdminReviews() {
 
       <div className="mt-4 space-y-4">
         {reviews.length === 0 && (
-          <p className="py-12 text-center text-sm text-slate-500">
+          <p className="py-12 text-center text-sm text-ui-muted">
             No reviews match the current filter.
           </p>
         )}
@@ -183,17 +178,14 @@ export function AdminReviews() {
           />
         )}
         {reviews.map((review) => (
-          <div
-            key={review.id}
-            className="rounded-xl border border-slate-200 p-4"
-          >
+          <div key={review.id} className="border-b border-ui-border py-5">
             <div className="flex flex-col items-start justify-between gap-4 sm:flex-row">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <StarRating rating={review.rating} />
                   <StatusBadge status={review.status} />
                   {review.verified_purchase && (
-                    <span className="rounded-full bg-teal-50 px-2 py-0.5 text-xs text-teal-700">
+                    <span className="text-ui-caption text-ui-secondary">
                       Verified
                     </span>
                   )}
@@ -204,20 +196,20 @@ export function AdminReviews() {
                 >
                   View review
                 </Button>
-                <div className="mt-1 font-semibold text-slate-900">
+                <div className="mt-1 font-semibold text-ui-foreground">
                   {review.title}
                 </div>
-                <p className="mt-1 text-sm text-slate-700">{review.body}</p>
-                <div className="mt-2 text-xs text-slate-500">
+                <p className="mt-1 text-sm text-ui-secondary">{review.body}</p>
+                <div className="mt-2 text-xs text-ui-muted">
                   By {review.customer.email} · {review.product.name} ·{" "}
                   <DateDisplay value={review.created_at} />
                 </div>
                 {review.seller_response && (
-                  <div className="mt-2 rounded-lg bg-slate-50 p-3">
-                    <p className="text-xs font-semibold text-slate-700 mb-1">
+                  <div className="mt-2 rounded-lg bg-ui-surface-muted p-3">
+                    <p className="text-xs font-semibold text-ui-secondary mb-1">
                       Seller response
                     </p>
-                    <p className="text-xs text-slate-600">
+                    <p className="text-xs text-ui-secondary">
                       {review.seller_response}
                     </p>
                   </div>
@@ -244,7 +236,7 @@ export function AdminReviews() {
                         setSelectedReview(review);
                         setAction("reject");
                       }}
-                      className="rounded-lg border border-amber-300 bg-white px-3 py-1.5 text-xs font-semibold text-amber-700 hover:bg-amber-50"
+                      className="rounded-lg border border-amber-300 bg-ui-surface px-3 py-1.5 text-xs font-semibold text-amber-700 hover:bg-amber-50"
                     >
                       Reject
                     </button>
@@ -256,7 +248,7 @@ export function AdminReviews() {
                         setSelectedReview(review);
                         setAction("remove");
                       }}
-                      className="rounded-lg border border-red-300 bg-white px-3 py-1.5 text-xs font-semibold text-red-700 hover:bg-red-50"
+                      className="rounded-lg border border-red-300 bg-ui-surface px-3 py-1.5 text-xs font-semibold text-red-700 hover:bg-red-50"
                     >
                       Remove
                     </button>
@@ -269,7 +261,7 @@ export function AdminReviews() {
       </div>
 
       {reviewsQuery.data.count > 25 && (
-        <div className="mt-4 flex items-center justify-between text-sm text-slate-600">
+        <div className="mt-4 flex items-center justify-between text-sm text-ui-secondary">
           <button
             type="button"
             disabled={page === 1}
@@ -305,7 +297,7 @@ export function AdminReviews() {
           busy={submitting}
           error={actionError}
         >
-          <div className="mt-3 rounded-lg bg-slate-50 p-3 text-sm text-slate-700">
+          <div className="mt-3 rounded-lg bg-ui-surface-muted p-3 text-sm text-ui-secondary">
             <StarRating rating={selectedReview.rating} />
             <p className="mt-1 font-semibold">{selectedReview.title}</p>
             <p className="mt-1">{selectedReview.body}</p>

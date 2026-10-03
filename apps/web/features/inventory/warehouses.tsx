@@ -20,7 +20,7 @@ import {
 import { inventoryApi, type Warehouse } from "./api";
 
 const textareaStyle =
-  "min-h-20 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-teal-700 focus:outline-none";
+  "min-h-20 w-full rounded-lg border border-ui-control-border bg-ui-surface px-3 py-2 text-sm text-ui-foreground focus:border-teal-700 focus:outline-none";
 
 export function SellerWarehouses() {
   const access = useSeller();
@@ -70,7 +70,7 @@ function WarehousesList({
       id: "code",
       heading: "Code",
       cell: (wh) => (
-        <span className="font-mono text-xs font-semibold text-slate-900">
+        <span className="font-mono text-xs font-semibold text-ui-foreground">
           {wh.code}
         </span>
       ),
@@ -79,13 +79,15 @@ function WarehousesList({
       id: "name",
       heading: "Name",
       cell: (wh) => (
-        <span className="font-medium text-slate-900">{wh.name}</span>
+        <span className="font-medium text-ui-foreground">{wh.name}</span>
       ),
     },
     {
       id: "address",
       heading: "Address",
-      cell: (wh) => <span className="text-slate-600">{wh.address || "—"}</span>,
+      cell: (wh) => (
+        <span className="text-ui-secondary">{wh.address || "—"}</span>
+      ),
     },
     {
       id: "status",
@@ -102,7 +104,7 @@ function WarehousesList({
           <button
             type="button"
             onClick={() => setEditingWarehouse(wh)}
-            className="text-xs font-medium text-teal-800 hover:text-teal-950 underline"
+            className="text-xs font-medium text-ui-accent hover:text-ui-accent underline"
           >
             Edit
           </button>
@@ -259,7 +261,7 @@ function WarehouseForm({
         <div>
           <label
             htmlFor="warehouse-address"
-            className="mb-2 block text-sm font-medium text-slate-800"
+            className="mb-2 block text-sm font-medium text-ui-foreground"
           >
             Physical address
           </label>
@@ -279,11 +281,11 @@ function WarehouseForm({
             type="checkbox"
             checked={isActive}
             onChange={(e) => setIsActive(e.target.checked)}
-            className="h-4 w-4 rounded border-slate-300 text-teal-800 focus:ring-teal-700"
+            className="h-4 w-4 rounded border-ui-control-border text-ui-accent focus:ring-teal-700"
           />
           <label
             htmlFor="warehouse-is-active"
-            className="text-sm font-medium text-slate-800"
+            className="text-sm font-medium text-ui-foreground"
           >
             Active location for stocking and order fulfillment
           </label>

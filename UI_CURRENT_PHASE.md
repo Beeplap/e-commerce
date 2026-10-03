@@ -1,8 +1,8 @@
 # UI phase selector
 
-UI PHASE 32 — human-design cleanup
+UI PHASE 33 — final UI audit
 
-Phase 31 implementation is complete: named controls, keyboard tabs, full exact chart alternatives, native warehouse modality, focus/touch/contrast and responsive triage improvements. Frontend lint, TypeScript, all 182 tests, formatting and production build passed. Begin Phase 32 after the Phase 31 commit and push succeed. Browser discovery still returns no browser. The user directed continuation after being informed of required live QA; proceed with source/automated work while recording all viewport/manual/visual checks as unverified in `docs/ui-accessibility.md`. Do not claim visual acceptance.
+Phase 32 implementation is complete: intentional finance hierarchy, restrained record rows, responsive promotion tables, shared administrative tokens and concise copy. Frontend lint, TypeScript, all 185 tests, formatting and production build passed. Begin Phase 33 after the Phase 32 commit and push succeed. Browser discovery still returns no browser. The user directed continuation after being informed of required live QA; proceed with source/automated work while recording all viewport/manual/visual checks as unverified. Do not claim visual acceptance. Produce `docs/ui-final-review.md`, run the full frontend gate, commit/push and finish the UI roadmap without inventing another phase.
 
 Roadmap: `instrutions3.md` (the supplied filename).
 

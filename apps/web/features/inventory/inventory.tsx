@@ -108,7 +108,7 @@ function InventoryList({
         title={platform ? "Platform Inventory" : "Inventory Ledger"}
         description={
           platform
-            ? "Authoritative multi-seller warehouse stock levels, reservations, and availability."
+            ? "Stock and reservations across seller warehouses."
             : "Live stock ledger, reservations, available quantities, and reorder alerts."
         }
         actions={
@@ -184,10 +184,10 @@ function InventoryList({
             heading: "Warehouse",
             cell: (item) => (
               <div>
-                <div className="font-medium text-slate-900">
+                <div className="font-medium text-ui-foreground">
                   {item.warehouse.name}
                 </div>
-                <div className="font-mono text-xs text-slate-500">
+                <div className="font-mono text-xs text-ui-muted">
                   {item.warehouse.code}
                 </div>
               </div>
@@ -198,7 +198,7 @@ function InventoryList({
             align: "right" as const,
             heading: "On Hand",
             cell: (item) => (
-              <span className="font-semibold text-slate-900">
+              <span className="font-semibold text-ui-foreground">
                 {item.quantity_on_hand}
               </span>
             ),
@@ -208,7 +208,9 @@ function InventoryList({
             align: "right" as const,
             heading: "Reserved",
             cell: (item) => (
-              <span className="text-slate-600">{item.quantity_reserved}</span>
+              <span className="text-ui-secondary">
+                {item.quantity_reserved}
+              </span>
             ),
           },
           {
@@ -216,10 +218,10 @@ function InventoryList({
             align: "right" as const,
             heading: "Available",
             cell: (item) => (
-              <span className="inline-flex items-center gap-1.5 font-bold text-teal-900">
+              <span className="inline-flex items-center gap-1.5 font-bold text-ui-accent">
                 {item.available_quantity}
                 {item.is_low_stock && (
-                  <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-amber-900">
+                  <span className="rounded bg-ui-warning-surface px-2 py-1 text-ui-caption font-medium text-ui-warning">
                     Low Stock
                   </span>
                 )}
@@ -231,7 +233,7 @@ function InventoryList({
             align: "right" as const,
             heading: "Reorder At",
             cell: (item) => (
-              <span className="text-xs text-slate-500">
+              <span className="text-xs text-ui-muted">
                 {item.reorder_level}
               </span>
             ),
@@ -244,7 +246,7 @@ function InventoryList({
                 <button
                   type="button"
                   onClick={() => setAdjustingItem(item)}
-                  className="text-xs font-semibold text-teal-800 hover:text-teal-950 underline"
+                  className="text-xs font-semibold text-ui-accent hover:text-ui-accent underline"
                 >
                   Adjust stock
                 </button>
@@ -354,7 +356,7 @@ function StockAdjustModal({
         <div>
           <label
             htmlFor="stock-action-type"
-            className="mb-2 block text-xs font-semibold text-slate-700"
+            className="mb-2 block text-xs font-semibold text-ui-secondary"
           >
             Action type
           </label>

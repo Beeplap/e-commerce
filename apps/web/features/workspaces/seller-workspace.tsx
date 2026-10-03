@@ -121,7 +121,7 @@ export function SellerWorkspace({ children }: { children: ReactNode }) {
         ))}
       </SelectField>
       {memberships.kind === "loading" && (
-        <p role="status" className="mt-2 text-xs text-slate-600">
+        <p role="status" className="mt-2 text-xs text-ui-secondary">
           Loading sellers…
         </p>
       )}

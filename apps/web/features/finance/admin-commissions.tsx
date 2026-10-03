@@ -30,7 +30,7 @@ import {
 } from "./api";
 
 const inputStyle =
-  "min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-teal-700 focus:outline-none";
+  "min-h-11 w-full rounded-lg border border-ui-control-border bg-ui-surface px-3 py-2 text-sm text-ui-foreground focus:border-teal-700 focus:outline-none";
 
 export function AdminCommissions() {
   const { state } = useAuth();
@@ -73,11 +73,11 @@ function CommissionsList({ canManage }: { canManage: boolean }) {
   const plansPage = query.data;
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <div className="space-y-6">
       <div className="mb-4">
         <Link
           href="/admin/finance"
-          className="text-sm font-medium text-teal-800 hover:underline"
+          className="text-sm font-medium text-ui-accent hover:underline"
         >
           &larr; Back to Finance Overview
         </Link>
@@ -118,18 +118,15 @@ function CommissionsList({ canManage }: { canManage: boolean }) {
       ) : (
         <div className="space-y-8">
           {plansPage.results.map((plan) => (
-            <div
-              key={plan.id}
-              className="rounded-xl border border-slate-200 bg-white p-6 shadow-xs"
-            >
-              <div className="flex flex-wrap items-start justify-between gap-4 border-b border-slate-100 pb-4">
+            <div key={plan.id} className="border-t border-ui-border py-6">
+              <div className="flex flex-wrap items-start justify-between gap-4 border-b border-ui-border pb-4">
                 <div>
                   <div className="flex items-center gap-3">
-                    <h2 className="text-xl font-bold text-slate-900">
+                    <h2 className="text-xl font-bold text-ui-foreground">
                       {plan.name}
                     </h2>
                     {plan.is_default && (
-                      <span className="rounded-full bg-teal-100 px-2.5 py-0.5 text-xs font-semibold text-teal-800">
+                      <span className="rounded-full bg-ui-selected px-2.5 py-0.5 text-xs font-semibold text-ui-accent">
                         Default Plan
                       </span>
                     )}
@@ -138,13 +135,13 @@ function CommissionsList({ canManage }: { canManage: boolean }) {
                     />
                   </div>
                   {plan.description && (
-                    <p className="mt-1 text-sm text-slate-600">
+                    <p className="mt-1 text-sm text-ui-secondary">
                       {plan.description}
                     </p>
                   )}
-                  <p className="mt-2 text-sm font-semibold text-slate-800">
+                  <p className="mt-2 text-sm font-semibold text-ui-foreground">
                     Default Rate:{" "}
-                    <span className="text-teal-700">
+                    <span className="text-ui-accent">
                       {plan.default_percentage}%
                     </span>
                   </p>
@@ -172,18 +169,26 @@ function CommissionsList({ canManage }: { canManage: boolean }) {
 
               {/* Rules List */}
               <div className="mt-4">
-                <h3 className="text-sm font-semibold text-slate-700">
+                <h3 className="text-sm font-semibold text-ui-secondary">
                   Rules ({plan.rules.length})
                 </h3>
                 {plan.rules.length === 0 ? (
-                  <p className="mt-2 text-sm text-slate-500 italic">
+                  <p className="mt-2 text-sm text-ui-muted italic">
                     No custom rules attached. All orders calculate using the
                     plan default of {plan.default_percentage}%.
                   </p>
                 ) : (
-                  <div className="mt-3 overflow-x-auto">
-                    <table className="min-w-full divide-y divide-slate-200 text-left text-sm">
-                      <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-600">
+                  <div
+                    role="region"
+                    aria-label={`${plan.name} rules`}
+                    tabIndex={0}
+                    className="mt-3 max-w-full overflow-x-auto"
+                  >
+                    <table className="min-w-[640px] w-full divide-y divide-ui-border text-left text-sm">
+                      <caption className="sr-only">
+                        Rules for {plan.name}
+                      </caption>
+                      <thead className="bg-ui-surface-muted text-ui-caption font-semibold text-ui-secondary">
                         <tr>
                           <th className="px-3 py-2">Scope</th>
                           <th className="px-3 py-2">Percentage</th>
@@ -195,7 +200,7 @@ function CommissionsList({ canManage }: { canManage: boolean }) {
                           )}
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-slate-100 bg-white">
+                      <tbody className="divide-y divide-ui-border bg-ui-surface">
                         {plan.rules.map((rule) => (
                           <RuleRow
                             key={rule.id}
@@ -305,13 +310,13 @@ function RuleRow({
   }
 
   return (
-    <tr className="hover:bg-slate-50">
-      <td className="px-3 py-3 font-medium text-slate-900">{scopeLabel}</td>
-      <td className="px-3 py-3 text-teal-700 font-semibold">
+    <tr className="hover:bg-ui-surface-muted">
+      <td className="px-3 py-3 font-medium text-ui-foreground">{scopeLabel}</td>
+      <td className="px-3 py-3 text-ui-accent font-semibold">
         {rule.percentage}%
       </td>
-      <td className="px-3 py-3 text-slate-700">${rule.fixed_fee}</td>
-      <td className="px-3 py-3 text-slate-600">{rule.priority}</td>
+      <td className="px-3 py-3 text-ui-secondary">${rule.fixed_fee}</td>
+      <td className="px-3 py-3 text-ui-secondary">{rule.priority}</td>
       <td className="px-3 py-3">
         <StatusBadge status={rule.is_active ? "ACTIVE" : "INACTIVE"} />
       </td>
@@ -393,7 +398,7 @@ function CreatePlanModal({
         <div>
           <label
             htmlFor="plan-name"
-            className="block text-xs font-semibold text-slate-700"
+            className="block text-xs font-semibold text-ui-secondary"
           >
             Plan Name *
           </label>
@@ -411,7 +416,7 @@ function CreatePlanModal({
         <div>
           <label
             htmlFor="plan-percentage"
-            className="block text-xs font-semibold text-slate-700"
+            className="block text-xs font-semibold text-ui-secondary"
           >
             Default Percentage (%) *
           </label>
@@ -430,7 +435,7 @@ function CreatePlanModal({
         <div>
           <label
             htmlFor="plan-description"
-            className="block text-xs font-semibold text-slate-700"
+            className="block text-xs font-semibold text-ui-secondary"
           >
             Description (Optional)
           </label>
@@ -450,9 +455,12 @@ function CreatePlanModal({
             type="checkbox"
             checked={isDefault}
             onChange={(e) => setIsDefault(e.target.checked)}
-            className="h-4 w-4 rounded border-slate-300 text-teal-700 focus:ring-teal-500"
+            className="h-4 w-4 rounded border-ui-control-border text-ui-accent focus:ring-teal-500"
           />
-          <label htmlFor="plan-is-default" className="text-sm text-slate-700">
+          <label
+            htmlFor="plan-is-default"
+            className="text-sm text-ui-secondary"
+          >
             Set as marketplace default plan
           </label>
         </div>
@@ -529,7 +537,7 @@ function EditPlanModal({
         <div>
           <label
             htmlFor="edit-plan-name"
-            className="block text-xs font-semibold text-slate-700"
+            className="block text-xs font-semibold text-ui-secondary"
           >
             Plan Name *
           </label>
@@ -546,7 +554,7 @@ function EditPlanModal({
         <div>
           <label
             htmlFor="edit-plan-percentage"
-            className="block text-xs font-semibold text-slate-700"
+            className="block text-xs font-semibold text-ui-secondary"
           >
             Default Percentage (%) *
           </label>
@@ -564,7 +572,7 @@ function EditPlanModal({
         <div>
           <label
             htmlFor="edit-plan-description"
-            className="block text-xs font-semibold text-slate-700"
+            className="block text-xs font-semibold text-ui-secondary"
           >
             Description
           </label>
@@ -583,11 +591,11 @@ function EditPlanModal({
             type="checkbox"
             checked={isActive}
             onChange={(e) => setIsActive(e.target.checked)}
-            className="h-4 w-4 rounded border-slate-300 text-teal-700 focus:ring-teal-500"
+            className="h-4 w-4 rounded border-ui-control-border text-ui-accent focus:ring-teal-500"
           />
           <label
             htmlFor="edit-plan-is-active"
-            className="text-sm text-slate-700"
+            className="text-sm text-ui-secondary"
           >
             Active plan
           </label>
@@ -599,11 +607,11 @@ function EditPlanModal({
             type="checkbox"
             checked={isDefault}
             onChange={(e) => setIsDefault(e.target.checked)}
-            className="h-4 w-4 rounded border-slate-300 text-teal-700 focus:ring-teal-500"
+            className="h-4 w-4 rounded border-ui-control-border text-ui-accent focus:ring-teal-500"
           />
           <label
             htmlFor="edit-plan-is-default"
-            className="text-sm text-slate-700"
+            className="text-sm text-ui-secondary"
           >
             Marketplace default plan
           </label>
@@ -679,7 +687,7 @@ function AddRuleModal({
         <div>
           <label
             htmlFor="rule-percentage"
-            className="block text-xs font-semibold text-slate-700"
+            className="block text-xs font-semibold text-ui-secondary"
           >
             Percentage (%) *
           </label>
@@ -698,7 +706,7 @@ function AddRuleModal({
         <div>
           <label
             htmlFor="rule-fixed-fee"
-            className="block text-xs font-semibold text-slate-700"
+            className="block text-xs font-semibold text-ui-secondary"
           >
             Fixed Fee ($)
           </label>
@@ -716,7 +724,7 @@ function AddRuleModal({
         <div>
           <label
             htmlFor="rule-priority"
-            className="block text-xs font-semibold text-slate-700"
+            className="block text-xs font-semibold text-ui-secondary"
           >
             Priority (Higher number = evaluated first)
           </label>
@@ -732,7 +740,7 @@ function AddRuleModal({
         <div>
           <label
             htmlFor="rule-seller-id"
-            className="block text-xs font-semibold text-slate-700"
+            className="block text-xs font-semibold text-ui-secondary"
           >
             Seller UUID (Optional)
           </label>
@@ -749,7 +757,7 @@ function AddRuleModal({
         <div>
           <label
             htmlFor="rule-category-id"
-            className="block text-xs font-semibold text-slate-700"
+            className="block text-xs font-semibold text-ui-secondary"
           >
             Category UUID (Optional)
           </label>

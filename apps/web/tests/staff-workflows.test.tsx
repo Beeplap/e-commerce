@@ -80,7 +80,8 @@ describe("staff access workflow", () => {
     expect(await screen.findByRole("alert")).toHaveTextContent(
       "You cannot revoke this membership.",
     );
-    expect(screen.getByRole("alert")).toHaveFocus();
+    // Dialog moves focus in a passive effect after the error is committed.
+    await waitFor(() => expect(screen.getByRole("alert")).toHaveFocus());
     expect(
       screen.getByRole("dialog", { name: "Revoke staff access" }),
     ).toBeVisible();

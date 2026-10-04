@@ -15,6 +15,14 @@ import type {
 import { json } from "./fixtures";
 
 const mockPush = vi.fn();
+const mockCart = vi.hoisted(() => ({
+  cart: null,
+  openCart: vi.fn(),
+  addItem: vi.fn(async () => {}),
+}));
+vi.mock("@/features/cart/cart-context", () => ({
+  useCart: () => mockCart,
+}));
 vi.mock("next/navigation", () => ({
   usePathname: () => "/",
   useRouter: () => ({ push: mockPush, replace: vi.fn() }),
@@ -189,8 +197,8 @@ describe("Customer Storefront UI Components", () => {
     render(<ProductCard product={mockProductCard} />);
 
     expect(screen.getByText("Super Phone X")).toBeInTheDocument();
-    expect(screen.getByText("$799.00")).toBeInTheDocument();
-    expect(screen.getByText("$999.00")).toBeInTheDocument();
+    expect(screen.getByText("799.00 USD")).toBeInTheDocument();
+    expect(screen.getByText("999.00 USD")).toBeInTheDocument();
     expect(screen.getByText("20% OFF")).toBeInTheDocument();
     expect(screen.getByText("In Stock")).toBeInTheDocument();
     expect(screen.getByText("Apex Official")).toBeInTheDocument();
@@ -205,7 +213,7 @@ describe("Customer Storefront UI Components", () => {
     ).toBeInTheDocument();
     expect(screen.getByText("Apex Official")).toBeInTheDocument();
     expect(screen.getByText("Verified Seller")).toBeInTheDocument();
-    expect(screen.getAllByText("$799.00")[0]).toBeInTheDocument();
+    expect(screen.getAllByText("799.00 USD")[0]).toBeInTheDocument();
     expect(screen.getByText("Save 20%")).toBeInTheDocument();
 
     // In-stock availability
@@ -219,7 +227,7 @@ describe("Customer Storefront UI Components", () => {
       .closest("button")!;
     fireEvent.click(secondVariantBtn);
 
-    expect(screen.getAllByText("$899.00")[0]).toBeInTheDocument();
+    expect(screen.getAllByText("899.00 USD")[0]).toBeInTheDocument();
     expect(
       screen.getByText(/In Stock \(5 units ready to ship\)/i),
     ).toBeInTheDocument();
@@ -232,6 +240,11 @@ describe("Customer Storefront UI Components", () => {
     // Add to Cart action
     const addToCartBtn = screen.getByRole("button", { name: "Add to Cart" });
     fireEvent.click(addToCartBtn);
+
+    expect(mockCart.addItem).toHaveBeenCalledWith(
+      "a0000000-0000-4000-8000-000000000002",
+      2,
+    );
 
     expect(
       screen.getByText(/Added to cart! Real-time cart reservations active/i),

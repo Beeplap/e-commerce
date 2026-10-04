@@ -221,20 +221,20 @@ export default function CheckoutPage() {
 
   if (cart && cart.total_items === 0 && !isSubmitting) {
     return (
-      <div className="min-h-screen flex flex-col bg-slate-50">
+      <div className="sf-storefront min-h-screen flex flex-col bg-sf-background">
         <StorefrontHeader />
         <main className="flex-1 mx-auto max-w-3xl w-full px-4 py-16 text-center">
-          <div className="rounded-2xl border border-slate-200 bg-white p-12 shadow-sm">
-            <h1 className="text-xl font-bold text-slate-900">
+          <div className="rounded-sf-editorial border border-sf-border bg-sf-surface p-12 shadow-sf-small">
+            <h1 className="text-xl font-bold text-sf-foreground">
               Your cart is empty
             </h1>
-            <p className="mt-2 text-sm text-slate-500">
+            <p className="mt-2 text-sm text-sf-muted">
               Add items to your cart before proceeding to checkout.
             </p>
             <div className="mt-6">
               <Link
                 href="/"
-                className="rounded-xl bg-teal-800 px-6 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-teal-900 transition"
+                className="rounded-sf-image bg-sf-action px-6 py-2.5 text-sm font-bold text-sf-on-dark shadow-sf-small hover:bg-sf-action-hover transition"
               >
                 Browse Products
               </Link>
@@ -247,31 +247,31 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50">
+    <div className="sf-storefront min-h-screen flex flex-col bg-sf-background">
       <StorefrontHeader />
 
       <main className="flex-1 mx-auto max-w-7xl w-full px-4 py-8 sm:px-6 lg:px-8">
         {/* Breadcrumb */}
         <nav
           aria-label="Breadcrumb"
-          className="mb-6 flex items-center gap-2 text-xs text-slate-500"
+          className="mb-6 flex items-center gap-2 text-xs text-sf-muted"
         >
-          <Link href="/" className="hover:text-teal-700 transition">
+          <Link href="/" className="hover:text-sf-link transition">
             Home
           </Link>
           <span>/</span>
-          <Link href="/cart" className="hover:text-teal-700 transition">
+          <Link href="/cart" className="hover:text-sf-link transition">
             Cart
           </Link>
           <span>/</span>
-          <span className="font-semibold text-slate-800">Checkout</span>
+          <span className="font-semibold text-sf-foreground">Checkout</span>
         </nav>
 
         <div className="mb-8">
-          <h1 className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl">
+          <h1 className="text-2xl font-black tracking-tight text-sf-foreground sm:text-3xl">
             Customer Checkout
           </h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-sf-muted">
             Multi-seller marketplace fulfillment with real-time stock
             reservations.
           </p>
@@ -280,7 +280,7 @@ export default function CheckoutPage() {
         {error && (
           <div
             data-testid="checkout-error-banner"
-            className="mb-6 rounded-xl bg-rose-50 border border-rose-200 p-4 text-sm text-rose-800 flex items-start gap-2"
+            className="mb-6 rounded-sf-image bg-sf-danger-surface border border-sf-danger p-4 text-sm text-sf-danger flex items-start gap-2"
           >
             <span>⚠️</span>
             <span>{error}</span>
@@ -294,10 +294,10 @@ export default function CheckoutPage() {
           {/* Left Column: Addresses & Shipping (8 cols) */}
           <div className="lg:col-span-8 space-y-8">
             {/* Step 1: Customer & Shipping Address */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-                <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-teal-800 text-xs text-white">
+            <div className="rounded-sf-editorial border border-sf-border bg-sf-surface p-6 shadow-sf-small">
+              <div className="flex items-center justify-between border-b border-sf-border pb-4">
+                <h2 className="text-base font-bold text-sf-foreground flex items-center gap-2">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-sf-action text-xs text-sf-on-dark">
                     1
                   </span>
                   Shipping Address
@@ -306,7 +306,7 @@ export default function CheckoutPage() {
                   <button
                     type="button"
                     onClick={() => setUseNewAddress(!useNewAddress)}
-                    className="text-xs font-semibold text-teal-800 hover:underline"
+                    className="text-xs font-semibold text-sf-link hover:underline"
                   >
                     {useNewAddress ? "Use saved address" : "+ Add new address"}
                   </button>
@@ -315,10 +315,10 @@ export default function CheckoutPage() {
 
               {/* Guest Email Field */}
               {!isAuthenticated && (
-                <div className="mt-4 pt-2 pb-4 border-b border-slate-100">
+                <div className="mt-4 pt-2 pb-4 border-b border-sf-border">
                   <label
                     htmlFor="guestEmail"
-                    className="block text-xs font-bold text-slate-700 mb-1"
+                    className="block text-xs font-bold text-sf-soft mb-1"
                   >
                     Contact Email (for receipt & order tracking) *
                   </label>
@@ -329,7 +329,7 @@ export default function CheckoutPage() {
                     value={guestEmail}
                     onChange={(e) => setGuestEmail(e.target.value)}
                     placeholder="you@example.com"
-                    className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 placeholder:text-slate-400 focus:border-teal-700 focus:outline-none focus:ring-1 focus:ring-teal-700"
+                    className="w-full rounded-sf-image border border-sf-control px-3.5 py-2 text-sm text-sf-foreground placeholder:text-sf-muted focus:border-sf-action focus:outline-none focus:ring-1 focus:ring-sf-action"
                   />
                 </div>
               )}
@@ -340,10 +340,10 @@ export default function CheckoutPage() {
                   {addresses.map((addr) => (
                     <label
                       key={addr.id}
-                      className={`flex items-start gap-3 rounded-xl border p-4 cursor-pointer transition ${
+                      className={`flex items-start gap-3 rounded-sf-image border p-4 cursor-pointer transition ${
                         selectedAddressId === addr.id
-                          ? "border-teal-700 bg-teal-50/40 ring-1 ring-teal-700"
-                          : "border-slate-200 hover:bg-slate-50"
+                          ? "border-sf-action bg-sf-accent-soft/40 ring-1 ring-sf-action"
+                          : "border-sf-border hover:bg-sf-background"
                       }`}
                     >
                       <input
@@ -352,28 +352,28 @@ export default function CheckoutPage() {
                         value={addr.id}
                         checked={selectedAddressId === addr.id}
                         onChange={() => setSelectedAddressId(addr.id)}
-                        className="mt-1 text-teal-800 focus:ring-teal-700"
+                        className="mt-1 text-sf-link focus:ring-sf-action"
                       />
                       <div className="text-xs">
                         <div className="flex items-center gap-2">
-                          <span className="font-bold text-slate-900">
+                          <span className="font-bold text-sf-foreground">
                             {addr.full_name}
                           </span>
                           {addr.is_default && (
-                            <span className="rounded bg-teal-100 px-1.5 py-0.5 text-[10px] font-bold text-teal-800">
+                            <span className="rounded bg-sf-accent-soft px-1.5 py-0.5 text-[10px] font-bold text-sf-link">
                               DEFAULT
                             </span>
                           )}
                         </div>
-                        <p className="mt-0.5 text-slate-600">{addr.line1}</p>
+                        <p className="mt-0.5 text-sf-soft">{addr.line1}</p>
                         {addr.line2 && (
-                          <p className="text-slate-600">{addr.line2}</p>
+                          <p className="text-sf-soft">{addr.line2}</p>
                         )}
-                        <p className="text-slate-600">
+                        <p className="text-sf-soft">
                           {addr.city}, {addr.state} {addr.postal_code},{" "}
                           {addr.country}
                         </p>
-                        <p className="mt-1 text-slate-400 font-mono">
+                        <p className="mt-1 text-sf-muted font-mono">
                           Tel: {addr.phone}
                         </p>
                       </div>
@@ -386,7 +386,7 @@ export default function CheckoutPage() {
                   <div className="sm:col-span-2">
                     <label
                       htmlFor="fullName"
-                      className="block text-xs font-bold text-slate-700 mb-1"
+                      className="block text-xs font-bold text-sf-soft mb-1"
                     >
                       Full Name *
                     </label>
@@ -397,14 +397,14 @@ export default function CheckoutPage() {
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
                       placeholder="Jane Doe"
-                      className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:border-teal-700 focus:outline-none focus:ring-1 focus:ring-teal-700"
+                      className="w-full rounded-sf-image border border-sf-control px-3.5 py-2 text-sm text-sf-foreground focus:border-sf-action focus:outline-none focus:ring-1 focus:ring-sf-action"
                     />
                   </div>
 
                   <div>
                     <label
                       htmlFor="phone"
-                      className="block text-xs font-bold text-slate-700 mb-1"
+                      className="block text-xs font-bold text-sf-soft mb-1"
                     >
                       Phone Number *
                     </label>
@@ -415,14 +415,14 @@ export default function CheckoutPage() {
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="+1 (555) 000-0000"
-                      className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:border-teal-700 focus:outline-none focus:ring-1 focus:ring-teal-700"
+                      className="w-full rounded-sf-image border border-sf-control px-3.5 py-2 text-sm text-sf-foreground focus:border-sf-action focus:outline-none focus:ring-1 focus:ring-sf-action"
                     />
                   </div>
 
                   <div>
                     <label
                       htmlFor="country"
-                      className="block text-xs font-bold text-slate-700 mb-1"
+                      className="block text-xs font-bold text-sf-soft mb-1"
                     >
                       Country *
                     </label>
@@ -430,7 +430,7 @@ export default function CheckoutPage() {
                       id="country"
                       value={country}
                       onChange={(e) => setCountry(e.target.value)}
-                      className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:border-teal-700 focus:outline-none focus:ring-1 focus:ring-teal-700 bg-white"
+                      className="w-full rounded-sf-image border border-sf-control px-3.5 py-2 text-sm text-sf-foreground focus:border-sf-action focus:outline-none focus:ring-1 focus:ring-sf-action bg-sf-surface"
                     >
                       <option value="US">United States (US)</option>
                       <option value="CA">Canada (CA)</option>
@@ -442,7 +442,7 @@ export default function CheckoutPage() {
                   <div className="sm:col-span-2">
                     <label
                       htmlFor="line1"
-                      className="block text-xs font-bold text-slate-700 mb-1"
+                      className="block text-xs font-bold text-sf-soft mb-1"
                     >
                       Street Address *
                     </label>
@@ -453,14 +453,14 @@ export default function CheckoutPage() {
                       value={line1}
                       onChange={(e) => setLine1(e.target.value)}
                       placeholder="123 Market St"
-                      className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:border-teal-700 focus:outline-none focus:ring-1 focus:ring-teal-700"
+                      className="w-full rounded-sf-image border border-sf-control px-3.5 py-2 text-sm text-sf-foreground focus:border-sf-action focus:outline-none focus:ring-1 focus:ring-sf-action"
                     />
                   </div>
 
                   <div className="sm:col-span-2">
                     <label
                       htmlFor="line2"
-                      className="block text-xs font-bold text-slate-700 mb-1"
+                      className="block text-xs font-bold text-sf-soft mb-1"
                     >
                       Apt, Suite, Unit (optional)
                     </label>
@@ -470,14 +470,14 @@ export default function CheckoutPage() {
                       value={line2}
                       onChange={(e) => setLine2(e.target.value)}
                       placeholder="Apt 4B"
-                      className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:border-teal-700 focus:outline-none focus:ring-1 focus:ring-teal-700"
+                      className="w-full rounded-sf-image border border-sf-control px-3.5 py-2 text-sm text-sf-foreground focus:border-sf-action focus:outline-none focus:ring-1 focus:ring-sf-action"
                     />
                   </div>
 
                   <div>
                     <label
                       htmlFor="city"
-                      className="block text-xs font-bold text-slate-700 mb-1"
+                      className="block text-xs font-bold text-sf-soft mb-1"
                     >
                       City *
                     </label>
@@ -488,7 +488,7 @@ export default function CheckoutPage() {
                       value={city}
                       onChange={(e) => setCity(e.target.value)}
                       placeholder="Austin"
-                      className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:border-teal-700 focus:outline-none focus:ring-1 focus:ring-teal-700"
+                      className="w-full rounded-sf-image border border-sf-control px-3.5 py-2 text-sm text-sf-foreground focus:border-sf-action focus:outline-none focus:ring-1 focus:ring-sf-action"
                     />
                   </div>
 
@@ -496,7 +496,7 @@ export default function CheckoutPage() {
                     <div>
                       <label
                         htmlFor="state"
-                        className="block text-xs font-bold text-slate-700 mb-1"
+                        className="block text-xs font-bold text-sf-soft mb-1"
                       >
                         State *
                       </label>
@@ -507,13 +507,13 @@ export default function CheckoutPage() {
                         value={state}
                         onChange={(e) => setState(e.target.value)}
                         placeholder="TX"
-                        className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:border-teal-700 focus:outline-none focus:ring-1 focus:ring-teal-700"
+                        className="w-full rounded-sf-image border border-sf-control px-3.5 py-2 text-sm text-sf-foreground focus:border-sf-action focus:outline-none focus:ring-1 focus:ring-sf-action"
                       />
                     </div>
                     <div>
                       <label
                         htmlFor="postalCode"
-                        className="block text-xs font-bold text-slate-700 mb-1"
+                        className="block text-xs font-bold text-sf-soft mb-1"
                       >
                         Zip Code *
                       </label>
@@ -524,7 +524,7 @@ export default function CheckoutPage() {
                         value={postalCode}
                         onChange={(e) => setPostalCode(e.target.value)}
                         placeholder="78701"
-                        className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:border-teal-700 focus:outline-none focus:ring-1 focus:ring-teal-700"
+                        className="w-full rounded-sf-image border border-sf-control px-3.5 py-2 text-sm text-sf-foreground focus:border-sf-action focus:outline-none focus:ring-1 focus:ring-sf-action"
                       />
                     </div>
                   </div>
@@ -533,15 +533,15 @@ export default function CheckoutPage() {
             </div>
 
             {/* Step 2: Multi-Seller Shipping Options */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-              <div className="border-b border-slate-100 pb-4">
-                <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-teal-800 text-xs text-white">
+            <div className="rounded-sf-editorial border border-sf-border bg-sf-surface p-6 shadow-sf-small">
+              <div className="border-b border-sf-border pb-4">
+                <h2 className="text-base font-bold text-sf-foreground flex items-center gap-2">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-sf-action text-xs text-sf-on-dark">
                     2
                   </span>
                   Shipping Method & Multi-Seller Delivery
                 </h2>
-                <p className="mt-1 text-xs text-slate-500">
+                <p className="mt-1 text-xs text-sf-muted">
                   Each independent seller dispatches their items separately.
                   Choose your preferred delivery method per seller.
                 </p>
@@ -552,13 +552,13 @@ export default function CheckoutPage() {
                   {quote.sellers.map((seller) => (
                     <div
                       key={seller.seller_id}
-                      className="rounded-xl border border-slate-200 p-4 bg-slate-50/50"
+                      className="rounded-sf-image border border-sf-border p-4 bg-sf-background/50"
                     >
-                      <div className="flex items-center justify-between pb-3 border-b border-slate-200/60">
-                        <span className="text-xs font-bold text-teal-900 uppercase tracking-wider">
+                      <div className="flex items-center justify-between pb-3 border-b border-sf-border/60">
+                        <span className="text-xs font-bold text-sf-link uppercase tracking-wider">
                           Seller: {seller.seller_name}
                         </span>
-                        <span className="text-xs text-slate-500">
+                        <span className="text-xs text-sf-muted">
                           {seller.items.length}{" "}
                           {seller.items.length === 1 ? "item" : "items"}
                         </span>
@@ -575,10 +575,10 @@ export default function CheckoutPage() {
                               <label
                                 key={method.method_id}
                                 htmlFor={`shipping-${method.method_id}`}
-                                className={`flex items-center justify-between p-3 rounded-lg border text-xs cursor-pointer transition ${
+                                className={`flex items-center justify-between p-3 rounded-sf-control border text-xs cursor-pointer transition ${
                                   isSelected
-                                    ? "border-teal-700 bg-white ring-1 ring-teal-700 font-semibold"
-                                    : "border-slate-200 bg-white hover:bg-slate-50"
+                                    ? "border-sf-action bg-sf-surface ring-1 ring-sf-action font-semibold"
+                                    : "border-sf-border bg-sf-surface hover:bg-sf-background"
                                 }`}
                               >
                                 <div className="flex items-center gap-2.5">
@@ -596,19 +596,19 @@ export default function CheckoutPage() {
                                         method.method_id,
                                       )
                                     }
-                                    className="text-teal-800 focus:ring-teal-700"
+                                    className="text-sf-link focus:ring-sf-action"
                                   />
                                   <div>
-                                    <span className="text-slate-900">
+                                    <span className="text-sf-foreground">
                                       {method.name}
                                     </span>
-                                    <span className="ml-1 text-slate-400 font-normal">
+                                    <span className="ml-1 text-sf-muted font-normal">
                                       ({method.carrier}, {method.min_days}–
                                       {method.max_days} business days)
                                     </span>
                                   </div>
                                 </div>
-                                <span className="font-bold text-slate-900">
+                                <span className="font-bold text-sf-foreground">
                                   {parseFloat(method.rate) === 0
                                     ? "FREE"
                                     : `$${method.rate}`}
@@ -622,7 +622,7 @@ export default function CheckoutPage() {
                   ))}
                 </div>
               ) : (
-                <div className="py-6 text-center text-xs text-slate-500">
+                <div className="py-6 text-center text-xs text-sf-muted">
                   Please provide your complete shipping address to preview
                   delivery options.
                 </div>
@@ -632,27 +632,27 @@ export default function CheckoutPage() {
 
           {/* Right Column: Order Summary & Placement (4 cols) */}
           <div className="lg:col-span-4 space-y-6">
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-              <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-4">
+            <div className="rounded-sf-editorial border border-sf-border bg-sf-surface p-6 shadow-sf-small">
+              <h2 className="text-base font-bold text-sf-foreground border-b border-sf-border pb-4">
                 Order Review
               </h2>
 
               <div className="mt-4 space-y-3 text-sm">
-                <div className="flex justify-between text-slate-600">
+                <div className="flex justify-between text-sf-soft">
                   <span>Items Subtotal</span>
                   <span
                     data-testid="checkout-summary-subtotal"
-                    className="font-semibold text-slate-900"
+                    className="font-semibold text-sf-foreground"
                   >
                     ${quote?.subtotal || cart?.subtotal || "0.00"}
                   </span>
                 </div>
 
-                <div className="flex justify-between text-slate-600">
+                <div className="flex justify-between text-sf-soft">
                   <span>Shipping Total</span>
                   <span
                     data-testid="checkout-summary-shipping"
-                    className="font-semibold text-slate-900"
+                    className="font-semibold text-sf-foreground"
                   >
                     ${quote?.shipping_total || "0.00"}
                   </span>
@@ -660,7 +660,7 @@ export default function CheckoutPage() {
 
                 {quote?.discount_total &&
                   parseFloat(quote.discount_total) > 0 && (
-                    <div className="flex justify-between text-emerald-700">
+                    <div className="flex justify-between text-sf-success">
                       <span>Discount</span>
                       <span className="font-bold">
                         -${quote.discount_total}
@@ -668,7 +668,7 @@ export default function CheckoutPage() {
                     </div>
                   )}
 
-                <div className="border-t border-slate-200 pt-3 flex justify-between text-base font-bold text-slate-900">
+                <div className="border-t border-sf-border pt-3 flex justify-between text-base font-bold text-sf-foreground">
                   <span>Total Amount</span>
                   <span data-testid="checkout-summary-total">
                     ${quote?.grand_total || cart?.subtotal || "0.00"}
@@ -680,13 +680,13 @@ export default function CheckoutPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting || !cart || cart.total_items === 0}
-                  className="w-full rounded-xl bg-teal-800 py-3.5 text-sm font-bold text-white shadow-sm hover:bg-teal-900 disabled:opacity-40 transition"
+                  className="w-full rounded-sf-image bg-sf-action py-3.5 text-sm font-bold text-sf-on-dark shadow-sf-small hover:bg-sf-action-hover disabled:opacity-40 transition"
                 >
                   {isSubmitting ? "Placing Order..." : "Confirm & Place Order"}
                 </button>
               </div>
 
-              <p className="mt-3 text-center text-[11px] text-slate-400">
+              <p className="mt-3 text-center text-[11px] text-sf-muted">
                 🔒 Safe and encrypted checkout. Stock is locked upon order
                 confirmation.
               </p>

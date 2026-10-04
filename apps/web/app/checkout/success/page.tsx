@@ -15,9 +15,9 @@ function SuccessContent() {
 
   return (
     <div className="mx-auto max-w-3xl w-full px-4 py-16 sm:px-6 lg:px-8">
-      <div className="rounded-2xl border border-slate-200 bg-white p-8 sm:p-12 text-center shadow-sm">
+      <div className="rounded-sf-editorial border border-sf-border bg-sf-surface p-8 sm:p-12 text-center shadow-sf-small">
         {/* Checkmark Icon */}
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-sf-success-surface text-sf-success">
           <svg
             className="h-8 w-8"
             fill="none"
@@ -33,42 +33,42 @@ function SuccessContent() {
           </svg>
         </div>
 
-        <h1 className="mt-6 text-2xl font-black text-slate-900 sm:text-3xl">
+        <h1 className="mt-6 text-2xl font-black text-sf-foreground sm:text-3xl">
           Order Confirmed!
         </h1>
-        <p className="mt-2 text-sm text-slate-600">
+        <p className="mt-2 text-sm text-sf-soft">
           Thank you for shopping with us. We have received your order and
           notified each independent merchant.
         </p>
 
         {/* Order Details Card */}
-        <div className="mt-8 rounded-xl bg-slate-50 border border-slate-200 p-6 text-left">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+        <div className="mt-8 rounded-sf-image bg-sf-background border border-sf-border p-6 text-left">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-sf-border pb-4">
             <div>
-              <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+              <span className="text-xs font-semibold text-sf-muted uppercase tracking-wider">
                 Order Number
               </span>
               <p
                 data-testid="success-order-number"
-                className="text-lg font-mono font-bold text-teal-900"
+                className="text-lg font-mono font-bold text-sf-link"
               >
                 {orderNumber}
               </p>
             </div>
             <div>
-              <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+              <span className="text-xs font-semibold text-sf-muted uppercase tracking-wider">
                 Total Paid
               </span>
-              <p className="text-lg font-bold text-slate-900">
+              <p className="text-lg font-bold text-sf-foreground">
                 ${total} {currency}
               </p>
             </div>
           </div>
 
-          <div className="mt-4 space-y-3 text-xs text-slate-600">
+          <div className="mt-4 space-y-3 text-xs text-sf-soft">
             <p>
               📧 A confirmation receipt has been sent to{" "}
-              <strong className="text-slate-800">{customerEmail}</strong>.
+              <strong className="text-sf-foreground">{customerEmail}</strong>.
             </p>
             <p>
               📦 Estimated delivery windows: <strong>2–5 business days</strong>{" "}
@@ -81,13 +81,13 @@ function SuccessContent() {
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link
             href="/account"
-            className="w-full sm:w-auto rounded-xl bg-teal-800 px-6 py-3 text-sm font-bold text-white shadow-sm hover:bg-teal-900 transition"
+            className="w-full sm:w-auto rounded-sf-image bg-sf-action px-6 py-3 text-sm font-bold text-sf-on-dark shadow-sf-small hover:bg-sf-action-hover transition"
           >
             Track My Orders
           </Link>
           <Link
             href="/"
-            className="w-full sm:w-auto rounded-xl border border-slate-300 bg-white px-6 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition"
+            className="w-full sm:w-auto rounded-sf-image border border-sf-control bg-sf-surface px-6 py-3 text-sm font-bold text-sf-soft hover:bg-sf-background transition"
           >
             Continue Shopping
           </Link>
@@ -99,12 +99,12 @@ function SuccessContent() {
 
 export default function CheckoutSuccessPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50">
+    <div className="sf-storefront min-h-screen flex flex-col bg-sf-background">
       <StorefrontHeader />
       <main className="flex-1">
         <Suspense
           fallback={
-            <div className="py-20 text-center text-sm text-slate-400">
+            <div className="py-20 text-center text-sm text-sf-muted">
               Loading order details...
             </div>
           }

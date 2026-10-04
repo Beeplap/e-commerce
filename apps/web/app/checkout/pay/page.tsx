@@ -20,17 +20,17 @@ function PayContent() {
   if (!orderId) {
     return (
       <div className="mx-auto max-w-lg w-full px-4 py-16 text-center">
-        <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-          <h1 className="text-lg font-bold text-slate-900">
+        <div className="rounded-sf-editorial border border-sf-border bg-sf-surface p-8 shadow-sf-small">
+          <h1 className="text-lg font-bold text-sf-foreground">
             No pending order found
           </h1>
-          <p className="mt-2 text-xs text-slate-500">
+          <p className="mt-2 text-xs text-sf-muted">
             You must place an order before proceeding to payment.
           </p>
           <div className="mt-6">
             <Link
               href="/cart"
-              className="rounded-xl bg-teal-800 px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-teal-900 transition"
+              className="rounded-sf-image bg-sf-action px-5 py-2.5 text-xs font-bold text-sf-on-dark shadow-sf-small hover:bg-sf-action-hover transition"
             >
               Return to Cart
             </Link>
@@ -54,17 +54,17 @@ function PayContent() {
     <div className="mx-auto max-w-xl w-full px-4 py-12 sm:px-6">
       <nav
         aria-label="Breadcrumb"
-        className="mb-6 flex items-center gap-2 text-xs text-slate-500"
+        className="mb-6 flex items-center gap-2 text-xs text-sf-muted"
       >
-        <Link href="/" className="hover:text-teal-700 transition">
+        <Link href="/" className="hover:text-sf-link transition">
           Home
         </Link>
         <span>/</span>
-        <Link href="/cart" className="hover:text-teal-700 transition">
+        <Link href="/cart" className="hover:text-sf-link transition">
           Cart
         </Link>
         <span>/</span>
-        <span className="font-semibold text-slate-800">Payment</span>
+        <span className="font-semibold text-sf-foreground">Payment</span>
       </nav>
 
       <PaymentForm
@@ -80,12 +80,12 @@ function PayContent() {
 
 export default function CheckoutPayPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50">
+    <div className="sf-storefront min-h-screen flex flex-col bg-sf-background">
       <StorefrontHeader />
       <main className="flex-1">
         <Suspense
           fallback={
-            <div className="py-20 text-center text-sm text-slate-400">
+            <div className="py-20 text-center text-sm text-sf-muted">
               Loading payment...
             </div>
           }

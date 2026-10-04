@@ -1,0 +1,233 @@
+{
+  "drawers": [
+    {
+      "width": 375,
+      "metrics": {
+        "background": "rgba(0, 0, 0, 0)",
+        "surface": "rgb(248, 243, 237)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "text": "Shopping Cart0 itemsYour cart is emptyBrowse our high-quality catalog and discover verified products from trusted marketplace sellers.Start Shopping"
+      },
+      "screenshot": "cart-drawer-375.png",
+      "state": "apparent empty cart; baseline proxy redirect prevents validated cart load"
+    },
+    {
+      "width": 430,
+      "metrics": {
+        "background": "rgba(0, 0, 0, 0)",
+        "surface": "rgb(248, 243, 237)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "text": "Shopping Cart0 itemsYour cart is emptyBrowse our high-quality catalog and discover verified products from trusted marketplace sellers.Start Shopping"
+      },
+      "screenshot": "cart-drawer-430.png",
+      "state": "apparent empty cart; baseline proxy redirect prevents validated cart load"
+    },
+    {
+      "width": 768,
+      "metrics": {
+        "background": "rgba(0, 0, 0, 0)",
+        "surface": "rgb(248, 243, 237)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "text": "Shopping Cart0 itemsYour cart is emptyBrowse our high-quality catalog and discover verified products from trusted marketplace sellers.Start Shopping"
+      },
+      "screenshot": "cart-drawer-768.png",
+      "state": "apparent empty cart; baseline proxy redirect prevents validated cart load"
+    },
+    {
+      "width": 1024,
+      "metrics": {
+        "background": "rgba(0, 0, 0, 0)",
+        "surface": "rgb(248, 243, 237)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "text": "Shopping Cart0 itemsYour cart is emptyBrowse our high-quality catalog and discover verified products from trusted marketplace sellers.Start Shopping"
+      },
+      "screenshot": "cart-drawer-1024.png",
+      "state": "apparent empty cart; baseline proxy redirect prevents validated cart load"
+    },
+    {
+      "width": 1440,
+      "metrics": {
+        "background": "rgba(0, 0, 0, 0)",
+        "surface": "rgb(248, 243, 237)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "text": "Shopping Cart0 itemsYour cart is emptyBrowse our high-quality catalog and discover verified products from trusted marketplace sellers.Start Shopping"
+      },
+      "screenshot": "cart-drawer-1440.png",
+      "state": "apparent empty cart; baseline proxy redirect prevents validated cart load"
+    },
+    {
+      "width": 1920,
+      "metrics": {
+        "background": "rgba(0, 0, 0, 0)",
+        "surface": "rgb(248, 243, 237)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "text": "Shopping Cart0 itemsYour cart is emptyBrowse our high-quality catalog and discover verified products from trusted marketplace sellers.Start Shopping"
+      },
+      "screenshot": "cart-drawer-1920.png",
+      "state": "apparent empty cart; baseline proxy redirect prevents validated cart load"
+    }
+  ],
+  "requestFailures": [
+    {
+      "path": "/api/v1/auth/me",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/v1/cart/",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/v1/storefront/categories",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/v1/storefront/products?sort=newest",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/v1/storefront/categories",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/v1/cart/",
+      "error": "net::ERR_FAILED"
+    },
+    {
+      "path": "/api/v1/auth/me",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/v1/cart/",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/v1/storefront/categories",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/v1/storefront/products?sort=newest",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/v1/storefront/categories",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/v1/cart/",
+      "error": "net::ERR_FAILED"
+    },
+    {
+      "path": "/api/v1/auth/me",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/v1/cart/",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/v1/storefront/categories",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/v1/storefront/products?sort=newest",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/v1/storefront/categories",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/v1/cart/",
+      "error": "net::ERR_FAILED"
+    },
+    {
+      "path": "/api/v1/auth/me",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/v1/cart/",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/v1/storefront/categories",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/v1/storefront/products?sort=newest",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/v1/storefront/categories",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/v1/cart/",
+      "error": "net::ERR_FAILED"
+    },
+    {
+      "path": "/api/v1/auth/me",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/v1/cart/",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/v1/storefront/categories",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/v1/storefront/products?sort=newest",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/v1/storefront/categories",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/v1/cart/",
+      "error": "net::ERR_FAILED"
+    },
+    {
+      "path": "/api/v1/auth/me",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/v1/cart/",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/v1/storefront/categories",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/v1/storefront/products?sort=newest",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/v1/storefront/categories",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/v1/cart/",
+      "error": "net::ERR_FAILED"
+    }
+  ],
+  "proxyProbes": [
+    {
+      "path": "/api/v1/cart/",
+      "status": 308,
+      "location": "/api/v1/cart"
+    },
+    {
+      "path": "/api/v1/cart",
+      "status": 200,
+      "location": null
+    },
+    {
+      "path": "/api/v1/checkout/addresses/",
+      "status": 308,
+      "location": "/api/v1/checkout/addresses"
+    }
+  ]
+}

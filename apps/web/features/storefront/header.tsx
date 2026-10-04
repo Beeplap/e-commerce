@@ -28,9 +28,9 @@ export function StorefrontHeader() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur-sm">
+    <header className="sticky top-0 z-40 border-b border-sf-border bg-sf-surface/95 backdrop-blur-sm">
       {/* Top Banner / Announcement */}
-      <div className="bg-slate-900 px-4 py-1.5 text-center text-xs font-medium text-slate-200">
+      <div className="bg-sf-dark px-4 py-1.5 text-center text-xs font-medium text-sf-on-dark">
         <span>
           Fast, reliable marketplace delivery from verified sellers. Free
           shipping on select items.
@@ -41,21 +41,21 @@ export function StorefrontHeader() {
         {/* Logo */}
         <div className="flex items-center gap-6">
           <Link href="/" className="flex items-center gap-2">
-            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-teal-700 font-bold text-white shadow-sm">
+            <span className="flex h-9 w-9 items-center justify-center rounded-sf-control bg-sf-action font-bold text-sf-on-dark shadow-sf-small">
               QC
             </span>
-            <span className="text-xl font-bold tracking-tight text-slate-900">
-              Quick<span className="text-teal-700">Commerce</span>
+            <span className="text-xl font-bold tracking-tight text-sf-foreground">
+              Quick<span className="text-sf-link">Commerce</span>
             </span>
           </Link>
 
           {/* Desktop Categories Quick Nav */}
-          <nav className="hidden lg:flex items-center gap-4 text-sm font-medium text-slate-600">
+          <nav className="hidden lg:flex items-center gap-4 text-sm font-medium text-sf-soft">
             {categories.slice(0, 5).map((cat) => (
               <Link
                 key={cat.id}
                 href={`/categories/${cat.id}`}
-                className="transition hover:text-teal-700"
+                className="transition hover:text-sf-link"
               >
                 {cat.name}
               </Link>
@@ -73,7 +73,7 @@ export function StorefrontHeader() {
             type="button"
             onClick={openCart}
             aria-label="Shopping Cart"
-            className="relative flex items-center justify-center rounded-lg p-2 text-slate-700 transition hover:bg-slate-100 hover:text-teal-700"
+            className="relative flex items-center justify-center rounded-sf-control p-2 text-sf-soft transition hover:bg-sf-surface-strong hover:text-sf-link"
           >
             <svg
               className="h-6 w-6"
@@ -91,7 +91,7 @@ export function StorefrontHeader() {
             <span
               id="cart-badge"
               data-testid="cart-badge"
-              className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-teal-600 px-1 text-[10px] font-bold text-white"
+              className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-sf-action px-1 text-[10px] font-bold text-sf-on-dark"
             >
               {cartItemCount}
             </span>
@@ -102,15 +102,15 @@ export function StorefrontHeader() {
             <div className="flex items-center gap-2">
               <Link
                 href="/workspaces"
-                className="hidden md:inline-flex items-center rounded-md border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
+                className="hidden md:inline-flex items-center rounded-md border border-sf-control px-3 py-1.5 text-xs font-semibold text-sf-soft hover:bg-sf-background transition"
               >
                 Workspaces
               </Link>
               <Link
                 href="/account"
-                className="flex items-center gap-1.5 rounded-md px-2 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100 transition"
+                className="flex items-center gap-1.5 rounded-md px-2 py-1.5 text-sm font-medium text-sf-soft hover:bg-sf-surface-strong transition"
               >
-                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-200 text-xs font-bold text-slate-700">
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-sf-border text-xs font-bold text-sf-soft">
                   {user.email.slice(0, 2).toUpperCase()}
                 </div>
               </Link>
@@ -118,7 +118,7 @@ export function StorefrontHeader() {
           ) : (
             <Link
               href="/login"
-              className="rounded-lg bg-teal-800 px-4 py-2 text-sm font-semibold text-white transition hover:bg-teal-900"
+              className="rounded-sf-control bg-sf-action px-4 py-2 text-sm font-semibold text-sf-on-dark transition hover:bg-sf-action-hover"
             >
               Sign In
             </Link>
@@ -128,7 +128,7 @@ export function StorefrontHeader() {
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="flex items-center justify-center rounded-lg p-2 text-slate-700 lg:hidden hover:bg-slate-100"
+            className="flex items-center justify-center rounded-sf-control p-2 text-sf-soft lg:hidden hover:bg-sf-surface-strong"
             aria-label="Toggle menu"
           >
             <svg
@@ -154,10 +154,10 @@ export function StorefrontHeader() {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="border-t border-slate-200 bg-white px-4 py-3 lg:hidden">
+        <div className="border-t border-sf-border bg-sf-surface px-4 py-3 lg:hidden">
           <SearchBar className="mb-3 sm:hidden" />
           <div className="space-y-1">
-            <p className="px-2 py-1 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+            <p className="px-2 py-1 text-xs font-semibold text-sf-muted uppercase tracking-wider">
               Categories
             </p>
             {categories.map((cat) => (
@@ -165,7 +165,7 @@ export function StorefrontHeader() {
                 key={cat.id}
                 href={`/categories/${cat.id}`}
                 onClick={() => setMobileMenuOpen(false)}
-                className="block rounded-md px-2 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100"
+                className="block rounded-md px-2 py-1.5 text-sm font-medium text-sf-soft hover:bg-sf-surface-strong"
               >
                 {cat.name} ({cat.product_count})
               </Link>

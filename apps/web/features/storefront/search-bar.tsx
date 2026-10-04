@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { storefrontApi } from "@/lib/api/client";
 import type { StorefrontSuggestResponse } from "@/lib/api/types";
+import { StorefrontPrice } from "@/components/storefront/content";
 
 interface SearchBarProps {
   initialQuery?: string;
@@ -162,6 +163,7 @@ export function SearchBar({
           <input
             type="search"
             role="combobox"
+            aria-label="Search products, brands and categories"
             aria-expanded={isOpen}
             aria-autocomplete="list"
             aria-controls="search-suggestions-dropdown"
@@ -180,9 +182,9 @@ export function SearchBar({
               if (data && query.trim()) setIsOpen(true);
             }}
             onKeyDown={handleKeyDown}
-            className="w-full rounded-xl border border-slate-300 bg-slate-50/80 px-4 py-2.5 pl-10 pr-10 text-sm text-slate-800 placeholder-slate-400 shadow-inner transition focus:border-teal-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-teal-700"
+            className="w-full rounded-sf-control border border-sf-control bg-sf-surface px-4 py-2.5 pl-10 pr-10 text-sm text-sf-foreground placeholder-sf-muted transition focus:border-sf-action focus:outline-none"
           />
-          <div className="pointer-events-none absolute left-3 text-slate-400">
+          <div className="pointer-events-none absolute left-3 text-sf-muted">
             <svg
               className="h-4 w-4"
               fill="none"
@@ -200,7 +202,7 @@ export function SearchBar({
           </div>
           {loading ? (
             <div className="absolute right-3">
-              <div className="h-4 w-4 animate-spin rounded-full border-2 border-teal-600 border-t-transparent" />
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-sf-action border-t-transparent" />
             </div>
           ) : query ? (
             <button
@@ -210,7 +212,7 @@ export function SearchBar({
                 setData(null);
                 setIsOpen(false);
               }}
-              className="absolute right-3 text-xs text-slate-400 hover:text-slate-600"
+              className="absolute right-3 text-xs text-sf-muted hover:text-sf-soft"
               aria-label="Clear search input"
             >
               ✕
@@ -224,12 +226,12 @@ export function SearchBar({
         <div
           id="search-suggestions-dropdown"
           role="listbox"
-          className="absolute left-0 right-0 top-full z-50 mt-1.5 max-h-96 overflow-y-auto rounded-xl border border-slate-200 bg-white py-2 shadow-xl"
+          className="absolute left-0 right-0 top-full z-50 mt-1.5 max-h-96 overflow-y-auto rounded-sf-image border border-sf-border bg-sf-surface py-2 shadow-sf-overlay"
         >
           {/* Text Suggestions */}
           {data.suggestions.length > 0 && (
             <div className="px-2 py-1">
-              <span className="px-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+              <span className="px-2 text-[10px] font-bold uppercase tracking-wider text-sf-muted">
                 Suggestions
               </span>
               <div className="mt-1 space-y-0.5">
@@ -249,14 +251,14 @@ export function SearchBar({
                           `/search?q=${encodeURIComponent(suggestion)}`,
                         );
                       }}
-                      className={`flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-sm text-slate-700 transition ${
+                      className={`flex w-full items-center gap-2 rounded-sf-control px-2 py-1.5 text-left text-sm text-sf-soft transition ${
                         isSelected
-                          ? "bg-teal-50 text-teal-900 font-semibold"
-                          : "hover:bg-slate-50"
+                          ? "bg-sf-accent-soft text-sf-link font-semibold"
+                          : "hover:bg-sf-background"
                       }`}
                     >
                       <svg
-                        className="h-3.5 w-3.5 text-slate-400 flex-shrink-0"
+                        className="h-3.5 w-3.5 text-sf-muted flex-shrink-0"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -279,8 +281,8 @@ export function SearchBar({
 
           {/* Categories Suggestions */}
           {data.categories.length > 0 && (
-            <div className="border-t border-slate-100 px-2 py-1.5">
-              <span className="px-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+            <div className="border-t border-sf-border px-2 py-1.5">
+              <span className="px-2 text-[10px] font-bold uppercase tracking-wider text-sf-muted">
                 Categories
               </span>
               <div className="mt-1 flex flex-wrap gap-1.5 px-2">
@@ -289,7 +291,7 @@ export function SearchBar({
                     key={c.id}
                     href={`/categories/${c.id}`}
                     onClick={() => setIsOpen(false)}
-                    className="rounded-md bg-teal-50 px-2.5 py-1 text-xs font-medium text-teal-800 hover:bg-teal-100 transition"
+                    className="rounded-md bg-sf-accent-soft px-2.5 py-1 text-xs font-medium text-sf-link hover:bg-sf-accent-soft transition"
                   >
                     {c.name}
                   </Link>
@@ -300,8 +302,8 @@ export function SearchBar({
 
           {/* Brands Suggestions */}
           {data.brands.length > 0 && (
-            <div className="border-t border-slate-100 px-2 py-1.5">
-              <span className="px-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+            <div className="border-t border-sf-border px-2 py-1.5">
+              <span className="px-2 text-[10px] font-bold uppercase tracking-wider text-sf-muted">
                 Brands
               </span>
               <div className="mt-1 flex flex-wrap gap-1.5 px-2">
@@ -310,7 +312,7 @@ export function SearchBar({
                     key={b.id}
                     href={`/search?brand=${b.id}`}
                     onClick={() => setIsOpen(false)}
-                    className="rounded-md bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-200 transition"
+                    className="rounded-md bg-sf-surface-strong px-2.5 py-1 text-xs font-medium text-sf-soft hover:bg-sf-border transition"
                   >
                     {b.name}
                   </Link>
@@ -321,8 +323,8 @@ export function SearchBar({
 
           {/* Top Matching Products */}
           {data.products.length > 0 && (
-            <div className="border-t border-slate-100 px-2 py-1.5">
-              <span className="px-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+            <div className="border-t border-sf-border px-2 py-1.5">
+              <span className="px-2 text-[10px] font-bold uppercase tracking-wider text-sf-muted">
                 Products
               </span>
               <div className="mt-1 space-y-1">
@@ -331,9 +333,9 @@ export function SearchBar({
                     key={prod.id}
                     href={`/products/${prod.id}`}
                     onClick={() => setIsOpen(false)}
-                    className="flex items-center gap-3 rounded-lg p-1.5 hover:bg-slate-50 transition"
+                    className="flex items-center gap-3 rounded-sf-control p-1.5 hover:bg-sf-background transition"
                   >
-                    <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-md border border-slate-200 bg-slate-100">
+                    <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-md border border-sf-border bg-sf-surface-strong">
                       {prod.thumbnail_url ? (
                         /* eslint-disable-next-line @next/next/no-img-element */
                         <img
@@ -342,21 +344,24 @@ export function SearchBar({
                           className="h-full w-full object-cover"
                         />
                       ) : (
-                        <div className="flex h-full w-full items-center justify-center text-[10px] font-bold text-slate-400">
+                        <div className="flex h-full w-full items-center justify-center text-[10px] font-bold text-sf-muted">
                           QC
                         </div>
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="truncate text-xs font-semibold text-slate-900">
+                      <p className="truncate text-xs font-semibold text-sf-foreground">
                         {prod.title}
                       </p>
-                      <p className="text-[10px] text-slate-400">
+                      <p className="text-[10px] text-sf-muted">
                         {prod.category_name}
                       </p>
                     </div>
-                    <span className="text-xs font-bold text-slate-900 pr-2">
-                      ${parseFloat(prod.starting_price).toFixed(2)}
+                    <span className="text-xs font-bold text-sf-foreground pr-2">
+                      <StorefrontPrice
+                        amount={prod.starting_price}
+                        currency={prod.currency}
+                      />
                     </span>
                   </Link>
                 ))}
@@ -365,11 +370,11 @@ export function SearchBar({
           )}
 
           {/* View All Results Link */}
-          <div className="border-t border-slate-100 px-3 pt-2 pb-1 text-center">
+          <div className="border-t border-sf-border px-3 pt-2 pb-1 text-center">
             <button
               type="button"
               onClick={() => handleSubmit()}
-              className="w-full text-xs font-semibold text-teal-700 hover:text-teal-900 hover:underline"
+              className="w-full text-xs font-semibold text-sf-link hover:text-sf-link hover:underline"
             >
               View all results for &ldquo;{query.trim()}&rdquo; →
             </button>

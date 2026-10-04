@@ -67,28 +67,30 @@ export default function CartPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50">
+    <div className="sf-storefront min-h-screen flex flex-col bg-sf-background">
       <StorefrontHeader />
 
       <main className="flex-1 mx-auto max-w-7xl w-full px-4 py-8 sm:px-6 lg:px-8">
         {/* Breadcrumb Navigation */}
         <nav
           aria-label="Breadcrumb"
-          className="mb-6 flex items-center gap-2 text-xs text-slate-500"
+          className="mb-6 flex items-center gap-2 text-xs text-sf-muted"
         >
-          <Link href="/" className="hover:text-teal-700 transition">
+          <Link href="/" className="hover:text-sf-link transition">
             Home
           </Link>
           <span>/</span>
-          <span className="font-semibold text-slate-800">Shopping Cart</span>
+          <span className="font-semibold text-sf-foreground">
+            Shopping Cart
+          </span>
         </nav>
 
-        <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-200">
+        <div className="flex items-center justify-between mb-8 pb-4 border-b border-sf-border">
           <div>
-            <h1 className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl">
+            <h1 className="text-2xl font-black tracking-tight text-sf-foreground sm:text-3xl">
               Shopping Cart
             </h1>
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="mt-1 text-sm text-sf-muted">
               {totalItems} {totalItems === 1 ? "item" : "items"} in your cart
             </p>
           </div>
@@ -97,7 +99,7 @@ export default function CartPage() {
               type="button"
               onClick={clearCart}
               disabled={isLoading}
-              className="text-xs font-semibold text-rose-600 hover:text-rose-700 hover:underline transition"
+              className="text-xs font-semibold text-sf-danger hover:text-sf-danger hover:underline transition"
             >
               Clear Entire Cart
             </button>
@@ -106,11 +108,11 @@ export default function CartPage() {
 
         {/* Out of Stock Warning Banner */}
         {hasOutOfStock && (
-          <div className="mb-6 rounded-xl bg-rose-50 border border-rose-200 p-4 text-sm text-rose-800 flex items-start gap-3">
+          <div className="mb-6 rounded-sf-image bg-sf-danger-surface border border-sf-danger p-4 text-sm text-sf-danger flex items-start gap-3">
             <span className="text-xl">⚠️</span>
             <div>
               <p className="font-bold">Checkout is disabled</p>
-              <p className="text-xs text-rose-700 mt-0.5">
+              <p className="text-xs text-sf-danger mt-0.5">
                 Some items in your cart exceed current available inventory or
                 are out of stock. Please adjust quantities or remove unavailable
                 items before proceeding.
@@ -120,8 +122,8 @@ export default function CartPage() {
         )}
 
         {sellers.length === 0 ? (
-          <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center shadow-sm">
-            <div className="mx-auto h-20 w-20 rounded-full bg-teal-50 flex items-center justify-center text-teal-700 mb-4">
+          <div className="rounded-sf-editorial border border-sf-border bg-sf-surface p-12 text-center shadow-sf-small">
+            <div className="mx-auto h-20 w-20 rounded-full bg-sf-accent-soft flex items-center justify-center text-sf-link mb-4">
               <svg
                 className="h-10 w-10"
                 fill="none"
@@ -136,17 +138,17 @@ export default function CartPage() {
                 />
               </svg>
             </div>
-            <h2 className="text-lg font-bold text-slate-900">
+            <h2 className="text-lg font-bold text-sf-foreground">
               Your cart is currently empty
             </h2>
-            <p className="mt-2 text-sm text-slate-500 max-w-md mx-auto">
+            <p className="mt-2 text-sm text-sf-muted max-w-md mx-auto">
               Explore thousands of verified products from independent sellers
               across our fast commerce platform.
             </p>
             <div className="mt-6 flex justify-center gap-3">
               <Link
                 href="/"
-                className="rounded-xl bg-teal-800 px-6 py-3 text-sm font-bold text-white shadow-sm hover:bg-teal-900 transition"
+                className="rounded-sf-image bg-sf-action px-6 py-3 text-sm font-bold text-sf-on-dark shadow-sf-small hover:bg-sf-action-hover transition"
               >
                 Explore Catalog
               </Link>
@@ -159,35 +161,35 @@ export default function CartPage() {
               {sellers.map((seller) => (
                 <div
                   key={seller.seller_id}
-                  className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden"
+                  className="rounded-sf-editorial border border-sf-border bg-sf-surface shadow-sf-small overflow-hidden"
                 >
                   {/* Seller Header */}
-                  <div className="bg-slate-50/80 px-6 py-3.5 border-b border-slate-200 flex items-center justify-between">
+                  <div className="bg-sf-background/80 px-6 py-3.5 border-b border-sf-border flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                      <span className="text-xs font-bold uppercase tracking-wider text-sf-muted">
                         Seller
                       </span>
                       <Link
                         href={`/sellers/${seller.seller_id}`}
-                        className="text-sm font-bold text-teal-900 hover:underline"
+                        className="text-sm font-bold text-sf-link hover:underline"
                       >
                         {seller.seller_name}
                       </Link>
                     </div>
-                    <span className="text-xs font-semibold text-slate-600">
+                    <span className="text-xs font-semibold text-sf-soft">
                       Seller Subtotal: ${seller.subtotal}
                     </span>
                   </div>
 
                   {/* Items for this seller */}
-                  <div className="divide-y divide-slate-100 p-6 space-y-6">
+                  <div className="divide-y divide-sf-border p-6 space-y-6">
                     {seller.items.map((item) => (
                       <div
                         key={item.id}
                         className="flex flex-col sm:flex-row gap-4 pt-6 first:pt-0"
                       >
                         {/* Image */}
-                        <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-xl bg-slate-100 border border-slate-200 relative">
+                        <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-sf-image bg-sf-surface-strong border border-sf-border relative">
                           {item.thumbnail_url ? (
                             <Image
                               src={item.thumbnail_url}
@@ -197,7 +199,7 @@ export default function CartPage() {
                               className="object-cover"
                             />
                           ) : (
-                            <div className="flex h-full w-full items-center justify-center text-slate-300">
+                            <div className="flex h-full w-full items-center justify-center text-sf-muted">
                               <svg
                                 className="h-8 w-8"
                                 fill="none"
@@ -221,21 +223,21 @@ export default function CartPage() {
                             <div className="flex items-start justify-between gap-2">
                               <Link
                                 href={`/products/${item.product_id}`}
-                                className="text-sm font-bold text-slate-900 hover:text-teal-700 transition"
+                                className="text-sm font-bold text-sf-foreground hover:text-sf-link transition"
                               >
                                 {item.product_title}
                               </Link>
-                              <span className="text-sm font-bold text-slate-900">
+                              <span className="text-sm font-bold text-sf-foreground">
                                 ${item.line_subtotal}
                               </span>
                             </div>
-                            <p className="mt-0.5 text-xs text-slate-500 font-mono">
+                            <p className="mt-0.5 text-xs text-sf-muted font-mono">
                               SKU: {item.sku}
                             </p>
-                            <p className="text-xs text-slate-600 font-medium mt-1">
+                            <p className="text-xs text-sf-soft font-medium mt-1">
                               ${item.unit_price} each
                               {item.compare_at_price && (
-                                <span className="ml-2 text-[11px] text-slate-400 line-through">
+                                <span className="ml-2 text-[11px] text-sf-muted line-through">
                                   ${item.compare_at_price}
                                 </span>
                               )}
@@ -246,8 +248,8 @@ export default function CartPage() {
                               <p
                                 className={`mt-2 text-xs font-semibold ${
                                   item.is_available
-                                    ? "text-amber-700"
-                                    : "text-rose-600"
+                                    ? "text-sf-warning-text"
+                                    : "text-sf-danger"
                                 }`}
                               >
                                 ⚠️ {item.stock_warning}
@@ -256,8 +258,8 @@ export default function CartPage() {
                           </div>
 
                           {/* Controls */}
-                          <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3">
-                            <div className="flex items-center rounded-lg border border-slate-300 bg-white">
+                          <div className="mt-4 flex items-center justify-between border-t border-sf-border pt-3">
+                            <div className="flex items-center rounded-sf-control border border-sf-control bg-sf-surface">
                               <button
                                 type="button"
                                 onClick={() =>
@@ -265,13 +267,13 @@ export default function CartPage() {
                                 }
                                 disabled={isLoading}
                                 aria-label="Decrease quantity"
-                                className="px-3 py-1.5 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-l-lg transition"
+                                className="px-3 py-1.5 text-xs font-bold text-sf-soft hover:bg-sf-surface-strong rounded-l-lg transition"
                               >
                                 -
                               </button>
                               <span
                                 data-testid={`cart-page-qty-${item.id}`}
-                                className="w-10 text-center text-xs font-bold text-slate-800"
+                                className="w-10 text-center text-xs font-bold text-sf-foreground"
                               >
                                 {item.quantity}
                               </span>
@@ -285,7 +287,7 @@ export default function CartPage() {
                                   item.quantity >= item.available_stock
                                 }
                                 aria-label="Increase quantity"
-                                className="px-3 py-1.5 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-r-lg transition disabled:opacity-30"
+                                className="px-3 py-1.5 text-xs font-bold text-sf-soft hover:bg-sf-surface-strong rounded-r-lg transition disabled:opacity-30"
                               >
                                 +
                               </button>
@@ -295,7 +297,7 @@ export default function CartPage() {
                               type="button"
                               onClick={() => removeItem(item.id)}
                               disabled={isLoading}
-                              className="text-xs font-medium text-slate-500 hover:text-rose-600 transition"
+                              className="text-xs font-medium text-sf-muted hover:text-sf-danger transition"
                             >
                               Remove
                             </button>
@@ -311,35 +313,35 @@ export default function CartPage() {
             {/* Order Summary & Coupon (Right 4 Cols) */}
             <div className="lg:col-span-4 space-y-6">
               {/* Order Summary Card */}
-              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-4">
+              <div className="rounded-sf-editorial border border-sf-border bg-sf-surface p-6 shadow-sf-small">
+                <h2 className="text-base font-bold text-sf-foreground border-b border-sf-border pb-4">
                   Order Summary
                 </h2>
 
                 <div className="mt-4 space-y-3 text-sm">
-                  <div className="flex justify-between text-slate-600">
+                  <div className="flex justify-between text-sf-soft">
                     <span>Subtotal</span>
                     <span
                       data-testid="cart-summary-subtotal"
-                      className="font-semibold text-slate-900"
+                      className="font-semibold text-sf-foreground"
                     >
                       ${cart?.subtotal || "0.00"}
                     </span>
                   </div>
 
-                  <div className="flex justify-between text-slate-600">
+                  <div className="flex justify-between text-sf-soft">
                     <span>Estimated Shipping</span>
-                    <span className="font-semibold text-emerald-700">FREE</span>
+                    <span className="font-semibold text-sf-success">FREE</span>
                   </div>
 
                   {couponResult?.valid && (
-                    <div className="flex justify-between text-emerald-700">
+                    <div className="flex justify-between text-sf-success">
                       <span className="flex items-center gap-1">
                         Coupon ({couponCode.toUpperCase()})
                         <button
                           type="button"
                           onClick={handleRemoveCoupon}
-                          className="text-[10px] text-rose-500 hover:underline"
+                          className="text-[10px] text-sf-danger hover:underline"
                         >
                           (remove)
                         </button>
@@ -350,7 +352,7 @@ export default function CartPage() {
                     </div>
                   )}
 
-                  <div className="border-t border-slate-200 pt-3 flex justify-between text-base font-bold text-slate-900">
+                  <div className="border-t border-sf-border pt-3 flex justify-between text-base font-bold text-sf-foreground">
                     <span>Total</span>
                     <span data-testid="cart-summary-total">${grandTotal}</span>
                   </div>
@@ -360,24 +362,24 @@ export default function CartPage() {
                   <Link
                     href="/checkout"
                     aria-disabled={hasOutOfStock || sellers.length === 0}
-                    className={`block w-full text-center rounded-xl py-3.5 text-sm font-bold text-white shadow-sm transition ${
+                    className={`block w-full text-center rounded-sf-image py-3.5 text-sm font-bold text-sf-on-dark shadow-sf-small transition ${
                       hasOutOfStock || sellers.length === 0
-                        ? "bg-slate-300 cursor-not-allowed pointer-events-none"
-                        : "bg-teal-800 hover:bg-teal-900"
+                        ? "bg-sf-border cursor-not-allowed pointer-events-none"
+                        : "bg-sf-action hover:bg-sf-action-hover"
                     }`}
                   >
                     Proceed to Checkout
                   </Link>
                 </div>
 
-                <p className="mt-3 text-center text-[11px] text-slate-500">
+                <p className="mt-3 text-center text-[11px] text-sf-muted">
                   🔒 Encrypted checkout with authorized seller guarantees.
                 </p>
               </div>
 
               {/* Promotional Coupon Box */}
-              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <h3 className="text-sm font-bold text-slate-900 mb-3">
+              <div className="rounded-sf-editorial border border-sf-border bg-sf-surface p-6 shadow-sf-small">
+                <h3 className="text-sm font-bold text-sf-foreground mb-3">
                   Promotional Coupon
                 </h3>
                 <form onSubmit={handleApplyCoupon} className="flex gap-2">
@@ -386,25 +388,25 @@ export default function CartPage() {
                     value={couponCode}
                     onChange={(e) => setCouponCode(e.target.value)}
                     placeholder="Enter coupon code"
-                    className="flex-1 rounded-xl border border-slate-300 px-3.5 py-2 text-xs font-mono uppercase text-slate-800 placeholder:text-slate-400 focus:border-teal-700 focus:outline-none focus:ring-1 focus:ring-teal-700"
+                    className="flex-1 rounded-sf-image border border-sf-control px-3.5 py-2 text-xs font-mono uppercase text-sf-foreground placeholder:text-sf-muted focus:border-sf-action focus:outline-none focus:ring-1 focus:ring-sf-action"
                   />
                   <button
                     type="submit"
                     disabled={couponLoading || !couponCode.trim()}
-                    className="rounded-xl bg-slate-900 px-4 py-2 text-xs font-bold text-white hover:bg-slate-800 disabled:opacity-40 transition"
+                    className="rounded-sf-image bg-sf-dark px-4 py-2 text-xs font-bold text-sf-on-dark hover:bg-sf-dark disabled:opacity-40 transition"
                   >
                     {couponLoading ? "..." : "Apply"}
                   </button>
                 </form>
 
                 {couponError && (
-                  <p className="mt-2 text-xs text-rose-600 font-medium">
+                  <p className="mt-2 text-xs text-sf-danger font-medium">
                     {couponError}
                   </p>
                 )}
 
                 {couponResult?.valid && (
-                  <div className="mt-3 rounded-lg bg-emerald-50 border border-emerald-200 p-2 text-xs font-semibold text-emerald-800">
+                  <div className="mt-3 rounded-sf-control bg-sf-success-surface border border-sf-success p-2 text-xs font-semibold text-sf-success">
                     ✓ Coupon applied! Saved ${couponResult.discount_amount}
                   </div>
                 )}

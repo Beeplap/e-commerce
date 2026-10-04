@@ -39,27 +39,27 @@ export function SellerStoreView({ seller }: SellerStoreViewProps) {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       {/* Seller Header Banner */}
-      <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+      <section className="overflow-hidden rounded-sf-editorial border border-sf-border bg-sf-surface p-6 shadow-sf-small sm:p-8">
         <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-start gap-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-teal-800 text-2xl font-bold text-white shadow">
+            <div className="flex h-16 w-16 items-center justify-center rounded-sf-image bg-sf-action text-2xl font-bold text-sf-on-dark shadow-sf-small">
               {seller.store_name.slice(0, 2).toUpperCase()}
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-extrabold text-slate-900">
+                <h1 className="text-2xl font-extrabold text-sf-foreground">
                   {seller.store_name}
                 </h1>
-                <span className="rounded-full bg-teal-100 px-2.5 py-0.5 text-xs font-bold text-teal-800">
+                <span className="rounded-full bg-sf-accent-soft px-2.5 py-0.5 text-xs font-bold text-sf-link">
                   Verified Seller
                 </span>
               </div>
               {seller.description && (
-                <p className="mt-1.5 max-w-2xl text-sm text-slate-600">
+                <p className="mt-1.5 max-w-2xl text-sm text-sf-soft">
                   {seller.description}
                 </p>
               )}
-              <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-slate-500">
+              <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-sf-muted">
                 {seller.city && seller.country && (
                   <span>
                     📍 {seller.city}, {seller.state ? `${seller.state}, ` : ""}
@@ -74,12 +74,12 @@ export function SellerStoreView({ seller }: SellerStoreViewProps) {
 
           {/* Rating Summary Card */}
           {seller.average_rating ? (
-            <div className="flex items-center gap-3 rounded-xl bg-slate-50 p-4 border border-slate-200">
-              <div className="text-3xl font-bold text-slate-900">
+            <div className="flex items-center gap-3 rounded-sf-image bg-sf-background p-4 border border-sf-border">
+              <div className="text-3xl font-bold text-sf-foreground">
                 {seller.average_rating.toFixed(1)}
               </div>
-              <div className="text-xs text-slate-500">
-                <div className="flex text-amber-400">
+              <div className="text-xs text-sf-muted">
+                <div className="flex text-sf-warning-text">
                   {"★".repeat(Math.round(seller.average_rating))}
                   {"☆".repeat(5 - Math.round(seller.average_rating))}
                 </div>
@@ -87,27 +87,26 @@ export function SellerStoreView({ seller }: SellerStoreViewProps) {
               </div>
             </div>
           ) : (
-            <div className="text-xs text-slate-400">New marketplace seller</div>
+            <div className="text-xs text-sf-muted">New marketplace seller</div>
           )}
         </div>
       </section>
 
       {/* Catalog Controls */}
       <section className="mt-10">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200 pb-4">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-sf-border pb-4">
           <div>
-            <h2 className="text-lg font-bold text-slate-900">Store Products</h2>
-            <p className="text-xs text-slate-500">
+            <h2 className="text-lg font-bold text-sf-foreground">
+              Store Products
+            </h2>
+            <p className="text-xs text-sf-muted">
               Showing {productsPage?.results?.length || 0} of{" "}
               {productsPage?.count || 0} items
             </p>
           </div>
 
           <div className="flex items-center gap-2 text-xs">
-            <label
-              htmlFor="sort-select"
-              className="font-semibold text-slate-700"
-            >
+            <label htmlFor="sort-select" className="font-semibold text-sf-soft">
               Sort by:
             </label>
             <select
@@ -118,7 +117,7 @@ export function SellerStoreView({ seller }: SellerStoreViewProps) {
                 setPage(1);
                 setLoading(true);
               }}
-              className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-800 focus:border-teal-700 focus:outline-none"
+              className="rounded-sf-control border border-sf-control bg-sf-surface px-3 py-1.5 text-xs text-sf-foreground focus:border-sf-action focus:outline-none"
             >
               <option value="newest">Newest Arrivals</option>
               <option value="price_asc">Price: Low to High</option>
@@ -134,7 +133,7 @@ export function SellerStoreView({ seller }: SellerStoreViewProps) {
             {[1, 2, 3, 4].map((i) => (
               <div
                 key={i}
-                className="h-72 rounded-xl border border-slate-200 bg-slate-100 animate-pulse"
+                className="h-72 rounded-sf-image border border-sf-border bg-sf-surface-strong motion-safe:animate-pulse"
               />
             ))}
           </div>
@@ -145,7 +144,7 @@ export function SellerStoreView({ seller }: SellerStoreViewProps) {
             ))}
           </div>
         ) : (
-          <div className="mt-12 text-center text-sm text-slate-500">
+          <div className="mt-12 text-center text-sm text-sf-muted">
             No products found for this seller.
           </div>
         )}
@@ -160,11 +159,11 @@ export function SellerStoreView({ seller }: SellerStoreViewProps) {
                 setPage((p) => Math.max(1, p - 1));
                 setLoading(true);
               }}
-              className="rounded-lg border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-40"
+              className="rounded-sf-control border border-sf-control px-4 py-2 text-xs font-semibold text-sf-soft hover:bg-sf-background disabled:opacity-40"
             >
               Previous
             </button>
-            <span className="flex items-center px-3 text-xs font-medium text-slate-600">
+            <span className="flex items-center px-3 text-xs font-medium text-sf-soft">
               Page {page}
             </span>
             <button
@@ -174,7 +173,7 @@ export function SellerStoreView({ seller }: SellerStoreViewProps) {
                 setPage((p) => p + 1);
                 setLoading(true);
               }}
-              className="rounded-lg border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-40"
+              className="rounded-sf-control border border-sf-control px-4 py-2 text-xs font-semibold text-sf-soft hover:bg-sf-background disabled:opacity-40"
             >
               Next
             </button>

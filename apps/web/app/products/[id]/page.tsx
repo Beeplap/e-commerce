@@ -38,35 +38,35 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
   }, [id]);
 
   return (
-    <div className="flex min-h-screen flex-col bg-slate-50">
+    <div className="sf-storefront flex min-h-screen flex-col bg-sf-background">
       <StorefrontHeader />
 
       <main className="flex-1">
         {loading ? (
           <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
-              <div className="aspect-square rounded-2xl bg-slate-200 animate-pulse" />
+              <div className="aspect-square rounded-2xl bg-sf-border motion-safe:animate-pulse" />
               <div className="space-y-4">
-                <div className="h-6 w-1/4 rounded bg-slate-200 animate-pulse" />
-                <div className="h-10 w-3/4 rounded bg-slate-200 animate-pulse" />
-                <div className="h-8 w-1/3 rounded bg-slate-200 animate-pulse" />
-                <div className="h-32 rounded bg-slate-200 animate-pulse" />
+                <div className="h-6 w-1/4 rounded bg-sf-border motion-safe:animate-pulse" />
+                <div className="h-10 w-3/4 rounded bg-sf-border motion-safe:animate-pulse" />
+                <div className="h-8 w-1/3 rounded bg-sf-border motion-safe:animate-pulse" />
+                <div className="h-32 rounded bg-sf-border motion-safe:animate-pulse" />
               </div>
             </div>
           </div>
         ) : error || !product ? (
           <div className="mx-auto max-w-2xl px-4 py-24 text-center">
-            <h1 className="text-2xl font-bold text-slate-900">
+            <h1 className="text-2xl font-bold text-sf-foreground">
               Product Unavailable
             </h1>
-            <p className="mt-2 text-sm text-slate-500">
+            <p className="mt-2 text-sm text-sf-muted">
               {error ||
                 "This item is currently not active or no longer exists."}
             </p>
             <div className="mt-6">
               <Link
                 href="/"
-                className="rounded-lg bg-teal-800 px-5 py-2.5 text-sm font-semibold text-white hover:bg-teal-900 transition"
+                className="rounded-sf-control bg-sf-action px-5 py-2.5 text-sm font-semibold text-sf-on-dark hover:bg-sf-action-hover transition"
               >
                 Return to Storefront
               </Link>

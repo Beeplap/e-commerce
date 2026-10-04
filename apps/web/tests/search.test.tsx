@@ -260,7 +260,7 @@ describe("Search & Faceted Filtering UI", () => {
 
     await waitFor(() => {
       expect(screen.getByText("Apex Wireless Headphones")).toBeInTheDocument();
-      expect(screen.getByText("$149.00")).toBeInTheDocument();
+      expect(screen.getByText("149.00 USD")).toBeInTheDocument();
       expect(screen.getByText("1 item found")).toBeInTheDocument();
     });
 

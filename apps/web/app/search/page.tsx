@@ -128,7 +128,7 @@ function SearchResultsContent() {
   const totalPages = Math.ceil(totalCount / 20);
 
   return (
-    <div className="flex min-h-screen flex-col bg-slate-50">
+    <div className="sf-storefront flex min-h-screen flex-col bg-sf-background">
       <StorefrontHeader />
 
       <main className="flex-1 mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 w-full">
@@ -136,28 +136,28 @@ function SearchResultsContent() {
         <div className="mb-6">
           <nav
             aria-label="Breadcrumb"
-            className="flex items-center gap-2 text-xs text-slate-500 mb-2"
+            className="flex items-center gap-2 text-xs text-sf-muted mb-2"
           >
-            <Link href="/" className="hover:text-teal-700 transition">
+            <Link href="/" className="hover:text-sf-link transition">
               Home
             </Link>
             <span>/</span>
-            <span className="font-semibold text-slate-800">Search</span>
+            <span className="font-semibold text-sf-foreground">Search</span>
           </nav>
 
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+              <h1 className="text-2xl font-bold tracking-tight text-sf-foreground sm:text-3xl">
                 {query ? (
                   <>
                     Results for &ldquo;
-                    <span className="text-teal-800">{query}</span>&rdquo;
+                    <span className="text-sf-link">{query}</span>&rdquo;
                   </>
                 ) : (
                   "Explore All Products"
                 )}
               </h1>
-              <p className="mt-1 text-xs text-slate-500">
+              <p className="mt-1 text-xs text-sf-muted">
                 {loading
                   ? "Searching catalog..."
                   : `${totalCount} item${totalCount === 1 ? "" : "s"} found`}
@@ -169,10 +169,10 @@ function SearchResultsContent() {
               <button
                 type="button"
                 onClick={() => setMobileFiltersOpen(!mobileFiltersOpen)}
-                className="flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm hover:bg-slate-50 md:hidden"
+                className="flex items-center gap-1.5 rounded-sf-control border border-sf-control bg-sf-surface px-3 py-1.5 text-xs font-semibold text-sf-soft shadow-sf-small hover:bg-sf-background md:hidden"
               >
                 <svg
-                  className="h-4 w-4 text-slate-500"
+                  className="h-4 w-4 text-sf-muted"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -190,7 +190,7 @@ function SearchResultsContent() {
               <div className="flex items-center gap-2">
                 <label
                   htmlFor="search-sort"
-                  className="text-xs font-semibold text-slate-600"
+                  className="text-xs font-semibold text-sf-soft"
                 >
                   Sort:
                 </label>
@@ -198,7 +198,7 @@ function SearchResultsContent() {
                   id="search-sort"
                   value={sort}
                   onChange={(e) => handleSortChange(e.target.value)}
-                  className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-800 shadow-sm focus:border-teal-700 focus:outline-none"
+                  className="rounded-sf-control border border-sf-control bg-sf-surface px-3 py-1.5 text-xs font-medium text-sf-foreground shadow-sf-small focus:border-sf-action focus:outline-none"
                 >
                   <option value="relevance">Relevance</option>
                   <option value="price_asc">Price: Low to High</option>
@@ -233,13 +233,15 @@ function SearchResultsContent() {
           {/* Mobile Filter Drawer / Modal */}
           {mobileFiltersOpen && (
             <div className="fixed inset-0 z-50 flex bg-black/50 md:hidden">
-              <div className="ml-auto w-full max-w-xs bg-white p-6 shadow-xl overflow-y-auto">
+              <div className="ml-auto w-full max-w-xs bg-sf-surface p-6 shadow-xl overflow-y-auto">
                 <div className="flex items-center justify-between border-b pb-3 mb-4">
-                  <h2 className="text-sm font-bold text-slate-900">Filters</h2>
+                  <h2 className="text-sm font-bold text-sf-foreground">
+                    Filters
+                  </h2>
                   <button
                     type="button"
                     onClick={() => setMobileFiltersOpen(false)}
-                    className="text-slate-400 hover:text-slate-600 font-bold"
+                    className="text-sf-muted hover:text-sf-soft font-bold"
                   >
                     ✕
                   </button>
@@ -263,7 +265,7 @@ function SearchResultsContent() {
                 {[1, 2, 3, 4, 5, 6].map((i) => (
                   <div
                     key={i}
-                    className="h-80 rounded-xl border border-slate-200 bg-white p-4 shadow-sm animate-pulse"
+                    className="h-80 rounded-sf-image border border-sf-border bg-sf-surface p-4 shadow-sf-small motion-safe:animate-pulse"
                   />
                 ))}
               </div>
@@ -277,7 +279,7 @@ function SearchResultsContent() {
 
                 {/* Pagination Controls */}
                 {totalPages > 1 && (
-                  <div className="mt-10 flex items-center justify-center gap-3 border-t border-slate-200 pt-6">
+                  <div className="mt-10 flex items-center justify-center gap-3 border-t border-sf-border pt-6">
                     <button
                       type="button"
                       disabled={page <= 1}
@@ -286,11 +288,11 @@ function SearchResultsContent() {
                         sp.set("page", String(page - 1));
                         router.push(`/search?${sp.toString()}`);
                       }}
-                      className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-700 shadow-sm hover:bg-slate-50 disabled:opacity-40 transition"
+                      className="rounded-sf-control border border-sf-control bg-sf-surface px-4 py-2 text-xs font-semibold text-sf-soft shadow-sf-small hover:bg-sf-background disabled:opacity-40 transition"
                     >
                       ← Previous
                     </button>
-                    <span className="text-xs text-slate-500">
+                    <span className="text-xs text-sf-muted">
                       Page {page} of {totalPages}
                     </span>
                     <button
@@ -301,7 +303,7 @@ function SearchResultsContent() {
                         sp.set("page", String(page + 1));
                         router.push(`/search?${sp.toString()}`);
                       }}
-                      className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-700 shadow-sm hover:bg-slate-50 disabled:opacity-40 transition"
+                      className="rounded-sf-control border border-sf-control bg-sf-surface px-4 py-2 text-xs font-semibold text-sf-soft shadow-sf-small hover:bg-sf-background disabled:opacity-40 transition"
                     >
                       Next →
                     </button>
@@ -310,8 +312,8 @@ function SearchResultsContent() {
               </>
             ) : (
               /* Empty Search Results State */
-              <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center">
-                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-slate-100 text-slate-400 mb-4">
+              <div className="rounded-2xl border border-dashed border-sf-control bg-sf-surface p-12 text-center">
+                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-sf-surface-strong text-sf-muted-strong mb-4">
                   <svg
                     className="h-8 w-8"
                     fill="none"
@@ -326,10 +328,10 @@ function SearchResultsContent() {
                     />
                   </svg>
                 </div>
-                <h3 className="text-base font-bold text-slate-900">
+                <h3 className="text-base font-bold text-sf-foreground">
                   No matching products found
                 </h3>
-                <p className="mt-1 text-xs text-slate-500 max-w-md mx-auto">
+                <p className="mt-1 text-xs text-sf-muted max-w-md mx-auto">
                   We couldn&apos;t find anything matching your search criteria.
                   Try adjusting your keywords, broadening price ranges, or
                   removing filters.
@@ -338,13 +340,13 @@ function SearchResultsContent() {
                   <button
                     type="button"
                     onClick={handleClearAll}
-                    className="rounded-xl bg-teal-700 px-4 py-2 text-xs font-bold text-white shadow hover:bg-teal-800 transition"
+                    className="rounded-sf-image bg-sf-action px-4 py-2 text-xs font-bold text-sf-on-dark shadow-sf-small hover:bg-sf-action-hover transition"
                   >
                     Clear All Filters
                   </button>
                   <Link
                     href="/"
-                    className="rounded-xl border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
+                    className="rounded-sf-image border border-sf-control bg-sf-surface px-4 py-2 text-xs font-semibold text-sf-soft hover:bg-sf-background transition"
                   >
                     Browse Homepage
                   </Link>
@@ -364,8 +366,8 @@ export default function SearchPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-screen items-center justify-center bg-slate-50">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-teal-700 border-t-transparent" />
+        <div className="sf-storefront flex min-h-screen items-center justify-center bg-sf-background">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-sf-action border-t-transparent" />
         </div>
       }
     >

@@ -41,9 +41,9 @@ export function SearchFiltersSidebar({
   return (
     <aside className={`space-y-6 ${className}`}>
       {/* In-Stock Only Toggle */}
-      <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="rounded-sf-image border border-sf-border bg-sf-surface p-4 shadow-sf-small">
         <label className="flex items-center justify-between cursor-pointer">
-          <span className="text-sm font-semibold text-slate-800">
+          <span className="text-sm font-semibold text-sf-foreground">
             In-Stock Only
           </span>
           <input
@@ -55,11 +55,11 @@ export function SearchFiltersSidebar({
                 in_stock: e.target.checked || undefined,
               })
             }
-            className="h-4 w-4 rounded border-slate-300 text-teal-700 focus:ring-teal-700 cursor-pointer"
+            className="h-4 w-4 rounded border-sf-control text-sf-link focus:ring-sf-action cursor-pointer"
           />
         </label>
         {facets && (
-          <p className="mt-1 text-xs text-slate-400">
+          <p className="mt-1 text-xs text-sf-muted">
             {facets.in_stock_count} item{facets.in_stock_count === 1 ? "" : "s"}{" "}
             ready to ship
           </p>
@@ -68,8 +68,8 @@ export function SearchFiltersSidebar({
 
       {/* Categories Facet */}
       {facets && facets.categories.length > 0 && (
-        <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
+        <div className="rounded-sf-image border border-sf-border bg-sf-surface p-4 shadow-sf-small">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-sf-muted">
             Categories
           </h3>
           <div className="mt-3 space-y-1.5 max-h-48 overflow-y-auto pr-1">
@@ -85,18 +85,18 @@ export function SearchFiltersSidebar({
                       category: isSelected ? undefined : cat.id,
                     })
                   }
-                  className={`flex w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-xs transition ${
+                  className={`flex w-full items-center justify-between rounded-sf-control px-2.5 py-1.5 text-xs transition ${
                     isSelected
-                      ? "bg-teal-50 font-semibold text-teal-900"
-                      : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                      ? "bg-sf-accent-soft font-semibold text-sf-link"
+                      : "text-sf-soft hover:bg-sf-background hover:text-sf-foreground"
                   }`}
                 >
                   <span className="truncate">{cat.name}</span>
                   <span
                     className={`ml-2 rounded px-1.5 py-0.5 text-[10px] ${
                       isSelected
-                        ? "bg-teal-200 text-teal-900"
-                        : "bg-slate-100 text-slate-400"
+                        ? "bg-sf-accent-soft text-sf-link"
+                        : "bg-sf-surface-strong text-sf-muted-strong"
                     }`}
                   >
                     {cat.count}
@@ -110,8 +110,8 @@ export function SearchFiltersSidebar({
 
       {/* Brands Facet */}
       {facets && facets.brands.length > 0 && (
-        <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
+        <div className="rounded-sf-image border border-sf-border bg-sf-surface p-4 shadow-sf-small">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-sf-muted">
             Brands
           </h3>
           <div className="mt-3 space-y-1.5 max-h-48 overflow-y-auto pr-1">
@@ -127,18 +127,18 @@ export function SearchFiltersSidebar({
                       brand: isSelected ? undefined : brand.id,
                     })
                   }
-                  className={`flex w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-xs transition ${
+                  className={`flex w-full items-center justify-between rounded-sf-control px-2.5 py-1.5 text-xs transition ${
                     isSelected
-                      ? "bg-teal-50 font-semibold text-teal-900"
-                      : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                      ? "bg-sf-accent-soft font-semibold text-sf-link"
+                      : "text-sf-soft hover:bg-sf-background hover:text-sf-foreground"
                   }`}
                 >
                   <span className="truncate">{brand.name}</span>
                   <span
                     className={`ml-2 rounded px-1.5 py-0.5 text-[10px] ${
                       isSelected
-                        ? "bg-teal-200 text-teal-900"
-                        : "bg-slate-100 text-slate-400"
+                        ? "bg-sf-accent-soft text-sf-link"
+                        : "bg-sf-surface-strong text-sf-muted-strong"
                     }`}
                   >
                     {brand.count}
@@ -151,8 +151,8 @@ export function SearchFiltersSidebar({
       )}
 
       {/* Price Brackets & Range */}
-      <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
+      <div className="rounded-sf-image border border-sf-border bg-sf-surface p-4 shadow-sf-small">
+        <h3 className="text-xs font-bold uppercase tracking-wider text-sf-muted">
           Price Range
         </h3>
 
@@ -187,18 +187,18 @@ export function SearchFiltersSidebar({
                       setCustomMax(b.max_price || "");
                     }
                   }}
-                  className={`flex w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-xs transition ${
+                  className={`flex w-full items-center justify-between rounded-sf-control px-2.5 py-1.5 text-xs transition ${
                     isSelected
-                      ? "bg-teal-50 font-semibold text-teal-900"
-                      : "text-slate-600 hover:bg-slate-50"
+                      ? "bg-sf-accent-soft font-semibold text-sf-link"
+                      : "text-sf-soft hover:bg-sf-background"
                   }`}
                 >
                   <span>{b.label}</span>
                   <span
                     className={`ml-2 rounded px-1.5 py-0.5 text-[10px] ${
                       isSelected
-                        ? "bg-teal-200 text-teal-900"
-                        : "bg-slate-100 text-slate-400"
+                        ? "bg-sf-accent-soft text-sf-link"
+                        : "bg-sf-surface-strong text-sf-muted-strong"
                     }`}
                   >
                     {b.count}
@@ -212,7 +212,7 @@ export function SearchFiltersSidebar({
         {/* Custom Min / Max Inputs */}
         <form
           onSubmit={handleApplyCustomPrice}
-          className="mt-4 border-t border-slate-100 pt-3"
+          className="mt-4 border-t border-sf-border pt-3"
         >
           <div className="flex items-center gap-2 text-xs">
             <input
@@ -221,20 +221,20 @@ export function SearchFiltersSidebar({
               min="0"
               value={customMin}
               onChange={(e) => setCustomMin(e.target.value)}
-              className="w-full rounded-lg border border-slate-200 px-2 py-1 text-slate-800 placeholder-slate-400 focus:border-teal-700 focus:outline-none"
+              className="w-full rounded-sf-control border border-sf-border px-2 py-1 text-sf-foreground placeholder-sf-control focus:border-sf-action focus:outline-none"
             />
-            <span className="text-slate-400">–</span>
+            <span className="text-sf-muted">–</span>
             <input
               type="number"
               placeholder="Max $"
               min="0"
               value={customMax}
               onChange={(e) => setCustomMax(e.target.value)}
-              className="w-full rounded-lg border border-slate-200 px-2 py-1 text-slate-800 placeholder-slate-400 focus:border-teal-700 focus:outline-none"
+              className="w-full rounded-sf-control border border-sf-border px-2 py-1 text-sf-foreground placeholder-sf-control focus:border-sf-action focus:outline-none"
             />
             <button
               type="submit"
-              className="rounded-lg bg-teal-700 px-3 py-1 font-semibold text-white hover:bg-teal-800 transition"
+              className="rounded-sf-control bg-sf-action px-3 py-1 font-semibold text-sf-on-dark hover:bg-sf-action-hover transition"
             >
               Go
             </button>
@@ -244,8 +244,8 @@ export function SearchFiltersSidebar({
 
       {/* Customer Rating Facet */}
       {facets && facets.rating_brackets.length > 0 && (
-        <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
+        <div className="rounded-sf-image border border-sf-border bg-sf-surface p-4 shadow-sf-small">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-sf-muted">
             Customer Rating
           </h3>
           <div className="mt-3 space-y-1">
@@ -261,14 +261,14 @@ export function SearchFiltersSidebar({
                       min_rating: isSelected ? undefined : r.min_rating,
                     })
                   }
-                  className={`flex w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-xs transition ${
+                  className={`flex w-full items-center justify-between rounded-sf-control px-2.5 py-1.5 text-xs transition ${
                     isSelected
-                      ? "bg-teal-50 font-semibold text-teal-900"
-                      : "text-slate-600 hover:bg-slate-50"
+                      ? "bg-sf-accent-soft font-semibold text-sf-link"
+                      : "text-sf-soft hover:bg-sf-background"
                   }`}
                 >
                   <div className="flex items-center gap-1.5">
-                    <span className="text-amber-400 text-xs">
+                    <span className="text-sf-warning-text text-xs">
                       {"★".repeat(r.min_rating)}
                       {"☆".repeat(5 - r.min_rating)}
                     </span>
@@ -277,8 +277,8 @@ export function SearchFiltersSidebar({
                   <span
                     className={`ml-2 rounded px-1.5 py-0.5 text-[10px] ${
                       isSelected
-                        ? "bg-teal-200 text-teal-900"
-                        : "bg-slate-100 text-slate-400"
+                        ? "bg-sf-accent-soft text-sf-link"
+                        : "bg-sf-surface-strong text-sf-muted-strong"
                     }`}
                   >
                     {r.count}
@@ -367,17 +367,17 @@ export function ActiveFilterBadges({
 
   return (
     <div className="flex flex-wrap items-center gap-2 py-2">
-      <span className="text-xs text-slate-400 font-medium">Filters:</span>
+      <span className="text-xs text-sf-muted font-medium">Filters:</span>
       {chips.map((chip) => (
         <span
           key={chip.id}
-          className="inline-flex items-center gap-1.5 rounded-full border border-teal-200 bg-teal-50 px-3 py-1 text-xs font-medium text-teal-800 shadow-sm"
+          className="inline-flex items-center gap-1.5 rounded-full border border-sf-action bg-sf-accent-soft px-3 py-1 text-xs font-medium text-sf-link shadow-sf-small"
         >
           {chip.label}
           <button
             type="button"
             onClick={chip.onRemove}
-            className="hover:text-teal-950 font-bold ml-1"
+            className="hover:text-sf-link font-bold ml-1"
             aria-label={`Remove filter ${chip.label}`}
           >
             ✕
@@ -387,7 +387,7 @@ export function ActiveFilterBadges({
       <button
         type="button"
         onClick={onClearAll}
-        className="text-xs font-semibold text-rose-600 hover:text-rose-800 hover:underline ml-2"
+        className="text-xs font-semibold text-sf-danger hover:text-sf-danger hover:underline ml-2"
       >
         Clear All
       </button>

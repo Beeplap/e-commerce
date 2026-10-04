@@ -350,7 +350,7 @@ describe("Phase 23: Customer Commerce End-to-End Integration Flows", () => {
     expect(screen.getAllByText("Pro Gaming Keyboard").length).toBeGreaterThan(
       0,
     );
-    expect(screen.getAllByText("$120.00").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("120.00 USD").length).toBeGreaterThan(0);
 
     // Select alternative variant "Arctic White / Clicky"
     const whiteVariantBtn = screen.getByRole("button", {
@@ -358,8 +358,8 @@ describe("Phase 23: Customer Commerce End-to-End Integration Flows", () => {
     });
     fireEvent.click(whiteVariantBtn);
 
-    // Price updates to $130.00
-    expect(screen.getAllByText("$130.00").length).toBeGreaterThan(0);
+    // Price updates with the actual currency.
+    expect(screen.getAllByText("130.00 USD").length).toBeGreaterThan(0);
 
     // Increment quantity
     const plusBtn = screen.getByRole("button", { name: /Increase quantity/i });

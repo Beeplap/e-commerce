@@ -147,17 +147,19 @@ export function PaymentForm({
   };
 
   const inputClass =
-    "w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:border-teal-700 focus:outline-none focus:ring-1 focus:ring-teal-700";
+    "w-full rounded-sf-image border border-sf-control px-3.5 py-2 text-sm text-sf-foreground focus:border-sf-action focus:outline-none focus:ring-1 focus:ring-sf-action";
 
   return (
     <form
       onSubmit={handleSubmit}
       noValidate
       aria-label="Card payment"
-      className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+      className="rounded-sf-editorial border border-sf-border bg-sf-surface p-6 shadow-sf-small"
     >
-      <h2 className="text-base font-bold text-slate-900">Payment details</h2>
-      <p className="mt-1 text-xs text-slate-500">
+      <h2 className="text-base font-bold text-sf-foreground">
+        Payment details
+      </h2>
+      <p className="mt-1 text-xs text-sf-muted">
         Order <span className="font-mono">{orderNumber}</span> · Amount due{" "}
         <strong data-testid="payment-amount">
           {total} {currency}
@@ -168,7 +170,7 @@ export function PaymentForm({
         <div
           role="alert"
           data-testid="payment-error"
-          className="mt-4 rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800"
+          className="mt-4 rounded-sf-image border border-sf-danger bg-sf-danger-surface p-4 text-sm text-sf-danger"
         >
           <p>{error}</p>
           {declined && (
@@ -192,7 +194,7 @@ export function PaymentForm({
         <div>
           <label
             htmlFor="cardNumber"
-            className="mb-1 block text-xs font-bold text-slate-700"
+            className="mb-1 block text-xs font-bold text-sf-soft"
           >
             Card number
           </label>
@@ -211,7 +213,7 @@ export function PaymentForm({
             placeholder="4242 4242 4242 4242"
           />
           {fieldErrors.cardNumber && (
-            <p id="cardNumber-error" className="mt-1 text-xs text-rose-700">
+            <p id="cardNumber-error" className="mt-1 text-xs text-sf-danger">
               {fieldErrors.cardNumber}
             </p>
           )}
@@ -220,7 +222,7 @@ export function PaymentForm({
           <div>
             <label
               htmlFor="expiry"
-              className="mb-1 block text-xs font-bold text-slate-700"
+              className="mb-1 block text-xs font-bold text-sf-soft"
             >
               Expiry (MM/YY)
             </label>
@@ -236,7 +238,7 @@ export function PaymentForm({
               placeholder="12/30"
             />
             {fieldErrors.expiry && (
-              <p id="expiry-error" className="mt-1 text-xs text-rose-700">
+              <p id="expiry-error" className="mt-1 text-xs text-sf-danger">
                 {fieldErrors.expiry}
               </p>
             )}
@@ -244,7 +246,7 @@ export function PaymentForm({
           <div>
             <label
               htmlFor="cvc"
-              className="mb-1 block text-xs font-bold text-slate-700"
+              className="mb-1 block text-xs font-bold text-sf-soft"
             >
               CVC
             </label>
@@ -262,7 +264,7 @@ export function PaymentForm({
               placeholder="123"
             />
             {fieldErrors.cvc && (
-              <p id="cvc-error" className="mt-1 text-xs text-rose-700">
+              <p id="cvc-error" className="mt-1 text-xs text-sf-danger">
                 {fieldErrors.cvc}
               </p>
             )}
@@ -273,11 +275,11 @@ export function PaymentForm({
       <button
         type="submit"
         disabled={submitting || declined}
-        className="mt-6 w-full rounded-xl bg-teal-800 py-3.5 text-sm font-bold text-white shadow-sm transition hover:bg-teal-900 disabled:opacity-40"
+        className="mt-6 w-full rounded-sf-image bg-sf-action py-3.5 text-sm font-bold text-sf-on-dark shadow-sf-small transition hover:bg-sf-action-hover disabled:opacity-40"
       >
         {submitting ? "Processing payment..." : `Pay ${total} ${currency}`}
       </button>
-      <p className="mt-3 text-center text-[11px] text-slate-400">
+      <p className="mt-3 text-center text-[11px] text-sf-muted">
         Card details are tokenized in your browser and never sent to our
         servers.
       </p>

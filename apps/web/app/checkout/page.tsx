@@ -223,7 +223,11 @@ export default function CheckoutPage() {
     return (
       <div className="sf-storefront min-h-screen flex flex-col bg-sf-background">
         <StorefrontHeader />
-        <main className="flex-1 mx-auto max-w-3xl w-full px-4 py-16 text-center">
+        <main
+          id="storefront-content"
+          tabIndex={-1}
+          className="flex-1 mx-auto max-w-3xl w-full px-4 py-16 text-center"
+        >
           <div className="rounded-sf-editorial border border-sf-border bg-sf-surface p-12 shadow-sf-small">
             <h1 className="text-xl font-bold text-sf-foreground">
               Your cart is empty
@@ -250,7 +254,11 @@ export default function CheckoutPage() {
     <div className="sf-storefront min-h-screen flex flex-col bg-sf-background">
       <StorefrontHeader />
 
-      <main className="flex-1 mx-auto max-w-7xl w-full px-4 py-8 sm:px-6 lg:px-8">
+      <main
+        id="storefront-content"
+        tabIndex={-1}
+        className="flex-1 mx-auto max-w-7xl w-full px-4 py-8 sm:px-6 lg:px-8"
+      >
         {/* Breadcrumb */}
         <nav
           aria-label="Breadcrumb"

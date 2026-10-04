@@ -70,7 +70,11 @@ export default function CartPage() {
     <div className="sf-storefront min-h-screen flex flex-col bg-sf-background">
       <StorefrontHeader />
 
-      <main className="flex-1 mx-auto max-w-7xl w-full px-4 py-8 sm:px-6 lg:px-8">
+      <main
+        id="storefront-content"
+        tabIndex={-1}
+        className="flex-1 mx-auto max-w-7xl w-full px-4 py-8 sm:px-6 lg:px-8"
+      >
         {/* Breadcrumb Navigation */}
         <nav
           aria-label="Breadcrumb"

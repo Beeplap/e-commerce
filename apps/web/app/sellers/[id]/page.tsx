@@ -41,7 +41,7 @@ export default function SellerStorePage({ params }: SellerPageProps) {
     <div className="sf-storefront flex min-h-screen flex-col bg-sf-background">
       <StorefrontHeader />
 
-      <main className="flex-1">
+      <main id="storefront-content" tabIndex={-1} className="flex-1">
         {loading ? (
           <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
             <div className="h-44 rounded-2xl bg-sf-border motion-safe:animate-pulse" />

@@ -1,178 +1,410 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
-import { storefrontApi } from "@/lib/api/client";
-import type { StorefrontCategory } from "@/lib/api/types";
+import { usePathname } from "next/navigation";
+import { useEffect, useId, useRef, useState } from "react";
+import { StorefrontButton } from "@/components/storefront/controls";
+import { StorefrontOverlay } from "@/components/storefront/feedback";
 import { useAuth } from "@/features/auth/auth-provider";
 import { useCart } from "@/features/cart/cart-context";
+import { StorefrontBrand } from "./brand";
+import { useNavigationData } from "./navigation-data";
 import { SearchBar } from "./search-bar";
+import { ShellIcon } from "./shell-icons";
+
+function DiscoveryLinks({
+  state,
+  type,
+  retry,
+  onNavigate,
+}: {
+  state: ReturnType<typeof useNavigationData>["categories"];
+  type: "categories" | "sellers";
+  retry: () => void;
+  onNavigate: () => void;
+}) {
+  const pathname = usePathname();
+  if (state.kind === "loading")
+    return (
+      <p role="status" className="sf-discovery-status">
+        Loading {type}…
+      </p>
+    );
+  if (state.kind === "error")
+    return (
+      <div className="sf-discovery-status" role="status">
+        <p>We couldn’t load {type}.</p>
+        <StorefrontButton variant="quiet" onClick={retry}>
+          Try again
+        </StorefrontButton>
+      </div>
+    );
+  if (!state.items.length)
+    return (
+      <p className="sf-discovery-status">
+        {type === "categories"
+          ? "No categories are available yet."
+          : "No seller stores in the latest arrivals yet."}
+      </p>
+    );
+  return (
+    <ul className="sf-discovery-links">
+      {state.items.map((item) => (
+        <li key={item.id}>
+          <Link
+            href={item.href}
+            aria-current={pathname === item.href ? "page" : undefined}
+            onClick={onNavigate}
+          >
+            {item.name}
+            <ShellIcon name="arrow" />
+          </Link>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function HeaderShell({
+  state,
+}: {
+  state: ReturnType<typeof useAuth>["state"];
+}) {
+  const pathname = usePathname();
+  const user = state.kind === "authenticated" ? state.user : null;
+  const { cart, openCart } = useCart();
+  const count = cart?.total_items;
+  const countDescription =
+    count === undefined
+      ? "Item count unavailable"
+      : `${count} ${count === 1 ? "item" : "items"}`;
+  const identity = useId();
+  const navRef = useRef<HTMLElement>(null);
+  const headerRef = useRef<HTMLElement>(null);
+  const focusBrandAfterResize = useRef(false);
+  const searchRef = useRef<HTMLInputElement>(null);
+  const [panel, setPanel] = useState<"categories" | "sellers" | null>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [sellersEnabled, setSellersEnabled] = useState(false);
+  const [mobileSellers, setMobileSellers] = useState(false);
+  const navigation = useNavigationData(sellersEnabled);
+
+  useEffect(() => {
+    const outside = (event: PointerEvent) => {
+      if (
+        event.target instanceof Node &&
+        !navRef.current?.contains(event.target)
+      )
+        setPanel(null);
+    };
+    document.addEventListener("pointerdown", outside);
+    return () => document.removeEventListener("pointerdown", outside);
+  }, []);
+  useEffect(() => {
+    if (!window.matchMedia) return;
+    const media = window.matchMedia("(min-width: 1100px)");
+    const resize = () => {
+      if (media.matches && drawerOpen) {
+        focusBrandAfterResize.current = true;
+        setDrawerOpen(false);
+      }
+    };
+    media.addEventListener("change", resize);
+    return () => {
+      media.removeEventListener("change", resize);
+    };
+  }, [drawerOpen]);
+  useEffect(() => {
+    if (!drawerOpen && focusBrandAfterResize.current) {
+      focusBrandAfterResize.current = false;
+      headerRef.current?.querySelector<HTMLAnchorElement>(".sf-brand")?.focus();
+    }
+  }, [drawerOpen]);
+
+  const closeNavigation = () => {
+    setPanel(null);
+    setDrawerOpen(false);
+  };
+  const accountHref = user ? "/account" : "/login";
+  const accountLabel = user ? "Your account" : "Sign in to your account";
+  return (
+    <header ref={headerRef} className="sf-header">
+      <a className="sf-skip-link" href="#storefront-content">
+        Skip to content
+      </a>
+      <div className="sf-announcement sf-inverse">
+        Independent sellers. One marketplace.
+      </div>
+      <div className="sf-header-inner">
+        <StorefrontBrand />
+        <nav
+          ref={navRef}
+          className="sf-desktop-nav"
+          aria-label="Main navigation"
+          onBlur={(event) => {
+            if (!event.currentTarget.contains(event.relatedTarget))
+              setPanel(null);
+          }}
+          onKeyDown={(event) => {
+            if (event.key === "Escape" && panel) {
+              event.preventDefault();
+              navRef.current
+                ?.querySelector<HTMLButtonElement>('[aria-expanded="true"]')
+                ?.focus();
+              setPanel(null);
+            }
+          }}
+        >
+          <Link
+            href="/search"
+            aria-current={
+              pathname === "/search" || pathname.startsWith("/products/")
+                ? "location"
+                : undefined
+            }
+          >
+            Shop
+          </Link>
+          {(["categories", "sellers"] as const).map((type) => (
+            <div className="sf-nav-disclosure" key={type}>
+              <button
+                type="button"
+                aria-expanded={panel === type}
+                aria-current={
+                  pathname.startsWith(`/${type}/`) ? "location" : undefined
+                }
+                aria-controls={
+                  panel === type ? `${identity}-${type}` : undefined
+                }
+                onClick={() => {
+                  setPanel((current) => (current === type ? null : type));
+                  if (type === "sellers") setSellersEnabled(true);
+                }}
+              >
+                {type === "categories" ? "Categories" : "Sellers"}
+                <ShellIcon name="chevron" />
+              </button>
+              {panel === type && (
+                <div className="sf-nav-panel" id={`${identity}-${type}`}>
+                  <p className="sf-nav-panel-heading">
+                    {type === "categories"
+                      ? "Explore by category"
+                      : "Meet the sellers"}
+                  </p>
+                  {type === "sellers" && (
+                    <p className="sf-nav-panel-note">
+                      Stores from the latest catalog arrivals.
+                    </p>
+                  )}
+                  <DiscoveryLinks
+                    state={navigation[type]}
+                    type={type}
+                    retry={
+                      type === "categories"
+                        ? navigation.retryCategories
+                        : navigation.retrySellers
+                    }
+                    onNavigate={closeNavigation}
+                  />
+                  <Link
+                    className="sf-nav-panel-all"
+                    href="/search"
+                    onClick={closeNavigation}
+                  >
+                    Explore all products <ShellIcon name="arrow" />
+                  </Link>
+                </div>
+              )}
+            </div>
+          ))}
+          <Link href="/search?sort=newest">New arrivals</Link>
+        </nav>
+        <SearchBar className="sf-header-search" onNavigate={closeNavigation} />
+        <div className="sf-header-actions">
+          <Link
+            className="sf-header-action"
+            href={accountHref}
+            aria-label={accountLabel}
+            aria-current={
+              pathname === "/account" || pathname.startsWith("/account/")
+                ? "location"
+                : undefined
+            }
+          >
+            <ShellIcon name="account" />
+            <span className="sf-action-word">
+              {user ? "Account" : "Sign In"}
+            </span>
+          </Link>
+          <button
+            type="button"
+            className="sf-header-action sf-cart-action"
+            onClick={openCart}
+            aria-label="Shopping Cart"
+            aria-describedby={`${identity}-cart-count`}
+          >
+            <ShellIcon name="cart" />
+            <span
+              data-testid="cart-badge"
+              className="sf-cart-count"
+              aria-hidden="true"
+            >
+              {count === undefined ? "—" : count > 99 ? "99+" : count}
+            </span>
+            <span id={`${identity}-cart-count`} className="sr-only">
+              {countDescription}
+            </span>
+          </button>
+          <button
+            type="button"
+            className="sf-header-action sf-mobile-trigger"
+            aria-label="Open navigation"
+            aria-expanded={drawerOpen}
+            aria-haspopup="dialog"
+            onClick={() => setDrawerOpen(true)}
+          >
+            <ShellIcon name="menu" />
+          </button>
+        </div>
+      </div>
+      {drawerOpen && (
+        <StorefrontOverlay
+          kind="drawer"
+          open
+          title="Explore QuickCommerce"
+          initialFocus={searchRef}
+          onClose={() => setDrawerOpen(false)}
+        >
+          <div
+            className="sf-mobile-navigation"
+            onKeyDown={(event) => {
+              if (event.nativeEvent.isComposing) return;
+              // Autocomplete consumes its first Escape. The next closes navigation,
+              // before the native search input can consume it to clear its value.
+              if (event.key === "Escape" && !event.defaultPrevented) {
+                event.preventDefault();
+                setDrawerOpen(false);
+              }
+            }}
+          >
+            <SearchBar inputRef={searchRef} onNavigate={closeNavigation} />
+            <nav aria-label="Mobile navigation">
+              <Link
+                className="sf-mobile-primary"
+                href="/search"
+                aria-current={
+                  pathname === "/search" || pathname.startsWith("/products/")
+                    ? "location"
+                    : undefined
+                }
+                onClick={closeNavigation}
+              >
+                Shop all products
+                <ShellIcon name="arrow" />
+              </Link>
+              <Link
+                className="sf-mobile-primary"
+                href="/search?sort=newest"
+                onClick={closeNavigation}
+              >
+                New arrivals
+                <ShellIcon name="arrow" />
+              </Link>
+              <section className="sf-mobile-section" aria-label="Categories">
+                <h3>Categories</h3>
+                <DiscoveryLinks
+                  state={navigation.categories}
+                  type="categories"
+                  retry={navigation.retryCategories}
+                  onNavigate={closeNavigation}
+                />
+              </section>
+              <section className="sf-mobile-section" aria-label="Sellers">
+                <button
+                  type="button"
+                  className="sf-mobile-primary"
+                  aria-expanded={mobileSellers}
+                  aria-current={
+                    pathname.startsWith("/sellers/") ? "location" : undefined
+                  }
+                  aria-controls={
+                    mobileSellers ? `${identity}-mobile-sellers` : undefined
+                  }
+                  onClick={() => {
+                    setMobileSellers((value) => !value);
+                    setSellersEnabled(true);
+                  }}
+                >
+                  Sellers
+                  <ShellIcon name="chevron" />
+                </button>
+                {mobileSellers && (
+                  <div id={`${identity}-mobile-sellers`}>
+                    <p className="sf-nav-panel-note">
+                      Stores from the latest catalog arrivals.
+                    </p>
+                    <DiscoveryLinks
+                      state={navigation.sellers}
+                      type="sellers"
+                      retry={navigation.retrySellers}
+                      onNavigate={closeNavigation}
+                    />
+                  </div>
+                )}
+              </section>
+              <section
+                className="sf-mobile-section"
+                aria-label="Account and cart"
+              >
+                <Link
+                  className="sf-mobile-primary"
+                  href={accountHref}
+                  onClick={closeNavigation}
+                >
+                  {user ? "Your account" : "Sign In"}
+                  <ShellIcon name="account" />
+                </Link>
+                <Link
+                  className="sf-mobile-primary"
+                  href="/cart"
+                  onClick={closeNavigation}
+                >
+                  Your cart
+                  <span className="sf-mobile-meta">{countDescription}</span>
+                </Link>
+                {user && (
+                  <Link
+                    className="sf-mobile-secondary"
+                    href="/workspaces"
+                    onClick={closeNavigation}
+                  >
+                    Your workspaces
+                  </Link>
+                )}
+                <Link
+                  className="sf-mobile-secondary"
+                  href="/onboarding"
+                  onClick={closeNavigation}
+                >
+                  Sell with us
+                </Link>
+              </section>
+            </nav>
+          </div>
+        </StorefrontOverlay>
+      )}
+    </header>
+  );
+}
 
 export function StorefrontHeader() {
   const { state } = useAuth();
-  const { cart, openCart } = useCart();
-  const user = state.kind === "authenticated" ? state.user : null;
-  const cartItemCount = cart?.total_items || 0;
-  const [categories, setCategories] = useState<StorefrontCategory[]>([]);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const controller = new AbortController();
-    storefrontApi
-      .categories(controller.signal)
-      .then((data) => {
-        if (Array.isArray(data)) setCategories(data);
-      })
-      .catch(() => {});
-    return () => controller.abort();
-  }, []);
-
+  const pathname = usePathname();
+  // Remount the shell to abort/discard discovery on route or signed-in identity changes.
   return (
-    <header className="sticky top-0 z-40 border-b border-sf-border bg-sf-surface/95 backdrop-blur-sm">
-      {/* Top Banner / Announcement */}
-      <div className="bg-sf-dark px-4 py-1.5 text-center text-xs font-medium text-sf-on-dark">
-        <span>
-          Fast, reliable marketplace delivery from verified sellers. Free
-          shipping on select items.
-        </span>
-      </div>
-
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-        {/* Logo */}
-        <div className="flex items-center gap-6">
-          <Link href="/" className="flex items-center gap-2">
-            <span className="flex h-9 w-9 items-center justify-center rounded-sf-control bg-sf-action font-bold text-sf-on-dark shadow-sf-small">
-              QC
-            </span>
-            <span className="text-xl font-bold tracking-tight text-sf-foreground">
-              Quick<span className="text-sf-link">Commerce</span>
-            </span>
-          </Link>
-
-          {/* Desktop Categories Quick Nav */}
-          <nav className="hidden lg:flex items-center gap-4 text-sm font-medium text-sf-soft">
-            {categories.slice(0, 5).map((cat) => (
-              <Link
-                key={cat.id}
-                href={`/categories/${cat.id}`}
-                className="transition hover:text-sf-link"
-              >
-                {cat.name}
-              </Link>
-            ))}
-          </nav>
-        </div>
-
-        {/* Search Bar with Autocomplete */}
-        <SearchBar className="flex-1 max-w-lg hidden sm:block" />
-
-        {/* Actions (Cart, Account, Workspaces) */}
-        <div className="flex items-center gap-3">
-          {/* Cart Icon / Drawer Toggle */}
-          <button
-            type="button"
-            onClick={openCart}
-            aria-label="Shopping Cart"
-            className="relative flex items-center justify-center rounded-sf-control p-2 text-sf-soft transition hover:bg-sf-surface-strong hover:text-sf-link"
-          >
-            <svg
-              className="h-6 w-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.8}
-                d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-              />
-            </svg>
-            <span
-              id="cart-badge"
-              data-testid="cart-badge"
-              className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-sf-action px-1 text-[10px] font-bold text-sf-on-dark"
-            >
-              {cartItemCount}
-            </span>
-          </button>
-
-          {/* User Account / Workspaces */}
-          {user ? (
-            <div className="flex items-center gap-2">
-              <Link
-                href="/workspaces"
-                className="hidden md:inline-flex items-center rounded-md border border-sf-control px-3 py-1.5 text-xs font-semibold text-sf-soft hover:bg-sf-background transition"
-              >
-                Workspaces
-              </Link>
-              <Link
-                href="/account"
-                className="flex items-center gap-1.5 rounded-md px-2 py-1.5 text-sm font-medium text-sf-soft hover:bg-sf-surface-strong transition"
-              >
-                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-sf-border text-xs font-bold text-sf-soft">
-                  {user.email.slice(0, 2).toUpperCase()}
-                </div>
-              </Link>
-            </div>
-          ) : (
-            <Link
-              href="/login"
-              className="rounded-sf-control bg-sf-action px-4 py-2 text-sm font-semibold text-sf-on-dark transition hover:bg-sf-action-hover"
-            >
-              Sign In
-            </Link>
-          )}
-
-          {/* Mobile Menu Toggle */}
-          <button
-            type="button"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="flex items-center justify-center rounded-sf-control p-2 text-sf-soft lg:hidden hover:bg-sf-surface-strong"
-            aria-label="Toggle menu"
-          >
-            <svg
-              className="h-6 w-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d={
-                  mobileMenuOpen
-                    ? "M6 18L18 6M6 6l12 12"
-                    : "M4 6h16M4 12h16M4 18h16"
-                }
-              />
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile Drawer */}
-      {mobileMenuOpen && (
-        <div className="border-t border-sf-border bg-sf-surface px-4 py-3 lg:hidden">
-          <SearchBar className="mb-3 sm:hidden" />
-          <div className="space-y-1">
-            <p className="px-2 py-1 text-xs font-semibold text-sf-muted uppercase tracking-wider">
-              Categories
-            </p>
-            {categories.map((cat) => (
-              <Link
-                key={cat.id}
-                href={`/categories/${cat.id}`}
-                onClick={() => setMobileMenuOpen(false)}
-                className="block rounded-md px-2 py-1.5 text-sm font-medium text-sf-soft hover:bg-sf-surface-strong"
-              >
-                {cat.name} ({cat.product_count})
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
-    </header>
+    <HeaderShell
+      key={`${pathname}:${state.kind === "authenticated" ? state.user.id : "public"}`}
+      state={state}
+    />
   );
 }

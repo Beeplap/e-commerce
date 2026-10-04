@@ -60,7 +60,7 @@ export default function Home() {
     <div className="sf-storefront flex min-h-screen flex-col bg-sf-background">
       <StorefrontHeader />
 
-      <main className="flex-1">
+      <main id="storefront-content" tabIndex={-1} className="flex-1">
         {/* Hero Section */}
         <section className="sf-inverse relative overflow-hidden bg-sf-dark py-16 text-sf-on-dark sm:py-24">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

@@ -1,12 +1,12 @@
 # Customer storefront design foundation
 
-Phase 35 implements the foundation from the user-supplied `instructions4.md`. Page composition, navigation, discovery, cart/checkout and account redesign belong to later explicit phases. The source of truth is `apps/web/styles/storefront.css`; components must consume its semantic tokens instead of embedding brand hex values.
+Phase 35 implements the foundation and Phase 36 implements the customer header/search/navigation/footer from the user-supplied `instructions4.md`. Page composition, listing discovery, cart/checkout and account redesign belong to later explicit phases. The source of truth is `apps/web/styles/storefront.css`; components must consume its semantic tokens instead of embedding brand hex values.
 
 ## Theme and integration boundary
 
 The `.sf-storefront` ancestor opts a customer surface into the theme. Variables use the `--sf-*` namespace; Tailwind aliases use `sf-*`. There are no customer overrides on `:root`, `body`, or operational `--ui-*` tokens. Home, search, category, product, seller-store, cart and checkout pages include the boundary, including loading/error states. The existing cart drawer has its own transparent theme boundary because it renders outside page roots. Customer auth/account retain their operational presentation until Phase 42. Seller/admin styles and backend/API/auth code are untouched.
 
-The work is isolated on `ui-overhaul-phase35-foundation`. After the user's rebase completed, the audit and foundation commits were rebased in our separate worktree onto their committed integration baseline `803970d`. The real cart provider, cart/checkout/payment handlers and operational changes are retained. The user's original worktree and its uncommitted proxy/abort-handling fixes are untouched and are not included in this branch's validation. Do not replace real cart actions/providers with older presentation code. Never force-push or move the user's working branches to deliver this foundation.
+Phase 36 work is isolated on `ui-overhaul-phase36-shell`, based on validated Phase 35 `cb0bd0a`. After the user's rebase completed, the audit and foundation commits were rebased in our separate worktree onto their committed integration baseline `803970d`. The real cart provider, cart/checkout/payment handlers and operational changes are retained. The user's original worktree and its uncommitted proxy/abort-handling fixes are untouched and are not included in this branch's validation. Do not replace real cart actions/providers with older presentation code. Never force-push or move the user's working branches to deliver customer presentation.
 
 ## Palette
 
@@ -38,7 +38,7 @@ Fast/normal transitions are 120/180ms with a shared easing curve. Loading skelet
 ## Shared component contracts
 
 - `StorefrontButton`: native button; defaults to `type="button"`; primary/secondary/quiet/danger variants; busy state disables activation and communicates `aria-busy`. Forms explicitly choose submit. Links retain native navigation semantics.
-- `StorefrontInput` / `StorefrontSelect`: associated label and unique identity, caller refs/handlers, preserved external descriptions, linked hint/error, native validation/keyboard behavior. Controls are at least 44px high and 16px text. Search reuses the real existing suggestion component with a programmatic label, token styling and exact prices; full combobox/menu work belongs to Phase 36.
+- `StorefrontInput` / `StorefrontSelect`: associated label and unique identity, caller refs/handlers, preserved external descriptions, linked hint/error, native validation/keyboard behavior. Controls are at least 44px high and 16px text. Phase 36 search has a labeled native input/combobox, unique listbox/option identities, all-group keyboard selection, precise actual prices and explicit stale/failure/dismissal recovery.
 - `StorefrontQuantity`: named native button group, live displayed quantity and integer bounds; unavailable/busy controls cannot change the value. Bounds are a UX hint, never inventory authorization. Django must accept each later mutation.
 - `StorefrontBadge`: bounded, readable semantic status; supplied label remains visible. Use only real status evidence.
 - `StorefrontPrice`: reuses `Money`/`formatMoney`, preserving every decimal digit and actual ISO currency. Previous price is semantic `del`. Discount percentages align decimal strings with BigInt; only the bounded integer percentage becomes a Number. Never convert price/total to binary floats.
@@ -62,8 +62,18 @@ Retain bounded content at 80rem and existing route breakpoints until their phase
 
 Ordinary text requires 4.5:1 contrast; large text and essential control/focus boundaries require the appropriate 3:1 minimum. Supply a non-color selected/error/status cue, programmatic labels, useful alt text, visible focus and keyboard recovery. Native modal behavior must be verified in a real browser as well as tests; jsdom only mocks open/close. Never remove backend field errors, stale-request protection or authorization to simplify presentation.
 
+## Customer shell rules
+
+The shared compact wordmark uses local editorial type and one restrained outlined mark. Header actions use the existing local outline icon style and minimum 44px targets. Desktop navigation begins at 1100px; tablet retains a compact inline search and navigation trigger. Below 640px search occupies a full-width second row. Active locations have an underline as well as color; disclosure buttons/links retain native keyboard semantics rather than pretending to be application menus.
+
+Mobile navigation is a native modal drawer with full-width search, actual category/seller/account/cart links, focus containment and restored focus/scroll. Autocomplete closes on the first Escape; navigation closes on the next. Desktop-resize dismissal focuses a visible destination. The header's skip link targets focusable customer main landmarks with sticky-header scroll clearance.
+
+Announcement copy does not invent shipping/verification promises. Categories and the bounded latest-catalog seller preview distinguish loading, failure/retry and actual empty responses. Missing cart counts show an explained dash rather than a fabricated empty cart; loaded counts come directly from the real provider and visually cap at `99+`. Search cannot reopen after blur/Escape from a late response. All navigation stays on actual encoded relative destinations.
+
+The espresso footer has three genuine destination groups, with its editorial introduction separated from navigation and compact shared branding below. On mobile two groups share a row and the seller group follows; at 640px three groups fit across. Unsupported policy/support/company/social routes are omitted until implemented. Do not restore fake home aliases or percentage/verified/shipping claims to fill a layout.
+
 ## Validation and remaining scope
 
 Run repository `pnpm check` against PostgreSQL, quiet Compose configuration validation, the palette script, production route artifact audit and `git diff --check`. Representative screenshots and final counts are recorded in `docs/progress.md` and the Phase 35 visual review after validation.
 
-Phase 34's proxy/cart failures, unsupported transaction success/shipping claims, assertion-only customer parsers and absent pagination are recorded debt, not corrected by palette work. Existing cart total float arithmetic and premature product/cart success messaging also require later workflow corrections; the new exact price primitive does not establish correctness of all older totals. No API/security/backend contract changes or new dependencies belong to this phase. Stop after Phase 35; Phase 36 requires an explicit request.
+Phase 34's proxy/cart failures, unsupported transaction success/shipping claims, assertion-only customer parsers and absent pagination are recorded debt, not corrected by palette or shell work. Existing cart total float arithmetic and premature product/cart success messaging also require later workflow corrections; the exact price primitive does not establish correctness of all older totals. No API/security/backend contract changes or new dependencies belong to these presentation phases. Stop after Phase 36; Phase 37 requires an explicit request.

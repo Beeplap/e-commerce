@@ -173,9 +173,16 @@ describe("Customer Storefront UI Components", () => {
     expect(screen.getByLabelText("Shopping Cart")).toBeInTheDocument();
     expect(screen.getByText("Sign In")).toBeInTheDocument();
 
+    fireEvent.click(screen.getByRole("button", { name: "Categories" }));
     await waitFor(() => {
       expect(screen.getByText("Electronics")).toBeInTheDocument();
     });
+    expect(screen.getByRole("link", { name: "Electronics" })).toHaveAttribute(
+      "href",
+      `/categories/${mockCategory.id}`,
+    );
+    fireEvent.click(screen.getByLabelText("Shopping Cart"));
+    expect(mockCart.openCart).toHaveBeenCalledOnce();
 
     // Test search submit
     const searchInput = screen.getByPlaceholderText(/search products/i);
@@ -185,12 +192,20 @@ describe("Customer Storefront UI Components", () => {
     expect(mockPush).toHaveBeenCalledWith("/search?q=Apex");
   });
 
-  it("renders StorefrontFooter with trust badges and seller links", () => {
+  it("renders StorefrontFooter with actual shopping, account and seller destinations", () => {
     render(<StorefrontFooter />);
 
-    expect(screen.getByText(/100% Verified Sellers/i)).toBeInTheDocument();
+    expect(
+      screen.queryByText(/100% Verified Sellers/i),
+    ).not.toBeInTheDocument();
     expect(screen.getByText(/Become a Seller/i)).toBeInTheDocument();
-    expect(screen.getByText(/Customer Trust/i)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "All products" })).toHaveAttribute(
+      "href",
+      "/search",
+    );
+    expect(
+      screen.getByRole("link", { name: "Orders & returns" }),
+    ).toHaveAttribute("href", "/account/orders");
   });
 
   it("renders ProductCard with title, discount, rating, and seller name", () => {

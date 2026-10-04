@@ -424,6 +424,7 @@ describe("Phase 23: Customer Commerce End-to-End Integration Flows", () => {
     );
 
     const searchInput = screen.getByRole("combobox");
+    fireEvent.focus(searchInput);
     fireEvent.change(searchInput, { target: { value: "keyboard" } });
 
     // Autocomplete suggestion appears

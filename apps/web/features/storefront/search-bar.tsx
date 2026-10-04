@@ -1,384 +1,378 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState, type RefObject } from "react";
 import { storefrontApi } from "@/lib/api/client";
 import type { StorefrontSuggestResponse } from "@/lib/api/types";
 import { StorefrontPrice } from "@/components/storefront/content";
+import { ShellIcon } from "./shell-icons";
 
-interface SearchBarProps {
-  initialQuery?: string;
-  className?: string;
-  onSearchSubmit?: (query: string) => void;
+type Option = {
+  kind: "Suggestions" | "Categories" | "Brands" | "Products";
+  label: string;
+  href: string;
+  product?: StorefrontSuggestResponse["products"][number];
+};
+type Result = { query: string } & (
+  { kind: "loading" } | { kind: "error" } | { kind: "ready"; options: Option[] }
+);
+
+/** Only genuine response items become destinations. Malformed evidence becomes visible failure. */
+function optionsFrom(
+  response: StorefrontSuggestResponse,
+  query: string,
+): Option[] {
+  // Django strips control characters and caps the echoed query at 100 code points.
+  // Request generation still governs stale responses; this only honors that public contract.
+  const canonical = [...query]
+    .filter((character) => {
+      const code = character.codePointAt(0) ?? 0;
+      return code > 31 && (code < 127 || code > 159);
+    })
+    .join("")
+    .trim();
+  const echo = [...canonical].slice(0, 100).join("");
+  if (
+    response.query !== echo ||
+    ![
+      response.suggestions,
+      response.categories,
+      response.brands,
+      response.products,
+    ].every(Array.isArray)
+  )
+    throw new Error("Invalid search suggestions");
+  const options: Option[] = [];
+  for (const label of response.suggestions.slice(0, 8)) {
+    if (typeof label !== "string" || !label.trim())
+      throw new Error("Invalid suggestion");
+    options.push({
+      kind: "Suggestions",
+      label,
+      href: `/search?q=${encodeURIComponent(label)}`,
+    });
+  }
+  for (const [kind, items] of [
+    ["Categories", response.categories],
+    ["Brands", response.brands],
+  ] as const) {
+    for (const item of items.slice(0, 5)) {
+      if (
+        typeof item.id !== "string" ||
+        !item.id ||
+        typeof item.name !== "string" ||
+        !item.name.trim()
+      )
+        throw new Error("Invalid suggestion destination");
+      options.push({
+        kind,
+        label: item.name,
+        href:
+          kind === "Categories"
+            ? `/categories/${encodeURIComponent(item.id)}`
+            : `/search?brand=${encodeURIComponent(item.id)}`,
+      });
+    }
+  }
+  for (const product of response.products.slice(0, 5)) {
+    if (
+      typeof product.id !== "string" ||
+      !product.id ||
+      typeof product.title !== "string" ||
+      !product.title.trim() ||
+      typeof product.starting_price !== "string" ||
+      !/^\d+(?:\.\d+)?$/.test(product.starting_price) ||
+      typeof product.currency !== "string" ||
+      !/^[A-Z]{3}$/.test(product.currency)
+    )
+      throw new Error("Invalid product suggestion");
+    options.push({
+      kind: "Products",
+      label: product.title,
+      href: `/products/${encodeURIComponent(product.id)}`,
+      product,
+    });
+  }
+  return options;
 }
 
 export function SearchBar({
   initialQuery = "",
   className = "",
   onSearchSubmit,
-}: SearchBarProps) {
+  onNavigate,
+  inputRef,
+}: {
+  initialQuery?: string;
+  className?: string;
+  onSearchSubmit?: (query: string) => void;
+  onNavigate?: () => void;
+  inputRef?: RefObject<HTMLInputElement | null>;
+}) {
   const router = useRouter();
+  const identity = useId();
+  const ownInput = useRef<HTMLInputElement>(null);
+  const input = inputRef ?? ownInput;
+  const container = useRef<HTMLDivElement>(null);
+  const generation = useRef(0);
+  const request = useRef<AbortController | null>(null);
+  const focused = useRef(false);
+  const dismissed = useRef(false);
   const [query, setQuery] = useState(initialQuery);
-  const [isOpen, setIsOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<StorefrontSuggestResponse | null>(null);
-  const [selectedIndex, setSelectedIndex] = useState<number>(-1);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  // Track initialQuery change during render (standard React pattern)
-  const [prevInitialQuery, setPrevInitialQuery] = useState(initialQuery);
-  if (prevInitialQuery !== initialQuery) {
-    setPrevInitialQuery(initialQuery);
+  const [previousInitial, setPreviousInitial] = useState(initialQuery);
+  const [result, setResult] = useState<Result | null>(null);
+  const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState(-1);
+  if (previousInitial !== initialQuery) {
+    setPreviousInitial(initialQuery);
     setQuery(initialQuery);
+    setResult(null);
+    setSelected(-1);
+    setOpen(false);
   }
+  const trimmed = query.trim();
+  const current = result?.query === trimmed ? result : null;
+  const options = current?.kind === "ready" ? current.options : [];
 
-  // Click outside listener
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  // Fetch suggestions when query changes
-  useEffect(() => {
-    const trimmed = query.trim();
-    if (!trimmed) {
-      return;
-    }
-
+    if (!trimmed) return;
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => {
-      setLoading(true);
+    request.current = controller;
+    const version = ++generation.current;
+    const timer = setTimeout(() => {
+      setResult({ query: trimmed, kind: "loading" });
+      if (focused.current && !dismissed.current) setOpen(true);
       storefrontApi
         .suggest(trimmed, controller.signal)
-        .then((res) => {
-          setData(res);
-          setIsOpen(true);
-          setLoading(false);
-          setSelectedIndex(-1);
+        .then((response) => {
+          const items = optionsFrom(response, trimmed);
+          if (controller.signal.aborted || generation.current !== version)
+            return;
+          setResult({ query: trimmed, kind: "ready", options: items });
+          setSelected(-1);
+          if (focused.current && !dismissed.current) setOpen(true);
         })
         .catch(() => {
-          setLoading(false);
+          if (!controller.signal.aborted && generation.current === version)
+            setResult({ query: trimmed, kind: "error" });
         });
     }, 150);
-
     return () => {
-      clearTimeout(timeoutId);
+      clearTimeout(timer);
       controller.abort();
     };
-  }, [query]);
-
-  // Calculate flat items for keyboard navigation
-  const flatItems: Array<{
-    type: "suggestion" | "category" | "brand" | "product";
-    href: string;
-    label: string;
-  }> = [];
-  if (data) {
-    data.suggestions.forEach((s) => {
-      flatItems.push({
-        type: "suggestion",
-        href: `/search?q=${encodeURIComponent(s)}`,
-        label: s,
-      });
-    });
-    data.categories.forEach((c) => {
-      flatItems.push({
-        type: "category",
-        href: `/categories/${c.id}`,
-        label: c.name,
-      });
-    });
-    data.brands.forEach((b) => {
-      flatItems.push({
-        type: "brand",
-        href: `/search?brand=${b.id}`,
-        label: b.name,
-      });
-    });
-    data.products.forEach((p) => {
-      flatItems.push({
-        type: "product",
-        href: `/products/${p.id}`,
-        label: p.title,
-      });
-    });
-  }
-
-  const handleSubmit = (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    const trimmed = query.trim();
-    setIsOpen(false);
-
-    const selectedItem = flatItems[selectedIndex];
-    if (selectedItem) {
-      router.push(selectedItem.href);
-      return;
-    }
-
-    if (trimmed) {
-      if (onSearchSubmit) {
-        onSearchSubmit(trimmed);
-      } else {
-        router.push(`/search?q=${encodeURIComponent(trimmed)}`);
+  }, [trimmed]);
+  useEffect(() => {
+    if (open && selected >= 0)
+      document
+        .getElementById(`${identity}-option-${selected}`)
+        ?.scrollIntoView?.({ block: "nearest" });
+  }, [open, selected, identity]);
+  useEffect(() => {
+    const outside = (event: PointerEvent) => {
+      if (
+        event.target instanceof Node &&
+        !container.current?.contains(event.target)
+      ) {
+        dismissed.current = true;
+        setOpen(false);
+        setSelected(-1);
       }
-    }
+    };
+    document.addEventListener("pointerdown", outside);
+    return () => document.removeEventListener("pointerdown", outside);
+  }, []);
+
+  const dismiss = () => {
+    dismissed.current = true;
+    setOpen(false);
+    setSelected(-1);
   };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (!isOpen || flatItems.length === 0) {
-      if (e.key === "Enter") {
-        handleSubmit(e);
-      }
-      return;
-    }
-
-    if (e.key === "ArrowDown") {
-      e.preventDefault();
-      setSelectedIndex((prev) => (prev < flatItems.length - 1 ? prev + 1 : 0));
-    } else if (e.key === "ArrowUp") {
-      e.preventDefault();
-      setSelectedIndex((prev) => (prev > 0 ? prev - 1 : flatItems.length - 1));
-    } else if (e.key === "Escape") {
-      setIsOpen(false);
-      setSelectedIndex(-1);
-    } else if (e.key === "Enter") {
-      e.preventDefault();
-      handleSubmit();
-    }
+  const navigate = (href: string) => {
+    ++generation.current;
+    request.current?.abort();
+    dismiss();
+    router.push(href);
+    onNavigate?.();
   };
-
+  const searchAll = () => {
+    ++generation.current;
+    request.current?.abort();
+    dismiss();
+    if (onSearchSubmit) onSearchSubmit(trimmed);
+    else
+      router.push(
+        trimmed ? `/search?q=${encodeURIComponent(trimmed)}` : "/search",
+      );
+    onNavigate?.();
+  };
   return (
-    <div ref={containerRef} className={`relative ${className}`}>
-      <form onSubmit={handleSubmit} role="search">
-        <div className="relative flex items-center">
+    <div
+      ref={container}
+      className={`sf-search ${className}`}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) {
+          focused.current = false;
+          dismiss();
+        }
+      }}
+    >
+      <form
+        role="search"
+        aria-label="Marketplace search"
+        onSubmit={(event) => {
+          event.preventDefault();
+          const item = open ? options[selected] : undefined;
+          if (item) navigate(item.href);
+          else searchAll();
+        }}
+      >
+        <div className="sf-search-field">
+          <ShellIcon name="search" className="sf-search-icon" />
           <input
+            ref={input}
+            id={`${identity}-input`}
             type="search"
             role="combobox"
             aria-label="Search products, brands and categories"
-            aria-expanded={isOpen}
+            aria-expanded={open && Boolean(current)}
             aria-autocomplete="list"
-            aria-controls="search-suggestions-dropdown"
-            placeholder="Search products, brands, categories..."
+            aria-controls={open && current ? `${identity}-listbox` : undefined}
+            aria-activedescendant={
+              open && options[selected]
+                ? `${identity}-option-${selected}`
+                : undefined
+            }
+            aria-busy={current?.kind === "loading" || undefined}
+            placeholder="Search products, brands, categories…"
+            autoComplete="off"
+            maxLength={100}
             value={query}
-            onChange={(e) => {
-              const val = e.target.value;
-              setQuery(val);
-              if (!val.trim()) {
-                setData(null);
-                setIsOpen(false);
-                setLoading(false);
-              }
+            onChange={(event) => {
+              ++generation.current;
+              request.current?.abort();
+              dismissed.current = false;
+              setQuery(event.target.value);
+              setResult(null);
+              setSelected(-1);
+              setOpen(false);
             }}
             onFocus={() => {
-              if (data && query.trim()) setIsOpen(true);
+              focused.current = true;
+              dismissed.current = false;
+              if (current && trimmed) setOpen(true);
             }}
-            onKeyDown={handleKeyDown}
-            className="w-full rounded-sf-control border border-sf-control bg-sf-surface px-4 py-2.5 pl-10 pr-10 text-sm text-sf-foreground placeholder-sf-muted transition focus:border-sf-action focus:outline-none"
+            onKeyDown={(event) => {
+              if (event.nativeEvent.isComposing) return;
+              if (event.key === "Enter") {
+                event.preventDefault();
+                const item = open ? options[selected] : undefined;
+                if (item) navigate(item.href);
+                else searchAll();
+              } else if (event.key === "Escape" && open) {
+                event.preventDefault();
+                event.stopPropagation();
+                dismiss();
+              } else if (
+                (event.key === "ArrowDown" || event.key === "ArrowUp") &&
+                options.length
+              ) {
+                event.preventDefault();
+                dismissed.current = false;
+                setOpen(true);
+                setSelected((index) =>
+                  event.key === "ArrowDown"
+                    ? (index + 1) % options.length
+                    : index <= 0
+                      ? options.length - 1
+                      : index - 1,
+                );
+              }
+            }}
           />
-          <div className="pointer-events-none absolute left-3 text-sf-muted">
-            <svg
-              className="h-4 w-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-          </div>
-          {loading ? (
-            <div className="absolute right-3">
-              <div className="h-4 w-4 animate-spin rounded-full border-2 border-sf-action border-t-transparent" />
-            </div>
-          ) : query ? (
+          {query && (
             <button
               type="button"
-              onClick={() => {
-                setQuery("");
-                setData(null);
-                setIsOpen(false);
-              }}
-              className="absolute right-3 text-xs text-sf-muted hover:text-sf-soft"
+              className="sf-search-clear"
               aria-label="Clear search input"
+              onClick={() => {
+                ++generation.current;
+                request.current?.abort();
+                setQuery("");
+                setResult(null);
+                dismiss();
+                input.current?.focus();
+              }}
             >
-              ✕
+              ×
             </button>
-          ) : null}
+          )}
         </div>
       </form>
-
-      {/* Autocomplete Dropdown */}
-      {isOpen && data && (
-        <div
-          id="search-suggestions-dropdown"
-          role="listbox"
-          className="absolute left-0 right-0 top-full z-50 mt-1.5 max-h-96 overflow-y-auto rounded-sf-image border border-sf-border bg-sf-surface py-2 shadow-sf-overlay"
-        >
-          {/* Text Suggestions */}
-          {data.suggestions.length > 0 && (
-            <div className="px-2 py-1">
-              <span className="px-2 text-[10px] font-bold uppercase tracking-wider text-sf-muted">
-                Suggestions
-              </span>
-              <div className="mt-1 space-y-0.5">
-                {data.suggestions.map((suggestion, idx) => {
-                  const itemIndex = idx;
-                  const isSelected = selectedIndex === itemIndex;
-                  return (
-                    <button
-                      key={suggestion}
-                      type="button"
-                      role="option"
-                      aria-selected={isSelected}
-                      onClick={() => {
-                        setQuery(suggestion);
-                        setIsOpen(false);
-                        router.push(
-                          `/search?q=${encodeURIComponent(suggestion)}`,
-                        );
-                      }}
-                      className={`flex w-full items-center gap-2 rounded-sf-control px-2 py-1.5 text-left text-sm text-sf-soft transition ${
-                        isSelected
-                          ? "bg-sf-accent-soft text-sf-link font-semibold"
-                          : "hover:bg-sf-background"
-                      }`}
-                    >
-                      <svg
-                        className="h-3.5 w-3.5 text-sf-muted flex-shrink-0"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
+      {open && current && (
+        <div className="sf-search-popup">
+          <p role="status" className="sf-search-status">
+            {current.kind === "loading"
+              ? "Searching…"
+              : current.kind === "error"
+                ? "Suggestions unavailable. Press Enter to search."
+                : options.length
+                  ? `${options.length} suggestions available.`
+                  : "No quick matches. Search all products below."}
+          </p>
+          <div
+            id={`${identity}-listbox`}
+            role="listbox"
+            aria-label="Search suggestions"
+          >
+            {(["Suggestions", "Categories", "Brands", "Products"] as const).map(
+              (kind) => {
+                const group = options
+                  .map((option, index) => ({ option, index }))
+                  .filter((item) => item.option.kind === kind);
+                if (!group.length) return null;
+                return (
+                  <div
+                    role="group"
+                    aria-label={kind}
+                    className="sf-search-group"
+                    key={kind}
+                  >
+                    <p aria-hidden="true">{kind}</p>
+                    {group.map(({ option, index }) => (
+                      <button
+                        type="button"
+                        role="option"
+                        tabIndex={-1}
+                        id={`${identity}-option-${index}`}
+                        aria-selected={selected === index}
+                        data-active={selected === index}
+                        className="sf-search-option"
+                        key={`${index}-${option.href}`}
+                        onMouseDown={(event) => event.preventDefault()}
+                        onClick={() => navigate(option.href)}
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                        />
-                      </svg>
-                      <span className="truncate">{suggestion}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* Categories Suggestions */}
-          {data.categories.length > 0 && (
-            <div className="border-t border-sf-border px-2 py-1.5">
-              <span className="px-2 text-[10px] font-bold uppercase tracking-wider text-sf-muted">
-                Categories
-              </span>
-              <div className="mt-1 flex flex-wrap gap-1.5 px-2">
-                {data.categories.map((c) => (
-                  <Link
-                    key={c.id}
-                    href={`/categories/${c.id}`}
-                    onClick={() => setIsOpen(false)}
-                    className="rounded-md bg-sf-accent-soft px-2.5 py-1 text-xs font-medium text-sf-link hover:bg-sf-accent-soft transition"
-                  >
-                    {c.name}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Brands Suggestions */}
-          {data.brands.length > 0 && (
-            <div className="border-t border-sf-border px-2 py-1.5">
-              <span className="px-2 text-[10px] font-bold uppercase tracking-wider text-sf-muted">
-                Brands
-              </span>
-              <div className="mt-1 flex flex-wrap gap-1.5 px-2">
-                {data.brands.map((b) => (
-                  <Link
-                    key={b.id}
-                    href={`/search?brand=${b.id}`}
-                    onClick={() => setIsOpen(false)}
-                    className="rounded-md bg-sf-surface-strong px-2.5 py-1 text-xs font-medium text-sf-soft hover:bg-sf-border transition"
-                  >
-                    {b.name}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Top Matching Products */}
-          {data.products.length > 0 && (
-            <div className="border-t border-sf-border px-2 py-1.5">
-              <span className="px-2 text-[10px] font-bold uppercase tracking-wider text-sf-muted">
-                Products
-              </span>
-              <div className="mt-1 space-y-1">
-                {data.products.map((prod) => (
-                  <Link
-                    key={prod.id}
-                    href={`/products/${prod.id}`}
-                    onClick={() => setIsOpen(false)}
-                    className="flex items-center gap-3 rounded-sf-control p-1.5 hover:bg-sf-background transition"
-                  >
-                    <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-md border border-sf-border bg-sf-surface-strong">
-                      {prod.thumbnail_url ? (
-                        /* eslint-disable-next-line @next/next/no-img-element */
-                        <img
-                          src={prod.thumbnail_url}
-                          alt={prod.title}
-                          className="h-full w-full object-cover"
-                        />
-                      ) : (
-                        <div className="flex h-full w-full items-center justify-center text-[10px] font-bold text-sf-muted">
-                          QC
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="truncate text-xs font-semibold text-sf-foreground">
-                        {prod.title}
-                      </p>
-                      <p className="text-[10px] text-sf-muted">
-                        {prod.category_name}
-                      </p>
-                    </div>
-                    <span className="text-xs font-bold text-sf-foreground pr-2">
-                      <StorefrontPrice
-                        amount={prod.starting_price}
-                        currency={prod.currency}
-                      />
-                    </span>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* View All Results Link */}
-          <div className="border-t border-sf-border px-3 pt-2 pb-1 text-center">
-            <button
-              type="button"
-              onClick={() => handleSubmit()}
-              className="w-full text-xs font-semibold text-sf-link hover:text-sf-link hover:underline"
-            >
-              View all results for &ldquo;{query.trim()}&rdquo; →
-            </button>
+                        <span>{option.label}</span>
+                        {option.product ? (
+                          <span className="sf-search-price">
+                            <StorefrontPrice
+                              amount={option.product.starting_price}
+                              currency={option.product.currency}
+                            />
+                          </span>
+                        ) : (
+                          <ShellIcon name="arrow" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                );
+              },
+            )}
           </div>
+          <button type="button" className="sf-search-all" onClick={searchAll}>
+            View all results for “{trimmed}”<ShellIcon name="arrow" />
+          </button>
         </div>
       )}
     </div>

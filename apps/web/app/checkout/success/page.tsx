@@ -101,7 +101,7 @@ export default function CheckoutSuccessPage() {
   return (
     <div className="sf-storefront min-h-screen flex flex-col bg-sf-background">
       <StorefrontHeader />
-      <main className="flex-1">
+      <main id="storefront-content" tabIndex={-1} className="flex-1">
         <Suspense
           fallback={
             <div className="py-20 text-center text-sm text-sf-muted">

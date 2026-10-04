@@ -142,6 +142,7 @@ describe("Search & Faceted Filtering UI", () => {
     render(<SearchBar initialQuery="" />);
 
     const input = screen.getByRole("combobox");
+    fireEvent.focus(input);
     fireEvent.change(input, { target: { value: "Apex" } });
 
     await waitFor(() => {

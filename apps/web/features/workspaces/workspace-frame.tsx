@@ -159,6 +159,7 @@ export function WorkspaceFrame({
 }) {
   const pathname = usePathname();
   const { state } = useAuth();
+  const user = state.kind === "authenticated" ? state.user : null;
   const groups = workspaceNavigation(mode, user, access);
   const crumbs = workspaceBreadcrumbs(mode, pathname, groups);
   return (

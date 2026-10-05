@@ -310,6 +310,7 @@ describe("Phase 23: Customer Commerce End-to-End Integration Flows", () => {
 
   afterEach(() => {
     global.fetch = originalFetch;
+    vi.restoreAllMocks();
     mockPush.mockReset();
     mockParams = { id: "70000000-0000-4000-8000-000000000001" };
   });
@@ -333,7 +334,7 @@ describe("Phase 23: Customer Commerce End-to-End Integration Flows", () => {
           const body = JSON.parse(init?.body as string);
           addedVariantId = body.variant_id;
           addedQuantity = body.quantity;
-          return Promise.resolve(json(mockCart));
+          return Promise.resolve(json(mockCart, 201));
         }
         if (url.includes("/api/v1/cart/")) {
           return Promise.resolve(json(mockCart));
@@ -373,6 +374,9 @@ describe("Phase 23: Customer Commerce End-to-End Integration Flows", () => {
       expect(addedVariantId).toBe("81000000-0000-4000-8000-000000000002");
       expect(addedQuantity).toBe(2);
     });
+    expect(
+      await screen.findByText(/2 items added to cart/i),
+    ).toBeInTheDocument();
   });
 
   // -------------------------------------------------------------------------
@@ -560,6 +564,10 @@ describe("Phase 23: Customer Commerce End-to-End Integration Flows", () => {
   // Flow 5: Process idempotent payment, verify order placement
   // -------------------------------------------------------------------------
   it("Flow 5: Customer processes idempotent payment with zero raw card leakage", async () => {
+    // Keep the CVC leakage check independent of random idempotency-key digits.
+    vi.spyOn(crypto, "randomUUID").mockReturnValue(
+      "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+    );
     const capturedRequests: Array<{
       url: string;
       body: Record<string, unknown>;
@@ -651,6 +659,15 @@ describe("Phase 23: Customer Commerce End-to-End Integration Flows", () => {
     expect(confirmBody?.payment_token).toBe("tok_mock_4242");
     expect(JSON.stringify(confirmBody)).not.toContain("4242 4242");
     expect(JSON.stringify(confirmBody)).not.toContain("123");
+    expect(capturedRequests[0]?.body).toEqual({
+      order_id: "70000000-0000-4000-8000-000000000001",
+      idempotency_key: "intent_aaaaaaaaaaaa4aaa8aaaaaaaaaaaaaaa",
+    });
+    expect(confirmBody).toEqual({
+      payment_id: "60000000-0000-4000-8000-000000000001",
+      idempotency_key: "intent_aaaaaaaaaaaa4aaa8aaaaaaaaaaaaaaa",
+      payment_token: "tok_mock_4242",
+    });
     // Idempotency key was provided
     expect(confirmBody?.idempotency_key).toBeDefined();
   });

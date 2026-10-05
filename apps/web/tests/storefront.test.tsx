@@ -220,21 +220,19 @@ describe("Customer Storefront UI Components", () => {
     expect(screen.getByText("(42)")).toBeInTheDocument();
   });
 
-  it("renders ProductDetailView and interacts with variant selector and cart", () => {
+  it("renders ProductDetailView and interacts with variant selector and cart", async () => {
     render(<ProductDetailView product={mockProductDetail} />);
 
     expect(
       screen.getByRole("heading", { name: "Super Phone X" }),
     ).toBeInTheDocument();
-    expect(screen.getByText("Apex Official")).toBeInTheDocument();
-    expect(screen.getByText("Verified Seller")).toBeInTheDocument();
+    expect(screen.getAllByText("Apex Official")[0]).toBeInTheDocument();
+    expect(screen.queryByText("Verified Seller")).not.toBeInTheDocument();
     expect(screen.getAllByText("799.00 USD")[0]).toBeInTheDocument();
     expect(screen.getByText("Save 20%")).toBeInTheDocument();
 
     // In-stock availability
-    expect(
-      screen.getByText(/In Stock \(10 units ready to ship\)/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/In stock · 10 available/i)).toBeInTheDocument();
 
     // Select second variant (Silver / 256GB at $899.00)
     const secondVariantBtn = screen
@@ -243,9 +241,7 @@ describe("Customer Storefront UI Components", () => {
     fireEvent.click(secondVariantBtn);
 
     expect(screen.getAllByText("899.00 USD")[0]).toBeInTheDocument();
-    expect(
-      screen.getByText(/In Stock \(5 units ready to ship\)/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/In stock · 5 available/i)).toBeInTheDocument();
 
     // Quantity selector
     const plusBtn = screen.getByLabelText("Increase quantity");
@@ -253,7 +249,7 @@ describe("Customer Storefront UI Components", () => {
     expect(screen.getByTestId("selected-quantity")).toHaveTextContent("2");
 
     // Add to Cart action
-    const addToCartBtn = screen.getByRole("button", { name: "Add to Cart" });
+    const addToCartBtn = screen.getByRole("button", { name: /Add to cart/i });
     fireEvent.click(addToCartBtn);
 
     expect(mockCart.addItem).toHaveBeenCalledWith(
@@ -262,14 +258,14 @@ describe("Customer Storefront UI Components", () => {
     );
 
     expect(
-      screen.getByText(/Added to cart! Real-time cart reservations active/i),
+      await screen.findByText(/2 items added to cart/i),
     ).toBeInTheDocument();
 
     // Reviews section
     expect(screen.getByText("Marcus A.")).toBeInTheDocument();
-    expect(screen.getByText("Verified Purchase")).toBeInTheDocument();
+    expect(screen.getByText("Verified purchase")).toBeInTheDocument();
     expect(screen.getByText("Incredible speed")).toBeInTheDocument();
-    expect(screen.getByText("Seller Response:")).toBeInTheDocument();
+    expect(screen.getByText("Seller response")).toBeInTheDocument();
     expect(screen.getByText(/Thank you Marcus!/i)).toBeInTheDocument();
     expect(screen.getByText("Verified Customer")).toBeInTheDocument();
   });

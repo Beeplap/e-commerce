@@ -1,6 +1,12 @@
 # Customer storefront design foundation
 
-Phase 35 implements the foundation, Phase 36 the customer header/search/navigation/footer, and Phase 37 the homepage from the user-supplied `instructions4.md`. Listing discovery, PDP, seller, cart/checkout and account redesign belong to later explicit phases. The token source of truth is `apps/web/styles/storefront.css`; components and the homepage-only `styles/storefront-home.css` consume its semantic tokens instead of embedding brand hex values.
+## Product-detail composition (Phase 39)
+
+`styles/storefront-detail.css` consumes the existing customer tokens only. The PDP uses a gallery/purchase split from 768px, with identity/gallery/purchase stacked on mobile. Square images contain the complete photograph; a genuine absent-image state uses a quieter 4:3 panel. Native thumbnail/option buttons have visible pressed focus/state, explicit unavailable wording and at least 44px control geometry. A single SKU does not become a redundant option card. Copper purchase feedback waits for the existing provider; failure is focused inline and success follows acceptance. There is no fixed mobile bar, new gradient, global token override, zoom library or fabricated trust claim.
+
+Details/specifications use plain rows and whitespace; seller discovery uses one tonal band; reviews use dividers rather than floating cards. Exact prices/currency remain prominent, prior prices are strictly higher and long strings wrap. Extremely long h1 names use a smaller display size and remain complete; the repeated breadcrumb current title abbreviates visually. Anchor sections clear the existing sticky header and accept native keyboard destination focus. Existing API evidence constrains every seller, review, image, stock and delivery statement. Related products show up to four actual same-category records with independent recovery. Actual/fixture critique and screenshots are in [the Phase 39 review](storefront-product-detail-review.md); later cart/checkout/account redesign is not started.
+
+Phase 35 implements the foundation, Phase 36 the customer header/search/navigation/footer, Phase 37 the homepage, Phase 38 listing discovery and Phase 39 product detail from the user-supplied `instructions4.md`. Seller, cart/checkout and account redesign belong to later explicit phases. The token source of truth is `apps/web/styles/storefront.css`; customer components and their scoped styles consume its semantic tokens instead of embedding brand hex values.
 
 ## Theme and integration boundary
 

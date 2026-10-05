@@ -3,6 +3,7 @@
 @import "../styles/storefront.css";
 @import "../styles/storefront-home.css";
 @import "../styles/storefront-discovery.css";
+@import "../styles/storefront-detail.css";
 
 :root {
   color-scheme: light;

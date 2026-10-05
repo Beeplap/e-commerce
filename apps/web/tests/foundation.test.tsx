@@ -32,7 +32,7 @@ describe("platform foundation", () => {
     expect(
       screen.getByRole("heading", {
         level: 1,
-        name: /Lightning commerce/i,
+        name: /Good finds.*Independent shops/i,
       }),
     ).toBeVisible();
     expect(

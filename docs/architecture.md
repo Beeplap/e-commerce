@@ -24,6 +24,16 @@ The header remounts by pathname and signed-in user identity to cancel/discard ol
 
 Mobile navigation reuses the scoped native `StorefrontOverlay` and its focus/scroll cleanup. Autocomplete consumes its first Escape; the drawer consumes the next before the native search input can clear its value. Resizing to desktop dismisses navigation and focuses the visible brand after dialog cleanup. Actual cart opening/provider remains intact, and a missing cart never becomes a fabricated zero count. Customer routes provide focusable main landmarks for the shell's skip link; their business handlers are not changed. `ui-overhaul-phase36-shell` builds on validated `cb0bd0a`; user-owned uncommitted proxy/abort/account/backend work remains separate. Evidence and inherited gaps are in `docs/storefront-shell-review.md`. Phase 37 requires another explicit request.
 
+## Homepage discovery (Phase 37)
+
+`app/page.tsx` is a small Server Component entry to `features/storefront/home`; all catalog reads remain client-side through the existing same-origin API client. No server-load/auth shortcut, new endpoint, dependency, browser persistence or business mutation is introduced. The branch `ui-overhaul-phase37-homepage` builds on validated shell `f60d7ee` while preserving the original worktree's concurrent changes.
+
+The first bounded page of `sort=newest` supplies a real product spotlight, up to eight arrivals and up to four distinct seller identities. There is no popularity/curation signal or seller directory contract: label the sections as latest arrivals and stores represented in those arrivals, never trending, verified, ranked or exhaustive. Category discovery shows up to six records from a locally bounded 24-record preview, with a genuine catalog destination for more. Do not infer global counts from these samples or follow untrusted pagination URLs.
+
+Homepage-specific runtime validation checks consumed identities, exact decimal/currency evidence, availability, bounded ratings/counts and same-product relative public image URLs. This supplements existing assertion-only storefront parsers; it does not establish validation for other customer routes. Independent AbortController reads discard canceled completions/errors, including Strict Mode cleanup; category/catalog failures retain separate retry and empty states. No stale records survive a retry. Genuine missing photography uses an explicit text fallback, not a fabricated merchandise asset. Homepage card composition/CSS remains local; shared listing/PDP components and workflows await their own phases.
+
+`docs/storefront-homepage-review.md` separates actual anonymous catalog evidence from explicit intercepted browser fixtures and documents remaining acceptance. Phase 37 ends after validation/documentation/isolated commit and push. Phase 38 requires another explicit request.
+
 ## Current foundation
 
 The repository is a modular monolith. `apps/api` owns the Django API and all business authority; `apps/web` is a Next.js App Router application. PostgreSQL is authoritative. Redis is reserved for future caching and workers. Seller onboarding/lifecycle management is implemented; catalog, commerce workflows and customer storefront are later phases.

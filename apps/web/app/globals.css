@@ -2,6 +2,7 @@
 @import "../styles/tokens.css";
 @import "../styles/storefront.css";
 @import "../styles/storefront-home.css";
+@import "../styles/storefront-discovery.css";
 
 :root {
   color-scheme: light;

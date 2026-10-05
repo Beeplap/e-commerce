@@ -119,6 +119,14 @@ const mockSuggestResponse: StorefrontSuggestResponse = {
 describe("Search & Faceted Filtering UI", () => {
   beforeAll(() => {
     vi.stubGlobal("fetch", vi.fn());
+    vi.stubGlobal(
+      "matchMedia",
+      vi.fn(() => ({
+        matches: false,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+      })),
+    );
   });
 
   afterEach(() => {
@@ -176,7 +184,8 @@ describe("Search & Faceted Filtering UI", () => {
     expect(screen.getByText("In-Stock Only")).toBeInTheDocument();
     expect(screen.getByText("Audio & Headphones")).toBeInTheDocument();
     expect(screen.getByText("Apex")).toBeInTheDocument();
-    expect(screen.getByText("$100 to $250")).toBeInTheDocument();
+    // The backend price bounds apply to listed units, not a promised USD conversion.
+    expect(screen.getByText("100 to 250")).toBeInTheDocument();
 
     // Select category
     fireEvent.click(screen.getByText("Audio & Headphones"));
@@ -187,7 +196,7 @@ describe("Search & Faceted Filtering UI", () => {
     );
 
     // Select price bracket
-    fireEvent.click(screen.getByText("$100 to $250"));
+    fireEvent.click(screen.getByText("100 to 250"));
     expect(handleFilterChange).toHaveBeenCalledWith(
       expect.objectContaining({ min_price: "100", max_price: "250" }),
     );
@@ -221,7 +230,7 @@ describe("Search & Faceted Filtering UI", () => {
     expect(
       screen.getByText("Category: Audio & Headphones"),
     ).toBeInTheDocument();
-    expect(screen.getByText("Price: $100 - $250")).toBeInTheDocument();
+    expect(screen.getByText("Price: 100 to 250")).toBeInTheDocument();
     expect(screen.getByText("In Stock Only")).toBeInTheDocument();
 
     // Remove Category filter
@@ -271,6 +280,7 @@ describe("Search & Faceted Filtering UI", () => {
 
     expect(mockPush).toHaveBeenCalledWith(
       expect.stringContaining("sort=price_asc"),
+      { scroll: false },
     );
   });
 
@@ -311,6 +321,6 @@ describe("Search & Faceted Filtering UI", () => {
     });
 
     fireEvent.click(screen.getByText("Clear All Filters"));
-    expect(mockPush).toHaveBeenCalledWith("/search?q=Apex");
+    expect(mockPush).toHaveBeenCalledWith("/search?q=Apex", { scroll: false });
   });
 });

@@ -1,0 +1,97 @@
+{
+  "phase": 41,
+  "actualCaptureCases": 18,
+  "interceptedFixtureCaptureCases": 58,
+  "widths": [375, 430, 768, 1024, 1440, 1920],
+  "pngs": 76,
+  "actualPngs": 18,
+  "fixturePngs": 58,
+  "pngValidation": "Signature, all chunk CRCs, IEND, filename width, dimensions, bytes and retained SHA256 match",
+  "browserValidation": "No document overflow, duplicate IDs or page errors; one main/h1, readable native controls and unchanged operational tokens in all final cases",
+  "actualAcceptance": "Inherited cart HTTP 308 is visibly rejected at every width. Guest payment review is explicit; unverified confirmation links never claim paid status. No actual order/intent/capture commands were issued.",
+  "fixtureAcceptance": "Explicit interception only: saved/guest/long/stock/loading/error/pending/paid/declined and native keyboard guest placement-payment-capture pass. UUID-only URLs, inline focus, fresh CSRF, explicit payloads and opaque token only are verified. Guest reload does not invent success.",
+  "paletteChecks": 22,
+  "productionSourcePages": 59,
+  "productionServerPageEntries": 54,
+  "productionClientPageEntries": 5,
+  "productionAuditLimits": "Source pages matched to the production manifest. Static HTML script/stylesheet references are deduplicated per route; nomodule scripts are excluded. Gzip estimates sum separate level-9 compressed assets. Dynamic route transfer, RSC/HTML bytes, prefetched navigation, runtime requests, caching, parse cost and Core Web Vitals are not measured.",
+  "localLinksValidated": 19,
+  "links": [
+    {
+      "document": "docs/storefront-checkout-review.md",
+      "target": "storefront-audit/phase41/fixture-saved-1440.png"
+    },
+    {
+      "document": "docs/storefront-checkout-review.md",
+      "target": "storefront-audit/phase41/fixture-saved-375.png"
+    },
+    {
+      "document": "docs/storefront-checkout-review.md",
+      "target": "storefront-audit/phase41/fixture-guest-430.png"
+    },
+    {
+      "document": "docs/storefront-checkout-review.md",
+      "target": "storefront-audit/phase41/fixture-payment-768.png"
+    },
+    {
+      "document": "docs/storefront-checkout-review.md",
+      "target": "storefront-audit/phase41/actual-checkout-error-1024.png"
+    },
+    {
+      "document": "docs/storefront-checkout-review.md",
+      "target": "storefront-audit/phase41/fixture-guest-captured-1440.png"
+    },
+    {
+      "document": "docs/storefront-checkout-review.md",
+      "target": "storefront-audit/phase41/fixture-unverified-1920.png"
+    },
+    {
+      "document": "docs/storefront-checkout-review.md",
+      "target": "storefront-audit/phase41/evidence-report.json"
+    },
+    {
+      "document": "docs/storefront-checkout-review.md",
+      "target": "storefront-audit/phase41/actual-report.json"
+    },
+    {
+      "document": "docs/storefront-checkout-review.md",
+      "target": "storefront-audit/phase41/fixture-report.json"
+    },
+    {
+      "document": "docs/storefront-checkout-review.md",
+      "target": "storefront-audit/phase41/screenshot-validation.json"
+    },
+    {
+      "document": "docs/storefront-checkout-review.md",
+      "target": "storefront-audit/phase41/palette-report.json"
+    },
+    {
+      "document": "docs/storefront-checkout-review.md",
+      "target": "storefront-audit/phase41/production-audit.json"
+    },
+    {
+      "document": "docs/storefront-design.md",
+      "target": "storefront-checkout-review.md"
+    },
+    {
+      "document": "docs/storefront-design.md",
+      "target": "storefront-cart-review.md"
+    },
+    {
+      "document": "docs/storefront-design.md",
+      "target": "storefront-product-detail-review.md"
+    },
+    {
+      "document": "docs/storefront-design.md",
+      "target": "storefront-discovery-review.md"
+    },
+    {
+      "document": "docs/testing.md",
+      "target": "storefront-cart-review.md"
+    },
+    {
+      "document": "docs/testing.md",
+      "target": "storefront-product-detail-review.md"
+    }
+  ]
+}

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { AuthProvider } from "@/features/auth/auth-provider";
 import { SessionCartProvider } from "@/features/cart/cart-context";
 import { CartDrawer } from "@/components/cart/cart-drawer";
+import { CheckoutSessionProvider } from "@/features/checkout/session";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -18,8 +19,10 @@ export default function RootLayout({
       <body>
         <AuthProvider>
           <SessionCartProvider>
-            {children}
-            <CartDrawer />
+            <CheckoutSessionProvider>
+              {children}
+              <CartDrawer />
+            </CheckoutSessionProvider>
           </SessionCartProvider>
         </AuthProvider>
       </body>

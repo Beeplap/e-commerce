@@ -5,6 +5,7 @@
 @import "../styles/storefront-discovery.css";
 @import "../styles/storefront-detail.css";
 @import "../styles/storefront-cart.css";
+@import "../styles/storefront-checkout.css";
 
 :root {
   color-scheme: light;

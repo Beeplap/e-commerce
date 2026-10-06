@@ -1,5 +1,6 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { CheckoutSessionProvider } from "@/features/checkout/session";
 import { AuthProvider } from "@/features/auth/auth-provider";
 import { CartProvider } from "@/features/cart/cart-context";
 import { ProductDetailView } from "@/features/storefront/product-detail-view";
@@ -182,7 +183,7 @@ const mockQuote: CheckoutQuote = {
       total: "226.00",
       available_shipping_methods: [
         {
-          method_id: "sm-standard",
+          method_id: "60000000-0000-4000-8000-000000000001",
           code: "standard",
           name: "Standard Ground",
           carrier: "FedEx",
@@ -192,7 +193,7 @@ const mockQuote: CheckoutQuote = {
         },
       ],
       selected_shipping_method: {
-        method_id: "sm-standard",
+        method_id: "60000000-0000-4000-8000-000000000001",
         code: "standard",
         name: "Standard Ground",
         carrier: "FedEx",
@@ -202,7 +203,7 @@ const mockQuote: CheckoutQuote = {
       },
       items: [
         {
-          item_id: "qi-1",
+          item_id: "91000000-0000-4000-8000-000000000001",
           variant_id: "81000000-0000-4000-8000-000000000001",
           product_id: "80000000-0000-4000-8000-000000000001",
           product_title: "Pro Gaming Keyboard",
@@ -544,15 +545,19 @@ describe("Phase 23: Customer Commerce End-to-End Integration Flows", () => {
     render(
       <AuthProvider>
         <CartProvider>
-          <CustomerCheckoutPage />
+          <CheckoutSessionProvider>
+            <CustomerCheckoutPage />
+          </CheckoutSessionProvider>
         </CartProvider>
       </AuthProvider>,
     );
 
-    expect(await screen.findByText("Checkout")).toBeDefined();
+    expect(
+      await screen.findByRole("heading", { level: 1, name: "Checkout" }),
+    ).toBeDefined();
     expect(await screen.findByText("Jane Shopper")).toBeDefined();
     expect(await screen.findByText("Standard Ground")).toBeDefined();
-    expect(await screen.findByText("$226.00")).toBeDefined();
+    expect(await screen.findByText(/226\.00\sUSD/)).toBeDefined();
 
     // Place order
     const placeOrderBtn = screen.getByRole("button", { name: /Place Order/i });
@@ -652,7 +657,7 @@ describe("Phase 23: Customer Commerce End-to-End Integration Flows", () => {
     });
 
     // Submit payment
-    const payBtn = screen.getByRole("button", { name: /Pay 226.00 USD/i });
+    const payBtn = screen.getByRole("button", { name: /Pay 226.00\sUSD/i });
     fireEvent.click(payBtn);
 
     await waitFor(() => {

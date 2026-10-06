@@ -1,0 +1,40 @@
+# Checkout visual experience — Phase 41
+
+Work is isolated on `ui-overhaul-phase41-checkout` from validated Phase 40 `974b0f5`. The user's next “continue” authorizes checkout only. The original worktree, concurrent account/backend/proxy/product/seller work and functional phase selector are preserved. Phase 42 is not implemented.
+
+## Implementation and visual critique
+
+Existing checkout now uses a compact editorial heading, three plain numbered form sections and one tan order summary. Saved addresses and per-seller delivery use native radios; guest fields have native autocomplete, bounded input, inline errors and first-invalid focus. The summary stays beside the form on desktop and follows it on mobile. It exposes item options, quantities, seller grouping, stock and exact server money without inventing delivery, tax or final charges before a valid quote. Payment and confirmation use the same customer shell and smaller Server Component route entries.
+
+The initial source review found an unbounded checkout container and potential long-price overflow; the implementation bounds the content to the established storefront width and allows long summary amounts to wrap. Inspected screenshots show cream space, restrained copper actions, readable native controls and line-separated sections. They avoid nested dashboard cards, badges, charts or unsupported trust promises. Mobile retains the complete summary because its contents remain useful for reviewing separate shipments. Shipping windows are explicitly estimates. Missing product photos use the existing accessible fallback, rather than fabricated product imagery.
+
+## Evidence and security decisions
+
+- All requests still use the existing same-origin API client with cookies, fresh CSRF, no cache and rejected redirects. Django remains the order, price, stock, payment, session and tenant authority. Backend, API, auth, proxy, migrations and dependencies are unchanged.
+- Consumed quote/address/order/payment fields receive bounded validation. Quote seller/item/quantity evidence must match the current cart and the chosen shipping method. Exact BigInt comparisons check server arithmetic; they never establish a price or charge. Real server repricing is accepted.
+- Quote failures, saved-address failures, session errors, loading, stock problems and validated empty carts have distinct inline states. Obsolete quotes cannot enable placement or populate final totals; canceled or account-bound reads cannot expose previous evidence.
+- Placement and capture responses are projected to five order display fields in memory, partitioned by the current auth identity. URLs contain one valid order UUID only. Email, totals, currency, order numbers and payment secrets are absent from generated navigation. Legacy URL metadata is ignored and duplicate/malformed IDs are rejected.
+- A success link never establishes paid status. Fresh capture evidence or an authenticated, existing Django customer-order read supplies confirmation. Pending/authorized/failed/refunded states are not called paid. Guest reloads honestly say confirmation is unavailable.
+- The existing guest authorization remains in Django's server-side session. There is no guest order-read endpoint. Explicit “Review payment” uses the existing CSRF-protected intent command to retrieve a payable server amount before showing card fields; it does not capture payment. An unreviewed changed intent amount requires a second review and card entry before confirmation.
+- Luhn/expiry/CVC checks, mock tokenization, stable per-view payment idempotency, synchronous duplicate guards and decline/reservation-release guidance are preserved. Number, expiry and CVC clear immediately after tokenization and have no native form serialization names. No raw card fields enter Django payloads or browser storage; late intent responses cannot dispatch confirmation after the form unmounts. Already-dispatched commands still complete under Django's authority.
+- Ambiguous placement failures block blind resubmission and explain recovery. An accepted order is not retried because the following cart refresh failed. The backend currently accepts but does not implement placement idempotency; this UI phase does not claim or invent it.
+
+## Browser validation
+
+Standalone Playwright Chromium captures 375, 430, 768, 1024, 1440 and 1920px. Actual same-origin API reads are reported separately from explicit intercepted synthetic fixtures. Actual cart access returns the inherited HTTP 308, which the protected client rejects; the checkout shows a recoverable read failure. No successful live purchase is claimed and no actual order, payment intent, capture or database seed is created by this audit.
+
+Fixture evidence covers saved and guest checkout, repeated per-seller delivery method IDs, long names/precise large amounts, payment, paid and unverified confirmation at every width; loading, quote/address/order failures, stock, uncertain placement and declined payment at mobile/desktop. Native keyboard guest placement → payment → capture exercises inline focus, UUID-only navigation, fresh CSRF, explicit command fields, opaque-token-only payment and honest guest reload behavior. Raw card values are never captured in retained screenshots or reports.
+
+Representative screenshots: [desktop checkout](storefront-audit/phase41/fixture-saved-1440.png), [375px checkout](storefront-audit/phase41/fixture-saved-375.png), [430px guest form](storefront-audit/phase41/fixture-guest-430.png), [tablet payment](storefront-audit/phase41/fixture-payment-768.png), [actual cart failure](storefront-audit/phase41/actual-checkout-error-1024.png), [guest capture](storefront-audit/phase41/fixture-guest-captured-1440.png), [unverified reload](storefront-audit/phase41/fixture-unverified-1920.png).
+
+Retained [complete evidence check](storefront-audit/phase41/evidence-report.json), [actual report](storefront-audit/phase41/actual-report.json), [fixture report](storefront-audit/phase41/fixture-report.json), [PNG integrity](storefront-audit/phase41/screenshot-validation.json), [palette](storefront-audit/phase41/palette-report.json) and [production audit](storefront-audit/phase41/production-audit.json) describe final validation. Standalone harnesses are local ignored `.artifacts/phase41-*` helpers using the existing installed Playwright; runtime code has no fixture path or new browser dependency.
+
+## Limits and separate debt
+
+The inherited cart-proxy redirect, backend placement idempotency, hard-coded quote currency and guest order/intent recovery contracts require separate backend/integration work. A guest reload after creating a pending intent may hit the existing conflict for a different intent key; the UI reports the backend error rather than bypassing ownership or persisting authority. Guest confirmation intentionally loses its display snapshot after reload. The mock gateway is explicitly labeled; a production hosted-fields integration is not implemented.
+
+Production ingress, real photography and authenticated/live transaction acceptance remain separate. Other browsers, assistive technology, touch, zoom and measured performance acceptance remain pending. Phase 42 concerns existing customer auth/account polish, only after another explicit request.
+
+## Final required checks
+
+Full PostgreSQL `pnpm check` passes 398 API and 428 frontend tests (826 total, including 40 new checkout cases), strict backend/frontend typing, zero-warning lint, formatting, Django/migration/offline-schema checks and production build (52 generated entries). Quiet Compose and 22 palette checks pass. The final manifest audit matches 59 source pages (54 server/5 client route entries). All 76 retained PNGs (18 actual/58 fixtures), report invariants and local links are checked. Protected backend/API/auth/proxy/dependency/completed storefront/cart files have no diff from Phase 40. Owned previews are stopped and the original worktree is preserved. Final docs/reports receive repository formatting and diff checks before isolated delivery.

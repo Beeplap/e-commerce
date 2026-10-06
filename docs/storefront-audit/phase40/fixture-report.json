@@ -1,0 +1,1338 @@
+{
+  "state": "Explicit intercepted fixtures only; no catalog/cart data or assets enter app/database",
+  "cases": [
+    {
+      "name": "fixture-multi",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": ["fixture-multi-375.png", "fixture-multi-viewport-375.png"]
+    },
+    {
+      "name": "fixture-multi-drawer",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": {
+          "rect": {
+            "x": -5.10332727432251,
+            "y": 0,
+            "width": 375,
+            "height": 900,
+            "top": 0,
+            "right": 369.8966727256775,
+            "bottom": 900,
+            "left": -5.10332727432251
+          },
+          "insideFocus": true,
+          "scrollHeight": 900,
+          "clientHeight": 900
+        }
+      },
+      "screenshots": ["fixture-multi-drawer-375.png"]
+    },
+    {
+      "name": "fixture-multi",
+      "width": 430,
+      "metrics": {
+        "width": 430,
+        "documentWidth": 430,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": ["fixture-multi-430.png", "fixture-multi-viewport-430.png"]
+    },
+    {
+      "name": "fixture-multi-drawer",
+      "width": 430,
+      "metrics": {
+        "width": 430,
+        "documentWidth": 430,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": {
+          "rect": {
+            "x": -5.1054887771606445,
+            "y": 0,
+            "width": 430,
+            "height": 900,
+            "top": 0,
+            "right": 424.89451122283936,
+            "bottom": 900,
+            "left": -5.1054887771606445
+          },
+          "insideFocus": true,
+          "scrollHeight": 900,
+          "clientHeight": 900
+        }
+      },
+      "screenshots": ["fixture-multi-drawer-430.png"]
+    },
+    {
+      "name": "fixture-multi",
+      "width": 768,
+      "metrics": {
+        "width": 768,
+        "documentWidth": 768,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": ["fixture-multi-768.png", "fixture-multi-viewport-768.png"]
+    },
+    {
+      "name": "fixture-multi-drawer",
+      "width": 768,
+      "metrics": {
+        "width": 768,
+        "documentWidth": 768,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": {
+          "rect": {
+            "x": 250,
+            "y": 0,
+            "width": 512,
+            "height": 900,
+            "top": 0,
+            "right": 762,
+            "bottom": 900,
+            "left": 250
+          },
+          "insideFocus": true,
+          "scrollHeight": 900,
+          "clientHeight": 900
+        }
+      },
+      "screenshots": ["fixture-multi-drawer-768.png"]
+    },
+    {
+      "name": "fixture-multi",
+      "width": 1024,
+      "metrics": {
+        "width": 1024,
+        "documentWidth": 1024,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": [
+        "fixture-multi-1024.png",
+        "fixture-multi-viewport-1024.png"
+      ]
+    },
+    {
+      "name": "fixture-multi-drawer",
+      "width": 1024,
+      "metrics": {
+        "width": 1024,
+        "documentWidth": 1024,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": {
+          "rect": {
+            "x": 506.8968200683594,
+            "y": 0,
+            "width": 512,
+            "height": 900,
+            "top": 0,
+            "right": 1018.8968200683594,
+            "bottom": 900,
+            "left": 506.8968200683594
+          },
+          "insideFocus": true,
+          "scrollHeight": 900,
+          "clientHeight": 900
+        }
+      },
+      "screenshots": ["fixture-multi-drawer-1024.png"]
+    },
+    {
+      "name": "fixture-multi",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": [
+        "fixture-multi-1440.png",
+        "fixture-multi-viewport-1440.png"
+      ]
+    },
+    {
+      "name": "fixture-multi-drawer",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": {
+          "rect": {
+            "x": 922.896240234375,
+            "y": 0,
+            "width": 512,
+            "height": 900,
+            "top": 0,
+            "right": 1434.896240234375,
+            "bottom": 900,
+            "left": 922.896240234375
+          },
+          "insideFocus": true,
+          "scrollHeight": 900,
+          "clientHeight": 900
+        }
+      },
+      "screenshots": ["fixture-multi-drawer-1440.png"]
+    },
+    {
+      "name": "fixture-multi",
+      "width": 1920,
+      "metrics": {
+        "width": 1920,
+        "documentWidth": 1920,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": [
+        "fixture-multi-1920.png",
+        "fixture-multi-viewport-1920.png"
+      ]
+    },
+    {
+      "name": "fixture-multi-drawer",
+      "width": 1920,
+      "metrics": {
+        "width": 1920,
+        "documentWidth": 1920,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": {
+          "rect": {
+            "x": 1402.8990478515625,
+            "y": 0,
+            "width": 512,
+            "height": 900,
+            "top": 0,
+            "right": 1914.8990478515625,
+            "bottom": 900,
+            "left": 1402.8990478515625
+          },
+          "insideFocus": true,
+          "scrollHeight": 900,
+          "clientHeight": 900
+        }
+      },
+      "screenshots": ["fixture-multi-drawer-1920.png"]
+    },
+    {
+      "name": "fixture-long",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": ["fixture-long-375.png", "fixture-long-viewport-375.png"]
+    },
+    {
+      "name": "fixture-long-drawer",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": {
+          "rect": {
+            "x": -5.1028642654418945,
+            "y": 0,
+            "width": 375,
+            "height": 900,
+            "top": 0,
+            "right": 369.8971357345581,
+            "bottom": 900,
+            "left": -5.1028642654418945
+          },
+          "insideFocus": true,
+          "scrollHeight": 900,
+          "clientHeight": 900
+        }
+      },
+      "screenshots": ["fixture-long-drawer-375.png"]
+    },
+    {
+      "name": "fixture-long",
+      "width": 430,
+      "metrics": {
+        "width": 430,
+        "documentWidth": 430,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": ["fixture-long-430.png", "fixture-long-viewport-430.png"]
+    },
+    {
+      "name": "fixture-long-drawer",
+      "width": 430,
+      "metrics": {
+        "width": 430,
+        "documentWidth": 430,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": {
+          "rect": {
+            "x": -5.104305267333984,
+            "y": 0,
+            "width": 430,
+            "height": 900,
+            "top": 0,
+            "right": 424.895694732666,
+            "bottom": 900,
+            "left": -5.104305267333984
+          },
+          "insideFocus": true,
+          "scrollHeight": 900,
+          "clientHeight": 900
+        }
+      },
+      "screenshots": ["fixture-long-drawer-430.png"]
+    },
+    {
+      "name": "fixture-long",
+      "width": 768,
+      "metrics": {
+        "width": 768,
+        "documentWidth": 768,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": ["fixture-long-768.png", "fixture-long-viewport-768.png"]
+    },
+    {
+      "name": "fixture-long-drawer",
+      "width": 768,
+      "metrics": {
+        "width": 768,
+        "documentWidth": 768,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": {
+          "rect": {
+            "x": 250,
+            "y": 0,
+            "width": 512,
+            "height": 900,
+            "top": 0,
+            "right": 762,
+            "bottom": 900,
+            "left": 250
+          },
+          "insideFocus": true,
+          "scrollHeight": 900,
+          "clientHeight": 900
+        }
+      },
+      "screenshots": ["fixture-long-drawer-768.png"]
+    },
+    {
+      "name": "fixture-long",
+      "width": 1024,
+      "metrics": {
+        "width": 1024,
+        "documentWidth": 1024,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": ["fixture-long-1024.png", "fixture-long-viewport-1024.png"]
+    },
+    {
+      "name": "fixture-long-drawer",
+      "width": 1024,
+      "metrics": {
+        "width": 1024,
+        "documentWidth": 1024,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": {
+          "rect": {
+            "x": 506.8965148925781,
+            "y": 0,
+            "width": 511.9999694824219,
+            "height": 900,
+            "top": 0,
+            "right": 1018.896484375,
+            "bottom": 900,
+            "left": 506.8965148925781
+          },
+          "insideFocus": true,
+          "scrollHeight": 900,
+          "clientHeight": 900
+        }
+      },
+      "screenshots": ["fixture-long-drawer-1024.png"]
+    },
+    {
+      "name": "fixture-long",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": ["fixture-long-1440.png", "fixture-long-viewport-1440.png"]
+    },
+    {
+      "name": "fixture-long-drawer",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": {
+          "rect": {
+            "x": 922.8939208984375,
+            "y": 0,
+            "width": 512,
+            "height": 900,
+            "top": 0,
+            "right": 1434.8939208984375,
+            "bottom": 900,
+            "left": 922.8939208984375
+          },
+          "insideFocus": true,
+          "scrollHeight": 900,
+          "clientHeight": 900
+        }
+      },
+      "screenshots": ["fixture-long-drawer-1440.png"]
+    },
+    {
+      "name": "fixture-long",
+      "width": 1920,
+      "metrics": {
+        "width": 1920,
+        "documentWidth": 1920,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": ["fixture-long-1920.png", "fixture-long-viewport-1920.png"]
+    },
+    {
+      "name": "fixture-long-drawer",
+      "width": 1920,
+      "metrics": {
+        "width": 1920,
+        "documentWidth": 1920,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": {
+          "rect": {
+            "x": 1402.8973388671875,
+            "y": 0,
+            "width": 512,
+            "height": 900,
+            "top": 0,
+            "right": 1914.8973388671875,
+            "bottom": 900,
+            "left": 1402.8973388671875
+          },
+          "insideFocus": true,
+          "scrollHeight": 900,
+          "clientHeight": 900
+        }
+      },
+      "screenshots": ["fixture-long-drawer-1920.png"]
+    },
+    {
+      "name": "fixture-empty",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": ["fixture-empty-375.png", "fixture-empty-viewport-375.png"]
+    },
+    {
+      "name": "fixture-empty-drawer",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": {
+          "rect": {
+            "x": -6,
+            "y": 0,
+            "width": 375,
+            "height": 900,
+            "top": 0,
+            "right": 369,
+            "bottom": 900,
+            "left": -6
+          },
+          "insideFocus": true,
+          "scrollHeight": 900,
+          "clientHeight": 900
+        }
+      },
+      "screenshots": ["fixture-empty-drawer-375.png"]
+    },
+    {
+      "name": "fixture-empty",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": [
+        "fixture-empty-1440.png",
+        "fixture-empty-viewport-1440.png"
+      ]
+    },
+    {
+      "name": "fixture-empty-drawer",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": {
+          "rect": {
+            "x": 922.8983154296875,
+            "y": 0,
+            "width": 512,
+            "height": 900,
+            "top": 0,
+            "right": 1434.8983154296875,
+            "bottom": 900,
+            "left": 922.8983154296875
+          },
+          "insideFocus": true,
+          "scrollHeight": 900,
+          "clientHeight": 900
+        }
+      },
+      "screenshots": ["fixture-empty-drawer-1440.png"]
+    },
+    {
+      "name": "fixture-out-of-stock",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": [
+        "fixture-out-of-stock-375.png",
+        "fixture-out-of-stock-viewport-375.png"
+      ]
+    },
+    {
+      "name": "fixture-out-of-stock-drawer",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": {
+          "rect": {
+            "x": -5.103636264801025,
+            "y": 0,
+            "width": 375,
+            "height": 900,
+            "top": 0,
+            "right": 369.896363735199,
+            "bottom": 900,
+            "left": -5.103636264801025
+          },
+          "insideFocus": true,
+          "scrollHeight": 900,
+          "clientHeight": 900
+        }
+      },
+      "screenshots": ["fixture-out-of-stock-drawer-375.png"]
+    },
+    {
+      "name": "fixture-out-of-stock",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": [
+        "fixture-out-of-stock-1440.png",
+        "fixture-out-of-stock-viewport-1440.png"
+      ]
+    },
+    {
+      "name": "fixture-out-of-stock-drawer",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": {
+          "rect": {
+            "x": 922.8980712890625,
+            "y": 0,
+            "width": 512,
+            "height": 900,
+            "top": 0,
+            "right": 1434.8980712890625,
+            "bottom": 900,
+            "left": 922.8980712890625
+          },
+          "insideFocus": true,
+          "scrollHeight": 900,
+          "clientHeight": 900
+        }
+      },
+      "screenshots": ["fixture-out-of-stock-drawer-1440.png"]
+    },
+    {
+      "name": "fixture-read-error",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": [
+        "fixture-read-error-375.png",
+        "fixture-read-error-viewport-375.png"
+      ]
+    },
+    {
+      "name": "fixture-read-error-drawer",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": {
+          "rect": {
+            "x": -6,
+            "y": 0,
+            "width": 375,
+            "height": 900,
+            "top": 0,
+            "right": 369,
+            "bottom": 900,
+            "left": -6
+          },
+          "insideFocus": true,
+          "scrollHeight": 900,
+          "clientHeight": 900
+        }
+      },
+      "screenshots": ["fixture-read-error-drawer-375.png"]
+    },
+    {
+      "name": "fixture-read-error",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": [
+        "fixture-read-error-1440.png",
+        "fixture-read-error-viewport-1440.png"
+      ]
+    },
+    {
+      "name": "fixture-read-error-drawer",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": {
+          "rect": {
+            "x": 922,
+            "y": 0,
+            "width": 512,
+            "height": 900,
+            "top": 0,
+            "right": 1434,
+            "bottom": 900,
+            "left": 922
+          },
+          "insideFocus": true,
+          "scrollHeight": 900,
+          "clientHeight": 900
+        }
+      },
+      "screenshots": ["fixture-read-error-drawer-1440.png"]
+    },
+    {
+      "name": "fixture-loading",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": [
+        "fixture-loading-375.png",
+        "fixture-loading-viewport-375.png"
+      ]
+    },
+    {
+      "name": "fixture-loading-drawer",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": {
+          "rect": {
+            "x": -6,
+            "y": 0,
+            "width": 375,
+            "height": 900,
+            "top": 0,
+            "right": 369,
+            "bottom": 900,
+            "left": -6
+          },
+          "insideFocus": true,
+          "scrollHeight": 900,
+          "clientHeight": 900
+        }
+      },
+      "screenshots": ["fixture-loading-drawer-375.png"]
+    },
+    {
+      "name": "fixture-loading",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": [
+        "fixture-loading-1440.png",
+        "fixture-loading-viewport-1440.png"
+      ]
+    },
+    {
+      "name": "fixture-loading-drawer",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": {
+          "rect": {
+            "x": 922,
+            "y": 0,
+            "width": 512,
+            "height": 900,
+            "top": 0,
+            "right": 1434,
+            "bottom": 900,
+            "left": 922
+          },
+          "insideFocus": true,
+          "scrollHeight": 900,
+          "clientHeight": 900
+        }
+      },
+      "screenshots": ["fixture-loading-drawer-1440.png"]
+    },
+    {
+      "name": "fixture-malformed",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": [
+        "fixture-malformed-375.png",
+        "fixture-malformed-viewport-375.png"
+      ]
+    },
+    {
+      "name": "fixture-malformed-drawer",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": {
+          "rect": {
+            "x": -6,
+            "y": 0,
+            "width": 375,
+            "height": 900,
+            "top": 0,
+            "right": 369,
+            "bottom": 900,
+            "left": -6
+          },
+          "insideFocus": true,
+          "scrollHeight": 900,
+          "clientHeight": 900
+        }
+      },
+      "screenshots": ["fixture-malformed-drawer-375.png"]
+    },
+    {
+      "name": "fixture-malformed",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": [
+        "fixture-malformed-1440.png",
+        "fixture-malformed-viewport-1440.png"
+      ]
+    },
+    {
+      "name": "fixture-malformed-drawer",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": {
+          "rect": {
+            "x": 922,
+            "y": 0,
+            "width": 512,
+            "height": 900,
+            "top": 0,
+            "right": 1434,
+            "bottom": 900,
+            "left": 922
+          },
+          "insideFocus": true,
+          "scrollHeight": 900,
+          "clientHeight": 900
+        }
+      },
+      "screenshots": ["fixture-malformed-drawer-1440.png"]
+    },
+    {
+      "name": "fixture-quantity-pending",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": ["fixture-quantity-pending-375.png"]
+    },
+    {
+      "name": "fixture-quantity-rejected",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": ["fixture-quantity-rejected-375.png"]
+    },
+    {
+      "name": "fixture-quantity-confirmed",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": ["fixture-quantity-confirmed-375.png"]
+    },
+    {
+      "name": "fixture-coupon-preview",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": ["fixture-coupon-preview-375.png"]
+    },
+    {
+      "name": "fixture-item-removed",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": ["fixture-item-removed-375.png"]
+    },
+    {
+      "name": "fixture-cleared",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": ["fixture-cleared-375.png"]
+    },
+    {
+      "name": "fixture-quantity-pending",
+      "width": 768,
+      "metrics": {
+        "width": 768,
+        "documentWidth": 768,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": ["fixture-quantity-pending-768.png"]
+    },
+    {
+      "name": "fixture-quantity-rejected",
+      "width": 768,
+      "metrics": {
+        "width": 768,
+        "documentWidth": 768,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": ["fixture-quantity-rejected-768.png"]
+    },
+    {
+      "name": "fixture-quantity-confirmed",
+      "width": 768,
+      "metrics": {
+        "width": 768,
+        "documentWidth": 768,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": ["fixture-quantity-confirmed-768.png"]
+    },
+    {
+      "name": "fixture-coupon-preview",
+      "width": 768,
+      "metrics": {
+        "width": 768,
+        "documentWidth": 768,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": ["fixture-coupon-preview-768.png"]
+    },
+    {
+      "name": "fixture-item-removed",
+      "width": 768,
+      "metrics": {
+        "width": 768,
+        "documentWidth": 768,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": ["fixture-item-removed-768.png"]
+    },
+    {
+      "name": "fixture-cleared",
+      "width": 768,
+      "metrics": {
+        "width": 768,
+        "documentWidth": 768,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": ["fixture-cleared-768.png"]
+    },
+    {
+      "name": "fixture-quantity-pending",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": ["fixture-quantity-pending-1440.png"]
+    },
+    {
+      "name": "fixture-quantity-rejected",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": ["fixture-quantity-rejected-1440.png"]
+    },
+    {
+      "name": "fixture-quantity-confirmed",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": ["fixture-quantity-confirmed-1440.png"]
+    },
+    {
+      "name": "fixture-coupon-preview",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": ["fixture-coupon-preview-1440.png"]
+    },
+    {
+      "name": "fixture-item-removed",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": ["fixture-item-removed-1440.png"]
+    },
+    {
+      "name": "fixture-cleared",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": ["fixture-cleared-1440.png"]
+    }
+  ],
+  "interactions": [
+    {
+      "width": 375,
+      "pendingAndNativeQuantity": true,
+      "focusedRejectedRetry": true,
+      "acceptedExactAmount": true,
+      "couponPreviewOnly": true,
+      "removalFocusAndClear": true,
+      "csrfAndOnlyQuantityPatch": true,
+      "requests": [
+        {
+          "method": "PATCH",
+          "path": "/api/v1/cart/items/90000000-0000-4000-8000-000000000001/",
+          "body": {
+            "quantity": 3
+          },
+          "csrfPresent": true
+        },
+        {
+          "method": "PATCH",
+          "path": "/api/v1/cart/items/90000000-0000-4000-8000-000000000001/",
+          "body": {
+            "quantity": 3
+          },
+          "csrfPresent": true
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/v1/cart/items/90000000-0000-4000-8000-000000000001/",
+          "body": {},
+          "csrfPresent": true
+        },
+        {
+          "method": "POST",
+          "path": "/api/v1/cart/clear/",
+          "body": {},
+          "csrfPresent": true
+        }
+      ]
+    },
+    {
+      "width": 768,
+      "pendingAndNativeQuantity": true,
+      "focusedRejectedRetry": true,
+      "acceptedExactAmount": true,
+      "couponPreviewOnly": true,
+      "removalFocusAndClear": true,
+      "csrfAndOnlyQuantityPatch": true,
+      "requests": [
+        {
+          "method": "PATCH",
+          "path": "/api/v1/cart/items/90000000-0000-4000-8000-000000000001/",
+          "body": {
+            "quantity": 3
+          },
+          "csrfPresent": true
+        },
+        {
+          "method": "PATCH",
+          "path": "/api/v1/cart/items/90000000-0000-4000-8000-000000000001/",
+          "body": {
+            "quantity": 3
+          },
+          "csrfPresent": true
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/v1/cart/items/90000000-0000-4000-8000-000000000001/",
+          "body": {},
+          "csrfPresent": true
+        },
+        {
+          "method": "POST",
+          "path": "/api/v1/cart/clear/",
+          "body": {},
+          "csrfPresent": true
+        }
+      ]
+    },
+    {
+      "width": 1440,
+      "pendingAndNativeQuantity": true,
+      "focusedRejectedRetry": true,
+      "acceptedExactAmount": true,
+      "couponPreviewOnly": true,
+      "removalFocusAndClear": true,
+      "csrfAndOnlyQuantityPatch": true,
+      "requests": [
+        {
+          "method": "PATCH",
+          "path": "/api/v1/cart/items/90000000-0000-4000-8000-000000000001/",
+          "body": {
+            "quantity": 3
+          },
+          "csrfPresent": true
+        },
+        {
+          "method": "PATCH",
+          "path": "/api/v1/cart/items/90000000-0000-4000-8000-000000000001/",
+          "body": {
+            "quantity": 3
+          },
+          "csrfPresent": true
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/v1/cart/items/90000000-0000-4000-8000-000000000001/",
+          "body": {},
+          "csrfPresent": true
+        },
+        {
+          "method": "POST",
+          "path": "/api/v1/cart/clear/",
+          "body": {},
+          "csrfPresent": true
+        }
+      ]
+    }
+  ],
+  "pageErrors": [],
+  "browser": "149.0.7827.55"
+}

@@ -1,12 +1,16 @@
 # Customer storefront design foundation
 
+## Cart composition (Phase 40)
+
+The customer-only `styles/storefront-cart.css` styles quiet seller groups and complete item rows. Mobile uses contained square thumbnails and stacked option/price/quantity controls; desktop adds one tan summary and legible line subtotals. Exact currency and subtotal stay visible without invented shipping/tax/discount charges. Copper identifies checkout; rejected/pending/unavailable states use semantic styling and genuine disabled controls. An eligibility preview is separated from amounts and never claims coupon application. Empty/error/loading states are distinct and provide real shopping/retry routes. Long content wraps; missing/broken thumbnails use accessible icons. The right native drawer shares rows and summary with contained scrolling, visible close/focus, Escape/opener return and cart-local Tab cycling. There is no fixed mobile checkout bar or operational token override. See [Phase 40 evidence and critique](storefront-cart-review.md).
+
 ## Product-detail composition (Phase 39)
 
 `styles/storefront-detail.css` consumes the existing customer tokens only. The PDP uses a gallery/purchase split from 768px, with identity/gallery/purchase stacked on mobile. Square images contain the complete photograph; a genuine absent-image state uses a quieter 4:3 panel. Native thumbnail/option buttons have visible pressed focus/state, explicit unavailable wording and at least 44px control geometry. A single SKU does not become a redundant option card. Copper purchase feedback waits for the existing provider; failure is focused inline and success follows acceptance. There is no fixed mobile bar, new gradient, global token override, zoom library or fabricated trust claim.
 
 Details/specifications use plain rows and whitespace; seller discovery uses one tonal band; reviews use dividers rather than floating cards. Exact prices/currency remain prominent, prior prices are strictly higher and long strings wrap. Extremely long h1 names use a smaller display size and remain complete; the repeated breadcrumb current title abbreviates visually. Anchor sections clear the existing sticky header and accept native keyboard destination focus. Existing API evidence constrains every seller, review, image, stock and delivery statement. Related products show up to four actual same-category records with independent recovery. Actual/fixture critique and screenshots are in [the Phase 39 review](storefront-product-detail-review.md); later cart/checkout/account redesign is not started.
 
-Phase 35 implements the foundation, Phase 36 the customer header/search/navigation/footer, Phase 37 the homepage, Phase 38 listing discovery and Phase 39 product detail from the user-supplied `instructions4.md`. Seller, cart/checkout and account redesign belong to later explicit phases. The token source of truth is `apps/web/styles/storefront.css`; customer components and their scoped styles consume its semantic tokens instead of embedding brand hex values.
+Phase 35 implements the foundation, Phase 36 the customer header/search/navigation/footer, Phase 37 the homepage, Phase 38 listing discovery, Phase 39 product detail and Phase 40 cart from the user-supplied `instructions4.md`. Seller, checkout and account redesign belong to later explicit phases. The token source of truth is `apps/web/styles/storefront.css`; customer components and their scoped styles consume its semantic tokens instead of embedding brand hex values.
 
 ## Theme and integration boundary
 

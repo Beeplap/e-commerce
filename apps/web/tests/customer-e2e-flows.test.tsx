@@ -446,9 +446,9 @@ describe("Phase 23: Customer Commerce End-to-End Integration Flows", () => {
   });
 
   // -------------------------------------------------------------------------
-  // Flow 3: Update cart quantities, apply coupon code, verify discount
+  // Flow 3: Check coupon eligibility without inventing applied discounts
   // -------------------------------------------------------------------------
-  it("Flow 3: Customer updates cart quantities, applies coupon code, and verifies discount", async () => {
+  it("Flow 3: Customer previews coupon eligibility and preserves the server cart subtotal", async () => {
     global.fetch = vi.fn().mockImplementation((input: RequestInfo | URL) => {
       const url = String(input);
       if (url.includes("/api/v1/auth/me")) {
@@ -491,19 +491,26 @@ describe("Phase 23: Customer Commerce End-to-End Integration Flows", () => {
     expect(screen.getAllByText("Pro Gaming Keyboard").length).toBeGreaterThan(
       0,
     );
-    expect(screen.getAllByText("$240.00").length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/240.00\sUSD/).length).toBeGreaterThan(0);
 
     // Input coupon code
     const couponInput = screen.getByPlaceholderText(/Enter coupon code/i);
     fireEvent.change(couponInput, { target: { value: "SAVE10" } });
 
-    const applyBtn = screen.getByRole("button", { name: /Apply/i });
+    const applyBtn = screen.getByRole("button", { name: /Check code/i });
     fireEvent.click(applyBtn);
 
-    // Verify discount is calculated and displayed
+    // The API supplies eligibility only; preview does not change cart amounts.
     expect(
-      await screen.findByText(/Coupon applied! Saved \$24\.00/i),
+      await screen.findByText(/is eligible for a preview discount of/i),
     ).toBeDefined();
+    expect(screen.getByTestId("cart-summary-total")).toHaveTextContent(
+      "240.00 USD",
+    );
+    expect(
+      screen.getByText(/is eligible for a preview discount of/i),
+    ).toHaveTextContent("24.00 USD");
+    expect(screen.queryByText(/coupon applied/i)).toBeNull();
   });
 
   // -------------------------------------------------------------------------

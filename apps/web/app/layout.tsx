@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { AuthProvider } from "@/features/auth/auth-provider";
-import { CartProvider } from "@/features/cart/cart-context";
+import { SessionCartProvider } from "@/features/cart/cart-context";
 import { CartDrawer } from "@/components/cart/cart-drawer";
 import "./globals.css";
 
@@ -17,10 +17,10 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <AuthProvider>
-          <CartProvider>
+          <SessionCartProvider>
             {children}
             <CartDrawer />
-          </CartProvider>
+          </SessionCartProvider>
         </AuthProvider>
       </body>
     </html>

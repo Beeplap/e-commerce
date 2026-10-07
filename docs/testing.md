@@ -1,5 +1,11 @@
 # Validation
 
+## Storefront visual acceptance and final QA (Phase 46)
+
+The final visual browser audit covers 13 shopper routes at 375, 430, 1440 and 1920px (52 screenshot captures), with Chromium keyboard, dialog, error, reduced-motion, accessible-name, heading, overflow and text-contrast checks. The production/fixture distinctions and reviewed screenshots are documented in [the final storefront review](storefront-final-review.md); generated captures/report remain in ignored `.artifacts/phase46-browser/`.
+
+For this final pass, `pnpm lint`, `pnpm typecheck`, `pnpm test` (474 frontend tests in 39 files), `pnpm build`, `pnpm format:check`, `node scripts/check_storefront_tokens.mjs`, `node scripts/audit_ui_build.mjs --json`, and quiet Compose configuration validation passed. `pnpm check` could not complete its PostgreSQL-backed portion because the configured database timed out; 369 database-dependent cases failed during test DB setup and 29 database-independent backend cases passed. The Docker daemon is unavailable from this Windows/WSL session. Rerun the aggregate check with PostgreSQL available; no tests were skipped or relaxed.
+
 ## Customer cart (Phase 40)
 
 `tests/storefront-cart.test.tsx` adds 44 meaningful cases: cart/empty evidence, invalid UUID/currency/decimal/count/stock/media and duplicate/oversized data, exact amounts above floating-point precision, coupon validity/amount bounds, loading/error/retry versus true empty, malformed mutation invalidation, real seller/product/checkout routes, stock/pending/quantity bounds, synchronous duplicate prevention, CSRF/quantity-only payloads, focused reject/reload, delete/clear errors and removal focus, promo preview with unchanged totals/revision reset/late completion, stale Strict Mode reads, account-change mutation discard, read-versus-add ordering, production session binding without page remount, broken image fallback and native dialog/opener return. Existing cart/customer-flow tests retain actual quantity and discount amounts, with explicit currency and correct eligibility semantics rather than fake applied totals. Checkout regressions still pass; no security/business assertion is weakened.

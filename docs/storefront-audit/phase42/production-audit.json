@@ -1,0 +1,991 @@
+{
+  "method": "Source pages matched to the production manifest. Static HTML script/stylesheet references are deduplicated per route; nomodule scripts are excluded. Gzip estimates sum separate level-9 compressed assets. Dynamic route transfer, RSC/HTML bytes, prefetched navigation, runtime requests, caching, parse cost and Core Web Vitals are not measured.",
+  "node": "v24.15.0",
+  "sourcePages": 59,
+  "serverPages": 58,
+  "clientPages": 1,
+  "staticPageArtifacts": 50,
+  "emittedJavascript": {
+    "files": 74,
+    "bytes": 2023290,
+    "gzipBytes": 603360
+  },
+  "emittedCss": {
+    "files": 1,
+    "bytes": 117830,
+    "gzipBytes": 20169
+  },
+  "largestStaticRoutes": [
+    {
+      "route": "/admin/finance/payouts",
+      "javascript": {
+        "files": 14,
+        "bytes": 601331,
+        "gzipBytes": 179305
+      },
+      "css": {
+        "files": 1,
+        "bytes": 117830,
+        "gzipBytes": 20169
+      }
+    },
+    {
+      "route": "/admin/inventory",
+      "javascript": {
+        "files": 14,
+        "bytes": 593382,
+        "gzipBytes": 177881
+      },
+      "css": {
+        "files": 1,
+        "bytes": 117830,
+        "gzipBytes": 20169
+      }
+    },
+    {
+      "route": "/seller/inventory",
+      "javascript": {
+        "files": 14,
+        "bytes": 592593,
+        "gzipBytes": 177688
+      },
+      "css": {
+        "files": 1,
+        "bytes": 117830,
+        "gzipBytes": 20169
+      }
+    },
+    {
+      "route": "/seller/finance/payouts",
+      "javascript": {
+        "files": 14,
+        "bytes": 595324,
+        "gzipBytes": 177570
+      },
+      "css": {
+        "files": 1,
+        "bytes": 117830,
+        "gzipBytes": 20169
+      }
+    },
+    {
+      "route": "/seller/returns",
+      "javascript": {
+        "files": 14,
+        "bytes": 594663,
+        "gzipBytes": 176718
+      },
+      "css": {
+        "files": 1,
+        "bytes": 117830,
+        "gzipBytes": 20169
+      }
+    }
+  ],
+  "routes": [
+    {
+      "route": "/login",
+      "source": "apps/web/app/(auth)/login/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 11,
+          "bytes": 542333,
+          "gzipBytes": 162066
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/account/addresses",
+      "source": "apps/web/app/(customer-account)/account/addresses/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 11,
+          "bytes": 571768,
+          "gzipBytes": 170436
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/account/orders/[id]",
+      "source": "apps/web/app/(customer-account)/account/orders/[id]/page.tsx",
+      "serverPage": true,
+      "initialAssets": null
+    },
+    {
+      "route": "/account/orders",
+      "source": "apps/web/app/(customer-account)/account/orders/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 11,
+          "bytes": 565085,
+          "gzipBytes": 168483
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/account",
+      "source": "apps/web/app/(customer-account)/account/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 11,
+          "bytes": 560030,
+          "gzipBytes": 166925
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/account/profile",
+      "source": "apps/web/app/(customer-account)/account/profile/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 11,
+          "bytes": 567205,
+          "gzipBytes": 169211
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/admin/attributes",
+      "source": "apps/web/app/(workspace)/admin/attributes/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 14,
+          "bytes": 590557,
+          "gzipBytes": 176559
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/admin/brands",
+      "source": "apps/web/app/(workspace)/admin/brands/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 14,
+          "bytes": 582986,
+          "gzipBytes": 174918
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/admin/categories",
+      "source": "apps/web/app/(workspace)/admin/categories/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 14,
+          "bytes": 585445,
+          "gzipBytes": 175600
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/admin/finance/commissions",
+      "source": "apps/web/app/(workspace)/admin/finance/commissions/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 14,
+          "bytes": 591056,
+          "gzipBytes": 175315
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/admin/finance",
+      "source": "apps/web/app/(workspace)/admin/finance/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 14,
+          "bytes": 579082,
+          "gzipBytes": 172607
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/admin/finance/payouts",
+      "source": "apps/web/app/(workspace)/admin/finance/payouts/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 14,
+          "bytes": 601331,
+          "gzipBytes": 179305
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/admin/finance/seller-balances",
+      "source": "apps/web/app/(workspace)/admin/finance/seller-balances/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 14,
+          "bytes": 584284,
+          "gzipBytes": 174610
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/admin/fulfillment",
+      "source": "apps/web/app/(workspace)/admin/fulfillment/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 14,
+          "bytes": 586157,
+          "gzipBytes": 174634
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/admin/fulfillment/refunds",
+      "source": "apps/web/app/(workspace)/admin/fulfillment/refunds/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 14,
+          "bytes": 586157,
+          "gzipBytes": 174634
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/admin/fulfillment/returns",
+      "source": "apps/web/app/(workspace)/admin/fulfillment/returns/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 14,
+          "bytes": 586157,
+          "gzipBytes": 174634
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/admin/inventory",
+      "source": "apps/web/app/(workspace)/admin/inventory/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 14,
+          "bytes": 593382,
+          "gzipBytes": 177881
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/admin/orders/[id]",
+      "source": "apps/web/app/(workspace)/admin/orders/[id]/page.tsx",
+      "serverPage": true,
+      "initialAssets": null
+    },
+    {
+      "route": "/admin/orders",
+      "source": "apps/web/app/(workspace)/admin/orders/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 14,
+          "bytes": 583411,
+          "gzipBytes": 174639
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/admin",
+      "source": "apps/web/app/(workspace)/admin/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 14,
+          "bytes": 586981,
+          "gzipBytes": 175746
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/admin/products/[id]",
+      "source": "apps/web/app/(workspace)/admin/products/[id]/page.tsx",
+      "serverPage": true,
+      "initialAssets": null
+    },
+    {
+      "route": "/admin/products",
+      "source": "apps/web/app/(workspace)/admin/products/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 14,
+          "bytes": 585711,
+          "gzipBytes": 175700
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/admin/promotions",
+      "source": "apps/web/app/(workspace)/admin/promotions/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 14,
+          "bytes": 571432,
+          "gzipBytes": 171692
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/admin/reviews",
+      "source": "apps/web/app/(workspace)/admin/reviews/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 14,
+          "bytes": 573562,
+          "gzipBytes": 171989
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/admin/sellers/[id]",
+      "source": "apps/web/app/(workspace)/admin/sellers/[id]/page.tsx",
+      "serverPage": true,
+      "initialAssets": null
+    },
+    {
+      "route": "/admin/sellers",
+      "source": "apps/web/app/(workspace)/admin/sellers/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 14,
+          "bytes": 577269,
+          "gzipBytes": 173495
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/forbidden",
+      "source": "apps/web/app/(workspace)/forbidden/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 12,
+          "bytes": 547507,
+          "gzipBytes": 163050
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/onboarding",
+      "source": "apps/web/app/(workspace)/onboarding/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 13,
+          "bytes": 571298,
+          "gzipBytes": 171097
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/seller/finance",
+      "source": "apps/web/app/(workspace)/seller/finance/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 14,
+          "bytes": 586695,
+          "gzipBytes": 174965
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/seller/finance/payouts",
+      "source": "apps/web/app/(workspace)/seller/finance/payouts/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 14,
+          "bytes": 595324,
+          "gzipBytes": 177570
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/seller/finance/transactions",
+      "source": "apps/web/app/(workspace)/seller/finance/transactions/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 14,
+          "bytes": 586825,
+          "gzipBytes": 175476
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/seller/inventory/adjustments",
+      "source": "apps/web/app/(workspace)/seller/inventory/adjustments/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 14,
+          "bytes": 582930,
+          "gzipBytes": 174661
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/seller/inventory",
+      "source": "apps/web/app/(workspace)/seller/inventory/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 14,
+          "bytes": 592593,
+          "gzipBytes": 177688
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/seller/notifications",
+      "source": "apps/web/app/(workspace)/seller/notifications/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 14,
+          "bytes": 569565,
+          "gzipBytes": 170844
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/seller/orders/[id]",
+      "source": "apps/web/app/(workspace)/seller/orders/[id]/page.tsx",
+      "serverPage": true,
+      "initialAssets": null
+    },
+    {
+      "route": "/seller/orders",
+      "source": "apps/web/app/(workspace)/seller/orders/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 14,
+          "bytes": 586622,
+          "gzipBytes": 175599
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/seller",
+      "source": "apps/web/app/(workspace)/seller/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 14,
+          "bytes": 586192,
+          "gzipBytes": 175486
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/seller/products/[id]",
+      "source": "apps/web/app/(workspace)/seller/products/[id]/page.tsx",
+      "serverPage": true,
+      "initialAssets": null
+    },
+    {
+      "route": "/seller/products/new",
+      "source": "apps/web/app/(workspace)/seller/products/new/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 14,
+          "bytes": 583554,
+          "gzipBytes": 175018
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/seller/products",
+      "source": "apps/web/app/(workspace)/seller/products/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 14,
+          "bytes": 584922,
+          "gzipBytes": 175431
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/seller/promotions",
+      "source": "apps/web/app/(workspace)/seller/promotions/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 14,
+          "bytes": 576972,
+          "gzipBytes": 172885
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/seller/refunds",
+      "source": "apps/web/app/(workspace)/seller/refunds/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 14,
+          "bytes": 586089,
+          "gzipBytes": 174823
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/seller/returns",
+      "source": "apps/web/app/(workspace)/seller/returns/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 14,
+          "bytes": 594663,
+          "gzipBytes": 176718
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/seller/reviews",
+      "source": "apps/web/app/(workspace)/seller/reviews/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 14,
+          "bytes": 576054,
+          "gzipBytes": 172533
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/seller/settings",
+      "source": "apps/web/app/(workspace)/seller/settings/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 14,
+          "bytes": 583331,
+          "gzipBytes": 175162
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/seller/shipments",
+      "source": "apps/web/app/(workspace)/seller/shipments/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 14,
+          "bytes": 592911,
+          "gzipBytes": 176132
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/seller/staff",
+      "source": "apps/web/app/(workspace)/seller/staff/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 14,
+          "bytes": 573933,
+          "gzipBytes": 172060
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/seller/staff/roles",
+      "source": "apps/web/app/(workspace)/seller/staff/roles/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 14,
+          "bytes": 573041,
+          "gzipBytes": 171997
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/seller/warehouses",
+      "source": "apps/web/app/(workspace)/seller/warehouses/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 14,
+          "bytes": 582379,
+          "gzipBytes": 174402
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/workspaces",
+      "source": "apps/web/app/(workspace)/workspaces/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 13,
+          "bytes": 567346,
+          "gzipBytes": 169844
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/cart",
+      "source": "apps/web/app/cart/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 11,
+          "bytes": 554755,
+          "gzipBytes": 165589
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/categories/[id]",
+      "source": "apps/web/app/categories/[id]/page.tsx",
+      "serverPage": true,
+      "initialAssets": null
+    },
+    {
+      "route": "/checkout",
+      "source": "apps/web/app/checkout/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 11,
+          "bytes": 572052,
+          "gzipBytes": 170356
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/checkout/pay",
+      "source": "apps/web/app/checkout/pay/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 11,
+          "bytes": 566139,
+          "gzipBytes": 169221
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/checkout/success",
+      "source": "apps/web/app/checkout/success/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 11,
+          "bytes": 561507,
+          "gzipBytes": 167635
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/",
+      "source": "apps/web/app/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 11,
+          "bytes": 565291,
+          "gzipBytes": 167636
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/products/[id]",
+      "source": "apps/web/app/products/[id]/page.tsx",
+      "serverPage": true,
+      "initialAssets": null
+    },
+    {
+      "route": "/search",
+      "source": "apps/web/app/search/page.tsx",
+      "serverPage": true,
+      "initialAssets": {
+        "javascript": {
+          "files": 11,
+          "bytes": 574920,
+          "gzipBytes": 170441
+        },
+        "css": {
+          "files": 1,
+          "bytes": 117830,
+          "gzipBytes": 20169
+        }
+      }
+    },
+    {
+      "route": "/sellers/[id]",
+      "source": "apps/web/app/sellers/[id]/page.tsx",
+      "serverPage": false,
+      "initialAssets": null
+    }
+  ]
+}

@@ -7,7 +7,7 @@ import { ProductDetailView } from "@/features/storefront/product-detail-view";
 import { SearchBar } from "@/features/storefront/search-bar";
 import { SearchFiltersSidebar } from "@/features/storefront/search-filters";
 import { PaymentForm } from "@/features/checkout/payment-form";
-import CustomerOrderDetailPage from "@/app/(workspace)/account/orders/[id]/page";
+import CustomerOrderDetailPage from "@/app/(customer-account)/account/orders/[id]/page";
 import { ReviewModal } from "@/features/account/review-modal";
 import { ReturnModal } from "@/features/account/return-modal";
 import CartPage from "@/app/cart/page";
@@ -295,7 +295,7 @@ const mockOrderDetail: CustomerOrderDetail = {
       ],
       tracking_events: [
         {
-          id: "trk-01",
+          id: "79000000-0000-4000-8000-000000000001",
           status: "delivered",
           location: "Front Porch",
           description: "Delivered to recipient residence",

@@ -1,0 +1,77 @@
+{
+  "phase": 42,
+  "widths": [375, 430, 768, 1024, 1440, 1920],
+  "actualCaptureCases": 10,
+  "interceptedFixtureCaptureCases": 70,
+  "pngs": 80,
+  "actualPngs": 10,
+  "fixturePngs": 70,
+  "pngValidation": "Signatures, chunk CRCs, IEND, dimensions, bytes and SHA256",
+  "browserValidation": "No overflow, duplicate IDs or page errors; one main/h1, 16px native controls and unchanged operational palette",
+  "actualAcceptance": "Anonymous sign-in and account redirection only; no private customer requests or authenticated commerce claim",
+  "fixtureAcceptance": "Explicit synthetic populated/empty/error/loading/unverified/long/native-dialog/write recovery only; fresh CSRF, field allowlists, focus and raw-password clearing verified",
+  "paletteChecks": 22,
+  "productionSourcePages": 59,
+  "productionServerPageEntries": 58,
+  "productionClientPageEntries": 1,
+  "productionAuditLimits": "Source pages matched to the production manifest. Static HTML script/stylesheet references are deduplicated per route; nomodule scripts are excluded. Gzip estimates sum separate level-9 compressed assets. Dynamic route transfer, RSC/HTML bytes, prefetched navigation, runtime requests, caching, parse cost and Core Web Vitals are not measured.",
+  "localLinksValidated": 14,
+  "links": [
+    {
+      "document": "docs/storefront-account-review.md",
+      "target": "storefront-audit/phase42/actual-report.json"
+    },
+    {
+      "document": "docs/storefront-account-review.md",
+      "target": "storefront-audit/phase42/fixture-report.json"
+    },
+    {
+      "document": "docs/storefront-account-review.md",
+      "target": "storefront-audit/phase42/screenshot-validation.json"
+    },
+    {
+      "document": "docs/storefront-account-review.md",
+      "target": "storefront-audit/phase42/palette-report.json"
+    },
+    {
+      "document": "docs/storefront-account-review.md",
+      "target": "storefront-audit/phase42/production-audit.json"
+    },
+    {
+      "document": "docs/storefront-account-review.md",
+      "target": "storefront-audit/phase42/evidence-report.json"
+    },
+    {
+      "document": "docs/storefront-design.md",
+      "target": "storefront-checkout-review.md"
+    },
+    {
+      "document": "docs/storefront-design.md",
+      "target": "storefront-cart-review.md"
+    },
+    {
+      "document": "docs/storefront-design.md",
+      "target": "storefront-product-detail-review.md"
+    },
+    {
+      "document": "docs/storefront-design.md",
+      "target": "storefront-discovery-review.md"
+    },
+    {
+      "document": "docs/storefront-design.md",
+      "target": "storefront-account-review.md"
+    },
+    {
+      "document": "docs/testing.md",
+      "target": "storefront-cart-review.md"
+    },
+    {
+      "document": "docs/testing.md",
+      "target": "storefront-product-detail-review.md"
+    },
+    {
+      "document": "docs/testing.md",
+      "target": "storefront-account-review.md"
+    }
+  ]
+}

@@ -269,7 +269,7 @@ Phase 4 adds no worker or notification infrastructure. Malware scanning integrat
   - User identity preservation: Retains `accounts.User` as the sole authentication authority. `CustomerProfile` links 1:1 to `accounts.User` for customer phone numbers and preferences.
   - Profile update service: Validates canonical email normalization, uniqueness, and profile attributes. Password updates route to secure session-aware `apps.accounts.services.change_password`.
 - Order history & package tracking:
-  - Scoped queries: Customer order endpoints filter by `order.customer_email == user.email` or `order.customer_user == user`. Cross-tenant or foreign user order access yields 404.
+  - Scoped queries: Current customer order services filter by the authenticated `Order.customer` foreign key. Email or client identity hints do not grant order access. Cross-customer order access yields 404.
   - Multi-seller package breakdown: Orders report child seller packages independently with fulfillment statuses, tracking numbers, carriers, and historical tracking events.
 - Self-service cancellation:
   - Permitted strictly when the order is in `pending` payment status and unfulfilled.
@@ -278,6 +278,16 @@ Phase 4 adds no worker or notification infrastructure. Malware scanning integrat
   - Verified product reviews: Order items on delivered, paid orders expose review eligibility (`can_review = True`). Submitting a review attaches `verified_purchase = True` and links to the verified product.
   - Return requests (RMA): Delivered items expose return eligibility (`can_return = True`). Submitting a return creates a formal `ReturnRequest` with an RMA number and audit trail.
 - Customer account frontend:
-  - Account screens integrated into `<WorkspaceFrame mode="account">` with sub-navigation for Orders, Addresses, and Profile.
+  - Customer account routes use the Phase 42 customer storefront shell and account navigation; seller/platform workspaces retain their operational frame.
   - Delivery stepper component renders milestone progression from Order Placed through Delivered.
   - Accessible modal dialogs for writing product reviews and requesting item returns.
+
+## Customer auth/account presentation (UI Phase 42)
+
+Existing login still uses the shared Django session provider and navigates to `/workspaces`; no URL-supplied redirect, alternate authentication, registration, recovery, verification delivery or saved-items workflow is added. Minimal customer-brand sign-in keeps the same account available to authorized operational workspaces. Account route entries are small Server Components containing no confidential data. The customer account route group is separate from operational workspaces. The account frame redirects anonymous sessions, renders explicit loading/error states and withholds private children until authenticated. Seller/admin workspace guards remain unchanged. This keeps accepted static profile feedback alive across session rechecks without retaining private forms.
+
+Account read/command components are partitioned by current user and pathname; order reads also key the UUID and order-history page. The existing `useApiQuery` aborts obsolete reads, hides mismatched results immediately and supports explicit retry. Commands serialize synchronous duplicates, carry abort signals where existing API signatures support them and discard completion after unmount. Aborting a request is not server rollback. Password change retains the existing API signature and clears all raw password inputs after submission. Profile updates refresh `/auth/me` so identity does not remain stale; accepted-save notices contain only a user UUID and static message, and survive the recheck only for that same user.
+
+Consumed profile, order page/package/item/tracking/address evidence is checked before rendering or actions. Invalid dates/money/UUIDs, duplicate identities and oversized collections fail visibly. Historical item snapshots remain displayable when optional catalog product/variant foreign keys are absent; those fields are not navigation or mutation authority. Existing serializers/API signatures stay unchanged. Order history traverses bounded page numbers through the API client and never follows backend pagination URLs. All monetary values are historical server strings rendered with the shared BigInt money formatter; dates use en-US/UTC.
+
+Address create/edit/default payloads explicitly list editable address fields. Native shared customer overlays handle edit/delete/cancel/review/return focus, Escape, scroll containment, busy dismissal and rejection summaries. Review/return availability follows the server's item flags; cancellation additionally requires pending unpaid order/package evidence. These are UX hints: Django still independently authorizes and validates each command. Seller-package status and carrier events are separate; unknown status does not invent a delivery milestone. Review submission does not claim publication, and a return request does not claim approval or refund.

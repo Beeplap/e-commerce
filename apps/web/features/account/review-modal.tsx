@@ -1,186 +1,144 @@
 "use client";
-
-import React, { useState } from "react";
-import { customerApi } from "@/lib/api/client";
-
-interface ReviewModalProps {
+import { useState, type FormEvent } from "react";
+import {
+  StorefrontButton,
+  StorefrontInput,
+  StorefrontSelect,
+} from "@/components/storefront/controls";
+import { StorefrontOverlay } from "@/components/storefront/feedback";
+import { isUuid } from "@/features/storefront/catalog-evidence";
+import { ApiError, customerApi } from "@/lib/api/client";
+import { asAccountError, fieldError, useAccountCommand } from "./shared";
+interface Props {
   isOpen: boolean;
   onClose: () => void;
   orderItemId: string;
   productTitle: string;
   onSuccess?: () => void;
 }
-
-export function ReviewModal({
-  isOpen,
-  onClose,
-  orderItemId,
-  productTitle,
-  onSuccess,
-}: ReviewModalProps) {
-  const [rating, setRating] = useState(5);
-  const [title, setTitle] = useState("");
-  const [body, setBody] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState(false);
-
-  if (!isOpen) return null;
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!title.trim() || !body.trim()) {
-      setError("Please provide both a title and review content.");
+export function ReviewModal(props: Props) {
+  return props.isOpen ? (
+    <ReviewForm key={props.orderItemId} {...props} />
+  ) : null;
+}
+function ReviewForm({ onClose, orderItemId, productTitle, onSuccess }: Props) {
+  const command = useAccountCommand();
+  const [rating, setRating] = useState(5),
+    [title, setTitle] = useState(""),
+    [body, setBody] = useState("");
+  const [error, setError] = useState<ApiError | null>(null);
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError(null);
+    if (
+      !isUuid(orderItemId) ||
+      !title.trim() ||
+      !body.trim() ||
+      !Number.isInteger(rating) ||
+      rating < 1 ||
+      rating > 5
+    ) {
+      setError(
+        new ApiError(
+          "Choose a rating and provide a title and review content.",
+          0,
+        ),
+      );
       return;
     }
-
-    setSubmitting(true);
-    setError(null);
-
-    try {
-      await customerApi.submitReview({
-        order_item_id: orderItemId,
-        rating,
-        title: title.trim(),
-        body: body.trim(),
-      });
-      if (onSuccess) onSuccess();
-      onClose();
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("Failed to submit review. Please try again.");
-      }
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
+    await command.run(
+      async (signal) => {
+        await customerApi.submitReview(
+          {
+            order_item_id: orderItemId,
+            rating,
+            title: title.trim(),
+            body: body.trim(),
+          },
+          signal,
+        );
+        if (command.active()) {
+          onSuccess?.();
+          onClose();
+        }
+      },
+      (failure) => setError(asAccountError(failure)),
+    );
+  }
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="review-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm"
+    <StorefrontOverlay
+      open
+      title="Write a product review"
+      description={productTitle}
+      busy={command.busy}
+      error={error?.message}
+      onClose={onClose}
     >
-      <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-xl animate-in fade-in zoom-in-95">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-          <h2
-            id="review-modal-title"
-            className="text-base font-bold text-slate-900"
-          >
-            Write a Product Review
-          </h2>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Close"
-            className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition"
-          >
-            ✕
-          </button>
+      <form onSubmit={submit} className="sf-account-modal-form">
+        <StorefrontSelect
+          label="Rating (1 to 5 stars)"
+          value={rating}
+          onChange={(event) => setRating(Number(event.target.value))}
+          error={fieldError(error, "rating")}
+          data-testid="star-rating-picker"
+        >
+          {[5, 4, 3, 2, 1].map((value) => (
+            <option key={value} value={value}>
+              {value} {value === 1 ? "star" : "stars"}
+            </option>
+          ))}
+        </StorefrontSelect>
+        <StorefrontInput
+          label="Headline / Title"
+          required
+          maxLength={200}
+          value={title}
+          onChange={(event) => setTitle(event.target.value)}
+          error={fieldError(error, "title")}
+          data-testid="review-title-input"
+        />
+        <div className="sf-field">
+          <label htmlFor="account-review-body" className="sf-field-label">
+            Written review
+          </label>
+          <textarea
+            id="account-review-body"
+            className="sf-control"
+            rows={5}
+            required
+            maxLength={5000}
+            value={body}
+            onChange={(event) => setBody(event.target.value)}
+            data-testid="review-body-input"
+            aria-invalid={Boolean(fieldError(error, "body"))}
+            aria-describedby={
+              fieldError(error, "body")
+                ? "account-review-body-error"
+                : undefined
+            }
+          />
+          {fieldError(error, "body") && (
+            <p id="account-review-body-error" className="sf-field-error">
+              {fieldError(error, "body")}
+            </p>
+          )}
         </div>
-
-        <p className="mt-2 text-xs text-slate-500">
-          Reviewing:{" "}
-          <span className="font-semibold text-slate-800">{productTitle}</span>
+        <p className="sf-account-help">
+          Your review may be moderated before publication.
         </p>
-
-        {error && (
-          <div
-            role="alert"
-            data-testid="review-error-banner"
-            className="mt-4 rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs text-rose-800"
+        <div className="sf-account-actions">
+          <StorefrontButton variant="secondary" onClick={onClose}>
+            Cancel
+          </StorefrontButton>
+          <StorefrontButton
+            type="submit"
+            busy={command.busy}
+            data-testid="submit-review-button"
           >
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="mt-4 space-y-4">
-          <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">
-              Rating (1 to 5 Stars) *
-            </label>
-            <div
-              className="flex items-center gap-1.5"
-              data-testid="star-rating-picker"
-            >
-              {[1, 2, 3, 4, 5].map((star) => (
-                <button
-                  key={star}
-                  type="button"
-                  aria-label={`${star} star`}
-                  onClick={() => setRating(star)}
-                  className={`text-2xl transition hover:scale-110 ${
-                    star <= rating ? "text-amber-400" : "text-slate-200"
-                  }`}
-                >
-                  ★
-                </button>
-              ))}
-              <span className="ml-2 text-xs font-bold text-slate-600">
-                {rating} out of 5
-              </span>
-            </div>
-          </div>
-
-          <div>
-            <label
-              htmlFor="reviewTitle"
-              className="block text-xs font-bold text-slate-700 mb-1"
-            >
-              Headline / Title *
-            </label>
-            <input
-              id="reviewTitle"
-              type="text"
-              required
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. Great sound quality, very comfortable!"
-              data-testid="review-title-input"
-              className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:border-teal-700 focus:outline-none focus:ring-1 focus:ring-teal-700"
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="reviewBody"
-              className="block text-xs font-bold text-slate-700 mb-1"
-            >
-              Written Review *
-            </label>
-            <textarea
-              id="reviewBody"
-              rows={4}
-              required
-              value={body}
-              onChange={(e) => setBody(e.target.value)}
-              placeholder="Describe your experience with the item, build quality, performance, etc."
-              data-testid="review-body-input"
-              className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:border-teal-700 focus:outline-none focus:ring-1 focus:ring-teal-700"
-            />
-          </div>
-
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
-            <button
-              type="button"
-              onClick={onClose}
-              className="rounded-xl border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={submitting}
-              data-testid="submit-review-button"
-              className="rounded-xl bg-teal-800 px-5 py-2 text-xs font-bold text-white shadow-sm hover:bg-teal-900 disabled:opacity-50 transition"
-            >
-              {submitting ? "Submitting..." : "Submit Review"}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+            {command.busy ? "Submitting..." : "Submit Review"}
+          </StorefrontButton>
+        </div>
+      </form>
+    </StorefrontOverlay>
   );
 }

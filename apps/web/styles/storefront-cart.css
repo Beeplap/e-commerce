@@ -256,7 +256,7 @@
 .sf-cart-note {
   font-size: 0.75rem;
   line-height: 1.6;
-  color: var(--sf-muted);
+  color: var(--sf-muted-strong);
 }
 .sf-cart-primary-link {
   display: flex;

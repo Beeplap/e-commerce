@@ -1,11 +1,9 @@
-﻿# UI phase selector
+# UI phase selector
 
-STOREFRONT PHASE 43 COMPLETE
+STOREFRONT PHASE 44 COMPLETE
 
-The user's continue after Phase 42 completion explicitly authorizes ONLY Phase 43 of instructions4.md: small storefront interaction and perceived-quality polish across button state, image loading, navigation/menu transitions, cart drawer and add-to-cart feedback, product hover, quantity/filter controls, notices, local skeletons and native overlays. Keep motion restrained and honor reduced motion.
+The user's explicit request authorizes only Phase 44 of `instructions4.md`: responsive and accessibility master pass. Audit and correct the customer storefront at 375, 430, 768, 1024, 1280, 1440 and 1920px across header, navigation, search, product/category cards, filters, product detail, cart, checkout, authentication and account flows.
 
-Work is isolated in quick-commerce-ui-phase43 on ui-overhaul-phase43-motion, based on pushed Phase 42 commit 3389bd1. Original worktrees/branches, user/backend/account/proxy/product/seller work and functional CURRENT_PHASE.md remain untouched. Do not merge, rebase or force-push concurrent branches.
+Audit landmarks, heading order, form labels, accessible names, focus management, keyboard navigation, native dialog/drawer behavior, contrast, reduced motion, errors and status semantics. Automated checks supplement browser/manual review; they do not replace it. Keep all existing security, session, CSRF, tenant, API and backend constraints. Do not begin Phase 45.
 
-Phase 42 is complete and pushed. Existing disclosure, modal, skeleton, quantity, product-image and cart flows are inspected before changes. Preserve Django/session/CSRF/API/tenant/money contracts, button semantics, keyboard focus and loading/error truth. Reduce animation or remove it under `prefers-reduced-motion`.
-
-Phase 43 implementation, required checks and visual audit are complete. Work is isolated on the existing Phase 43 branch; commit and push its verified changes, summarize, and STOP. Do not begin Phase 44 without an explicit request. Original backend roadmap remains complete.
+Work is isolated on `ui-overhaul-phase44-responsive-a11y`, based on pushed Phase 43 commit `8d34f4b`. Original worktrees and the Phase 43 branch remain untouched. The Phase 44 PostgreSQL repository gate, quiet Compose, production artifact/palette checks, formatting and responsive/accessibility audit passed; progress/architecture/design/testing docs are updated. Commit and push this verified branch, report the outcome, and STOP. Phase 45 requires a later explicit request.

@@ -1,5 +1,13 @@
 # Project progress
 
+## Storefront responsive and accessibility master pass - Phase 44
+
+- Audited home/search/category/product detail/cart/checkout/sign-in/account overview/profile/orders/order detail/addresses at 375, 430, 768, 1024, 1280, 1440 and 1920px (84 route/viewport combinations; 48 representative screenshots). No horizontal overflow, heading skips, duplicate IDs, unlabeled form controls, unnamed interactive elements or browser/API fixture errors. Visual captures and detailed limits are in `docs/storefront-responsive-accessibility-review.md`.
+- Verified search keyboard selection/status, mobile navigation, cart and filter drawers, and address dialog focus containment, Escape dismissal and trigger focus return; 3px keyboard focus indicator; account/login error alerts and focus; password clearing; and reduced-motion behavior. The rendered active-text scan found one 4.16:1 cart summary note against a strong surface. It now uses the existing stronger muted token (4.959:1); zero active-text contrast failures remain (minimum measured ratio 4.57:1). Disabled controls are inactive until their workflow evidence is ready.
+- Preserved API/session/auth/CSRF/backend/security contracts and introduced no dependency or migration. `scripts/check_storefront_tokens.mjs` now guards the cart-note token usage as well as the existing 22 palette contrast pairs.
+- `pnpm check` passes against PostgreSQL: 398 backend tests, 472 frontend tests across 38 files, Ruff format/lint, strict mypy, Django checks, no migration drift, offline OpenAPI, Prettier, zero-warning ESLint, strict TypeScript and production build. Quiet Compose validation passed through Ubuntu WSL, all 22 palette pairs passed (including the cart usage guard), production audit passed (59 source pages; 58 server/1 client; 50 static artifacts), formatting and `git diff --check` passed.
+- Work is isolated on `ui-overhaul-phase44-responsive-a11y` from pushed Phase 43. Original user worktrees and the Phase 43 branch remain untouched. Phase 44 is complete; Phase 45 is not started.
+
 ## Storefront microinteractions - Phase 43
 
 - Implemented small button press, product hover/focus, navigation pending, menu/dialog/drawer and feedback transitions. Same-origin private storefront images now retain their layout while loading and show an accessible failure fallback. All motion is limited to storefront classes and removed by the reduced-motion preference; no endpoint, API authority, auth/CSRF behavior, dependency or backend contract changed.

@@ -5,6 +5,10 @@ const css = readFileSync(
   new URL("../apps/web/styles/storefront.css", import.meta.url),
   "utf8",
 );
+const cartCss = readFileSync(
+  new URL("../apps/web/styles/storefront-cart.css", import.meta.url),
+  "utf8",
+);
 const tokens = new Map(
   [
     ...css
@@ -69,5 +73,10 @@ const report = checks.map(([foreground, background, minimum]) => {
 assert.ok(
   !css.includes(":root"),
   "Customer palette must not replace operational root tokens",
+);
+assert.match(
+  cartCss,
+  /\.sf-cart-note\s*\{[^}]*color:\s*var\(--sf-muted-strong\)/s,
+  "Cart summary notes need the stronger muted token on the strong surface",
 );
 console.log(JSON.stringify({ passed: report.length, report }, null, 2));

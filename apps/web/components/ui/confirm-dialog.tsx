@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useId, useRef } from "react";
-import { primaryButton, secondaryButton } from "./primitives";
+import { useRef } from "react";
+import { Button } from "./button";
+import { Dialog } from "./dialog";
 
 export function ConfirmDialog({
   open,
@@ -22,65 +23,30 @@ export function ConfirmDialog({
   onConfirm: () => void;
   onCancel: () => void;
 }) {
-  const id = useId();
-  const dialog = useRef<HTMLDialogElement>(null);
   const cancel = useRef<HTMLButtonElement>(null);
-  useEffect(() => {
-    const element = dialog.current;
-    if (!open || !element) return;
-    const previousFocus = document.activeElement;
-    element.showModal();
-    cancel.current?.focus();
-    return () => {
-      element.close();
-      if (previousFocus instanceof HTMLElement && previousFocus.isConnected)
-        previousFocus.focus();
-    };
-  }, [open]);
   return (
-    <dialog
-      ref={dialog}
-      aria-labelledby={`${id}-title`}
-      aria-describedby={`${id}-description`}
-      className="w-[calc(100%_-_2rem)] max-w-md rounded-xl border-0 bg-white p-6 text-slate-950 shadow-xl backdrop:bg-slate-950/45"
-      onCancel={(event) => {
-        event.preventDefault();
-        if (!busy) onCancel();
-      }}
+    <Dialog
+      open={open}
+      title={title}
+      description={description}
+      busy={busy}
+      error={error}
+      onClose={onCancel}
+      initialFocus={cancel}
     >
-      <h2 id={`${id}-title`} className="text-lg font-semibold">
-        {title}
-      </h2>
-      <p
-        id={`${id}-description`}
-        className="mt-3 text-sm leading-6 text-slate-600"
-      >
-        {description}
-      </p>
-      {error && (
-        <p role="alert" className="mt-3 text-sm text-red-800">
-          {error}
-        </p>
-      )}
-      <div className="mt-6 flex justify-end gap-3">
-        <button
+      <div className="mt-6 flex flex-wrap justify-end gap-2">
+        <Button
           ref={cancel}
-          type="button"
+          variant="secondary"
           disabled={busy}
-          className={secondaryButton}
           onClick={onCancel}
         >
           Cancel
-        </button>
-        <button
-          type="button"
-          disabled={busy}
-          className={primaryButton}
-          onClick={onConfirm}
-        >
+        </Button>
+        <Button busy={busy} onClick={onConfirm}>
           {busy ? "Working…" : confirmLabel}
-        </button>
+        </Button>
       </div>
-    </dialog>
+    </Dialog>
   );
 }

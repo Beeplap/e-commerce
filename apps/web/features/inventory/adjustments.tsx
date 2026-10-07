@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { useSeller } from "@/features/workspaces/seller-workspace";
 import { ForbiddenScreen } from "@/features/workspaces/forbidden-screen";
 import { useApiQuery } from "@/lib/api/use-api-query";
@@ -11,14 +11,17 @@ import {
   ApiErrorState,
   LoadingState,
   PageHeader,
+  StatusBadge,
   secondaryButton,
 } from "@/components/ui/primitives";
-import { selectStyle } from "@/features/sellers/forms";
+import { SelectField } from "@/components/ui/form-fields";
+import { FilterBar, FilterSummary } from "@/components/ui/filter-bar";
+import { DateDisplay } from "@/components/ui/displays";
+import { useTableQuery } from "@/components/ui/use-table-query";
 import {
   inventoryApi,
   transactionTypes,
   type InventoryTransaction,
-  type TransactionType,
 } from "./api";
 
 export function SellerInventoryAdjustments() {
@@ -34,8 +37,9 @@ export function SellerInventoryAdjustments() {
 }
 
 function AdjustmentsList({ sellerId }: { sellerId: string }) {
-  const [page, setPage] = useState(1);
-  const [typeFilter, setTypeFilter] = useState<string>("");
+  const table = useTableQuery({ type: transactionTypes });
+  const { page, setPage } = table;
+  const typeFilter = table.values.type;
 
   const load = useCallback(
     (signal: AbortSignal) =>
@@ -66,7 +70,7 @@ function AdjustmentsList({ sellerId }: { sellerId: string }) {
     <div className="space-y-6">
       <PageHeader
         title="Inventory Audit Ledger"
-        description="Immutable record of all stock adjustments, reservations, shipments, and returns."
+        description="Stock movements, reservations and returns."
         actions={
           <div className="flex gap-2">
             <Link href="/seller/inventory" className={secondaryButton}>
@@ -76,31 +80,25 @@ function AdjustmentsList({ sellerId }: { sellerId: string }) {
         }
       />
 
-      <div className="flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-4">
-        <div>
-          <label
-            htmlFor="transaction-type-filter"
-            className="mb-1 block text-xs font-semibold text-slate-700"
-          >
-            Transaction type
-          </label>
-          <select
-            id="transaction-type-filter"
+      <div>
+        <FilterBar>
+          <SelectField
+            label="Transaction type"
             value={typeFilter}
-            onChange={(e) => {
-              setTypeFilter(e.target.value);
-              setPage(1);
-            }}
-            className={`${selectStyle} min-w-[200px]`}
+            onChange={(event) => table.setFilters({ type: event.target.value })}
           >
             <option value="">All transaction types</option>
-            {transactionTypes.map((t) => (
-              <option key={t} value={t}>
-                {t.toUpperCase()}
+            {transactionTypes.map((value) => (
+              <option key={value} value={value}>
+                {value}
               </option>
             ))}
-          </select>
-        </div>
+          </SelectField>
+        </FilterBar>
+        <FilterSummary
+          filters={typeFilter ? [`Type: ${typeFilter}`] : []}
+          onClear={table.clear}
+        />
       </div>
 
       {(() => {
@@ -109,43 +107,28 @@ function AdjustmentsList({ sellerId }: { sellerId: string }) {
             id: "timestamp",
             heading: "Date & Time",
             cell: (tx) => (
-              <span className="text-xs text-slate-600">
-                {new Date(tx.created_at).toLocaleString()}
+              <span className="text-xs text-ui-secondary">
+                <DateDisplay value={tx.created_at} />
               </span>
             ),
           },
           {
             id: "type",
             heading: "Type",
-            cell: (tx) => {
-              const colors: Record<TransactionType, string> = {
-                purchase: "bg-emerald-100 text-emerald-900",
-                sale: "bg-blue-100 text-blue-900",
-                return: "bg-purple-100 text-purple-900",
-                adjustment: "bg-amber-100 text-amber-900",
-                reservation: "bg-indigo-100 text-indigo-900",
-                release: "bg-slate-100 text-slate-900",
-              };
-              return (
-                <span
-                  className={`rounded-full px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider ${colors[tx.type] ?? "bg-slate-100 text-slate-800"}`}
-                >
-                  {tx.type}
-                </span>
-              );
-            },
+            cell: (tx) => <StatusBadge status={tx.type} />,
           },
           {
             id: "delta",
+            align: "right",
             heading: "Delta",
             cell: (tx) => (
               <span
                 className={`font-mono text-xs font-bold ${
                   tx.quantity_delta > 0
-                    ? "text-emerald-700"
+                    ? "text-ui-success"
                     : tx.quantity_delta < 0
-                      ? "text-rose-700"
-                      : "text-slate-700"
+                      ? "text-ui-danger"
+                      : "text-ui-secondary"
                 }`}
               >
                 {tx.quantity_delta > 0
@@ -158,7 +141,7 @@ function AdjustmentsList({ sellerId }: { sellerId: string }) {
             id: "reason",
             heading: "Reason",
             cell: (tx) => (
-              <span className="text-xs font-medium text-slate-900">
+              <span className="text-xs font-medium text-ui-foreground">
                 {tx.reason || "—"}
               </span>
             ),
@@ -167,7 +150,7 @@ function AdjustmentsList({ sellerId }: { sellerId: string }) {
             id: "reference",
             heading: "Reference",
             cell: (tx) => (
-              <span className="text-xs font-mono text-slate-500">
+              <span className="text-xs font-mono text-ui-muted">
                 {tx.reference_type && tx.reference_id
                   ? `${tx.reference_type}: ${tx.reference_id}`
                   : tx.reference_id || tx.reference_type || "—"}
@@ -177,6 +160,8 @@ function AdjustmentsList({ sellerId }: { sellerId: string }) {
         ];
         return (
           <DataTable
+            mobile="scroll"
+            filtered={!!typeFilter}
             caption="Inventory transactions"
             rows={transactions}
             rowKey={(tx) => tx.id}

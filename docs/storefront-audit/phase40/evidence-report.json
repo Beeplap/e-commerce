@@ -1,0 +1,117 @@
+{
+  "phase": 40,
+  "actualCaptureCases": 12,
+  "interceptedFixtureCaptureCases": 62,
+  "widths": [375, 430, 768, 1024, 1440, 1920],
+  "pngs": 102,
+  "actualPngs": 18,
+  "fixturePngs": 84,
+  "pngValidation": "Signature, all chunk CRCs, IEND, filename width, dimensions, bytes and retained SHA256 match",
+  "browserValidation": "No document overflow, duplicate IDs or page errors; one main/h1 and unchanged operational tokens in all final cases",
+  "actualCartAcceptance": "Existing HTTP 308 is visibly rejected by page/drawer at every width; native focus/Escape/return, retry, skip and reduced-motion pass. Successful populated live transactions remain pending.",
+  "fixtureCartAcceptance": "Explicit interception only: pending/rejected/accepted quantities, exact confirmed totals, promo preview without recomputation, removal/clear/focus and fresh CSRF with quantity-only PATCH pass at 375/768/1440px",
+  "paletteChecks": 22,
+  "productionSourcePages": 59,
+  "productionServerPageEntries": 51,
+  "productionClientPageEntries": 8,
+  "productionAuditLimits": "Source pages matched to the production manifest. Static HTML script/stylesheet references are deduplicated per route; nomodule scripts are excluded. Gzip estimates sum separate level-9 compressed assets. Dynamic route transfer, RSC/HTML bytes, prefetched navigation, runtime requests, caching, parse cost and Core Web Vitals are not measured.",
+  "localLinksValidated": 24,
+  "links": [
+    {
+      "document": "docs/storefront-cart-review.md",
+      "target": "storefront-audit/phase40/fixture-multi-viewport-375.png"
+    },
+    {
+      "document": "docs/storefront-cart-review.md",
+      "target": "storefront-audit/phase40/fixture-multi-viewport-430.png"
+    },
+    {
+      "document": "docs/storefront-cart-review.md",
+      "target": "storefront-audit/phase40/fixture-multi-viewport-768.png"
+    },
+    {
+      "document": "docs/storefront-cart-review.md",
+      "target": "storefront-audit/phase40/fixture-multi-viewport-1024.png"
+    },
+    {
+      "document": "docs/storefront-cart-review.md",
+      "target": "storefront-audit/phase40/fixture-multi-viewport-1440.png"
+    },
+    {
+      "document": "docs/storefront-cart-review.md",
+      "target": "storefront-audit/phase40/fixture-multi-viewport-1920.png"
+    },
+    {
+      "document": "docs/storefront-cart-review.md",
+      "target": "storefront-audit/phase40/fixture-multi-drawer-375.png"
+    },
+    {
+      "document": "docs/storefront-cart-review.md",
+      "target": "storefront-audit/phase40/fixture-multi-drawer-1440.png"
+    },
+    {
+      "document": "docs/storefront-cart-review.md",
+      "target": "storefront-audit/phase40/fixture-long-viewport-375.png"
+    },
+    {
+      "document": "docs/storefront-cart-review.md",
+      "target": "storefront-audit/phase40/fixture-quantity-rejected-375.png"
+    },
+    {
+      "document": "docs/storefront-cart-review.md",
+      "target": "storefront-audit/phase40/fixture-coupon-preview-1440.png"
+    },
+    {
+      "document": "docs/storefront-cart-review.md",
+      "target": "storefront-audit/phase40/actual-cart-error-viewport-375.png"
+    },
+    {
+      "document": "docs/storefront-cart-review.md",
+      "target": "storefront-audit/phase40/actual-drawer-error-1440.png"
+    },
+    {
+      "document": "docs/storefront-cart-review.md",
+      "target": "storefront-audit/phase40/actual-report.json"
+    },
+    {
+      "document": "docs/storefront-cart-review.md",
+      "target": "storefront-audit/phase40/fixture-report.json"
+    },
+    {
+      "document": "docs/storefront-cart-review.md",
+      "target": "storefront-audit/phase40/screenshot-validation.json"
+    },
+    {
+      "document": "docs/storefront-cart-review.md",
+      "target": "storefront-audit/phase40/palette-report.json"
+    },
+    {
+      "document": "docs/storefront-cart-review.md",
+      "target": "storefront-audit/phase40/build-report.json"
+    },
+    {
+      "document": "docs/storefront-cart-review.md",
+      "target": "storefront-audit/phase40/evidence-report.json"
+    },
+    {
+      "document": "docs/storefront-design.md",
+      "target": "storefront-cart-review.md"
+    },
+    {
+      "document": "docs/storefront-design.md",
+      "target": "storefront-product-detail-review.md"
+    },
+    {
+      "document": "docs/storefront-design.md",
+      "target": "storefront-discovery-review.md"
+    },
+    {
+      "document": "docs/testing.md",
+      "target": "storefront-cart-review.md"
+    },
+    {
+      "document": "docs/testing.md",
+      "target": "storefront-product-detail-review.md"
+    }
+  ]
+}

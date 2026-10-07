@@ -1,9 +1,12 @@
 "use client";
 
-import { useId, type InputHTMLAttributes, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import type { ApiError } from "@/lib/api/client";
 
-import { secondaryButton } from "./styles";
+import { Button } from "./button";
+import { PageActions } from "./layout";
+import { statusStyles, statusTone } from "./status";
+export { FormField, TextareaField, SelectField } from "./form-fields";
 export { primaryButton, secondaryButton } from "./styles";
 
 export function PageHeader({
@@ -16,18 +19,18 @@ export function PageHeader({
   actions?: ReactNode;
 }) {
   return (
-    <header className="mb-8 flex flex-wrap items-start justify-between gap-4">
-      <div>
-        <h1 className="text-3xl font-semibold tracking-tight text-slate-950">
+    <header className="mb-6 flex min-w-0 flex-wrap items-start justify-between gap-4">
+      <div className="min-w-0">
+        <h1 className="text-2xl leading-8 font-semibold tracking-tight break-words text-ui-foreground sm:text-ui-page">
           {title}
         </h1>
         {description && (
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+          <p className="mt-1.5 max-w-2xl text-ui-body text-ui-secondary">
             {description}
           </p>
         )}
       </div>
-      {actions}
+      {actions && <PageActions>{actions}</PageActions>}
     </header>
   );
 }
@@ -42,9 +45,11 @@ export function EmptyState({
   action?: ReactNode;
 }) {
   return (
-    <section className="rounded-xl border border-dashed border-slate-300 bg-white px-6 py-12 text-center">
-      <h2 className="text-lg font-semibold">{title}</h2>
-      <p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-slate-600">
+    <section className="px-4 py-8 text-center">
+      <h2 className="text-ui-section font-semibold text-ui-foreground">
+        {title}
+      </h2>
+      <p className="mx-auto mt-2 max-w-lg text-ui-body text-ui-secondary">
         {description}
       </p>
       {action && <div className="mt-5">{action}</div>}
@@ -56,25 +61,73 @@ export function Skeleton({ className = "h-5 w-full" }: { className?: string }) {
   return (
     <div
       aria-hidden="true"
-      className={`motion-safe:animate-pulse rounded bg-slate-200 ${className}`}
+      className={`motion-safe:animate-pulse rounded-control bg-ui-border ${className}`}
     />
   );
 }
 
 export function LoadingState({
   label = "Loading your workspace…",
+  variant = "section",
 }: {
   label?: string;
+  variant?: "section" | "table" | "dashboard" | "detail";
 }) {
   return (
-    <div
-      className="mx-auto max-w-3xl px-6 py-12"
-      role="status"
-      aria-live="polite"
-    >
-      <p className="mb-6 text-sm text-slate-600">{label}</p>
-      <Skeleton className="mb-4 h-9 w-2/3" />
-      <Skeleton className="h-32 w-full" />
+    <div className="min-w-0 space-y-4 py-6" role="status" aria-live="polite">
+      <p className="text-ui-body text-ui-secondary">{label}</p>
+      {variant === "table" ? (
+        <div
+          aria-hidden="true"
+          className="space-y-4 rounded-panel border border-ui-border bg-ui-surface p-4"
+        >
+          <Skeleton className="h-5 w-1/2" />
+          {Array.from({ length: 6 }, (_, row) => (
+            <div
+              key={row}
+              className="grid grid-cols-2 gap-4 border-t border-ui-border pt-4 sm:grid-cols-4"
+            >
+              <Skeleton className="h-6 w-full" />
+              <Skeleton className="h-6 w-2/3" />
+              <Skeleton className="hidden h-6 w-full sm:block" />
+              <Skeleton className="hidden h-6 w-1/2 sm:block" />
+            </div>
+          ))}
+        </div>
+      ) : variant === "dashboard" ? (
+        <div aria-hidden="true" className="space-y-6">
+          <div className="grid gap-4 sm:grid-cols-3">
+            {[0, 1, 2].map((index) => (
+              <div key={index} className="space-y-3">
+                <Skeleton className="h-4 w-2/3" />
+                <Skeleton className="h-8 w-1/2" />
+              </div>
+            ))}
+          </div>
+          <Skeleton className="h-64 w-full" />
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Skeleton className="h-32 w-full" />
+            <Skeleton className="h-32 w-full" />
+          </div>
+        </div>
+      ) : variant === "detail" ? (
+        <div aria-hidden="true" className="grid gap-6 xl:grid-cols-3">
+          <div className="space-y-5 xl:col-span-2">
+            <Skeleton className="h-7 w-2/3" />
+            <Skeleton className="h-72 w-full" />
+            <Skeleton className="h-32 w-full" />
+          </div>
+          <div className="space-y-5">
+            <Skeleton className="h-40 w-full" />
+            <Skeleton className="h-32 w-full" />
+          </div>
+        </div>
+      ) : (
+        <>
+          <Skeleton className="h-5 w-2/3" />
+          <Skeleton className="h-24 w-full" />
+        </>
+      )}
     </div>
   );
 }
@@ -91,88 +144,29 @@ export function ErrorState({
   onRetry?: () => void;
 }) {
   return (
-    <section
-      role="alert"
-      className="rounded-xl border border-red-200 bg-red-50 p-6"
-    >
-      <h2 className="font-semibold text-red-950">{title}</h2>
-      <p className="mt-2 text-sm leading-6 text-red-900">{message}</p>
+    <section role="alert" className="rounded-panel bg-ui-danger-surface p-5">
+      <h2 className="font-semibold text-ui-danger">{title}</h2>
+      <p className="mt-2 text-ui-body text-ui-danger">{message}</p>
       {requestId && (
-        <p className="mt-2 text-xs text-red-900">
+        <p className="mt-2 break-words text-ui-caption text-ui-danger">
           Request reference: {requestId}
         </p>
       )}
       {onRetry && (
-        <button
-          type="button"
-          onClick={onRetry}
-          className={`${secondaryButton} mt-4`}
-        >
+        <Button variant="secondary" onClick={onRetry} className="mt-4">
           Try again
-        </button>
+        </Button>
       )}
     </section>
   );
 }
 
-export function FormField({
-  id,
-  label,
-  hint,
-  error,
-  ...props
-}: InputHTMLAttributes<HTMLInputElement> & {
-  label: string;
-  hint?: string;
-  error?: string;
-}) {
-  const generatedId = useId();
-  const inputId = id ?? generatedId;
-  const descriptions = [
-    hint ? `${inputId}-hint` : null,
-    error ? `${inputId}-error` : null,
-  ]
-    .filter(Boolean)
-    .join(" ");
-  return (
-    <div>
-      <label
-        htmlFor={inputId}
-        className="mb-2 block text-sm font-medium text-slate-800"
-      >
-        {label}
-        {props.required && <span className="sr-only"> (required)</span>}
-      </label>
-      <input
-        {...props}
-        id={inputId}
-        aria-invalid={Boolean(error)}
-        aria-describedby={descriptions || undefined}
-        className={`min-h-11 w-full rounded-lg border bg-white px-3 py-2 text-base text-slate-950 disabled:bg-slate-100 ${error ? "border-red-500" : "border-slate-300"} ${props.className ?? ""}`}
-      />
-      {hint && (
-        <p id={`${inputId}-hint`} className="mt-2 text-xs text-slate-500">
-          {hint}
-        </p>
-      )}
-      {error && (
-        <p id={`${inputId}-error`} className="mt-2 text-sm text-red-800">
-          {error}
-        </p>
-      )}
-    </div>
-  );
-}
-
 export function StatusBadge({ status }: { status: string }) {
-  const tone = ["active", "verified"].includes(status)
-    ? "bg-teal-50 text-teal-900 ring-teal-200"
-    : ["suspended", "rejected", "closed"].includes(status)
-      ? "bg-red-50 text-red-900 ring-red-200"
-      : "bg-amber-50 text-amber-950 ring-amber-200";
+  const tone = statusTone(status);
   return (
     <span
-      className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium capitalize ring-1 ring-inset ${tone}`}
+      data-tone={tone}
+      className={`inline-flex max-w-full items-center rounded px-2 py-1 text-ui-caption font-medium capitalize motion-safe:transition-colors duration-[var(--ui-duration-fast)] ${statusStyles[tone]}`}
     >
       {status.replaceAll("_", " ")}
     </span>

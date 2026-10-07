@@ -23,10 +23,13 @@ export default function SellerStorePage({ params }: SellerPageProps) {
     storefrontApi
       .sellerDetail(id, controller.signal)
       .then((data) => {
+        if (controller.signal.aborted) return;
         setSeller(data);
+        setError(null);
         setLoading(false);
       })
       .catch((err: unknown) => {
+        if (controller.signal.aborted) return;
         setError(
           err instanceof Error
             ? err.message
@@ -38,37 +41,38 @@ export default function SellerStorePage({ params }: SellerPageProps) {
   }, [id]);
 
   return (
-    <div className="flex min-h-screen flex-col bg-slate-50">
+    <div className="sf-storefront flex min-h-screen flex-col bg-sf-background">
       <StorefrontHeader />
 
-      <main className="flex-1">
+      <main id="storefront-content" tabIndex={-1} className="flex-1">
         {loading ? (
-          <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-            <div className="h-44 rounded-2xl bg-slate-200 animate-pulse" />
-            <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <div
+            className="sf-seller-store-container"
+            role="status"
+            aria-label="Loading shop"
+          >
+            <div className="sf-seller-store-heading-skeleton" />
+            <div className="sf-seller-product-grid">
               {[1, 2, 3, 4].map((i) => (
-                <div
-                  key={i}
-                  className="h-72 rounded-xl bg-slate-200 animate-pulse"
-                />
+                <div className="sf-seller-product-skeleton" key={i} />
               ))}
             </div>
           </div>
         ) : error || !seller ? (
           <div className="mx-auto max-w-2xl px-4 py-24 text-center">
-            <h1 className="text-2xl font-bold text-slate-900">
-              Seller Store Unavailable
+            <h1 className="font-display text-2xl text-sf-foreground">
+              This shop isn’t available
             </h1>
-            <p className="mt-2 text-sm text-slate-500">
+            <p className="mt-2 text-sm text-sf-muted">
               {error ||
                 "This seller store is currently not active or no longer exists."}
             </p>
             <div className="mt-6">
               <Link
                 href="/"
-                className="rounded-lg bg-teal-800 px-5 py-2.5 text-sm font-semibold text-white hover:bg-teal-900 transition"
+                className="rounded-sf-control bg-sf-action px-5 py-2.5 text-sm font-semibold text-sf-on-dark hover:bg-sf-action-hover transition"
               >
-                Return to Storefront
+                Back to the marketplace
               </Link>
             </div>
           </div>

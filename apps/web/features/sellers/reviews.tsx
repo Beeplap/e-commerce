@@ -1,8 +1,19 @@
 "use client";
 
+import { Pagination } from "@/components/ui/pagination";
+
+import { Dialog } from "@/components/ui/dialog";
+import { ReviewDetail } from "./review-detail";
+import { ReviewRating } from "./review-rating";
+import { Button } from "@/components/ui/button";
+import { DateDisplay } from "@/components/ui/displays";
+
 import { useCallback, useState } from "react";
 import {
   ApiErrorState,
+  PageHeader,
+  StatusBadge,
+  TextareaField,
   LoadingState,
   primaryButton,
   secondaryButton,
@@ -13,31 +24,6 @@ import type { ProductReview } from "@/lib/api/types";
 import { useApiQuery } from "@/lib/api/use-api-query";
 import { useSeller } from "@/features/workspaces/seller-workspace";
 
-function StarRating({ rating }: { rating: number }) {
-  return (
-    <span aria-label={`${rating} out of 5 stars`} className="text-amber-500">
-      {"★".repeat(rating)}
-      {"☆".repeat(5 - rating)}
-    </span>
-  );
-}
-
-function StatusBadge({ status }: { status: ProductReview["status"] }) {
-  const cls =
-    status === "published"
-      ? "bg-emerald-50 text-emerald-700"
-      : status === "pending"
-        ? "bg-amber-50 text-amber-700"
-        : "bg-red-50 text-red-700";
-  return (
-    <span
-      className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${cls}`}
-    >
-      {status}
-    </span>
-  );
-}
-
 export function SellerReviews() {
   const access = useSeller();
   const sellerId = access.seller.id;
@@ -45,6 +31,10 @@ export function SellerReviews() {
   const canReport = access.permissions.includes("reviews.report");
 
   const [page, setPage] = useState(1);
+  const [inspecting, setInspecting] = useState<{
+    scope: string | undefined;
+    review: ProductReview;
+  } | null>(null);
   const [selectedReview, setSelectedReview] = useState<ProductReview | null>(
     null,
   );
@@ -115,14 +105,10 @@ export function SellerReviews() {
 
   return (
     <section>
-      <div>
-        <h1 className="text-xl font-semibold text-slate-950">
-          Product Reviews
-        </h1>
-        <p className="mt-1 text-sm text-slate-600">
-          View, respond to, and report customer product reviews.
-        </p>
-      </div>
+      <PageHeader
+        title="Product Reviews"
+        description="View, respond to, and report customer product reviews."
+      />
 
       {actionError && (
         <p
@@ -133,57 +119,64 @@ export function SellerReviews() {
         </p>
       )}
 
+      {inspecting && inspecting.scope === access.id && (
+        <ReviewDetail
+          review={inspecting.review}
+          onClose={() => setInspecting(null)}
+        />
+      )}
       <div className="mt-6 space-y-4">
         {reviews.length === 0 && (
-          <p className="py-12 text-center text-sm text-slate-500">
+          <p className="py-12 text-center text-sm text-ui-muted">
             No reviews yet.
           </p>
         )}
         {reviews.map((review) => (
-          <div
-            key={review.id}
-            className="rounded-xl border border-slate-200 p-4"
-          >
-            <div className="flex items-start justify-between gap-4">
+          <div key={review.id} className="border-b border-ui-border py-5">
+            <div className="flex flex-col items-start justify-between gap-4 sm:flex-row">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <StarRating rating={review.rating} />
+                  <ReviewRating rating={review.rating} />
                   <StatusBadge status={review.status} />
                   {review.verified_purchase && (
-                    <span className="rounded-full bg-teal-50 px-2 py-0.5 text-xs text-teal-700">
+                    <span className="text-ui-caption text-ui-secondary">
                       Verified purchase
                     </span>
                   )}
                 </div>
-                <div className="mt-1 font-semibold text-slate-900">
+                <Button
+                  variant="quiet"
+                  onClick={() => setInspecting({ scope: access.id, review })}
+                >
+                  View review
+                </Button>
+                <div className="mt-1 font-semibold text-ui-foreground">
                   {review.title}
                 </div>
-                <p className="mt-1 text-sm text-slate-700">{review.body}</p>
-                <div className="mt-2 text-xs text-slate-500">
+                <p className="mt-1 text-sm text-ui-secondary">{review.body}</p>
+                <div className="mt-2 text-xs text-ui-muted">
                   By {review.customer.email} · {review.product.name} ·{" "}
-                  {new Date(review.created_at).toLocaleDateString()}
+                  <DateDisplay value={review.created_at} />
                 </div>
 
                 {review.seller_response && (
-                  <div className="mt-3 rounded-lg bg-teal-50 p-3">
-                    <p className="text-xs font-semibold text-teal-800 mb-1">
+                  <div className="mt-3 rounded-lg bg-ui-selected p-3">
+                    <p className="text-xs font-semibold text-ui-accent mb-1">
                       Your response
                     </p>
-                    <p className="text-sm text-teal-900">
+                    <p className="text-sm text-ui-accent">
                       {review.seller_response}
                     </p>
                     {review.seller_response_at && (
-                      <p className="mt-1 text-xs text-teal-600">
-                        {new Date(
-                          review.seller_response_at,
-                        ).toLocaleDateString()}
+                      <p className="mt-1 text-xs text-ui-accent">
+                        <DateDisplay value={review.seller_response_at} />
                       </p>
                     )}
                   </div>
                 )}
               </div>
 
-              <div className="flex flex-col gap-2 shrink-0">
+              <div className="flex flex-wrap gap-2 sm:shrink-0">
                 {canRespond && !review.seller_response && (
                   <button
                     type="button"
@@ -203,7 +196,7 @@ export function SellerReviews() {
                       setSelectedReview(review);
                       setShowReport(true);
                     }}
-                    className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                    className="rounded-lg border border-ui-control-border bg-ui-surface px-3 py-1.5 text-xs font-semibold text-ui-secondary hover:bg-ui-surface-muted"
                   >
                     Report
                   </button>
@@ -215,128 +208,117 @@ export function SellerReviews() {
       </div>
 
       {reviewsQuery.data.count > 25 && (
-        <div className="mt-4 flex items-center justify-between text-sm text-slate-600">
-          <button
-            type="button"
-            disabled={page === 1}
-            onClick={() => setPage((p) => p - 1)}
-            className={secondaryButton}
-          >
-            Previous
-          </button>
-          <span>
-            Page {page} of {Math.ceil(reviewsQuery.data.count / 25)}
-          </span>
-          <button
-            type="button"
-            disabled={page * 25 >= reviewsQuery.data.count}
-            onClick={() => setPage((p) => p + 1)}
-            className={secondaryButton}
-          >
-            Next
-          </button>
-        </div>
+        <Pagination
+          page={page}
+          count={reviewsQuery.data.count}
+          onPageChange={setPage}
+        />
       )}
 
       {/* Respond Modal */}
       {showResponse && selectedReview && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
-          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
-            <h3 className="text-lg font-semibold text-slate-950">
-              Respond to Review
-            </h3>
-            <div className="mt-2 rounded-lg bg-slate-50 p-3 text-sm text-slate-700">
-              <StarRating rating={selectedReview.rating} />
-              <p className="mt-1 font-semibold">{selectedReview.title}</p>
-              <p className="mt-1">{selectedReview.body}</p>
-            </div>
-            <form onSubmit={handleRespond} className="mt-4 space-y-3">
-              <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">
-                  Your response
-                </label>
-                <textarea
-                  value={responseText}
-                  onChange={(e) => setResponseText(e.target.value)}
-                  rows={4}
-                  required
-                  className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
-                  placeholder="Thank you for your feedback…"
-                />
-              </div>
-              {actionError && (
-                <p className="text-xs text-red-600">{actionError}</p>
-              )}
-              <div className="flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowResponse(false);
-                    setSelectedReview(null);
-                    setResponseText("");
-                  }}
-                  className={secondaryButton}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className={primaryButton}
-                >
-                  {submitting ? "Submitting…" : "Submit response"}
-                </button>
-              </div>
-            </form>
+        <Dialog
+          open
+          title={<>Respond to Review</>}
+          onClose={() => {
+            setShowResponse(false);
+            setSelectedReview(null);
+            setResponseText("");
+          }}
+          busy={submitting}
+          error={actionError}
+        >
+          <div className="mt-2 rounded-lg bg-ui-surface-muted p-3 text-sm text-ui-secondary">
+            <ReviewRating rating={selectedReview.rating} />
+            <p className="mt-1 font-semibold">{selectedReview.title}</p>
+            <p className="mt-1">{selectedReview.body}</p>
           </div>
-        </div>
+          <form onSubmit={handleRespond} className="mt-4 space-y-3">
+            <TextareaField
+              label="Your response"
+              value={responseText}
+              onChange={(e) => setResponseText(e.target.value)}
+              rows={4}
+              required
+              placeholder="Thank you for your feedback…"
+            />
+
+            <div className="flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowResponse(false);
+                  setSelectedReview(null);
+                  setResponseText("");
+                }}
+                className={secondaryButton}
+                data-dialog-cancel
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={submitting}
+                className={primaryButton}
+              >
+                {submitting ? "Submitting…" : "Submit response"}
+              </button>
+            </div>
+          </form>
+        </Dialog>
       )}
 
       {/* Report Modal */}
       {showReport && selectedReview && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
-          <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
-            <h3 className="text-lg font-semibold text-slate-950">
-              Report Review
-            </h3>
-            <p className="mt-1 text-xs text-slate-600">
+        <Dialog
+          open
+          title={<>Report Review</>}
+          description={
+            <>
               Flag this review for platform moderation. You cannot directly
               delete reviews.
-            </p>
-            <form onSubmit={handleReport} className="mt-4 space-y-3">
-              <FormField
-                label="Reason"
-                value={reportReason}
-                onChange={(e) => setReportReason(e.target.value)}
-                placeholder="e.g. Fake review, contains personal information"
-                required
-              />
-              {actionError && (
-                <p className="text-xs text-red-600">{actionError}</p>
-              )}
-              <div className="flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowReport(false);
-                    setSelectedReview(null);
-                    setReportReason("");
-                  }}
-                  className={secondaryButton}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className={primaryButton}
-                >
-                  {submitting ? "Reporting…" : "Submit report"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+            </>
+          }
+          onClose={() => {
+            setShowReport(false);
+            setSelectedReview(null);
+            setReportReason("");
+          }}
+          busy={submitting}
+          error={actionError}
+        >
+          <form onSubmit={handleReport} className="mt-4 space-y-3">
+            <FormField
+              label="Reason"
+              value={reportReason}
+              onChange={(e) => setReportReason(e.target.value)}
+              placeholder="e.g. Fake review, contains personal information"
+              required
+            />
+
+            <div className="flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowReport(false);
+                  setSelectedReview(null);
+                  setReportReason("");
+                }}
+                className={secondaryButton}
+                data-dialog-cancel
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={submitting}
+                className={primaryButton}
+              >
+                {submitting ? "Reporting…" : "Submit report"}
+              </button>
+            </div>
+          </form>
+        </Dialog>
       )}
     </section>
   );

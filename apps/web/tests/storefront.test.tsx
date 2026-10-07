@@ -15,6 +15,14 @@ import type {
 import { json } from "./fixtures";
 
 const mockPush = vi.fn();
+const mockCart = vi.hoisted(() => ({
+  cart: null,
+  openCart: vi.fn(),
+  addItem: vi.fn(async () => {}),
+}));
+vi.mock("@/features/cart/cart-context", () => ({
+  useCart: () => mockCart,
+}));
 vi.mock("next/navigation", () => ({
   usePathname: () => "/",
   useRouter: () => ({ push: mockPush, replace: vi.fn() }),
@@ -165,9 +173,16 @@ describe("Customer Storefront UI Components", () => {
     expect(screen.getByLabelText("Shopping Cart")).toBeInTheDocument();
     expect(screen.getByText("Sign In")).toBeInTheDocument();
 
+    fireEvent.click(screen.getByRole("button", { name: "Categories" }));
     await waitFor(() => {
       expect(screen.getByText("Electronics")).toBeInTheDocument();
     });
+    expect(screen.getByRole("link", { name: "Electronics" })).toHaveAttribute(
+      "href",
+      `/categories/${mockCategory.id}`,
+    );
+    fireEvent.click(screen.getByLabelText("Shopping Cart"));
+    expect(mockCart.openCart).toHaveBeenCalledOnce();
 
     // Test search submit
     const searchInput = screen.getByPlaceholderText(/search products/i);
@@ -177,41 +192,53 @@ describe("Customer Storefront UI Components", () => {
     expect(mockPush).toHaveBeenCalledWith("/search?q=Apex");
   });
 
-  it("renders StorefrontFooter with trust badges and seller links", () => {
+  it("renders StorefrontFooter with actual shopping, account and seller destinations", () => {
     render(<StorefrontFooter />);
 
-    expect(screen.getByText(/100% Verified Sellers/i)).toBeInTheDocument();
+    expect(
+      screen.queryByText(/100% Verified Sellers/i),
+    ).not.toBeInTheDocument();
     expect(screen.getByText(/Become a Seller/i)).toBeInTheDocument();
-    expect(screen.getByText(/Customer Trust/i)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "All products" })).toHaveAttribute(
+      "href",
+      "/search",
+    );
+    expect(
+      screen.getByRole("link", { name: "Orders & returns" }),
+    ).toHaveAttribute("href", "/account/orders");
   });
 
-  it("renders ProductCard with title, discount, rating, and seller name", () => {
+  it("renders a quiet seller product listing with real price and rating", () => {
     render(<ProductCard product={mockProductCard} />);
 
+    expect(
+      screen.getByRole("link", { name: "View Super Phone X" }),
+    ).toBeInTheDocument();
     expect(screen.getByText("Super Phone X")).toBeInTheDocument();
-    expect(screen.getByText("$799.00")).toBeInTheDocument();
-    expect(screen.getByText("$999.00")).toBeInTheDocument();
-    expect(screen.getByText("20% OFF")).toBeInTheDocument();
-    expect(screen.getByText("In Stock")).toBeInTheDocument();
-    expect(screen.getByText("Apex Official")).toBeInTheDocument();
+    expect(screen.getByText("799.00 USD")).toBeInTheDocument();
+    expect(screen.getByText("999.00 USD")).toBeInTheDocument();
+    expect(screen.getByText("In stock")).toBeInTheDocument();
     expect(screen.getByText("(42)")).toBeInTheDocument();
+    expect(screen.queryByText("20% OFF")).not.toBeInTheDocument();
+    expect(screen.queryByText("Apex Official")).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "View" }),
+    ).not.toBeInTheDocument();
   });
 
-  it("renders ProductDetailView and interacts with variant selector and cart", () => {
+  it("renders ProductDetailView and interacts with variant selector and cart", async () => {
     render(<ProductDetailView product={mockProductDetail} />);
 
     expect(
       screen.getByRole("heading", { name: "Super Phone X" }),
     ).toBeInTheDocument();
-    expect(screen.getByText("Apex Official")).toBeInTheDocument();
-    expect(screen.getByText("Verified Seller")).toBeInTheDocument();
-    expect(screen.getAllByText("$799.00")[0]).toBeInTheDocument();
+    expect(screen.getAllByText("Apex Official")[0]).toBeInTheDocument();
+    expect(screen.queryByText("Verified Seller")).not.toBeInTheDocument();
+    expect(screen.getAllByText("799.00 USD")[0]).toBeInTheDocument();
     expect(screen.getByText("Save 20%")).toBeInTheDocument();
 
     // In-stock availability
-    expect(
-      screen.getByText(/In Stock \(10 units ready to ship\)/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/In stock · 10 available/i)).toBeInTheDocument();
 
     // Select second variant (Silver / 256GB at $899.00)
     const secondVariantBtn = screen
@@ -219,10 +246,8 @@ describe("Customer Storefront UI Components", () => {
       .closest("button")!;
     fireEvent.click(secondVariantBtn);
 
-    expect(screen.getAllByText("$899.00")[0]).toBeInTheDocument();
-    expect(
-      screen.getByText(/In Stock \(5 units ready to ship\)/i),
-    ).toBeInTheDocument();
+    expect(screen.getAllByText("899.00 USD")[0]).toBeInTheDocument();
+    expect(screen.getByText(/In stock · 5 available/i)).toBeInTheDocument();
 
     // Quantity selector
     const plusBtn = screen.getByLabelText("Increase quantity");
@@ -230,18 +255,23 @@ describe("Customer Storefront UI Components", () => {
     expect(screen.getByTestId("selected-quantity")).toHaveTextContent("2");
 
     // Add to Cart action
-    const addToCartBtn = screen.getByRole("button", { name: "Add to Cart" });
+    const addToCartBtn = screen.getByRole("button", { name: /Add to cart/i });
     fireEvent.click(addToCartBtn);
 
+    expect(mockCart.addItem).toHaveBeenCalledWith(
+      "a0000000-0000-4000-8000-000000000002",
+      2,
+    );
+
     expect(
-      screen.getByText(/Added to cart! Real-time cart reservations active/i),
+      await screen.findByText(/2 items added to cart/i),
     ).toBeInTheDocument();
 
     // Reviews section
     expect(screen.getByText("Marcus A.")).toBeInTheDocument();
-    expect(screen.getByText("Verified Purchase")).toBeInTheDocument();
+    expect(screen.getByText("Verified purchase")).toBeInTheDocument();
     expect(screen.getByText("Incredible speed")).toBeInTheDocument();
-    expect(screen.getByText("Seller Response:")).toBeInTheDocument();
+    expect(screen.getByText("Seller response")).toBeInTheDocument();
     expect(screen.getByText(/Thank you Marcus!/i)).toBeInTheDocument();
     expect(screen.getByText("Verified Customer")).toBeInTheDocument();
   });

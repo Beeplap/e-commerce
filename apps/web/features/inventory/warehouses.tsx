@@ -1,6 +1,8 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { Dialog } from "@/components/ui/dialog";
+
+import { useCallback, useRef, useState } from "react";
 import { useSeller } from "@/features/workspaces/seller-workspace";
 import { ForbiddenScreen } from "@/features/workspaces/forbidden-screen";
 import { useApiQuery } from "@/lib/api/use-api-query";
@@ -18,7 +20,7 @@ import {
 import { inventoryApi, type Warehouse } from "./api";
 
 const textareaStyle =
-  "min-h-20 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-teal-700 focus:outline-none";
+  "min-h-20 w-full rounded-lg border border-ui-control-border bg-ui-surface px-3 py-2 text-sm text-ui-foreground focus:border-teal-700 focus:outline-none";
 
 export function SellerWarehouses() {
   const access = useSeller();
@@ -68,7 +70,7 @@ function WarehousesList({
       id: "code",
       heading: "Code",
       cell: (wh) => (
-        <span className="font-mono text-xs font-semibold text-slate-900">
+        <span className="font-mono text-xs font-semibold text-ui-foreground">
           {wh.code}
         </span>
       ),
@@ -77,13 +79,15 @@ function WarehousesList({
       id: "name",
       heading: "Name",
       cell: (wh) => (
-        <span className="font-medium text-slate-900">{wh.name}</span>
+        <span className="font-medium text-ui-foreground">{wh.name}</span>
       ),
     },
     {
       id: "address",
       heading: "Address",
-      cell: (wh) => <span className="text-slate-600">{wh.address || "—"}</span>,
+      cell: (wh) => (
+        <span className="text-ui-secondary">{wh.address || "—"}</span>
+      ),
     },
     {
       id: "status",
@@ -100,7 +104,7 @@ function WarehousesList({
           <button
             type="button"
             onClick={() => setEditingWarehouse(wh)}
-            className="text-xs font-medium text-teal-800 hover:text-teal-950 underline"
+            className="text-xs font-medium text-ui-accent hover:text-ui-accent underline"
           >
             Edit
           </button>
@@ -185,9 +189,12 @@ function WarehouseForm({
   const [isActive, setIsActive] = useState(warehouse?.is_active ?? true);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const pending = useRef(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (pending.current) return;
+    pending.current = true;
     setError(null);
     setSubmitting(true);
 
@@ -210,32 +217,19 @@ function WarehouseForm({
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to save warehouse");
     } finally {
+      pending.current = false;
       setSubmitting(false);
     }
   };
 
   return (
-    <div
-      role="dialog"
-      aria-labelledby="warehouse-dialog-title"
-      className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
+    <Dialog
+      open
+      title={isEditing ? "Edit Warehouse" : "Create Warehouse"}
+      onClose={onClose}
+      busy={submitting}
+      error={error}
     >
-      <h2
-        id="warehouse-dialog-title"
-        className="text-lg font-semibold text-slate-900 mb-4"
-      >
-        {isEditing ? "Edit Warehouse" : "Create Warehouse"}
-      </h2>
-
-      {error && (
-        <div
-          role="alert"
-          className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800"
-        >
-          {error}
-        </div>
-      )}
-
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <FormField
@@ -267,7 +261,7 @@ function WarehouseForm({
         <div>
           <label
             htmlFor="warehouse-address"
-            className="mb-2 block text-sm font-medium text-slate-800"
+            className="mb-2 block text-sm font-medium text-ui-foreground"
           >
             Physical address
           </label>
@@ -287,11 +281,11 @@ function WarehouseForm({
             type="checkbox"
             checked={isActive}
             onChange={(e) => setIsActive(e.target.checked)}
-            className="h-4 w-4 rounded border-slate-300 text-teal-800 focus:ring-teal-700"
+            className="h-4 w-4 rounded border-ui-control-border text-ui-accent focus:ring-teal-700"
           />
           <label
             htmlFor="warehouse-is-active"
-            className="text-sm font-medium text-slate-800"
+            className="text-sm font-medium text-ui-foreground"
           >
             Active location for stocking and order fulfillment
           </label>
@@ -301,6 +295,7 @@ function WarehouseForm({
           <button
             type="button"
             onClick={onClose}
+            data-dialog-cancel
             className={secondaryButton}
             disabled={submitting}
           >
@@ -321,6 +316,6 @@ function WarehouseForm({
           </button>
         </div>
       </form>
-    </div>
+    </Dialog>
   );
 }

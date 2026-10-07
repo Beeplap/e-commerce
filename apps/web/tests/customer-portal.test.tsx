@@ -1,10 +1,10 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AuthProvider } from "@/features/auth/auth-provider";
-import CustomerOrdersPage from "@/app/(workspace)/account/orders/page";
-import CustomerOrderDetailPage from "@/app/(workspace)/account/orders/[id]/page";
-import CustomerAddressesPage from "@/app/(workspace)/account/addresses/page";
-import CustomerProfilePage from "@/app/(workspace)/account/profile/page";
+import CustomerOrdersPage from "@/app/(customer-account)/account/orders/page";
+import CustomerOrderDetailPage from "@/app/(customer-account)/account/orders/[id]/page";
+import CustomerAddressesPage from "@/app/(customer-account)/account/addresses/page";
+import CustomerProfilePage from "@/app/(customer-account)/account/profile/page";
 import { DeliveryStepper } from "@/features/account/delivery-stepper";
 import { ReviewModal } from "@/features/account/review-modal";
 import { ReturnModal } from "@/features/account/return-modal";
@@ -101,7 +101,7 @@ const mockOrderDetail: CustomerOrderDetail = {
       ],
       tracking_events: [
         {
-          id: "trk-01",
+          id: "79000000-0000-4000-8000-000000000001",
           status: "delivered",
           location: "Front Porch",
           description: "Delivered to recipient residence",
@@ -171,10 +171,14 @@ describe("Phase 22: Customer Account, Order History, Tracking & Post-Purchase", 
         </AuthProvider>,
       );
 
-      expect(await screen.findByText("Order History")).toBeDefined();
+      expect(
+        await screen.findByRole("heading", { level: 1, name: "Order History" }),
+      ).toBeDefined();
       expect(await screen.findByText("ORD-98765432")).toBeDefined();
       expect(screen.getByText("Wireless Keyboard")).toBeDefined();
-      expect(screen.getByText("$75.00 USD")).toBeDefined();
+      expect(
+        screen.getByTestId(`customer-order-card-${mockOrderListItem.id}`),
+      ).toHaveTextContent(/75\.00\sUSD/);
       expect(screen.getByText("pending")).toBeDefined();
     });
 
@@ -237,15 +241,25 @@ describe("Phase 22: Customer Account, Order History, Tracking & Post-Purchase", 
       const pendingDetail: CustomerOrderDetail = {
         ...mockOrderDetail,
         status: "pending",
+        payment_status: "pending",
         fulfillment_status: "unfulfilled",
+        packages: mockOrderDetail.packages.map((pkg) => ({
+          ...pkg,
+          status: "pending",
+        })),
       };
 
       const cancelledDetail: CustomerOrderDetail = {
         ...mockOrderDetail,
         status: "cancelled",
         fulfillment_status: "cancelled",
+        packages: mockOrderDetail.packages.map((pkg) => ({
+          ...pkg,
+          status: "cancelled",
+        })),
       };
 
+      let cancellationAccepted = false;
       global.fetch = vi.fn().mockImplementation((input: RequestInfo | URL) => {
         const url = String(input);
         if (url.includes("/api/v1/auth/me")) {
@@ -255,10 +269,13 @@ describe("Phase 22: Customer Account, Order History, Tracking & Post-Purchase", 
           return Promise.resolve(json({ csrf_token: csrf }));
         }
         if (url.includes("/cancel/")) {
+          cancellationAccepted = true;
           return Promise.resolve(json(cancelledDetail));
         }
         if (url.includes("/api/v1/customer/orders/")) {
-          return Promise.resolve(json(pendingDetail));
+          return Promise.resolve(
+            json(cancellationAccepted ? cancelledDetail : pendingDetail),
+          );
         }
         return Promise.reject(new Error(`Unhandled URL: ${url}`));
       });
@@ -276,7 +293,9 @@ describe("Phase 22: Customer Account, Order History, Tracking & Post-Purchase", 
       fireEvent.click(confirmBtn);
 
       await waitFor(() => {
-        expect(screen.getByText("cancelled")).toBeDefined();
+        expect(screen.getByTestId("order-detail-status")).toHaveTextContent(
+          "cancelled",
+        );
       });
     });
   });
@@ -322,15 +341,21 @@ describe("Phase 22: Customer Account, Order History, Tracking & Post-Purchase", 
         </AuthProvider>,
       );
 
-      expect(await screen.findByText("Saved Addresses")).toBeDefined();
-      expect(screen.getByText("Jane Doe")).toBeDefined();
+      expect(
+        await screen.findByRole("heading", { level: 1, name: "Address book" }),
+      ).toBeDefined();
+      expect(
+        await screen.findByRole("heading", { name: "Jane Doe" }),
+      ).toBeDefined();
       expect(screen.getByText("123 Market St")).toBeDefined();
 
       // Open add modal
       const addBtn = screen.getByTestId("add-address-button");
       fireEvent.click(addBtn);
 
-      expect(screen.getByText("Add New Address")).toBeDefined();
+      expect(
+        screen.getByRole("dialog", { name: "Add new address" }),
+      ).toBeDefined();
 
       // Fill form
       fireEvent.change(screen.getByTestId("address-input-fullname"), {
@@ -394,8 +419,15 @@ describe("Phase 22: Customer Account, Order History, Tracking & Post-Purchase", 
         </AuthProvider>,
       );
 
-      expect(await screen.findByText("Profile & Security")).toBeDefined();
-      const firstNameInput = screen.getByTestId("profile-input-firstname");
+      expect(
+        await screen.findByRole("heading", {
+          level: 1,
+          name: "Profile & Security",
+        }),
+      ).toBeDefined();
+      const firstNameInput = await screen.findByTestId(
+        "profile-input-firstname",
+      );
       expect((firstNameInput as HTMLInputElement).value).toBe("Jane");
 
       fireEvent.change(firstNameInput, { target: { value: "Janet" } });
@@ -448,7 +480,13 @@ describe("Phase 22: Customer Account, Order History, Tracking & Post-Purchase", 
         target: { value: "new-super-secure-pass123" },
       });
 
+      expect(
+        new FormData(
+          screen.getByTestId("password-form") as HTMLFormElement,
+        ).get("new_password") === "new-super-secure-pass123",
+      ).toBe(true);
       fireEvent.click(screen.getByTestId("password-save-button"));
+      await waitFor(() => expect(passwordChanged).toBe(true));
 
       await waitFor(() => {
         expect(

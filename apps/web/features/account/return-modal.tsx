@@ -1,9 +1,15 @@
 "use client";
-
-import React, { useState } from "react";
-import { customerApi } from "@/lib/api/client";
-
-interface ReturnModalProps {
+import { useState, type FormEvent } from "react";
+import {
+  StorefrontButton,
+  StorefrontInput,
+  StorefrontSelect,
+} from "@/components/storefront/controls";
+import { StorefrontOverlay } from "@/components/storefront/feedback";
+import { isUuid } from "@/features/storefront/catalog-evidence";
+import { ApiError, customerApi } from "@/lib/api/client";
+import { asAccountError, fieldError, useAccountCommand } from "./shared";
+interface Props {
   isOpen: boolean;
   onClose: () => void;
   orderItemId: string;
@@ -11,179 +17,140 @@ interface ReturnModalProps {
   maxQuantity: number;
   onSuccess?: () => void;
 }
-
-export function ReturnModal({
-  isOpen,
+export function ReturnModal(props: Props) {
+  return props.isOpen ? (
+    <ReturnForm key={props.orderItemId} {...props} />
+  ) : null;
+}
+function ReturnForm({
   onClose,
   orderItemId,
   productTitle,
   maxQuantity,
   onSuccess,
-}: ReturnModalProps) {
-  const [quantity, setQuantity] = useState(1);
-  const [reason, setReason] = useState("defective");
-  const [notes, setNotes] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState(false);
-
-  if (!isOpen) return null;
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (quantity < 1 || quantity > maxQuantity) {
-      setError(`Quantity must be between 1 and ${maxQuantity}.`);
+}: Props) {
+  const command = useAccountCommand();
+  const [quantity, setQuantity] = useState(1),
+    [reason, setReason] = useState("defective"),
+    [notes, setNotes] = useState("");
+  const [error, setError] = useState<ApiError | null>(null);
+  const reasons = {
+    defective: "Defective / Does not work",
+    damaged: "Damaged during shipping",
+    wrong_item: "Wrong item delivered",
+    not_as_described: "Not as described",
+    changed_mind: "Changed mind",
+  };
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError(null);
+    if (
+      !isUuid(orderItemId) ||
+      !Number.isSafeInteger(maxQuantity) ||
+      !Number.isSafeInteger(quantity) ||
+      quantity < 1 ||
+      quantity > maxQuantity ||
+      !(reason in reasons)
+    ) {
+      setError(new ApiError("Choose a valid quantity and return reason.", 0));
       return;
     }
-
-    setSubmitting(true);
-    setError(null);
-
-    try {
-      await customerApi.submitReturn({
-        order_item_id: orderItemId,
-        quantity,
-        reason,
-        customer_notes: notes.trim(),
-      });
-      if (onSuccess) onSuccess();
-      onClose();
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("Failed to create return request. Please try again.");
-      }
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
+    await command.run(
+      async (signal) => {
+        await customerApi.submitReturn(
+          {
+            order_item_id: orderItemId,
+            quantity,
+            reason,
+            customer_notes: notes.trim(),
+          },
+          signal,
+        );
+        if (command.active()) {
+          onSuccess?.();
+          onClose();
+        }
+      },
+      (failure) => setError(asAccountError(failure)),
+    );
+  }
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="return-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm"
+    <StorefrontOverlay
+      open
+      title="Request an item return"
+      description={productTitle}
+      busy={command.busy}
+      error={error?.message}
+      onClose={onClose}
     >
-      <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-xl animate-in fade-in zoom-in-95">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-          <h2
-            id="return-modal-title"
-            className="text-base font-bold text-slate-900"
-          >
-            Request Item Return (RMA)
-          </h2>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Close"
-            className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition"
-          >
-            ✕
-          </button>
+      <form onSubmit={submit} className="sf-account-modal-form">
+        <StorefrontInput
+          label="Quantity to return"
+          type="number"
+          min={1}
+          max={maxQuantity}
+          step={1}
+          required
+          value={quantity}
+          onChange={(event) => setQuantity(Number(event.target.value))}
+          error={fieldError(error, "quantity")}
+          data-testid="return-quantity-select"
+        />
+        <StorefrontSelect
+          label="Reason for return"
+          value={reason}
+          onChange={(event) => setReason(event.target.value)}
+          error={fieldError(error, "reason")}
+          data-testid="return-reason-select"
+        >
+          {Object.entries(reasons).map(([value, label]) => (
+            <option key={value} value={value}>
+              {label}
+            </option>
+          ))}
+        </StorefrontSelect>
+        <div className="sf-field">
+          <label htmlFor="account-return-notes" className="sf-field-label">
+            Additional notes (optional)
+          </label>
+          <textarea
+            id="account-return-notes"
+            className="sf-control"
+            rows={4}
+            maxLength={1000}
+            value={notes}
+            onChange={(event) => setNotes(event.target.value)}
+            data-testid="return-notes-input"
+            aria-invalid={Boolean(fieldError(error, "customer_notes"))}
+            aria-describedby={
+              fieldError(error, "customer_notes")
+                ? "account-return-notes-error"
+                : undefined
+            }
+          />
+          {fieldError(error, "customer_notes") && (
+            <p id="account-return-notes-error" className="sf-field-error">
+              {fieldError(error, "customer_notes")}
+            </p>
+          )}
         </div>
-
-        <p className="mt-2 text-xs text-slate-500">
-          Item:{" "}
-          <span className="font-semibold text-slate-800">{productTitle}</span>
+        <p className="sf-account-help">
+          Submitting a request does not confirm a return or refund. The seller
+          reviews eligibility.
         </p>
-
-        {error && (
-          <div
-            role="alert"
-            data-testid="return-error-banner"
-            className="mt-4 rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs text-rose-800"
+        <div className="sf-account-actions">
+          <StorefrontButton variant="secondary" onClick={onClose}>
+            Cancel
+          </StorefrontButton>
+          <StorefrontButton
+            type="submit"
+            busy={command.busy}
+            data-testid="submit-return-button"
           >
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="mt-4 space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label
-                htmlFor="returnQuantity"
-                className="block text-xs font-bold text-slate-700 mb-1"
-              >
-                Quantity to Return *
-              </label>
-              <select
-                id="returnQuantity"
-                value={quantity}
-                onChange={(e) => setQuantity(Number(e.target.value))}
-                data-testid="return-quantity-select"
-                className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-800 focus:border-teal-700 focus:outline-none focus:ring-1 focus:ring-teal-700 bg-white"
-              >
-                {Array.from({ length: maxQuantity }, (_, i) => i + 1).map(
-                  (num) => (
-                    <option key={num} value={num}>
-                      {num} {num === 1 ? "unit" : "units"}
-                    </option>
-                  ),
-                )}
-              </select>
-            </div>
-
-            <div>
-              <label
-                htmlFor="returnReason"
-                className="block text-xs font-bold text-slate-700 mb-1"
-              >
-                Reason for Return *
-              </label>
-              <select
-                id="returnReason"
-                value={reason}
-                onChange={(e) => setReason(e.target.value)}
-                data-testid="return-reason-select"
-                className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-800 focus:border-teal-700 focus:outline-none focus:ring-1 focus:ring-teal-700 bg-white"
-              >
-                <option value="defective">Defective / Does not work</option>
-                <option value="damaged">Damaged during shipping</option>
-                <option value="wrong_item">Wrong item delivered</option>
-                <option value="not_as_described">Not as described</option>
-                <option value="changed_mind">Changed mind</option>
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label
-              htmlFor="returnNotes"
-              className="block text-xs font-bold text-slate-700 mb-1"
-            >
-              Additional Notes (optional)
-            </label>
-            <textarea
-              id="returnNotes"
-              rows={3}
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              placeholder="Provide any additional details or serial numbers to expedite return approval."
-              data-testid="return-notes-input"
-              className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:border-teal-700 focus:outline-none focus:ring-1 focus:ring-teal-700"
-            />
-          </div>
-
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
-            <button
-              type="button"
-              onClick={onClose}
-              className="rounded-xl border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={submitting}
-              data-testid="submit-return-button"
-              className="rounded-xl bg-teal-800 px-5 py-2 text-xs font-bold text-white shadow-sm hover:bg-teal-900 disabled:opacity-50 transition"
-            >
-              {submitting ? "Requesting..." : "Submit Return Request"}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+            {command.busy ? "Requesting..." : "Submit Return Request"}
+          </StorefrontButton>
+        </div>
+      </form>
+    </StorefrontOverlay>
   );
 }

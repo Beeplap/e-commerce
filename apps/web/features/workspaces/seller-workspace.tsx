@@ -14,6 +14,8 @@ import {
   secondaryButton,
 } from "@/components/ui/primitives";
 import { Pagination } from "@/components/ui/pagination";
+import { SelectField } from "@/components/ui/form-fields";
+import { confirmUnsavedNavigation } from "@/components/ui/unsaved-changes";
 import { sellerApi } from "@/lib/api/client";
 import type { SellerMembership } from "@/lib/api/types";
 import { useApiQuery } from "@/lib/api/use-api-query";
@@ -99,18 +101,13 @@ export function SellerWorkspace({ children }: { children: ReactNode }) {
   const options = memberships.kind === "ready" ? memberships.data.results : [];
   const picker = (
     <div>
-      <label
-        htmlFor="seller-picker"
-        className="mb-2 block text-xs font-semibold text-slate-600"
-      >
-        Seller workspace
-      </label>
-      <select
-        id="seller-picker"
+      <SelectField
+        label="Seller workspace"
         value={current.seller.id}
-        onChange={(event) => setSelectedId(event.target.value)}
+        onChange={(event) => {
+          if (confirmUnsavedNavigation()) setSelectedId(event.target.value);
+        }}
         disabled={memberships.kind === "loading"}
-        className="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-2 text-sm"
       >
         {!options.some((item) => item.seller.id === current.seller.id) && (
           <option value={current.seller.id}>
@@ -122,9 +119,9 @@ export function SellerWorkspace({ children }: { children: ReactNode }) {
             {item.seller.display_name}
           </option>
         ))}
-      </select>
+      </SelectField>
       {memberships.kind === "loading" && (
-        <p role="status" className="mt-2 text-xs text-slate-600">
+        <p role="status" className="mt-2 text-xs text-ui-secondary">
           Loading sellers…
         </p>
       )}
@@ -158,6 +155,7 @@ export function SellerWorkspace({ children }: { children: ReactNode }) {
         )}
         sellerCanReadReturns={current.permissions.includes("returns.read")}
         sellerCanReadFinance={current.permissions.includes("finance.read")}
+        sellerCanReadPayouts={current.permissions.includes("payouts.read")}
         sellerCanReadStaff={
           current.permissions.includes("seller.staff.read") ||
           current.permissions.includes("seller.staff.manage")

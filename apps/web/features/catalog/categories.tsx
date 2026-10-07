@@ -57,7 +57,7 @@ function CategoriesList({ canManage }: { canManage: boolean }) {
     <>
       <PageHeader
         title="Categories"
-        description="Manage hierarchical platform categories and taxonomies."
+        description="Organize product categories."
         actions={
           canManage &&
           !editing && (
@@ -119,6 +119,7 @@ function CategoriesList({ canManage }: { canManage: boolean }) {
                   },
                   {
                     id: "sort",
+                    align: "right" as const,
                     heading: "Sort order",
                     cell: (r) => r.sort_order,
                   },
@@ -130,7 +131,7 @@ function CategoriesList({ canManage }: { canManage: boolean }) {
                         className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
                           r.is_active
                             ? "bg-green-100 text-green-800"
-                            : "bg-slate-100 text-slate-800"
+                            : "bg-ui-surface-muted text-ui-foreground"
                         }`}
                       >
                         {r.is_active ? "Active" : "Inactive"}

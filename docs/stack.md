@@ -1,5 +1,9 @@
 # Stack decisions
 
+UI overhaul Phase 23 adds no dependencies. Presentation tokens extend existing Tailwind CSS 4 theme aliases; typography uses locally available system fonts. Keep native form controls/dialog behavior and existing runtime response parsers. Additional table/form/chart/icon dependencies require an implemented use case and verified stable support rather than cosmetic justification.
+
+UI Phase 33 retains the pinned stack and adds no packages. The combined browser assumption follows the stricter Tailwind 4 CSS floor: Chrome 111+, Firefox 128+, Safari 16.4+. The installed Next.js guide's Firefox 111 minimum alone is insufficient for the CSS stack. This is upstream compatibility context, not a tested browser matrix. [Tailwind compatibility](https://tailwindcss.com/docs/compatibility). Native dialog/details, local SVG charts/icons and system fonts remain sufficient; optional Navigation API behavior is feature-detected. See `docs/ui-final-review.md` for measured build artifacts and unverified runtime/browser evidence.
+
 Official support pages and package registries were checked on 2026-09-29 before installation. Direct dependencies are pinned, and `pnpm-lock.yaml` plus `apps/api/uv.lock` capture transitive resolutions. Use stable releases only and recheck security advisories before deployment or upgrades.
 
 ## Runtime choices

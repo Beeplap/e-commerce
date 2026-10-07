@@ -1,0 +1,148 @@
+{
+  "state": "Actual anonymous reads only; no account credentials, commands or synthetic data.",
+  "cases": [
+    {
+      "name": "actual-signin",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["actual-signin-375.png"]
+    },
+    {
+      "name": "actual-anonymous-orders",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["actual-anonymous-orders-375.png"]
+    },
+    {
+      "name": "actual-anonymous-profile",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["actual-anonymous-profile-375.png"]
+    },
+    {
+      "name": "actual-signin",
+      "width": 430,
+      "metrics": {
+        "width": 430,
+        "documentWidth": 430,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["actual-signin-430.png"]
+    },
+    {
+      "name": "actual-signin",
+      "width": 768,
+      "metrics": {
+        "width": 768,
+        "documentWidth": 768,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["actual-signin-768.png"]
+    },
+    {
+      "name": "actual-signin",
+      "width": 1024,
+      "metrics": {
+        "width": 1024,
+        "documentWidth": 1024,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["actual-signin-1024.png"]
+    },
+    {
+      "name": "actual-signin",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["actual-signin-1440.png"]
+    },
+    {
+      "name": "actual-anonymous-orders",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["actual-anonymous-orders-1440.png"]
+    },
+    {
+      "name": "actual-anonymous-profile",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["actual-anonymous-profile-1440.png"]
+    },
+    {
+      "name": "actual-signin",
+      "width": 1920,
+      "metrics": {
+        "width": 1920,
+        "documentWidth": 1920,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["actual-signin-1920.png"]
+    }
+  ],
+  "pageErrors": [],
+  "privateCustomerRequests": 0,
+  "browser": "149.0.7827.55"
+}

@@ -1,5 +1,8 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { CartProvider } from "@/features/cart/cart-context";
+import { CheckoutSessionProvider } from "@/features/checkout/session";
+import { mockOrder } from "./checkout-fixtures";
 import { AuthProvider } from "@/features/auth/auth-provider";
 import { PaymentForm } from "@/features/checkout/payment-form";
 import CheckoutPayPage from "@/app/checkout/pay/page";
@@ -56,7 +59,7 @@ describe("Customer Payment & Idempotency", () => {
       />,
     );
 
-    const submitBtn = screen.getByRole("button", { name: /Pay 50.00 USD/i });
+    const submitBtn = screen.getByRole("button", { name: /Pay 50.00\sUSD/i });
     fireEvent.click(submitBtn);
 
     expect(await screen.findByText("Enter a valid card number.")).toBeDefined();
@@ -124,7 +127,7 @@ describe("Customer Payment & Idempotency", () => {
       target: { value: "123" },
     });
 
-    const submitBtn = screen.getByRole("button", { name: /Pay 50.00 USD/i });
+    const submitBtn = screen.getByRole("button", { name: /Pay 50.00\sUSD/i });
     fireEvent.click(submitBtn);
 
     await waitFor(() => {
@@ -207,7 +210,7 @@ describe("Customer Payment & Idempotency", () => {
       target: { value: "123" },
     });
 
-    const submitBtn = screen.getByRole("button", { name: /Pay 50.00 USD/i });
+    const submitBtn = screen.getByRole("button", { name: /Pay 50.00\sUSD/i });
     fireEvent.click(submitBtn);
 
     expect(
@@ -270,7 +273,7 @@ describe("Customer Payment & Idempotency", () => {
       target: { value: "123" },
     });
 
-    const submitBtn = screen.getByRole("button", { name: /Pay 50.00 USD/i });
+    const submitBtn = screen.getByRole("button", { name: /Pay 50.00\sUSD/i });
     // Double click rapidly
     fireEvent.click(submitBtn);
     fireEvent.click(submitBtn);
@@ -292,6 +295,12 @@ describe("Customer Payment & Idempotency", () => {
       if (url.includes("/api/v1/storefront/categories")) {
         return json([]);
       }
+      if (url.includes("/api/v1/customer/orders/"))
+        return json({
+          ...mockOrder,
+          grand_total: "50.00",
+          payment_status: "pending",
+        });
       if (url.includes("/api/v1/cart/")) {
         return json({
           id: "90000000-0000-4000-8000-000000000001",
@@ -320,12 +329,18 @@ describe("Customer Payment & Idempotency", () => {
 
     render(
       <AuthProvider>
-        <CheckoutPayPage />
+        <CartProvider>
+          <CheckoutSessionProvider>
+            <CheckoutPayPage />
+          </CheckoutSessionProvider>
+        </CartProvider>
       </AuthProvider>,
     );
 
     expect(await screen.findByText("Payment details")).toBeDefined();
-    expect(screen.getByTestId("payment-amount").textContent).toBe("50.00 USD");
+    expect(screen.getByTestId("payment-amount").textContent).toBe(
+      "50.00\u00a0USD",
+    );
 
     fireEvent.change(screen.getByLabelText(/Card number/i), {
       target: { value: "4242 4242 4242 4242" },
@@ -337,7 +352,7 @@ describe("Customer Payment & Idempotency", () => {
       target: { value: "123" },
     });
 
-    const submitBtn = screen.getByRole("button", { name: /Pay 50.00 USD/i });
+    const submitBtn = screen.getByRole("button", { name: /Pay 50.00\sUSD/i });
     fireEvent.click(submitBtn);
 
     await waitFor(() => {
@@ -345,7 +360,7 @@ describe("Customer Payment & Idempotency", () => {
         expect.stringContaining("/checkout/success?order_id="),
       );
       expect(mockPush).toHaveBeenCalledWith(
-        expect.stringContaining("order_number=ORD-98765432"),
+        "/checkout/success?order_id=50000000-0000-4000-8000-000000000001",
       );
     });
   });

@@ -1,12 +1,13 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { CheckoutSessionProvider } from "@/features/checkout/session";
 import { AuthProvider } from "@/features/auth/auth-provider";
 import { CartProvider } from "@/features/cart/cart-context";
 import { ProductDetailView } from "@/features/storefront/product-detail-view";
 import { SearchBar } from "@/features/storefront/search-bar";
 import { SearchFiltersSidebar } from "@/features/storefront/search-filters";
 import { PaymentForm } from "@/features/checkout/payment-form";
-import CustomerOrderDetailPage from "@/app/(workspace)/account/orders/[id]/page";
+import CustomerOrderDetailPage from "@/app/(customer-account)/account/orders/[id]/page";
 import { ReviewModal } from "@/features/account/review-modal";
 import { ReturnModal } from "@/features/account/return-modal";
 import CartPage from "@/app/cart/page";
@@ -182,7 +183,7 @@ const mockQuote: CheckoutQuote = {
       total: "226.00",
       available_shipping_methods: [
         {
-          method_id: "sm-standard",
+          method_id: "60000000-0000-4000-8000-000000000001",
           code: "standard",
           name: "Standard Ground",
           carrier: "FedEx",
@@ -192,7 +193,7 @@ const mockQuote: CheckoutQuote = {
         },
       ],
       selected_shipping_method: {
-        method_id: "sm-standard",
+        method_id: "60000000-0000-4000-8000-000000000001",
         code: "standard",
         name: "Standard Ground",
         carrier: "FedEx",
@@ -202,7 +203,7 @@ const mockQuote: CheckoutQuote = {
       },
       items: [
         {
-          item_id: "qi-1",
+          item_id: "91000000-0000-4000-8000-000000000001",
           variant_id: "81000000-0000-4000-8000-000000000001",
           product_id: "80000000-0000-4000-8000-000000000001",
           product_title: "Pro Gaming Keyboard",
@@ -294,7 +295,7 @@ const mockOrderDetail: CustomerOrderDetail = {
       ],
       tracking_events: [
         {
-          id: "trk-01",
+          id: "79000000-0000-4000-8000-000000000001",
           status: "delivered",
           location: "Front Porch",
           description: "Delivered to recipient residence",
@@ -310,6 +311,7 @@ describe("Phase 23: Customer Commerce End-to-End Integration Flows", () => {
 
   afterEach(() => {
     global.fetch = originalFetch;
+    vi.restoreAllMocks();
     mockPush.mockReset();
     mockParams = { id: "70000000-0000-4000-8000-000000000001" };
   });
@@ -333,7 +335,7 @@ describe("Phase 23: Customer Commerce End-to-End Integration Flows", () => {
           const body = JSON.parse(init?.body as string);
           addedVariantId = body.variant_id;
           addedQuantity = body.quantity;
-          return Promise.resolve(json(mockCart));
+          return Promise.resolve(json(mockCart, 201));
         }
         if (url.includes("/api/v1/cart/")) {
           return Promise.resolve(json(mockCart));
@@ -350,7 +352,7 @@ describe("Phase 23: Customer Commerce End-to-End Integration Flows", () => {
     expect(screen.getAllByText("Pro Gaming Keyboard").length).toBeGreaterThan(
       0,
     );
-    expect(screen.getAllByText("$120.00").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("120.00 USD").length).toBeGreaterThan(0);
 
     // Select alternative variant "Arctic White / Clicky"
     const whiteVariantBtn = screen.getByRole("button", {
@@ -358,8 +360,8 @@ describe("Phase 23: Customer Commerce End-to-End Integration Flows", () => {
     });
     fireEvent.click(whiteVariantBtn);
 
-    // Price updates to $130.00
-    expect(screen.getAllByText("$130.00").length).toBeGreaterThan(0);
+    // Price updates with the actual currency.
+    expect(screen.getAllByText("130.00 USD").length).toBeGreaterThan(0);
 
     // Increment quantity
     const plusBtn = screen.getByRole("button", { name: /Increase quantity/i });
@@ -373,6 +375,9 @@ describe("Phase 23: Customer Commerce End-to-End Integration Flows", () => {
       expect(addedVariantId).toBe("81000000-0000-4000-8000-000000000002");
       expect(addedQuantity).toBe(2);
     });
+    expect(
+      await screen.findByText(/2 items added to cart/i),
+    ).toBeInTheDocument();
   });
 
   // -------------------------------------------------------------------------
@@ -424,6 +429,7 @@ describe("Phase 23: Customer Commerce End-to-End Integration Flows", () => {
     );
 
     const searchInput = screen.getByRole("combobox");
+    fireEvent.focus(searchInput);
     fireEvent.change(searchInput, { target: { value: "keyboard" } });
 
     // Autocomplete suggestion appears
@@ -441,9 +447,9 @@ describe("Phase 23: Customer Commerce End-to-End Integration Flows", () => {
   });
 
   // -------------------------------------------------------------------------
-  // Flow 3: Update cart quantities, apply coupon code, verify discount
+  // Flow 3: Check coupon eligibility without inventing applied discounts
   // -------------------------------------------------------------------------
-  it("Flow 3: Customer updates cart quantities, applies coupon code, and verifies discount", async () => {
+  it("Flow 3: Customer previews coupon eligibility and preserves the server cart subtotal", async () => {
     global.fetch = vi.fn().mockImplementation((input: RequestInfo | URL) => {
       const url = String(input);
       if (url.includes("/api/v1/auth/me")) {
@@ -486,19 +492,26 @@ describe("Phase 23: Customer Commerce End-to-End Integration Flows", () => {
     expect(screen.getAllByText("Pro Gaming Keyboard").length).toBeGreaterThan(
       0,
     );
-    expect(screen.getAllByText("$240.00").length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/240.00\sUSD/).length).toBeGreaterThan(0);
 
     // Input coupon code
     const couponInput = screen.getByPlaceholderText(/Enter coupon code/i);
     fireEvent.change(couponInput, { target: { value: "SAVE10" } });
 
-    const applyBtn = screen.getByRole("button", { name: /Apply/i });
+    const applyBtn = screen.getByRole("button", { name: /Check code/i });
     fireEvent.click(applyBtn);
 
-    // Verify discount is calculated and displayed
+    // The API supplies eligibility only; preview does not change cart amounts.
     expect(
-      await screen.findByText(/Coupon applied! Saved \$24\.00/i),
+      await screen.findByText(/is eligible for a preview discount of/i),
     ).toBeDefined();
+    expect(screen.getByTestId("cart-summary-total")).toHaveTextContent(
+      "240.00 USD",
+    );
+    expect(
+      screen.getByText(/is eligible for a preview discount of/i),
+    ).toHaveTextContent("24.00 USD");
+    expect(screen.queryByText(/coupon applied/i)).toBeNull();
   });
 
   // -------------------------------------------------------------------------
@@ -532,15 +545,19 @@ describe("Phase 23: Customer Commerce End-to-End Integration Flows", () => {
     render(
       <AuthProvider>
         <CartProvider>
-          <CustomerCheckoutPage />
+          <CheckoutSessionProvider>
+            <CustomerCheckoutPage />
+          </CheckoutSessionProvider>
         </CartProvider>
       </AuthProvider>,
     );
 
-    expect(await screen.findByText("Checkout")).toBeDefined();
+    expect(
+      await screen.findByRole("heading", { level: 1, name: "Checkout" }),
+    ).toBeDefined();
     expect(await screen.findByText("Jane Shopper")).toBeDefined();
     expect(await screen.findByText("Standard Ground")).toBeDefined();
-    expect(await screen.findByText("$226.00")).toBeDefined();
+    expect(await screen.findByText(/226\.00\sUSD/)).toBeDefined();
 
     // Place order
     const placeOrderBtn = screen.getByRole("button", { name: /Place Order/i });
@@ -559,6 +576,10 @@ describe("Phase 23: Customer Commerce End-to-End Integration Flows", () => {
   // Flow 5: Process idempotent payment, verify order placement
   // -------------------------------------------------------------------------
   it("Flow 5: Customer processes idempotent payment with zero raw card leakage", async () => {
+    // Keep the CVC leakage check independent of random idempotency-key digits.
+    vi.spyOn(crypto, "randomUUID").mockReturnValue(
+      "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+    );
     const capturedRequests: Array<{
       url: string;
       body: Record<string, unknown>;
@@ -636,7 +657,7 @@ describe("Phase 23: Customer Commerce End-to-End Integration Flows", () => {
     });
 
     // Submit payment
-    const payBtn = screen.getByRole("button", { name: /Pay 226.00 USD/i });
+    const payBtn = screen.getByRole("button", { name: /Pay 226.00\sUSD/i });
     fireEvent.click(payBtn);
 
     await waitFor(() => {
@@ -650,6 +671,15 @@ describe("Phase 23: Customer Commerce End-to-End Integration Flows", () => {
     expect(confirmBody?.payment_token).toBe("tok_mock_4242");
     expect(JSON.stringify(confirmBody)).not.toContain("4242 4242");
     expect(JSON.stringify(confirmBody)).not.toContain("123");
+    expect(capturedRequests[0]?.body).toEqual({
+      order_id: "70000000-0000-4000-8000-000000000001",
+      idempotency_key: "intent_aaaaaaaaaaaa4aaa8aaaaaaaaaaaaaaa",
+    });
+    expect(confirmBody).toEqual({
+      payment_id: "60000000-0000-4000-8000-000000000001",
+      idempotency_key: "intent_aaaaaaaaaaaa4aaa8aaaaaaaaaaaaaaa",
+      payment_token: "tok_mock_4242",
+    });
     // Idempotency key was provided
     expect(confirmBody?.idempotency_key).toBeDefined();
   });

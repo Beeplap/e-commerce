@@ -1,6 +1,9 @@
 "use client";
 
+import { Pagination } from "@/components/ui/pagination";
+
 import { useCallback, useState } from "react";
+import { DateDisplay } from "@/components/ui/displays";
 import {
   ApiErrorState,
   LoadingState,
@@ -66,12 +69,12 @@ export function NotificationsPanel() {
 
   return (
     <section>
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl font-semibold text-slate-950">
+          <h1 className="text-xl font-semibold text-ui-foreground">
             Notifications
           </h1>
-          <p className="mt-1 text-sm text-slate-600">
+          <p className="mt-1 text-sm text-ui-secondary">
             {unreadCount > 0
               ? `${unreadCount} unread notification${unreadCount !== 1 ? "s" : ""}`
               : "All caught up!"}
@@ -100,47 +103,46 @@ export function NotificationsPanel() {
 
       <div className="mt-6 space-y-2">
         {notifications.length === 0 && (
-          <p className="py-12 text-center text-sm text-slate-500">
+          <p className="py-12 text-center text-sm text-ui-muted">
             No notifications yet.
           </p>
         )}
         {notifications.map((notification) => (
           <div
             key={notification.id}
-            className={`rounded-xl border p-4 transition-colors ${
-              notification.is_read
-                ? "border-slate-200 bg-white"
-                : "border-teal-200 bg-teal-50"
+            className={`border-b border-ui-border py-5 motion-safe:transition-colors duration-[var(--ui-duration-fast)] ${
+              notification.is_read ? "" : "bg-ui-selected px-3"
             }`}
           >
-            <div className="flex items-start justify-between gap-4">
+            <div className="flex flex-col items-start justify-between gap-4 sm:flex-row">
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   {!notification.is_read && (
-                    <span
-                      aria-hidden="true"
-                      className="h-2 w-2 rounded-full bg-teal-600 shrink-0"
-                    />
+                    <span className="text-ui-caption font-medium text-ui-accent">
+                      Unread
+                    </span>
                   )}
-                  <span className="font-semibold text-slate-900 text-sm">
+                  <span className="font-semibold text-ui-foreground text-sm">
                     {notification.title}
                   </span>
-                  <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500">
-                    {notification.notification_type}
+                  <span className="text-ui-caption text-ui-secondary">
+                    {notification.notification_type
+                      .replaceAll("_", " ")
+                      .toLowerCase()}
                   </span>
                 </div>
-                <p className="mt-1 text-sm text-slate-700">
+                <p className="mt-1 text-sm text-ui-secondary">
                   {notification.body}
                 </p>
-                <p className="mt-1.5 text-xs text-slate-400">
-                  {new Date(notification.created_at).toLocaleString()}
+                <p className="mt-1.5 text-xs text-ui-muted">
+                  <DateDisplay value={notification.created_at} />
                 </p>
               </div>
               {!notification.is_read && (
                 <button
                   type="button"
                   onClick={() => handleMarkRead(notification.id)}
-                  className="shrink-0 text-xs text-teal-700 hover:text-teal-900 font-medium"
+                  className="shrink-0 text-xs text-ui-accent hover:text-ui-accent font-medium"
                 >
                   Mark read
                 </button>
@@ -151,27 +153,11 @@ export function NotificationsPanel() {
       </div>
 
       {notificationsQuery.data.count > 25 && (
-        <div className="mt-4 flex items-center justify-between text-sm text-slate-600">
-          <button
-            type="button"
-            disabled={page === 1}
-            onClick={() => setPage((p) => p - 1)}
-            className={secondaryButton}
-          >
-            Previous
-          </button>
-          <span>
-            Page {page} of {Math.ceil(notificationsQuery.data.count / 25)}
-          </span>
-          <button
-            type="button"
-            disabled={page * 25 >= notificationsQuery.data.count}
-            onClick={() => setPage((p) => p + 1)}
-            className={secondaryButton}
-          >
-            Next
-          </button>
-        </div>
+        <Pagination
+          page={page}
+          count={notificationsQuery.data.count}
+          onPageChange={setPage}
+        />
       )}
     </section>
   );

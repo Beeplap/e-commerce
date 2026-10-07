@@ -1,4 +1,12 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
+@import "../styles/tokens.css";
+@import "../styles/storefront.css";
+@import "../styles/storefront-home.css";
+@import "../styles/storefront-discovery.css";
+@import "../styles/storefront-detail.css";
+@import "../styles/storefront-cart.css";
+@import "../styles/storefront-checkout.css";
+@import "../styles/storefront-account.css";
 
 :root {
   color-scheme: light;
@@ -6,12 +14,174 @@
 
 body {
   margin: 0;
-  background: #f8fafc;
-  color: #0f172a;
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--ui-canvas);
+  color: var(--ui-foreground);
+  font-family: var(--ui-font-sans);
 }
 
 :focus-visible {
-  outline: 3px solid #2563eb;
-  outline-offset: 4px;
+  outline: 3px solid var(--ui-focus);
+  outline-offset: 3px;
+}
+
+/* Legacy workflow controls share the same readable input size as the primitives. */
+.ui-workspace
+  :where(
+    input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+    select,
+    textarea
+  ) {
+  min-height: 2.75rem;
+  font-size: 1rem;
+}
+
+.ui-workspace
+  :where(
+    button,
+    input:not([type="checkbox"]):not([type="radio"]),
+    select,
+    textarea
+  ):disabled {
+  background-color: var(--ui-surface-muted);
+  border-color: var(--ui-border);
+  color: var(--ui-disabled);
+  opacity: 1;
+}
+
+.ui-workspace
+  :where(a[href], button, summary, input, select, textarea, [tabindex]),
+.ui-workspace [id^="product-"] {
+  scroll-margin-block: calc(var(--ui-topbar-height) + 1rem);
+}
+
+@media (pointer: coarse) {
+  .ui-workspace :where(button, summary) {
+    min-height: 2.75rem;
+    min-width: 2.75rem;
+  }
+  .ui-workspace label:has(input[type="checkbox"], input[type="radio"]),
+  .ui-workspace :where(input[type="checkbox"], input[type="radio"]) + label {
+    min-height: 2.75rem;
+    display: flex;
+    align-items: center;
+  }
+  .ui-workspace .ui-data-value a[href] {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+  }
+}
+
+.ui-dialog,
+.ui-drawer {
+  text-align: left;
+  background: var(--ui-surface);
+  color: var(--ui-foreground);
+  border: 0;
+  padding: 24px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.ui-dialog.ui-dialog-wide {
+  max-width: var(--ui-form-width);
+}
+
+.ui-dialog {
+  width: calc(100% - 32px);
+  max-width: 32rem;
+  max-height: calc(100vh - 32px);
+  max-height: calc(100dvh - 32px);
+  margin: auto;
+  border-radius: var(--ui-radius-overlay);
+  box-shadow: 0 16px 48px rgb(32 37 43 / 16%);
+}
+
+.ui-drawer {
+  width: min(320px, calc(100% - 32px));
+  max-width: none;
+  height: 100vh;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+}
+
+.ui-dialog::backdrop,
+.ui-drawer::backdrop {
+  background: rgb(32 37 43 / 40%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ui-dialog[open],
+  .ui-popover,
+  .ui-feedback {
+    animation: ui-appear var(--ui-duration-normal) ease-out;
+  }
+  .ui-drawer[open] {
+    animation: ui-drawer-enter var(--ui-duration-normal) ease-out;
+  }
+  .ui-dialog[open]::backdrop,
+  .ui-drawer[open]::backdrop {
+    animation: ui-appear var(--ui-duration-fast) ease-out;
+  }
+}
+
+@keyframes ui-appear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes ui-drawer-enter {
+  from {
+    opacity: 0.7;
+    transform: translateX(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (width < 768px) {
+  .ui-data-table-stacked,
+  .ui-data-table-stacked tbody {
+    display: block;
+  }
+  .ui-data-table-stacked thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .ui-data-table-stacked tbody tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 12px 16px;
+    padding: 16px;
+  }
+  .ui-data-table-stacked tbody td {
+    display: block;
+    min-width: 0;
+    padding: 0;
+  }
+  .ui-data-table-stacked tbody td:first-child,
+  .ui-data-table-stacked tbody td:last-child {
+    grid-column: 1 / -1;
+  }
+  .ui-data-table-stacked .ui-data-label {
+    display: block;
+    margin-bottom: 4px;
+  }
+  .ui-data-table-stacked [data-align="right"] {
+    text-align: left;
+  }
+  .ui-data-table-stacked .ui-data-value .text-right {
+    text-align: left;
+  }
 }

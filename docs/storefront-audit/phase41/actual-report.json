@@ -1,0 +1,278 @@
+{
+  "state": "Actual proxy/API reads only. No order placement, intent or capture commands. No fixture data.",
+  "cases": [
+    {
+      "name": "actual-checkout-error",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["actual-checkout-error-375.png"]
+    },
+    {
+      "name": "actual-guest-pay-review",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["actual-guest-pay-review-375.png"]
+    },
+    {
+      "name": "actual-guest-unverified",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["actual-guest-unverified-375.png"]
+    },
+    {
+      "name": "actual-checkout-error",
+      "width": 430,
+      "metrics": {
+        "width": 430,
+        "documentWidth": 430,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["actual-checkout-error-430.png"]
+    },
+    {
+      "name": "actual-guest-pay-review",
+      "width": 430,
+      "metrics": {
+        "width": 430,
+        "documentWidth": 430,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["actual-guest-pay-review-430.png"]
+    },
+    {
+      "name": "actual-guest-unverified",
+      "width": 430,
+      "metrics": {
+        "width": 430,
+        "documentWidth": 430,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["actual-guest-unverified-430.png"]
+    },
+    {
+      "name": "actual-checkout-error",
+      "width": 768,
+      "metrics": {
+        "width": 768,
+        "documentWidth": 768,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["actual-checkout-error-768.png"]
+    },
+    {
+      "name": "actual-guest-pay-review",
+      "width": 768,
+      "metrics": {
+        "width": 768,
+        "documentWidth": 768,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["actual-guest-pay-review-768.png"]
+    },
+    {
+      "name": "actual-guest-unverified",
+      "width": 768,
+      "metrics": {
+        "width": 768,
+        "documentWidth": 768,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["actual-guest-unverified-768.png"]
+    },
+    {
+      "name": "actual-checkout-error",
+      "width": 1024,
+      "metrics": {
+        "width": 1024,
+        "documentWidth": 1024,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["actual-checkout-error-1024.png"]
+    },
+    {
+      "name": "actual-guest-pay-review",
+      "width": 1024,
+      "metrics": {
+        "width": 1024,
+        "documentWidth": 1024,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["actual-guest-pay-review-1024.png"]
+    },
+    {
+      "name": "actual-guest-unverified",
+      "width": 1024,
+      "metrics": {
+        "width": 1024,
+        "documentWidth": 1024,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["actual-guest-unverified-1024.png"]
+    },
+    {
+      "name": "actual-checkout-error",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["actual-checkout-error-1440.png"]
+    },
+    {
+      "name": "actual-guest-pay-review",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["actual-guest-pay-review-1440.png"]
+    },
+    {
+      "name": "actual-guest-unverified",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["actual-guest-unverified-1440.png"]
+    },
+    {
+      "name": "actual-checkout-error",
+      "width": 1920,
+      "metrics": {
+        "width": 1920,
+        "documentWidth": 1920,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["actual-checkout-error-1920.png"]
+    },
+    {
+      "name": "actual-guest-pay-review",
+      "width": 1920,
+      "metrics": {
+        "width": 1920,
+        "documentWidth": 1920,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["actual-guest-pay-review-1920.png"]
+    },
+    {
+      "name": "actual-guest-unverified",
+      "width": 1920,
+      "metrics": {
+        "width": 1920,
+        "documentWidth": 1920,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["actual-guest-unverified-1920.png"]
+    }
+  ],
+  "pageErrors": [],
+  "cartProxyStatus": 308,
+  "browser": "149.0.7827.55"
+}

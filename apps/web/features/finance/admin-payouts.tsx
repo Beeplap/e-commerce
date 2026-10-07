@@ -1,13 +1,22 @@
 "use client";
 
+import { QueryRegion } from "@/components/ui/query-region";
+
+import { Dialog } from "@/components/ui/dialog";
+import { PayoutDetail } from "./payout-detail";
+import { Button } from "@/components/ui/button";
+
 import Link from "next/link";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useAuth } from "@/features/auth/auth-provider";
 import { ForbiddenScreen } from "@/features/workspaces/forbidden-screen";
 import { hasPlatformPermission } from "@/lib/permissions";
 import { useApiQuery } from "@/lib/api/use-api-query";
 import { DataTable, type Column } from "@/components/ui/data-table";
 import { Pagination } from "@/components/ui/pagination";
+import { FilterSummary } from "@/components/ui/filter-bar";
+import { useTableQuery } from "@/components/ui/use-table-query";
 import { Money, DateDisplay } from "@/components/ui/displays";
 import {
   ApiErrorState,
@@ -27,7 +36,7 @@ import {
 } from "./api";
 
 const inputStyle =
-  "min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-teal-700 focus:outline-none";
+  "min-h-11 w-full rounded-lg border border-ui-control-border bg-ui-surface px-3 py-2 text-sm text-ui-foreground focus:border-teal-700 focus:outline-none";
 
 export function AdminPayouts() {
   const { state } = useAuth();
@@ -39,14 +48,18 @@ export function AdminPayouts() {
 
   const canManage = hasPlatformPermission(user, "platform.finance.manage");
 
-  return <PayoutsList canManage={canManage} />;
+  return <PayoutsList key={user?.id} canManage={canManage} />;
 }
 
 function PayoutsList({ canManage }: { canManage: boolean }) {
-  const [page, setPage] = useState(1);
-  const [statusFilter, setStatusFilter] = useState<string>("");
-  const [sellerIdInput, setSellerIdInput] = useState<string>("");
-  const [appliedSellerId, setAppliedSellerId] = useState<string>("");
+  const table = useTableQuery({
+    status: ["PENDING", "APPROVED", "PROCESSED", "REJECTED"],
+    seller_id: 36,
+  });
+  const { page, setPage } = table;
+  const statusFilter = table.values.status;
+  const setStatusFilter = (status: string) => table.setFilters({ status });
+  const appliedSellerId = table.values.seller_id;
 
   const [processingPayout, setProcessingPayout] = useState<Payout | null>(null);
   const [rejectingPayout, setRejectingPayout] = useState<Payout | null>(null);
@@ -55,6 +68,8 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
     message: string;
   } | null>(null);
   const [approvingId, setApprovingId] = useState<string | null>(null);
+  const [approvalTarget, setApprovalTarget] = useState<Payout | null>(null);
+  const approvalInFlight = useRef(false);
 
   const loadPayouts = useCallback(
     (signal: AbortSignal) =>
@@ -73,10 +88,13 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
   const query = useApiQuery(queryKey, loadPayouts);
 
   const handleApprove = async (payout: Payout) => {
+    if (approvalInFlight.current) return;
+    approvalInFlight.current = true;
     setActionError(null);
     setApprovingId(payout.id);
     try {
       await approvePayout(payout.id);
+      setApprovalTarget(null);
       query.retry();
     } catch (err) {
       setActionError({
@@ -85,16 +103,28 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
           err instanceof Error ? err.message : "Failed to approve payout",
       });
     } finally {
+      approvalInFlight.current = false;
       setApprovingId(null);
     }
   };
 
+  const [inspectingPayout, setInspectingPayout] = useState<Payout | null>(null);
+
   const columns: Column<Payout>[] = [
+    {
+      id: "inspect",
+      heading: "Inspect",
+      cell: (item) => (
+        <Button variant="quiet" onClick={() => setInspectingPayout(item)}>
+          View details
+        </Button>
+      ),
+    },
     {
       id: "payout_number",
       heading: "Payout #",
       cell: (item) => (
-        <span className="font-semibold text-slate-900">
+        <span className="font-semibold text-ui-foreground">
           {item.payout_number}
         </span>
       ),
@@ -103,14 +133,17 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
       id: "seller",
       heading: "Seller",
       cell: (item) => (
-        <span className="font-medium text-slate-800">{item.seller_name}</span>
+        <span className="font-medium text-ui-foreground">
+          {item.seller_name}
+        </span>
       ),
     },
     {
       id: "amount",
+      align: "right" as const,
       heading: "Amount",
       cell: (item) => (
-        <span className="font-bold text-slate-900">
+        <span className="font-bold text-ui-foreground">
           <Money amount={item.amount} currency={item.currency} />
         </span>
       ),
@@ -129,9 +162,9 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
       id: "details",
       heading: "Details",
       cell: (item) => (
-        <div className="text-xs text-slate-600">
+        <div className="text-xs text-ui-secondary">
           {item.status === "REJECTED" && (
-            <span className="text-rose-700">
+            <span className="text-ui-danger">
               Reason: {item.rejection_reason}
             </span>
           )}
@@ -151,7 +184,7 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
       heading: "Actions",
       cell: (item) => {
         if (!canManage) {
-          return <span className="text-xs text-slate-400">View only</span>;
+          return <span className="text-xs text-ui-muted">View only</span>;
         }
 
         const isApproving = approvingId === item.id;
@@ -165,15 +198,18 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
                   <button
                     type="button"
                     disabled={isApproving}
-                    onClick={() => handleApprove(item)}
-                    className="rounded-lg bg-teal-800 px-2.5 py-1 text-xs font-semibold text-white hover:bg-teal-700 disabled:opacity-50"
+                    onClick={() => {
+                      setActionError(null);
+                      setApprovalTarget(item);
+                    }}
+                    className="rounded-lg bg-ui-accent px-2.5 py-1 text-xs font-semibold text-white hover:bg-ui-accent disabled:opacity-50"
                   >
                     {isApproving ? "Approving…" : "Approve"}
                   </button>
                   <button
                     type="button"
                     onClick={() => setRejectingPayout(item)}
-                    className="rounded-lg border border-slate-300 bg-white px-2.5 py-1 text-xs font-semibold text-rose-700 hover:bg-rose-50"
+                    className="rounded-lg border border-ui-control-border bg-ui-surface px-2.5 py-1 text-xs font-semibold text-ui-danger hover:bg-rose-50"
                   >
                     Reject
                   </button>
@@ -187,12 +223,12 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
                     onClick={() => setProcessingPayout(item)}
                     className="rounded-lg bg-emerald-700 px-2.5 py-1 text-xs font-semibold text-white hover:bg-emerald-600"
                   >
-                    Process Disbursement
+                    Process payout
                   </button>
                   <button
                     type="button"
                     onClick={() => setRejectingPayout(item)}
-                    className="rounded-lg border border-slate-300 bg-white px-2.5 py-1 text-xs font-semibold text-rose-700 hover:bg-rose-50"
+                    className="rounded-lg border border-ui-control-border bg-ui-surface px-2.5 py-1 text-xs font-semibold text-ui-danger hover:bg-rose-50"
                   >
                     Reject
                   </button>
@@ -200,14 +236,14 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
               )}
 
               {(item.status === "PROCESSED" || item.status === "REJECTED") && (
-                <span className="text-xs text-slate-400">Finalized</span>
+                <span className="text-xs text-ui-muted">Finalized</span>
               )}
             </div>
 
-            {hasError && (
+            {hasError && !approvalTarget && (
               <p
                 role="alert"
-                className="text-xs font-medium text-rose-700 max-w-xs"
+                className="text-xs font-medium text-ui-danger max-w-xs"
               >
                 {actionError.message}
               </p>
@@ -219,19 +255,45 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
   ];
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <div className="space-y-6">
       <div className="mb-4">
         <Link
           href="/admin/finance"
-          className="text-sm font-medium text-teal-800 hover:underline"
+          className="text-sm font-medium text-ui-accent hover:underline"
         >
           &larr; Back to Finance Overview
         </Link>
       </div>
 
+      {inspectingPayout && (
+        <PayoutDetail
+          payout={inspectingPayout}
+          onClose={() => setInspectingPayout(null)}
+        />
+      )}
       <PageHeader
         title="Seller Payouts Management"
         description="Review seller withdrawal requests, authorize disbursement approvals, and record completed settlement references."
+      />
+      <ConfirmDialog
+        open={approvalTarget !== null}
+        title="Approve payout"
+        description={
+          approvalTarget
+            ? `Approve ${approvalTarget.payout_number} for ${approvalTarget.seller_name}: ${approvalTarget.amount} ${approvalTarget.currency}. This authorizes the requested withdrawal for processing. It does not record a completed disbursement.`
+            : ""
+        }
+        confirmLabel="Approve payout"
+        busy={approvingId !== null}
+        error={
+          actionError?.id === approvalTarget?.id
+            ? actionError?.message
+            : undefined
+        }
+        onCancel={() => setApprovalTarget(null)}
+        onConfirm={() => {
+          if (approvalTarget) void handleApprove(approvalTarget);
+        }}
       />
 
       {/* Filters */}
@@ -257,63 +319,48 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
           </select>
         </div>
 
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            setPage(1);
-            setAppliedSellerId(sellerIdInput.trim());
-          }}
-          className="flex gap-2"
-        >
-          <input
-            type="text"
-            value={sellerIdInput}
-            onChange={(e) => setSellerIdInput(e.target.value)}
-            placeholder="Filter by Seller UUID…"
-            className={`w-64 ${inputStyle}`}
-          />
-          <button type="submit" className={secondaryButton}>
-            Filter
-          </button>
-          {appliedSellerId && (
-            <button
-              type="button"
-              onClick={() => {
-                setSellerIdInput("");
-                setAppliedSellerId("");
-                setPage(1);
-              }}
-              className="text-sm font-medium text-slate-600 hover:text-slate-900"
-            >
-              Clear
-            </button>
-          )}
-        </form>
+        <SellerPayoutFilter
+          key={appliedSellerId}
+          value={appliedSellerId}
+          onApply={(seller_id) => table.setFilters({ seller_id })}
+        />
       </div>
 
-      {query.kind === "loading" && <LoadingState />}
-      {query.kind === "error" && (
-        <ApiErrorState error={query.error} onRetry={query.retry} />
-      )}
+      <FilterSummary
+        filters={[
+          ...(statusFilter ? [`Status: ${statusFilter.toLowerCase()}`] : []),
+          ...(appliedSellerId ? [`Seller: ${appliedSellerId}`] : []),
+        ]}
+        onClear={table.clear}
+      />
+      <QueryRegion busy={query.kind === "loading"}>
+        {query.kind === "loading" && (
+          <LoadingState variant="table" label="Loading payouts…" />
+        )}
+        {query.kind === "error" && (
+          <ApiErrorState error={query.error} onRetry={query.retry} />
+        )}
 
-      {query.kind === "ready" && (
-        <div className="space-y-4">
-          <DataTable
-            rows={query.data.results}
-            columns={columns}
-            rowKey={(item) => item.id}
-            caption="Seller Payouts"
-          />
-
-          {query.data.count > 25 && (
-            <Pagination
-              page={page}
-              count={query.data.count}
-              onPageChange={(p) => setPage(p)}
+        {query.kind === "ready" && (
+          <div className="space-y-4">
+            <DataTable
+              filtered={!!statusFilter || !!appliedSellerId}
+              rows={query.data.results}
+              columns={columns}
+              rowKey={(item) => item.id}
+              caption="Seller Payouts"
             />
-          )}
-        </div>
-      )}
+
+            {query.data.count > 25 && (
+              <Pagination
+                page={page}
+                count={query.data.count}
+                onPageChange={(p) => setPage(p)}
+              />
+            )}
+          </div>
+        )}
+      </QueryRegion>
 
       {/* Process Payout Modal */}
       {processingPayout && (
@@ -339,6 +386,49 @@ function PayoutsList({ canManage }: { canManage: boolean }) {
         />
       )}
     </div>
+  );
+}
+
+function SellerPayoutFilter({
+  value,
+  onApply,
+}: {
+  value: string;
+  onApply: (value: string) => void;
+}) {
+  const [draft, setDraft] = useState(value);
+  return (
+    <form
+      className="flex max-w-full flex-wrap items-end gap-2"
+      onSubmit={(event) => {
+        event.preventDefault();
+        onApply(draft.trim());
+      }}
+    >
+      <label className="min-w-0 text-ui-caption text-ui-secondary">
+        Seller ID
+        <input
+          type="text"
+          value={draft}
+          maxLength={36}
+          onChange={(event) => setDraft(event.target.value)}
+          placeholder="Filter by Seller UUID…"
+          className={`mt-1 w-full sm:w-64 ${inputStyle}`}
+        />
+      </label>
+      <button type="submit" className={secondaryButton}>
+        Filter
+      </button>
+      {value && (
+        <button
+          type="button"
+          className={secondaryButton}
+          onClick={() => onApply("")}
+        >
+          Clear seller
+        </button>
+      )}
+    </form>
   );
 }
 
@@ -372,78 +462,61 @@ function ProcessPayoutModal({
   };
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="process-payout-title"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4"
-    >
-      <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
-        <h2
-          id="process-payout-title"
-          className="text-lg font-bold text-slate-900"
-        >
-          Process Payout Disbursement
-        </h2>
-        <p className="mt-1 text-sm text-slate-600">
+    <Dialog
+      open
+      title={<>Process payout</>}
+      description={
+        <>
           Disbursing{" "}
-          <strong className="text-slate-900">
+          <strong className="text-ui-foreground">
             {payout.amount} {payout.currency}
           </strong>{" "}
-          to <strong className="text-slate-900">{payout.seller_name}</strong> (
+          to{" "}
+          <strong className="text-ui-foreground">{payout.seller_name}</strong> (
           {payout.payout_number}).
-        </p>
+        </>
+      }
+      onClose={onClose}
+      busy={submitting}
+      error={error}
+    >
+      <form onSubmit={handleSubmit} className="mt-4 space-y-4">
+        <div>
+          <label
+            htmlFor="payout-reference"
+            className="block text-xs font-semibold text-ui-secondary"
+          >
+            Bank / ACH / Transfer Reference (Optional)
+          </label>
+          <p className="mb-1 text-xs text-ui-muted">
+            Transaction ID or bank trace number for reconciliation.
+          </p>
+          <input
+            id="payout-reference"
+            type="text"
+            value={reference}
+            onChange={(e) => setReference(e.target.value)}
+            placeholder="e.g. TRF-2026-981726"
+            className={`mt-1 ${inputStyle}`}
+          />
+        </div>
 
-        <form onSubmit={handleSubmit} className="mt-4 space-y-4">
-          <div>
-            <label
-              htmlFor="payout-reference"
-              className="block text-xs font-semibold text-slate-700"
-            >
-              Bank / ACH / Transfer Reference (Optional)
-            </label>
-            <p className="mb-1 text-xs text-slate-500">
-              Transaction ID or bank trace number for reconciliation.
-            </p>
-            <input
-              id="payout-reference"
-              type="text"
-              value={reference}
-              onChange={(e) => setReference(e.target.value)}
-              placeholder="e.g. TRF-2026-981726"
-              className={`mt-1 ${inputStyle}`}
-            />
-          </div>
-
-          {error && (
-            <div
-              role="alert"
-              className="rounded-lg bg-rose-50 p-3 text-xs text-rose-800"
-            >
-              {error}
-            </div>
-          )}
-
-          <div className="flex justify-end gap-3 pt-2">
-            <button
-              type="button"
-              disabled={submitting}
-              onClick={onClose}
-              className={secondaryButton}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={submitting}
-              className={primaryButton}
-            >
-              {submitting ? "Finalizing…" : "Confirm Processed"}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+        <div className="flex justify-end gap-3 pt-2">
+          <button
+            type="button"
+            disabled={submitting}
+            onClick={onClose}
+            className={secondaryButton}
+            data-dialog-cancel
+          >
+            Cancel
+          </button>
+          <button type="submit" disabled={submitting} className={primaryButton}>
+            {submitting ? "Finalizing…" : "Confirm Processed"}
+          </button>
+        </div>
+      </form>
+    </Dialog>
   );
 }
 
@@ -479,79 +552,67 @@ function RejectPayoutModal({
   };
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="reject-payout-title"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4"
-    >
-      <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
-        <h2
-          id="reject-payout-title"
-          className="text-lg font-bold text-slate-900"
-        >
-          Reject Payout Request
-        </h2>
-        <p className="mt-1 text-sm text-slate-600">
+    <Dialog
+      open
+      title={<>Reject Payout Request</>}
+      description={
+        <>
           Rejecting{" "}
-          <strong className="text-slate-900">
+          <strong className="text-ui-foreground">
             {payout.amount} {payout.currency}
           </strong>{" "}
-          for <strong className="text-slate-900">{payout.seller_name}</strong> (
+          for{" "}
+          <strong className="text-ui-foreground">{payout.seller_name}</strong> (
           {payout.payout_number}).
-        </p>
-        <p className="mt-2 text-xs text-amber-700 bg-amber-50 p-2.5 rounded-lg border border-amber-200">
-          The requested amount will automatically be restored back to the
-          seller&apos;s available balance via a compensating ledger entry.
-        </p>
+        </>
+      }
+      onClose={onClose}
+      busy={submitting}
+      error={error}
+    >
+      <p className="mt-2 text-xs text-amber-700 bg-amber-50 p-2.5 rounded-lg border border-amber-200">
+        The requested amount will automatically be restored back to the
+        seller&apos;s available balance via a compensating ledger entry.
+      </p>
 
-        <form onSubmit={handleSubmit} className="mt-4 space-y-4">
-          <div>
-            <label
-              htmlFor="reject-reason"
-              className="block text-xs font-semibold text-slate-700"
-            >
-              Reason for Rejection *
-            </label>
-            <textarea
-              id="reject-reason"
-              rows={3}
-              required
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              placeholder="e.g. Invalid bank routing number or pending account verification"
-              className={`mt-1 ${inputStyle}`}
-            />
-          </div>
+      <form onSubmit={handleSubmit} className="mt-4 space-y-4">
+        <div>
+          <label
+            htmlFor="reject-reason"
+            className="block text-xs font-semibold text-ui-secondary"
+          >
+            Reason for Rejection *
+          </label>
+          <textarea
+            id="reject-reason"
+            rows={3}
+            required
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            placeholder="e.g. Invalid bank routing number or pending account verification"
+            className={`mt-1 ${inputStyle}`}
+          />
+        </div>
 
-          {error && (
-            <div
-              role="alert"
-              className="rounded-lg bg-rose-50 p-3 text-xs text-rose-800"
-            >
-              {error}
-            </div>
-          )}
-
-          <div className="flex justify-end gap-3 pt-2">
-            <button
-              type="button"
-              disabled={submitting}
-              onClick={onClose}
-              className={secondaryButton}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={submitting}
-              className="rounded-lg bg-rose-700 px-4 py-2 text-sm font-semibold text-white hover:bg-rose-800 disabled:opacity-50"
-            >
-              {submitting ? "Rejecting…" : "Reject Payout"}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+        <div className="flex justify-end gap-3 pt-2">
+          <button
+            type="button"
+            disabled={submitting}
+            onClick={onClose}
+            className={secondaryButton}
+            data-dialog-cancel
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={submitting}
+            className="rounded-lg bg-rose-700 px-4 py-2 text-sm font-semibold text-white hover:bg-rose-800 disabled:opacity-50"
+          >
+            {submitting ? "Rejecting…" : "Reject Payout"}
+          </button>
+        </div>
+      </form>
+    </Dialog>
   );
 }

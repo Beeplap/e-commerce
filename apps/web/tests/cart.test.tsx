@@ -130,7 +130,7 @@ describe("Shopping Cart UI & Real-Time Invariants", () => {
     expect(drawer).toBeDefined();
     expect(screen.getByText("Wireless Earbuds Pro")).toBeDefined();
     expect(screen.getByTestId("cart-drawer-subtotal").textContent).toBe(
-      "$59.98",
+      "59.98\u00a0USD",
     );
   });
 
@@ -209,7 +209,7 @@ describe("Shopping Cart UI & Real-Time Invariants", () => {
     // Verify subtotal and quantity update
     await waitFor(() => {
       expect(screen.getByTestId("cart-drawer-subtotal").textContent).toBe(
-        "$89.97",
+        "89.97\u00a0USD",
       );
     });
   });
@@ -242,17 +242,20 @@ describe("Shopping Cart UI & Real-Time Invariants", () => {
 
     // Out of stock warning banner is shown
     expect(await screen.findByText(/checkout is disabled/i)).toBeDefined();
-    expect(screen.getByText(/⚠️ Out of stock/i)).toBeDefined();
+    expect(screen.getByText("Out of stock")).toBeDefined();
 
     // Proceed to Checkout button is disabled
-    const checkoutLink = screen.getByRole("link", {
+    const checkoutButton = screen.getByRole("button", {
       name: /proceed to checkout/i,
     });
-    expect(checkoutLink.getAttribute("aria-disabled")).toBe("true");
-    expect(checkoutLink.className).toContain("cursor-not-allowed");
+    expect(checkoutButton).toBeDisabled();
+    expect(checkoutButton.getAttribute("aria-disabled")).toBe("true");
+    expect(
+      screen.queryByRole("link", { name: /proceed to checkout/i }),
+    ).toBeNull();
   });
 
-  it("applies promotional coupon code with instant discount preview on cart page", async () => {
+  it("checks a coupon preview without claiming application or changing server totals", async () => {
     global.fetch = vi.fn(async (input: RequestInfo | URL) => {
       const url = String(input);
       if (url.includes("/api/v1/auth/csrf")) {
@@ -299,12 +302,17 @@ describe("Shopping Cart UI & Real-Time Invariants", () => {
 
     // Coupon success message and discount line
     expect(
-      await screen.findByText(/Coupon applied! Saved \$10\.00/i),
+      await screen.findByText(/is eligible for a preview discount of/i),
     ).toBeDefined();
-    expect(screen.getByText("-$10.00")).toBeDefined();
+    expect(screen.getByText("10.00", { exact: false })).toHaveTextContent(
+      "10.00 USD",
+    );
 
-    // Total reflects 59.98 - 10.00 = 49.98
-    expect(screen.getByTestId("cart-summary-total").textContent).toBe("$49.98");
+    // The validation endpoint returns eligibility only; no persisted application.
+    expect(screen.getByTestId("cart-summary-total").textContent).toBe(
+      "59.98\u00a0USD",
+    );
+    expect(screen.queryByText(/coupon applied|49.98/i)).toBeNull();
   });
 
   it("clears entire cart and renders empty state", async () => {

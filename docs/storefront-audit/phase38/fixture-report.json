@@ -1,0 +1,342 @@
+{
+  "preview": "Development Next preview; supplemental response fixtures",
+  "state": "Explicit supplemental intercepted browser fixtures. No production catalog mutations or real-photo acceptance. One-pixel PNG tests only image geometry.",
+  "cases": [
+    {
+      "state": "dense",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 20,
+        "imageHeights": [
+          163.5, 163.5, 163.5, 163.5, 163.5, 163.5, 163.5, 163.5, 163.5, 163.5,
+          163.5, 163.5, 163.5, 163.5, 163.5, 163.5, 163.5, 163.5, 163.5, 163.5
+        ],
+        "gridColumns": "163.5px 163.5px"
+      },
+      "paginationHistoryAndFocus": true,
+      "sortKeepsFiltersResetsPage": true,
+      "exactPriceValidationDraftApplyAndChip": true,
+      "pageErrors": []
+    },
+    {
+      "state": "dense",
+      "width": 430,
+      "metrics": {
+        "width": 430,
+        "documentWidth": 430,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 20,
+        "imageHeights": [
+          191, 191, 191, 191, 191, 191, 191, 191, 191, 191, 191, 191, 191, 191,
+          191, 191, 191, 191, 191, 191
+        ],
+        "gridColumns": "191px 191px"
+      },
+      "pageErrors": []
+    },
+    {
+      "state": "dense",
+      "width": 768,
+      "metrics": {
+        "width": 768,
+        "documentWidth": 768,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 20,
+        "imageHeights": [
+          226.65625, 226.671875, 226.671875, 226.65625, 226.671875, 226.671875,
+          226.65625, 226.671875, 226.671875, 226.65625, 226.671875, 226.671875,
+          226.65625, 226.671875, 226.671875, 226.65625, 226.671875, 226.671875,
+          226.65625, 226.671875
+        ],
+        "gridColumns": "226.656px 226.672px 226.672px"
+      },
+      "pageErrors": []
+    },
+    {
+      "state": "dense",
+      "width": 1024,
+      "metrics": {
+        "width": 1024,
+        "documentWidth": 1024,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 20,
+        "imageHeights": [
+          226.65625, 226.671875, 226.671875, 226.65625, 226.671875, 226.671875,
+          226.65625, 226.671875, 226.671875, 226.65625, 226.671875, 226.671875,
+          226.65625, 226.671875, 226.671875, 226.65625, 226.671875, 226.671875,
+          226.65625, 226.671875
+        ],
+        "gridColumns": "226.656px 226.672px 226.672px"
+      },
+      "pageErrors": []
+    },
+    {
+      "state": "dense",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 20,
+        "imageHeights": [
+          229, 229, 229, 229, 229, 229, 229, 229, 229, 229, 229, 229, 229, 229,
+          229, 229, 229, 229, 229, 229
+        ],
+        "gridColumns": "229px 229px 229px 229px"
+      },
+      "paginationHistoryAndFocus": true,
+      "sortKeepsFiltersResetsPage": true,
+      "pageErrors": []
+    },
+    {
+      "state": "dense",
+      "width": 1920,
+      "metrics": {
+        "width": 1920,
+        "documentWidth": 1920,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 20,
+        "imageHeights": [
+          229, 229, 229, 229, 229, 229, 229, 229, 229, 229, 229, 229, 229, 229,
+          229, 229, 229, 229, 229, 229
+        ],
+        "gridColumns": "229px 229px 229px 229px"
+      },
+      "pageErrors": []
+    },
+    {
+      "state": "long",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 20,
+        "imageHeights": [
+          163.5, 163.5, 163.5, 163.5, 163.5, 163.5, 163.5, 163.5, 163.5, 163.5,
+          163.5, 163.5, 163.5, 163.5, 163.5, 163.5, 163.5, 163.5, 163.5, 163.5
+        ],
+        "gridColumns": "163.5px 163.5px"
+      },
+      "pageErrors": []
+    },
+    {
+      "state": "long",
+      "width": 430,
+      "metrics": {
+        "width": 430,
+        "documentWidth": 430,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 20,
+        "imageHeights": [
+          191, 191, 191, 191, 191, 191, 191, 191, 191, 191, 191, 191, 191, 191,
+          191, 191, 191, 191, 191, 191
+        ],
+        "gridColumns": "191px 191px"
+      },
+      "pageErrors": []
+    },
+    {
+      "state": "long",
+      "width": 768,
+      "metrics": {
+        "width": 768,
+        "documentWidth": 768,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 20,
+        "imageHeights": [
+          226.65625, 226.671875, 226.671875, 226.65625, 226.671875, 226.671875,
+          226.65625, 226.671875, 226.671875, 226.65625, 226.671875, 226.671875,
+          226.65625, 226.671875, 226.671875, 226.65625, 226.671875, 226.671875,
+          226.65625, 226.671875
+        ],
+        "gridColumns": "226.656px 226.672px 226.672px"
+      },
+      "pageErrors": []
+    },
+    {
+      "state": "long",
+      "width": 1024,
+      "metrics": {
+        "width": 1024,
+        "documentWidth": 1024,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 20,
+        "imageHeights": [
+          226.65625, 226.671875, 226.671875, 226.65625, 226.671875, 226.671875,
+          226.65625, 226.671875, 226.671875, 226.65625, 226.671875, 226.671875,
+          226.65625, 226.671875, 226.671875, 226.65625, 226.671875, 226.671875,
+          226.65625, 226.671875
+        ],
+        "gridColumns": "226.656px 226.672px 226.672px"
+      },
+      "pageErrors": []
+    },
+    {
+      "state": "long",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 20,
+        "imageHeights": [
+          229, 229, 229, 229, 229, 229, 229, 229, 229, 229, 229, 229, 229, 229,
+          229, 229, 229, 229, 229, 229
+        ],
+        "gridColumns": "229px 229px 229px 229px"
+      },
+      "pageErrors": []
+    },
+    {
+      "state": "long",
+      "width": 1920,
+      "metrics": {
+        "width": 1920,
+        "documentWidth": 1920,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 20,
+        "imageHeights": [
+          229, 229, 229, 229, 229, 229, 229, 229, 229, 229, 229, 229, 229, 229,
+          229, 229, 229, 229, 229, 229
+        ],
+        "gridColumns": "229px 229px 229px 229px"
+      },
+      "pageErrors": []
+    },
+    {
+      "state": "empty",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 0,
+        "imageHeights": [],
+        "gridColumns": null
+      },
+      "pageErrors": []
+    },
+    {
+      "state": "empty",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 0,
+        "imageHeights": [],
+        "gridColumns": null
+      },
+      "pageErrors": []
+    },
+    {
+      "state": "error",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 0,
+        "imageHeights": [],
+        "gridColumns": null
+      },
+      "keyboardRetry": true,
+      "pageErrors": []
+    },
+    {
+      "state": "error",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 0,
+        "imageHeights": [],
+        "gridColumns": null
+      },
+      "keyboardRetry": true,
+      "pageErrors": []
+    },
+    {
+      "state": "loading",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 0,
+        "imageHeights": [],
+        "gridColumns": "163.5px 163.5px"
+      },
+      "loadingResolved": true,
+      "pageErrors": []
+    },
+    {
+      "state": "loading",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 0,
+        "imageHeights": [],
+        "gridColumns": "229px 229px 229px 229px"
+      },
+      "loadingResolved": true,
+      "pageErrors": []
+    },
+    {
+      "state": "malformed",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 0,
+        "imageHeights": [],
+        "gridColumns": null
+      },
+      "keyboardRetry": true,
+      "pageErrors": []
+    },
+    {
+      "state": "malformed",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 0,
+        "imageHeights": [],
+        "gridColumns": null
+      },
+      "keyboardRetry": true,
+      "pageErrors": []
+    }
+  ],
+  "browser": "149.0.7827.55"
+}

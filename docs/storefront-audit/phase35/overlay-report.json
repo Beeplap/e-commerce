@@ -1,0 +1,218 @@
+[
+  {
+    "kind": "modal",
+    "width": 375,
+    "nativeModal": true,
+    "focusContained": true,
+    "focusRestored": true,
+    "scrollRestored": true,
+    "busyEscapeBlocked": true,
+    "geometry": {
+      "top": 288,
+      "bottom": 612,
+      "scrollTop": 0,
+      "padding": "24px",
+      "boxSizing": "border-box",
+      "titleTop": 312
+    },
+    "source": "temporary component-only fixture, no backend data"
+  },
+  {
+    "kind": "modal",
+    "width": 430,
+    "nativeModal": true,
+    "focusContained": true,
+    "focusRestored": true,
+    "scrollRestored": true,
+    "busyEscapeBlocked": true,
+    "geometry": {
+      "top": 288,
+      "bottom": 612,
+      "scrollTop": 0,
+      "padding": "24px",
+      "boxSizing": "border-box",
+      "titleTop": 312
+    },
+    "source": "temporary component-only fixture, no backend data"
+  },
+  {
+    "kind": "modal",
+    "width": 768,
+    "nativeModal": true,
+    "focusContained": true,
+    "focusRestored": true,
+    "scrollRestored": true,
+    "busyEscapeBlocked": true,
+    "geometry": {
+      "top": 288,
+      "bottom": 612,
+      "scrollTop": 0,
+      "padding": "24px",
+      "boxSizing": "border-box",
+      "titleTop": 312
+    },
+    "source": "temporary component-only fixture, no backend data"
+  },
+  {
+    "kind": "modal",
+    "width": 1024,
+    "nativeModal": true,
+    "focusContained": true,
+    "focusRestored": true,
+    "scrollRestored": true,
+    "busyEscapeBlocked": true,
+    "geometry": {
+      "top": 288,
+      "bottom": 612,
+      "scrollTop": 0,
+      "padding": "24px",
+      "boxSizing": "border-box",
+      "titleTop": 312
+    },
+    "source": "temporary component-only fixture, no backend data"
+  },
+  {
+    "kind": "modal",
+    "width": 1440,
+    "nativeModal": true,
+    "focusContained": true,
+    "focusRestored": true,
+    "scrollRestored": true,
+    "busyEscapeBlocked": true,
+    "geometry": {
+      "top": 288,
+      "bottom": 612,
+      "scrollTop": 0,
+      "padding": "24px",
+      "boxSizing": "border-box",
+      "titleTop": 312
+    },
+    "source": "temporary component-only fixture, no backend data"
+  },
+  {
+    "kind": "modal",
+    "width": 1920,
+    "nativeModal": true,
+    "focusContained": true,
+    "focusRestored": true,
+    "scrollRestored": true,
+    "busyEscapeBlocked": true,
+    "geometry": {
+      "top": 288,
+      "bottom": 612,
+      "scrollTop": 0,
+      "padding": "24px",
+      "boxSizing": "border-box",
+      "titleTop": 312
+    },
+    "source": "temporary component-only fixture, no backend data"
+  },
+  {
+    "kind": "drawer",
+    "width": 375,
+    "nativeModal": true,
+    "focusContained": true,
+    "focusRestored": true,
+    "scrollRestored": true,
+    "busyEscapeBlocked": true,
+    "geometry": {
+      "top": 0,
+      "bottom": 900,
+      "scrollTop": 0,
+      "padding": "24px",
+      "boxSizing": "border-box",
+      "titleTop": 24
+    },
+    "source": "temporary component-only fixture, no backend data"
+  },
+  {
+    "kind": "drawer",
+    "width": 430,
+    "nativeModal": true,
+    "focusContained": true,
+    "focusRestored": true,
+    "scrollRestored": true,
+    "busyEscapeBlocked": true,
+    "geometry": {
+      "top": 0,
+      "bottom": 900,
+      "scrollTop": 0,
+      "padding": "24px",
+      "boxSizing": "border-box",
+      "titleTop": 24
+    },
+    "source": "temporary component-only fixture, no backend data"
+  },
+  {
+    "kind": "drawer",
+    "width": 768,
+    "nativeModal": true,
+    "focusContained": true,
+    "focusRestored": true,
+    "scrollRestored": true,
+    "busyEscapeBlocked": true,
+    "geometry": {
+      "top": 0,
+      "bottom": 900,
+      "scrollTop": 0,
+      "padding": "24px",
+      "boxSizing": "border-box",
+      "titleTop": 24
+    },
+    "source": "temporary component-only fixture, no backend data"
+  },
+  {
+    "kind": "drawer",
+    "width": 1024,
+    "nativeModal": true,
+    "focusContained": true,
+    "focusRestored": true,
+    "scrollRestored": true,
+    "busyEscapeBlocked": true,
+    "geometry": {
+      "top": 0,
+      "bottom": 900,
+      "scrollTop": 0,
+      "padding": "24px",
+      "boxSizing": "border-box",
+      "titleTop": 24
+    },
+    "source": "temporary component-only fixture, no backend data"
+  },
+  {
+    "kind": "drawer",
+    "width": 1440,
+    "nativeModal": true,
+    "focusContained": true,
+    "focusRestored": true,
+    "scrollRestored": true,
+    "busyEscapeBlocked": true,
+    "geometry": {
+      "top": 0,
+      "bottom": 900,
+      "scrollTop": 0,
+      "padding": "24px",
+      "boxSizing": "border-box",
+      "titleTop": 24
+    },
+    "source": "temporary component-only fixture, no backend data"
+  },
+  {
+    "kind": "drawer",
+    "width": 1920,
+    "nativeModal": true,
+    "focusContained": true,
+    "focusRestored": true,
+    "scrollRestored": true,
+    "busyEscapeBlocked": true,
+    "geometry": {
+      "top": 0,
+      "bottom": 900,
+      "scrollTop": 0,
+      "padding": "24px",
+      "boxSizing": "border-box",
+      "titleTop": 24
+    },
+    "source": "temporary component-only fixture, no backend data"
+  }
+]

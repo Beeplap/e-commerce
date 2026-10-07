@@ -1,0 +1,121 @@
+{
+  "phase": 39,
+  "actualProductWidthCases": 12,
+  "interceptedFixtureCases": 32,
+  "widths": [375, 430, 768, 1024, 1440, 1920],
+  "pngs": 82,
+  "actualPngs": 30,
+  "fixturePngs": 52,
+  "pngValidation": "Signature, all chunk CRCs, IEND, filename width, dimensions, bytes and retained SHA256 match",
+  "browserValidation": "No document overflow, duplicate IDs or page errors in final cases",
+  "liveCartAcceptance": "Pending: existing HTTP 308 blocks Django mutation; visible focused retryable error validated",
+  "fixtureCartAcceptance": "Explicit HTTP 201 fixture only; provider/drawer, CSRF and variant/quantity payload checked",
+  "paletteChecks": 22,
+  "productionSourcePages": 59,
+  "productionServerPageEntries": 50,
+  "productionClientPageEntries": 9,
+  "productionAuditLimits": "Source pages matched to the production manifest. Static HTML script/stylesheet references are deduplicated per route; nomodule scripts are excluded. Gzip estimates sum separate level-9 compressed assets. Dynamic route transfer, RSC/HTML bytes, prefetched navigation, runtime requests, caching, parse cost and Core Web Vitals are not measured.",
+  "localLinksValidated": 25,
+  "links": [
+    {
+      "document": "docs/storefront-product-detail-review.md",
+      "target": "storefront-audit/phase39/actual-product-1-viewport-375.png"
+    },
+    {
+      "document": "docs/storefront-product-detail-review.md",
+      "target": "storefront-audit/phase39/actual-product-1-viewport-430.png"
+    },
+    {
+      "document": "docs/storefront-product-detail-review.md",
+      "target": "storefront-audit/phase39/actual-product-1-viewport-768.png"
+    },
+    {
+      "document": "docs/storefront-product-detail-review.md",
+      "target": "storefront-audit/phase39/actual-product-1-viewport-1024.png"
+    },
+    {
+      "document": "docs/storefront-product-detail-review.md",
+      "target": "storefront-audit/phase39/actual-product-1-viewport-1440.png"
+    },
+    {
+      "document": "docs/storefront-product-detail-review.md",
+      "target": "storefront-audit/phase39/actual-product-1-viewport-1920.png"
+    },
+    {
+      "document": "docs/storefront-product-detail-review.md",
+      "target": "storefront-audit/phase39/actual-product-2-viewport-375.png"
+    },
+    {
+      "document": "docs/storefront-product-detail-review.md",
+      "target": "storefront-audit/phase39/actual-product-2-viewport-1440.png"
+    },
+    {
+      "document": "docs/storefront-product-detail-review.md",
+      "target": "storefront-audit/phase39/actual-cart-transport-error-375.png"
+    },
+    {
+      "document": "docs/storefront-product-detail-review.md",
+      "target": "storefront-audit/phase39/actual-cart-transport-error-1440.png"
+    },
+    {
+      "document": "docs/storefront-product-detail-review.md",
+      "target": "storefront-audit/phase39/fixture-gallery-viewport-375.png"
+    },
+    {
+      "document": "docs/storefront-product-detail-review.md",
+      "target": "storefront-audit/phase39/fixture-gallery-viewport-1440.png"
+    },
+    {
+      "document": "docs/storefront-product-detail-review.md",
+      "target": "storefront-audit/phase39/fixture-long-viewport-375.png"
+    },
+    {
+      "document": "docs/storefront-product-detail-review.md",
+      "target": "storefront-audit/phase39/fixture-detail-loading-1440.png"
+    },
+    {
+      "document": "docs/storefront-product-detail-review.md",
+      "target": "storefront-audit/phase39/fixture-cart-error-375.png"
+    },
+    {
+      "document": "docs/storefront-product-detail-review.md",
+      "target": "storefront-audit/phase39/fixture-cart-confirmed-1440.png"
+    },
+    {
+      "document": "docs/storefront-product-detail-review.md",
+      "target": "storefront-audit/phase39/actual-report.json"
+    },
+    {
+      "document": "docs/storefront-product-detail-review.md",
+      "target": "storefront-audit/phase39/fixture-report.json"
+    },
+    {
+      "document": "docs/storefront-product-detail-review.md",
+      "target": "storefront-audit/phase39/screenshot-validation.json"
+    },
+    {
+      "document": "docs/storefront-product-detail-review.md",
+      "target": "storefront-audit/phase39/palette-report.json"
+    },
+    {
+      "document": "docs/storefront-product-detail-review.md",
+      "target": "storefront-audit/phase39/build-report.json"
+    },
+    {
+      "document": "docs/storefront-product-detail-review.md",
+      "target": "storefront-audit/phase39/evidence-report.json"
+    },
+    {
+      "document": "docs/storefront-design.md",
+      "target": "storefront-product-detail-review.md"
+    },
+    {
+      "document": "docs/storefront-design.md",
+      "target": "storefront-discovery-review.md"
+    },
+    {
+      "document": "docs/testing.md",
+      "target": "storefront-product-detail-review.md"
+    }
+  ]
+}

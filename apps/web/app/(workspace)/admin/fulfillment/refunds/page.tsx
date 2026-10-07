@@ -1,5 +1,5 @@
 import { AdminFulfillmentOverview } from "@/features/fulfillment/admin-fulfillment";
 
 export default function Page() {
-  return <AdminFulfillmentOverview />;
+  return <AdminFulfillmentOverview initialTab="refunds" />;
 }

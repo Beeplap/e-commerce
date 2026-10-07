@@ -1,0 +1,791 @@
+{
+  "base": "http://127.0.0.1:3001",
+  "baseline": "cb0bd0a plus Phase 36 shell",
+  "state": "anonymous; actual existing catalog; no accounts/catalog/orders/payment fixtures seeded; no cart/order/payment mutations",
+  "routes": [
+    {
+      "name": "home",
+      "path": "/",
+      "width": 375,
+      "status": 200,
+      "metrics": {
+        "viewport": 375,
+        "documentWidth": 375,
+        "headerHeight": 159,
+        "searchWidth": 343,
+        "searchFont": "16px",
+        "duplicateIds": [],
+        "mainCount": 1,
+        "cartCount": "\u2014",
+        "operationalAccent": "#176b57",
+        "footerLinks": [
+          {
+            "text": "Explore the catalog ",
+            "href": "/search"
+          },
+          {
+            "text": "All products",
+            "href": "/search"
+          },
+          {
+            "text": "New arrivals",
+            "href": "/search?sort=newest"
+          },
+          {
+            "text": "Your cart",
+            "href": "/cart"
+          },
+          {
+            "text": "Orders & returns",
+            "href": "/account/orders"
+          },
+          {
+            "text": "Profile",
+            "href": "/account/profile"
+          },
+          {
+            "text": "Saved addresses",
+            "href": "/account/addresses"
+          },
+          {
+            "text": "Become a Seller",
+            "href": "/onboarding"
+          },
+          {
+            "text": "Your workspaces",
+            "href": "/workspaces"
+          },
+          {
+            "text": "QCQuickCommerce",
+            "href": "/"
+          }
+        ]
+      },
+      "screenshot": "home-375.png"
+    },
+    {
+      "name": "home",
+      "path": "/",
+      "width": 430,
+      "status": 200,
+      "metrics": {
+        "viewport": 430,
+        "documentWidth": 430,
+        "headerHeight": 159,
+        "searchWidth": 398,
+        "searchFont": "16px",
+        "duplicateIds": [],
+        "mainCount": 1,
+        "cartCount": "\u2014",
+        "operationalAccent": "#176b57",
+        "footerLinks": [
+          {
+            "text": "Explore the catalog ",
+            "href": "/search"
+          },
+          {
+            "text": "All products",
+            "href": "/search"
+          },
+          {
+            "text": "New arrivals",
+            "href": "/search?sort=newest"
+          },
+          {
+            "text": "Your cart",
+            "href": "/cart"
+          },
+          {
+            "text": "Orders & returns",
+            "href": "/account/orders"
+          },
+          {
+            "text": "Profile",
+            "href": "/account/profile"
+          },
+          {
+            "text": "Saved addresses",
+            "href": "/account/addresses"
+          },
+          {
+            "text": "Become a Seller",
+            "href": "/onboarding"
+          },
+          {
+            "text": "Your workspaces",
+            "href": "/workspaces"
+          },
+          {
+            "text": "QCQuickCommerce",
+            "href": "/"
+          }
+        ]
+      },
+      "screenshot": "home-430.png"
+    },
+    {
+      "name": "home",
+      "path": "/",
+      "width": 768,
+      "status": 200,
+      "metrics": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "headerHeight": 103,
+        "searchWidth": 288,
+        "searchFont": "16px",
+        "duplicateIds": [],
+        "mainCount": 1,
+        "cartCount": "\u2014",
+        "operationalAccent": "#176b57",
+        "footerLinks": [
+          {
+            "text": "Explore the catalog ",
+            "href": "/search"
+          },
+          {
+            "text": "All products",
+            "href": "/search"
+          },
+          {
+            "text": "New arrivals",
+            "href": "/search?sort=newest"
+          },
+          {
+            "text": "Your cart",
+            "href": "/cart"
+          },
+          {
+            "text": "Orders & returns",
+            "href": "/account/orders"
+          },
+          {
+            "text": "Profile",
+            "href": "/account/profile"
+          },
+          {
+            "text": "Saved addresses",
+            "href": "/account/addresses"
+          },
+          {
+            "text": "Become a Seller",
+            "href": "/onboarding"
+          },
+          {
+            "text": "Your workspaces",
+            "href": "/workspaces"
+          },
+          {
+            "text": "QCQuickCommerce",
+            "href": "/"
+          }
+        ]
+      },
+      "screenshot": "home-768.png"
+    },
+    {
+      "name": "home",
+      "path": "/",
+      "width": 1024,
+      "status": 200,
+      "metrics": {
+        "viewport": 1024,
+        "documentWidth": 1024,
+        "headerHeight": 103,
+        "searchWidth": 288,
+        "searchFont": "16px",
+        "duplicateIds": [],
+        "mainCount": 1,
+        "cartCount": "\u2014",
+        "operationalAccent": "#176b57",
+        "footerLinks": [
+          {
+            "text": "Explore the catalog ",
+            "href": "/search"
+          },
+          {
+            "text": "All products",
+            "href": "/search"
+          },
+          {
+            "text": "New arrivals",
+            "href": "/search?sort=newest"
+          },
+          {
+            "text": "Your cart",
+            "href": "/cart"
+          },
+          {
+            "text": "Orders & returns",
+            "href": "/account/orders"
+          },
+          {
+            "text": "Profile",
+            "href": "/account/profile"
+          },
+          {
+            "text": "Saved addresses",
+            "href": "/account/addresses"
+          },
+          {
+            "text": "Become a Seller",
+            "href": "/onboarding"
+          },
+          {
+            "text": "Your workspaces",
+            "href": "/workspaces"
+          },
+          {
+            "text": "QCQuickCommerce",
+            "href": "/"
+          }
+        ]
+      },
+      "screenshot": "home-1024.png"
+    },
+    {
+      "name": "home",
+      "path": "/",
+      "width": 1440,
+      "status": 200,
+      "metrics": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "headerHeight": 103,
+        "searchWidth": 256,
+        "searchFont": "16px",
+        "duplicateIds": [],
+        "mainCount": 1,
+        "cartCount": "\u2014",
+        "operationalAccent": "#176b57",
+        "footerLinks": [
+          {
+            "text": "Explore the catalog ",
+            "href": "/search"
+          },
+          {
+            "text": "All products",
+            "href": "/search"
+          },
+          {
+            "text": "New arrivals",
+            "href": "/search?sort=newest"
+          },
+          {
+            "text": "Your cart",
+            "href": "/cart"
+          },
+          {
+            "text": "Orders & returns",
+            "href": "/account/orders"
+          },
+          {
+            "text": "Profile",
+            "href": "/account/profile"
+          },
+          {
+            "text": "Saved addresses",
+            "href": "/account/addresses"
+          },
+          {
+            "text": "Become a Seller",
+            "href": "/onboarding"
+          },
+          {
+            "text": "Your workspaces",
+            "href": "/workspaces"
+          },
+          {
+            "text": "QCQuickCommerce",
+            "href": "/"
+          }
+        ]
+      },
+      "screenshot": "home-1440.png"
+    },
+    {
+      "name": "home",
+      "path": "/",
+      "width": 1920,
+      "status": 200,
+      "metrics": {
+        "viewport": 1920,
+        "documentWidth": 1920,
+        "headerHeight": 103,
+        "searchWidth": 256,
+        "searchFont": "16px",
+        "duplicateIds": [],
+        "mainCount": 1,
+        "cartCount": "\u2014",
+        "operationalAccent": "#176b57",
+        "footerLinks": [
+          {
+            "text": "Explore the catalog ",
+            "href": "/search"
+          },
+          {
+            "text": "All products",
+            "href": "/search"
+          },
+          {
+            "text": "New arrivals",
+            "href": "/search?sort=newest"
+          },
+          {
+            "text": "Your cart",
+            "href": "/cart"
+          },
+          {
+            "text": "Orders & returns",
+            "href": "/account/orders"
+          },
+          {
+            "text": "Profile",
+            "href": "/account/profile"
+          },
+          {
+            "text": "Saved addresses",
+            "href": "/account/addresses"
+          },
+          {
+            "text": "Become a Seller",
+            "href": "/onboarding"
+          },
+          {
+            "text": "Your workspaces",
+            "href": "/workspaces"
+          },
+          {
+            "text": "QCQuickCommerce",
+            "href": "/"
+          }
+        ]
+      },
+      "screenshot": "home-1920.png"
+    },
+    {
+      "name": "shop",
+      "path": "/search",
+      "width": 375,
+      "status": 200,
+      "metrics": {
+        "viewport": 375,
+        "documentWidth": 375,
+        "headerHeight": 159,
+        "searchWidth": 343,
+        "searchFont": "16px",
+        "duplicateIds": [],
+        "mainCount": 1,
+        "cartCount": "\u2014",
+        "operationalAccent": "#176b57",
+        "footerLinks": [
+          {
+            "text": "Explore the catalog ",
+            "href": "/search"
+          },
+          {
+            "text": "All products",
+            "href": "/search"
+          },
+          {
+            "text": "New arrivals",
+            "href": "/search?sort=newest"
+          },
+          {
+            "text": "Your cart",
+            "href": "/cart"
+          },
+          {
+            "text": "Orders & returns",
+            "href": "/account/orders"
+          },
+          {
+            "text": "Profile",
+            "href": "/account/profile"
+          },
+          {
+            "text": "Saved addresses",
+            "href": "/account/addresses"
+          },
+          {
+            "text": "Become a Seller",
+            "href": "/onboarding"
+          },
+          {
+            "text": "Your workspaces",
+            "href": "/workspaces"
+          },
+          {
+            "text": "QCQuickCommerce",
+            "href": "/"
+          }
+        ]
+      },
+      "screenshot": "shop-375.png"
+    },
+    {
+      "name": "shop",
+      "path": "/search",
+      "width": 430,
+      "status": 200,
+      "metrics": {
+        "viewport": 430,
+        "documentWidth": 430,
+        "headerHeight": 159,
+        "searchWidth": 398,
+        "searchFont": "16px",
+        "duplicateIds": [],
+        "mainCount": 1,
+        "cartCount": "\u2014",
+        "operationalAccent": "#176b57",
+        "footerLinks": [
+          {
+            "text": "Explore the catalog ",
+            "href": "/search"
+          },
+          {
+            "text": "All products",
+            "href": "/search"
+          },
+          {
+            "text": "New arrivals",
+            "href": "/search?sort=newest"
+          },
+          {
+            "text": "Your cart",
+            "href": "/cart"
+          },
+          {
+            "text": "Orders & returns",
+            "href": "/account/orders"
+          },
+          {
+            "text": "Profile",
+            "href": "/account/profile"
+          },
+          {
+            "text": "Saved addresses",
+            "href": "/account/addresses"
+          },
+          {
+            "text": "Become a Seller",
+            "href": "/onboarding"
+          },
+          {
+            "text": "Your workspaces",
+            "href": "/workspaces"
+          },
+          {
+            "text": "QCQuickCommerce",
+            "href": "/"
+          }
+        ]
+      },
+      "screenshot": "shop-430.png"
+    },
+    {
+      "name": "shop",
+      "path": "/search",
+      "width": 768,
+      "status": 200,
+      "metrics": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "headerHeight": 103,
+        "searchWidth": 288,
+        "searchFont": "16px",
+        "duplicateIds": [],
+        "mainCount": 1,
+        "cartCount": "\u2014",
+        "operationalAccent": "#176b57",
+        "footerLinks": [
+          {
+            "text": "Explore the catalog ",
+            "href": "/search"
+          },
+          {
+            "text": "All products",
+            "href": "/search"
+          },
+          {
+            "text": "New arrivals",
+            "href": "/search?sort=newest"
+          },
+          {
+            "text": "Your cart",
+            "href": "/cart"
+          },
+          {
+            "text": "Orders & returns",
+            "href": "/account/orders"
+          },
+          {
+            "text": "Profile",
+            "href": "/account/profile"
+          },
+          {
+            "text": "Saved addresses",
+            "href": "/account/addresses"
+          },
+          {
+            "text": "Become a Seller",
+            "href": "/onboarding"
+          },
+          {
+            "text": "Your workspaces",
+            "href": "/workspaces"
+          },
+          {
+            "text": "QCQuickCommerce",
+            "href": "/"
+          }
+        ]
+      },
+      "screenshot": "shop-768.png"
+    },
+    {
+      "name": "shop",
+      "path": "/search",
+      "width": 1024,
+      "status": 200,
+      "metrics": {
+        "viewport": 1024,
+        "documentWidth": 1024,
+        "headerHeight": 103,
+        "searchWidth": 288,
+        "searchFont": "16px",
+        "duplicateIds": [],
+        "mainCount": 1,
+        "cartCount": "\u2014",
+        "operationalAccent": "#176b57",
+        "footerLinks": [
+          {
+            "text": "Explore the catalog ",
+            "href": "/search"
+          },
+          {
+            "text": "All products",
+            "href": "/search"
+          },
+          {
+            "text": "New arrivals",
+            "href": "/search?sort=newest"
+          },
+          {
+            "text": "Your cart",
+            "href": "/cart"
+          },
+          {
+            "text": "Orders & returns",
+            "href": "/account/orders"
+          },
+          {
+            "text": "Profile",
+            "href": "/account/profile"
+          },
+          {
+            "text": "Saved addresses",
+            "href": "/account/addresses"
+          },
+          {
+            "text": "Become a Seller",
+            "href": "/onboarding"
+          },
+          {
+            "text": "Your workspaces",
+            "href": "/workspaces"
+          },
+          {
+            "text": "QCQuickCommerce",
+            "href": "/"
+          }
+        ]
+      },
+      "screenshot": "shop-1024.png"
+    },
+    {
+      "name": "shop",
+      "path": "/search",
+      "width": 1440,
+      "status": 200,
+      "metrics": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "headerHeight": 103,
+        "searchWidth": 256,
+        "searchFont": "16px",
+        "duplicateIds": [],
+        "mainCount": 1,
+        "cartCount": "\u2014",
+        "operationalAccent": "#176b57",
+        "footerLinks": [
+          {
+            "text": "Explore the catalog ",
+            "href": "/search"
+          },
+          {
+            "text": "All products",
+            "href": "/search"
+          },
+          {
+            "text": "New arrivals",
+            "href": "/search?sort=newest"
+          },
+          {
+            "text": "Your cart",
+            "href": "/cart"
+          },
+          {
+            "text": "Orders & returns",
+            "href": "/account/orders"
+          },
+          {
+            "text": "Profile",
+            "href": "/account/profile"
+          },
+          {
+            "text": "Saved addresses",
+            "href": "/account/addresses"
+          },
+          {
+            "text": "Become a Seller",
+            "href": "/onboarding"
+          },
+          {
+            "text": "Your workspaces",
+            "href": "/workspaces"
+          },
+          {
+            "text": "QCQuickCommerce",
+            "href": "/"
+          }
+        ]
+      },
+      "screenshot": "shop-1440.png"
+    },
+    {
+      "name": "shop",
+      "path": "/search",
+      "width": 1920,
+      "status": 200,
+      "metrics": {
+        "viewport": 1920,
+        "documentWidth": 1920,
+        "headerHeight": 103,
+        "searchWidth": 256,
+        "searchFont": "16px",
+        "duplicateIds": [],
+        "mainCount": 1,
+        "cartCount": "\u2014",
+        "operationalAccent": "#176b57",
+        "footerLinks": [
+          {
+            "text": "Explore the catalog ",
+            "href": "/search"
+          },
+          {
+            "text": "All products",
+            "href": "/search"
+          },
+          {
+            "text": "New arrivals",
+            "href": "/search?sort=newest"
+          },
+          {
+            "text": "Your cart",
+            "href": "/cart"
+          },
+          {
+            "text": "Orders & returns",
+            "href": "/account/orders"
+          },
+          {
+            "text": "Profile",
+            "href": "/account/profile"
+          },
+          {
+            "text": "Saved addresses",
+            "href": "/account/addresses"
+          },
+          {
+            "text": "Become a Seller",
+            "href": "/onboarding"
+          },
+          {
+            "text": "Your workspaces",
+            "href": "/workspaces"
+          },
+          {
+            "text": "QCQuickCommerce",
+            "href": "/"
+          }
+        ]
+      },
+      "screenshot": "shop-1920.png"
+    }
+  ],
+  "navigation": [
+    {
+      "width": 375,
+      "screenshot": "navigation-375.png",
+      "nativeModal": true,
+      "focusContained": true,
+      "focusReturned": true,
+      "scrollRestored": true,
+      "searchEscapeThenDrawerEscape": true,
+      "actualSellerLinks": ["Acme Tech", "Beta Goods"]
+    },
+    {
+      "width": 430,
+      "screenshot": "navigation-430.png",
+      "nativeModal": true,
+      "focusContained": true,
+      "focusReturned": true,
+      "scrollRestored": true,
+      "searchEscapeThenDrawerEscape": true,
+      "actualSellerLinks": ["Acme Tech", "Beta Goods"]
+    },
+    {
+      "width": 768,
+      "screenshot": "navigation-768.png",
+      "nativeModal": true,
+      "focusContained": true,
+      "focusReturned": true,
+      "scrollRestored": true,
+      "searchEscapeThenDrawerEscape": true,
+      "actualSellerLinks": ["Acme Tech", "Beta Goods"]
+    },
+    {
+      "width": 1024,
+      "screenshot": "navigation-1024.png",
+      "nativeModal": true,
+      "focusContained": true,
+      "focusReturned": true,
+      "scrollRestored": true,
+      "searchEscapeThenDrawerEscape": true,
+      "actualSellerLinks": ["Acme Tech", "Beta Goods"]
+    }
+  ],
+  "desktop": [
+    {
+      "width": 1440,
+      "categoriesEscapeFocusReturn": true,
+      "sellersLightDismiss": true,
+      "searchActiveOption": true
+    },
+    {
+      "width": 1920,
+      "categoriesEscapeFocusReturn": true,
+      "sellersLightDismiss": true,
+      "searchActiveOption": true
+    }
+  ],
+  "browser": "149.0.7827.55",
+  "skipLink": true,
+  "resizeDismissal": true,
+  "reducedMotion": {
+    "animations": 0,
+    "duration": "0s"
+  },
+  "pageErrors": []
+}

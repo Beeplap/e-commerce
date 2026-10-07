@@ -1,0 +1,376 @@
+{
+  "state": "Explicit supplemental Playwright response fixtures, not actual catalog evidence; no backend mutations",
+  "cases": [
+    {
+      "state": "empty",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "h1": 1,
+        "products": 0,
+        "sellers": 0,
+        "prices": []
+      },
+      "pageErrors": []
+    },
+    {
+      "state": "empty",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "h1": 1,
+        "products": 0,
+        "sellers": 0,
+        "prices": []
+      },
+      "pageErrors": []
+    },
+    {
+      "state": "catalog-error",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "h1": 1,
+        "products": 0,
+        "sellers": 0,
+        "prices": []
+      },
+      "keyboardRetry": true,
+      "pageErrors": []
+    },
+    {
+      "state": "catalog-error",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "h1": 1,
+        "products": 0,
+        "sellers": 0,
+        "prices": []
+      },
+      "keyboardRetry": true,
+      "pageErrors": []
+    },
+    {
+      "state": "category-error",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "h1": 1,
+        "products": 1,
+        "sellers": 1,
+        "prices": ["125.50\u00a0NPR150.00\u00a0NPR"]
+      },
+      "keyboardRetry": true,
+      "pageErrors": []
+    },
+    {
+      "state": "category-error",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "h1": 1,
+        "products": 1,
+        "sellers": 1,
+        "prices": ["125.50\u00a0NPR150.00\u00a0NPR"]
+      },
+      "keyboardRetry": true,
+      "pageErrors": []
+    },
+    {
+      "state": "loading",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "h1": 1,
+        "products": 0,
+        "sellers": 0,
+        "prices": []
+      },
+      "loadingResolved": true,
+      "pageErrors": []
+    },
+    {
+      "state": "loading",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "h1": 1,
+        "products": 0,
+        "sellers": 0,
+        "prices": []
+      },
+      "loadingResolved": true,
+      "pageErrors": []
+    },
+    {
+      "state": "dense",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "h1": 1,
+        "products": 8,
+        "sellers": 4,
+        "prices": [
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR"
+        ]
+      },
+      "productImageHeights": [
+        163.5, 163.5, 163.5, 163.5, 163.5, 163.5, 163.5, 163.5
+      ],
+      "imageGeometry": {
+        "width": 343,
+        "height": 172
+      },
+      "pageErrors": []
+    },
+    {
+      "state": "dense",
+      "width": 430,
+      "metrics": {
+        "width": 430,
+        "documentWidth": 430,
+        "h1": 1,
+        "products": 8,
+        "sellers": 4,
+        "prices": [
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR"
+        ]
+      },
+      "productImageHeights": [191, 191, 191, 191, 191, 191, 191, 191],
+      "imageGeometry": {
+        "width": 398,
+        "height": 199
+      },
+      "pageErrors": []
+    },
+    {
+      "state": "dense",
+      "width": 768,
+      "metrics": {
+        "width": 768,
+        "documentWidth": 768,
+        "h1": 1,
+        "products": 8,
+        "sellers": 4,
+        "prices": [
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR"
+        ]
+      },
+      "productImageHeights": [348, 348, 348, 348, 348, 348, 348, 348],
+      "imageGeometry": {
+        "width": 309,
+        "height": 232
+      },
+      "pageErrors": []
+    },
+    {
+      "state": "dense",
+      "width": 1024,
+      "metrics": {
+        "width": 1024,
+        "documentWidth": 1024,
+        "h1": 1,
+        "products": 8,
+        "sellers": 4,
+        "prices": [
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR"
+        ]
+      },
+      "productImageHeights": [226, 226, 226, 226, 226, 226, 226, 226],
+      "imageGeometry": {
+        "width": 412,
+        "height": 309
+      },
+      "pageErrors": []
+    },
+    {
+      "state": "dense",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "h1": 1,
+        "products": 8,
+        "sellers": 4,
+        "prices": [
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR"
+        ]
+      },
+      "productImageHeights": [290, 290, 290, 290, 290, 290, 290, 290],
+      "imageGeometry": {
+        "width": 526,
+        "height": 395
+      },
+      "pageErrors": []
+    },
+    {
+      "state": "dense",
+      "width": 1920,
+      "metrics": {
+        "width": 1920,
+        "documentWidth": 1920,
+        "h1": 1,
+        "products": 8,
+        "sellers": 4,
+        "prices": [
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR",
+          "125.50\u00a0NPR150.00\u00a0NPR"
+        ]
+      },
+      "productImageHeights": [290, 290, 290, 290, 290, 290, 290, 290],
+      "imageGeometry": {
+        "width": 526,
+        "height": 395
+      },
+      "pageErrors": []
+    },
+    {
+      "state": "long",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "h1": 1,
+        "products": 2,
+        "sellers": 1,
+        "prices": [
+          "9,007,199,254,740,993.25\u00a0NPR9,007,199,254,740,994.00\u00a0NPR",
+          "9,007,199,254,740,993.25\u00a0NPR9,007,199,254,740,994.00\u00a0NPR"
+        ]
+      },
+      "pageErrors": []
+    },
+    {
+      "state": "long",
+      "width": 430,
+      "metrics": {
+        "width": 430,
+        "documentWidth": 430,
+        "h1": 1,
+        "products": 2,
+        "sellers": 1,
+        "prices": [
+          "9,007,199,254,740,993.25\u00a0NPR9,007,199,254,740,994.00\u00a0NPR",
+          "9,007,199,254,740,993.25\u00a0NPR9,007,199,254,740,994.00\u00a0NPR"
+        ]
+      },
+      "pageErrors": []
+    },
+    {
+      "state": "long",
+      "width": 768,
+      "metrics": {
+        "width": 768,
+        "documentWidth": 768,
+        "h1": 1,
+        "products": 2,
+        "sellers": 1,
+        "prices": [
+          "9,007,199,254,740,993.25\u00a0NPR9,007,199,254,740,994.00\u00a0NPR",
+          "9,007,199,254,740,993.25\u00a0NPR9,007,199,254,740,994.00\u00a0NPR"
+        ]
+      },
+      "pageErrors": []
+    },
+    {
+      "state": "long",
+      "width": 1024,
+      "metrics": {
+        "width": 1024,
+        "documentWidth": 1024,
+        "h1": 1,
+        "products": 2,
+        "sellers": 1,
+        "prices": [
+          "9,007,199,254,740,993.25\u00a0NPR9,007,199,254,740,994.00\u00a0NPR",
+          "9,007,199,254,740,993.25\u00a0NPR9,007,199,254,740,994.00\u00a0NPR"
+        ]
+      },
+      "pageErrors": []
+    },
+    {
+      "state": "long",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "h1": 1,
+        "products": 2,
+        "sellers": 1,
+        "prices": [
+          "9,007,199,254,740,993.25\u00a0NPR9,007,199,254,740,994.00\u00a0NPR",
+          "9,007,199,254,740,993.25\u00a0NPR9,007,199,254,740,994.00\u00a0NPR"
+        ]
+      },
+      "pageErrors": []
+    },
+    {
+      "state": "long",
+      "width": 1920,
+      "metrics": {
+        "width": 1920,
+        "documentWidth": 1920,
+        "h1": 1,
+        "products": 2,
+        "sellers": 1,
+        "prices": [
+          "9,007,199,254,740,993.25\u00a0NPR9,007,199,254,740,994.00\u00a0NPR",
+          "9,007,199,254,740,993.25\u00a0NPR9,007,199,254,740,994.00\u00a0NPR"
+        ]
+      },
+      "pageErrors": []
+    }
+  ],
+  "browser": "149.0.7827.55"
+}

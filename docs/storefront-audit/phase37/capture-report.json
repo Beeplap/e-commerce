@@ -1,0 +1,557 @@
+{
+  "baseline": "f60d7ee plus Phase 37",
+  "state": "anonymous, actual existing catalog; no seed/mutations/interception",
+  "routes": [
+    {
+      "width": 375,
+      "status": 200,
+      "metrics": {
+        "viewport": 375,
+        "documentWidth": 375,
+        "hero": {
+          "top": 159,
+          "height": 488.4375,
+          "width": 375
+        },
+        "categories": {
+          "top": 647.4375,
+          "height": 177,
+          "width": 375
+        },
+        "arrivals": {
+          "top": 824.4375,
+          "height": 515.390625,
+          "width": 375
+        },
+        "products": 2,
+        "sellers": 2,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "prices": ["40.00\u00a0USD", "25.00\u00a0USD"],
+        "links": [
+          {
+            "text": "Shop new arrivals ",
+            "href": "/search?sort=newest"
+          },
+          {
+            "text": "Explore the shops ",
+            "href": "#sellers"
+          },
+          {
+            "text": "GadgetsMechanical KeyboardProduct photo unavailable",
+            "href": "/products/9c3f2a5b-7e14-40e7-9f57-73d4fcab7d1b"
+          },
+          {
+            "text": "Beta Goods",
+            "href": "/sellers/560692de-30c5-471b-893f-cadb55fcd8dc"
+          },
+          {
+            "text": "Gadgets 2 products",
+            "href": "/categories/0acee008-c160-433c-8af4-eeff973627c3"
+          },
+          {
+            "text": "View all arrivals ",
+            "href": "/search?sort=newest"
+          },
+          {
+            "text": "Image unavailable for Mechanical Keyboard",
+            "href": "/products/9c3f2a5b-7e14-40e7-9f57-73d4fcab7d1b"
+          },
+          {
+            "text": "Mechanical Keyboard",
+            "href": "/products/9c3f2a5b-7e14-40e7-9f57-73d4fcab7d1b"
+          },
+          {
+            "text": "Beta Goods",
+            "href": "/sellers/560692de-30c5-471b-893f-cadb55fcd8dc"
+          },
+          {
+            "text": "Image unavailable for Wireless Earbuds Pro",
+            "href": "/products/e0d7a86d-2555-4d44-80ee-c606cd56dd68"
+          },
+          {
+            "text": "Wireless Earbuds Pro",
+            "href": "/products/e0d7a86d-2555-4d44-80ee-c606cd56dd68"
+          },
+          {
+            "text": "Acme Tech",
+            "href": "/sellers/8e99415a-9721-4a58-ae3c-b6458fd9fe31"
+          },
+          {
+            "text": "Beta Goods Gadgets",
+            "href": "/sellers/560692de-30c5-471b-893f-cadb55fcd8dc"
+          },
+          {
+            "text": "Acme Tech Gadgets",
+            "href": "/sellers/8e99415a-9721-4a58-ae3c-b6458fd9fe31"
+          },
+          {
+            "text": "Sell on QuickCommerce ",
+            "href": "/onboarding"
+          }
+        ]
+      }
+    },
+    {
+      "width": 430,
+      "status": 200,
+      "metrics": {
+        "viewport": 430,
+        "documentWidth": 430,
+        "hero": {
+          "top": 159,
+          "height": 490.03125,
+          "width": 430
+        },
+        "categories": {
+          "top": 649.03125,
+          "height": 177,
+          "width": 430
+        },
+        "arrivals": {
+          "top": 826.03125,
+          "height": 515.390625,
+          "width": 430
+        },
+        "products": 2,
+        "sellers": 2,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "prices": ["40.00\u00a0USD", "25.00\u00a0USD"],
+        "links": [
+          {
+            "text": "Shop new arrivals ",
+            "href": "/search?sort=newest"
+          },
+          {
+            "text": "Explore the shops ",
+            "href": "#sellers"
+          },
+          {
+            "text": "GadgetsMechanical KeyboardProduct photo unavailable",
+            "href": "/products/9c3f2a5b-7e14-40e7-9f57-73d4fcab7d1b"
+          },
+          {
+            "text": "Beta Goods",
+            "href": "/sellers/560692de-30c5-471b-893f-cadb55fcd8dc"
+          },
+          {
+            "text": "Gadgets 2 products",
+            "href": "/categories/0acee008-c160-433c-8af4-eeff973627c3"
+          },
+          {
+            "text": "View all arrivals ",
+            "href": "/search?sort=newest"
+          },
+          {
+            "text": "Image unavailable for Mechanical Keyboard",
+            "href": "/products/9c3f2a5b-7e14-40e7-9f57-73d4fcab7d1b"
+          },
+          {
+            "text": "Mechanical Keyboard",
+            "href": "/products/9c3f2a5b-7e14-40e7-9f57-73d4fcab7d1b"
+          },
+          {
+            "text": "Beta Goods",
+            "href": "/sellers/560692de-30c5-471b-893f-cadb55fcd8dc"
+          },
+          {
+            "text": "Image unavailable for Wireless Earbuds Pro",
+            "href": "/products/e0d7a86d-2555-4d44-80ee-c606cd56dd68"
+          },
+          {
+            "text": "Wireless Earbuds Pro",
+            "href": "/products/e0d7a86d-2555-4d44-80ee-c606cd56dd68"
+          },
+          {
+            "text": "Acme Tech",
+            "href": "/sellers/8e99415a-9721-4a58-ae3c-b6458fd9fe31"
+          },
+          {
+            "text": "Beta Goods Gadgets",
+            "href": "/sellers/560692de-30c5-471b-893f-cadb55fcd8dc"
+          },
+          {
+            "text": "Acme Tech Gadgets",
+            "href": "/sellers/8e99415a-9721-4a58-ae3c-b6458fd9fe31"
+          },
+          {
+            "text": "Sell on QuickCommerce ",
+            "href": "/onboarding"
+          }
+        ]
+      }
+    },
+    {
+      "width": 768,
+      "status": 200,
+      "metrics": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "hero": {
+          "top": 103,
+          "height": 351,
+          "width": 768
+        },
+        "categories": {
+          "top": 454,
+          "height": 116.3125,
+          "width": 768
+        },
+        "arrivals": {
+          "top": 570.3125,
+          "height": 461.34375,
+          "width": 768
+        },
+        "products": 2,
+        "sellers": 2,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "prices": ["40.00\u00a0USD", "25.00\u00a0USD"],
+        "links": [
+          {
+            "text": "Shop new arrivals ",
+            "href": "/search?sort=newest"
+          },
+          {
+            "text": "Explore the shops ",
+            "href": "#sellers"
+          },
+          {
+            "text": "GadgetsMechanical KeyboardProduct photo unavailable",
+            "href": "/products/9c3f2a5b-7e14-40e7-9f57-73d4fcab7d1b"
+          },
+          {
+            "text": "Beta Goods",
+            "href": "/sellers/560692de-30c5-471b-893f-cadb55fcd8dc"
+          },
+          {
+            "text": "Gadgets 2 products",
+            "href": "/categories/0acee008-c160-433c-8af4-eeff973627c3"
+          },
+          {
+            "text": "View all arrivals ",
+            "href": "/search?sort=newest"
+          },
+          {
+            "text": "Image unavailable for Mechanical Keyboard",
+            "href": "/products/9c3f2a5b-7e14-40e7-9f57-73d4fcab7d1b"
+          },
+          {
+            "text": "Mechanical Keyboard",
+            "href": "/products/9c3f2a5b-7e14-40e7-9f57-73d4fcab7d1b"
+          },
+          {
+            "text": "Beta Goods",
+            "href": "/sellers/560692de-30c5-471b-893f-cadb55fcd8dc"
+          },
+          {
+            "text": "Image unavailable for Wireless Earbuds Pro",
+            "href": "/products/e0d7a86d-2555-4d44-80ee-c606cd56dd68"
+          },
+          {
+            "text": "Wireless Earbuds Pro",
+            "href": "/products/e0d7a86d-2555-4d44-80ee-c606cd56dd68"
+          },
+          {
+            "text": "Acme Tech",
+            "href": "/sellers/8e99415a-9721-4a58-ae3c-b6458fd9fe31"
+          },
+          {
+            "text": "Beta Goods Gadgets",
+            "href": "/sellers/560692de-30c5-471b-893f-cadb55fcd8dc"
+          },
+          {
+            "text": "Acme Tech Gadgets",
+            "href": "/sellers/8e99415a-9721-4a58-ae3c-b6458fd9fe31"
+          },
+          {
+            "text": "Sell on QuickCommerce ",
+            "href": "/onboarding"
+          }
+        ]
+      }
+    },
+    {
+      "width": 1024,
+      "status": 200,
+      "metrics": {
+        "viewport": 1024,
+        "documentWidth": 1024,
+        "hero": {
+          "top": 103,
+          "height": 399,
+          "width": 1024
+        },
+        "categories": {
+          "top": 502,
+          "height": 120.15625,
+          "width": 1024
+        },
+        "arrivals": {
+          "top": 622.15625,
+          "height": 360.3125,
+          "width": 1024
+        },
+        "products": 2,
+        "sellers": 2,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "prices": ["40.00\u00a0USD", "25.00\u00a0USD"],
+        "links": [
+          {
+            "text": "Shop new arrivals ",
+            "href": "/search?sort=newest"
+          },
+          {
+            "text": "Explore the shops ",
+            "href": "#sellers"
+          },
+          {
+            "text": "GadgetsMechanical KeyboardProduct photo unavailable",
+            "href": "/products/9c3f2a5b-7e14-40e7-9f57-73d4fcab7d1b"
+          },
+          {
+            "text": "Beta Goods",
+            "href": "/sellers/560692de-30c5-471b-893f-cadb55fcd8dc"
+          },
+          {
+            "text": "Gadgets 2 products",
+            "href": "/categories/0acee008-c160-433c-8af4-eeff973627c3"
+          },
+          {
+            "text": "View all arrivals ",
+            "href": "/search?sort=newest"
+          },
+          {
+            "text": "Image unavailable for Mechanical Keyboard",
+            "href": "/products/9c3f2a5b-7e14-40e7-9f57-73d4fcab7d1b"
+          },
+          {
+            "text": "Mechanical Keyboard",
+            "href": "/products/9c3f2a5b-7e14-40e7-9f57-73d4fcab7d1b"
+          },
+          {
+            "text": "Beta Goods",
+            "href": "/sellers/560692de-30c5-471b-893f-cadb55fcd8dc"
+          },
+          {
+            "text": "Image unavailable for Wireless Earbuds Pro",
+            "href": "/products/e0d7a86d-2555-4d44-80ee-c606cd56dd68"
+          },
+          {
+            "text": "Wireless Earbuds Pro",
+            "href": "/products/e0d7a86d-2555-4d44-80ee-c606cd56dd68"
+          },
+          {
+            "text": "Acme Tech",
+            "href": "/sellers/8e99415a-9721-4a58-ae3c-b6458fd9fe31"
+          },
+          {
+            "text": "Beta Goods Gadgets",
+            "href": "/sellers/560692de-30c5-471b-893f-cadb55fcd8dc"
+          },
+          {
+            "text": "Acme Tech Gadgets",
+            "href": "/sellers/8e99415a-9721-4a58-ae3c-b6458fd9fe31"
+          },
+          {
+            "text": "Sell on QuickCommerce ",
+            "href": "/onboarding"
+          }
+        ]
+      }
+    },
+    {
+      "width": 1440,
+      "status": 200,
+      "metrics": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "hero": {
+          "top": 103,
+          "height": 399,
+          "width": 1280
+        },
+        "categories": {
+          "top": 502,
+          "height": 124,
+          "width": 1280
+        },
+        "arrivals": {
+          "top": 626,
+          "height": 363.390625,
+          "width": 1280
+        },
+        "products": 2,
+        "sellers": 2,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "prices": ["40.00\u00a0USD", "25.00\u00a0USD"],
+        "links": [
+          {
+            "text": "Shop new arrivals ",
+            "href": "/search?sort=newest"
+          },
+          {
+            "text": "Explore the shops ",
+            "href": "#sellers"
+          },
+          {
+            "text": "GadgetsMechanical KeyboardProduct photo unavailable",
+            "href": "/products/9c3f2a5b-7e14-40e7-9f57-73d4fcab7d1b"
+          },
+          {
+            "text": "Beta Goods",
+            "href": "/sellers/560692de-30c5-471b-893f-cadb55fcd8dc"
+          },
+          {
+            "text": "Gadgets 2 products",
+            "href": "/categories/0acee008-c160-433c-8af4-eeff973627c3"
+          },
+          {
+            "text": "View all arrivals ",
+            "href": "/search?sort=newest"
+          },
+          {
+            "text": "Image unavailable for Mechanical Keyboard",
+            "href": "/products/9c3f2a5b-7e14-40e7-9f57-73d4fcab7d1b"
+          },
+          {
+            "text": "Mechanical Keyboard",
+            "href": "/products/9c3f2a5b-7e14-40e7-9f57-73d4fcab7d1b"
+          },
+          {
+            "text": "Beta Goods",
+            "href": "/sellers/560692de-30c5-471b-893f-cadb55fcd8dc"
+          },
+          {
+            "text": "Image unavailable for Wireless Earbuds Pro",
+            "href": "/products/e0d7a86d-2555-4d44-80ee-c606cd56dd68"
+          },
+          {
+            "text": "Wireless Earbuds Pro",
+            "href": "/products/e0d7a86d-2555-4d44-80ee-c606cd56dd68"
+          },
+          {
+            "text": "Acme Tech",
+            "href": "/sellers/8e99415a-9721-4a58-ae3c-b6458fd9fe31"
+          },
+          {
+            "text": "Beta Goods Gadgets",
+            "href": "/sellers/560692de-30c5-471b-893f-cadb55fcd8dc"
+          },
+          {
+            "text": "Acme Tech Gadgets",
+            "href": "/sellers/8e99415a-9721-4a58-ae3c-b6458fd9fe31"
+          },
+          {
+            "text": "Sell on QuickCommerce ",
+            "href": "/onboarding"
+          }
+        ]
+      }
+    },
+    {
+      "width": 1920,
+      "status": 200,
+      "metrics": {
+        "viewport": 1920,
+        "documentWidth": 1920,
+        "hero": {
+          "top": 103,
+          "height": 399,
+          "width": 1280
+        },
+        "categories": {
+          "top": 502,
+          "height": 124,
+          "width": 1280
+        },
+        "arrivals": {
+          "top": 626,
+          "height": 363.390625,
+          "width": 1280
+        },
+        "products": 2,
+        "sellers": 2,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "prices": ["40.00\u00a0USD", "25.00\u00a0USD"],
+        "links": [
+          {
+            "text": "Shop new arrivals ",
+            "href": "/search?sort=newest"
+          },
+          {
+            "text": "Explore the shops ",
+            "href": "#sellers"
+          },
+          {
+            "text": "GadgetsMechanical KeyboardProduct photo unavailable",
+            "href": "/products/9c3f2a5b-7e14-40e7-9f57-73d4fcab7d1b"
+          },
+          {
+            "text": "Beta Goods",
+            "href": "/sellers/560692de-30c5-471b-893f-cadb55fcd8dc"
+          },
+          {
+            "text": "Gadgets 2 products",
+            "href": "/categories/0acee008-c160-433c-8af4-eeff973627c3"
+          },
+          {
+            "text": "View all arrivals ",
+            "href": "/search?sort=newest"
+          },
+          {
+            "text": "Image unavailable for Mechanical Keyboard",
+            "href": "/products/9c3f2a5b-7e14-40e7-9f57-73d4fcab7d1b"
+          },
+          {
+            "text": "Mechanical Keyboard",
+            "href": "/products/9c3f2a5b-7e14-40e7-9f57-73d4fcab7d1b"
+          },
+          {
+            "text": "Beta Goods",
+            "href": "/sellers/560692de-30c5-471b-893f-cadb55fcd8dc"
+          },
+          {
+            "text": "Image unavailable for Wireless Earbuds Pro",
+            "href": "/products/e0d7a86d-2555-4d44-80ee-c606cd56dd68"
+          },
+          {
+            "text": "Wireless Earbuds Pro",
+            "href": "/products/e0d7a86d-2555-4d44-80ee-c606cd56dd68"
+          },
+          {
+            "text": "Acme Tech",
+            "href": "/sellers/8e99415a-9721-4a58-ae3c-b6458fd9fe31"
+          },
+          {
+            "text": "Beta Goods Gadgets",
+            "href": "/sellers/560692de-30c5-471b-893f-cadb55fcd8dc"
+          },
+          {
+            "text": "Acme Tech Gadgets",
+            "href": "/sellers/8e99415a-9721-4a58-ae3c-b6458fd9fe31"
+          },
+          {
+            "text": "Sell on QuickCommerce ",
+            "href": "/onboarding"
+          }
+        ]
+      }
+    }
+  ],
+  "browser": "149.0.7827.55",
+  "skipLink": true,
+  "sellerAnchor": true,
+  "reducedMotion": true,
+  "pageErrors": []
+}

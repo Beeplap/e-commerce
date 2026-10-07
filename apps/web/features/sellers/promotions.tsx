@@ -1,8 +1,19 @@
 "use client";
 
+import { Pagination } from "@/components/ui/pagination";
+
+import { DataTable } from "@/components/ui/data-table";
+
+import { FormSection } from "@/components/ui/layout";
+
+import { Dialog } from "@/components/ui/dialog";
+
 import { useCallback, useState } from "react";
 import {
   ApiErrorState,
+  PageHeader,
+  StatusBadge,
+  SelectField,
   LoadingState,
   primaryButton,
   secondaryButton,
@@ -12,30 +23,6 @@ import { errorMessage, sellerApi } from "@/lib/api/client";
 import type { Promotion, Coupon } from "@/lib/api/types";
 import { useApiQuery } from "@/lib/api/use-api-query";
 import { useSeller } from "@/features/workspaces/seller-workspace";
-
-function DiscountBadge({ type }: { type: Promotion["discount_type"] }) {
-  const label =
-    type === "PERCENTAGE"
-      ? "Percentage"
-      : type === "FIXED_AMOUNT"
-        ? "Fixed"
-        : "Free Shipping";
-  return (
-    <span className="inline-flex items-center rounded-full bg-teal-50 px-2 py-0.5 text-xs font-medium text-teal-700">
-      {label}
-    </span>
-  );
-}
-
-function StatusBadge({ active }: { active: boolean }) {
-  return (
-    <span
-      className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${active ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-500"}`}
-    >
-      {active ? "Active" : "Inactive"}
-    </span>
-  );
-}
 
 export function SellerPromotions() {
   const access = useSeller();
@@ -172,26 +159,24 @@ export function SellerPromotions() {
 
   return (
     <section>
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-semibold text-slate-950">Promotions</h1>
-          <p className="mt-1 text-sm text-slate-600">
-            Manage discounts and coupon codes for your store.
-          </p>
-        </div>
-        {canManage && (
-          <button
-            type="button"
-            onClick={() => {
-              resetCreateForm();
-              setShowCreate(true);
-            }}
-            className={primaryButton}
-          >
-            New promotion
-          </button>
-        )}
-      </div>
+      <PageHeader
+        title="Promotions"
+        description="Manage discounts and coupon codes for your store."
+        actions={
+          canManage && (
+            <button
+              type="button"
+              onClick={() => {
+                resetCreateForm();
+                setShowCreate(true);
+              }}
+              className={primaryButton}
+            >
+              New promotion
+            </button>
+          )
+        }
+      />
 
       {actionError && !showCreate && !showAddCoupon && (
         <p
@@ -202,65 +187,69 @@ export function SellerPromotions() {
         </p>
       )}
 
-      <div className="mt-6 overflow-hidden rounded-xl border border-slate-200">
-        <table className="w-full text-sm">
-          <thead className="bg-slate-50">
-            <tr>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600">
-                Promotion
-              </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600">
-                Discount
-              </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600">
-                Usage
-              </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600">
-                Status
-              </th>
-              <th className="px-4 py-3 text-right text-xs font-semibold text-slate-600">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
-            {promotions.length === 0 && (
-              <tr>
-                <td
-                  colSpan={5}
-                  className="px-4 py-8 text-center text-sm text-slate-500"
-                >
-                  No promotions yet.
-                </td>
-              </tr>
-            )}
-            {promotions.map((promo) => (
-              <tr key={promo.id} className="hover:bg-slate-50">
-                <td className="px-4 py-3">
-                  <div className="font-medium text-slate-900">{promo.name}</div>
-                  <div className="text-xs text-slate-500">
+      <div className="mt-6">
+        <DataTable
+          caption="Seller promotions"
+          rows={promotions}
+          rowKey={(promo) => promo.id}
+          columns={[
+            {
+              id: "promotion",
+              heading: "Promotion",
+              cell: (promo) => (
+                <>
+                  <div className="font-medium text-ui-foreground">
+                    {promo.name}
+                  </div>
+                  <div className="text-xs text-ui-muted">
                     {promo.description}
                   </div>
-                </td>
-                <td className="px-4 py-3">
-                  <DiscountBadge type={promo.discount_type} />
-                  <div className="mt-0.5 text-xs text-slate-600">
+                </>
+              ),
+            },
+            {
+              id: "discount",
+              heading: "Discount",
+              cell: (promo) => (
+                <>
+                  <div className="mt-0.5 text-xs text-ui-secondary">
                     {promo.discount_type === "PERCENTAGE"
                       ? `${promo.discount_value}%`
                       : promo.discount_type === "FIXED_AMOUNT"
                         ? `${promo.discount_value} off`
                         : "Free shipping"}
                   </div>
-                </td>
-                <td className="px-4 py-3 text-slate-700">
+                </>
+              ),
+            },
+            {
+              id: "usage",
+              heading: "Usage",
+              align: "right",
+              cell: (promo) => (
+                <>
                   {promo.usage_count}
                   {promo.usage_limit ? ` / ${promo.usage_limit}` : ""}
-                </td>
-                <td className="px-4 py-3">
-                  <StatusBadge active={promo.is_active} />
-                </td>
-                <td className="px-4 py-3 text-right">
-                  <div className="flex justify-end gap-2">
+                </>
+              ),
+            },
+            {
+              id: "status",
+              heading: "Status",
+              cell: (promo) => (
+                <>
+                  <StatusBadge
+                    status={promo.is_active ? "Active" : "Inactive"}
+                  />
+                </>
+              ),
+            },
+            {
+              id: "actions",
+              heading: "Actions",
+              cell: (promo) => (
+                <>
+                  <div className="flex flex-wrap gap-2 md:justify-end">
                     <button
                       type="button"
                       onClick={() => {
@@ -292,167 +281,164 @@ export function SellerPromotions() {
                       </button>
                     )}
                   </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                </>
+              ),
+            },
+          ]}
+        />
       </div>
 
       {promotionsQuery.data.count > 25 && (
-        <div className="mt-4 flex items-center justify-between text-sm text-slate-600">
-          <button
-            type="button"
-            disabled={page === 1}
-            onClick={() => setPage((p) => p - 1)}
-            className={secondaryButton}
-          >
-            Previous
-          </button>
-          <span>
-            Page {page} of {Math.ceil(promotionsQuery.data.count / 25)}
-          </span>
-          <button
-            type="button"
-            disabled={page * 25 >= promotionsQuery.data.count}
-            onClick={() => setPage((p) => p + 1)}
-            className={secondaryButton}
-          >
-            Next
-          </button>
-        </div>
+        <Pagination
+          page={page}
+          count={promotionsQuery.data.count}
+          onPageChange={setPage}
+        />
       )}
 
       {/* Coupons drawer/modal */}
       {showCoupons && selectedPromotion && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
-          <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-slate-950">
-                Coupons — {selectedPromotion.name}
-              </h3>
-              <button
-                type="button"
-                onClick={() => {
-                  setShowCoupons(false);
-                  setSelectedPromotion(null);
-                }}
-                className="text-sm text-slate-500 hover:text-slate-700"
-              >
-                Close
-              </button>
-            </div>
+        <Dialog
+          open
+          title={<>Coupons — {selectedPromotion.name}</>}
+          onClose={() => {
+            setShowCoupons(false);
+            setSelectedPromotion(null);
+          }}
+          busy={submitting}
+          size="wide"
+          error={actionError}
+        >
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <button
+              type="button"
+              onClick={() => {
+                setShowCoupons(false);
+                setSelectedPromotion(null);
+              }}
+              className="text-sm text-ui-muted hover:text-ui-secondary"
+              data-dialog-cancel
+            >
+              Close
+            </button>
+          </div>
 
-            {canManage && (
-              <div className="mt-3">
-                {showAddCoupon ? (
-                  <form
-                    onSubmit={handleAddCoupon}
-                    className="space-y-3 rounded-lg bg-slate-50 p-4"
-                  >
-                    <FormField
-                      label="Coupon code"
-                      value={couponCode}
-                      onChange={(e) => setCouponCode(e.target.value)}
-                      placeholder="SUMMER20"
-                      required
-                    />
-                    <FormField
-                      label="Total usage limit (leave blank for unlimited)"
-                      type="number"
-                      value={couponLimit}
-                      onChange={(e) => setCouponLimit(e.target.value)}
-                      placeholder=""
-                    />
-                    <FormField
-                      label="Per-customer limit (leave blank for unlimited)"
-                      type="number"
-                      value={couponPerCustomer}
-                      onChange={(e) => setCouponPerCustomer(e.target.value)}
-                      placeholder=""
-                    />
-                    {actionError && (
-                      <p className="text-xs text-red-600">{actionError}</p>
-                    )}
-                    <div className="flex gap-2">
-                      <button
-                        type="submit"
-                        disabled={submitting}
-                        className={primaryButton}
-                      >
-                        {submitting ? "Adding…" : "Add coupon"}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setShowAddCoupon(false)}
-                        className={secondaryButton}
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </form>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => setShowAddCoupon(true)}
-                    className={secondaryButton}
-                  >
-                    + Add coupon
-                  </button>
+          {canManage && (
+            <div className="mt-3">
+              {showAddCoupon ? (
+                <form
+                  onSubmit={handleAddCoupon}
+                  className="space-y-3 rounded-lg bg-ui-surface-muted p-4"
+                >
+                  <FormField
+                    label="Coupon code"
+                    value={couponCode}
+                    onChange={(e) => setCouponCode(e.target.value)}
+                    placeholder="SUMMER20"
+                    required
+                  />
+                  <FormField
+                    label="Total usage limit (leave blank for unlimited)"
+                    type="number"
+                    value={couponLimit}
+                    onChange={(e) => setCouponLimit(e.target.value)}
+                    placeholder=""
+                  />
+                  <FormField
+                    label="Per-customer limit (leave blank for unlimited)"
+                    type="number"
+                    value={couponPerCustomer}
+                    onChange={(e) => setCouponPerCustomer(e.target.value)}
+                    placeholder=""
+                  />
+
+                  <div className="flex gap-2">
+                    <button
+                      type="submit"
+                      disabled={submitting}
+                      className={primaryButton}
+                    >
+                      {submitting ? "Adding…" : "Add coupon"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowAddCoupon(false)}
+                      className={secondaryButton}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setShowAddCoupon(true)}
+                  className={secondaryButton}
+                >
+                  + Add coupon
+                </button>
+              )}
+            </div>
+          )}
+
+          <div className="mt-4">
+            {couponsQuery.kind === "loading" && <LoadingState />}
+            {couponsQuery.kind === "error" && (
+              <ApiErrorState
+                error={couponsQuery.error}
+                onRetry={couponsQuery.retry}
+              />
+            )}
+            {couponsQuery.kind === "ready" && (
+              <div className="space-y-2">
+                {couponsQuery.data.results.length === 0 && (
+                  <p className="py-6 text-center text-sm text-ui-muted">
+                    No coupons yet.
+                  </p>
                 )}
+                {couponsQuery.data.results.map((coupon) => (
+                  <div
+                    key={coupon.id}
+                    className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-ui-border p-3"
+                  >
+                    <div>
+                      <span className="font-mono font-semibold text-ui-foreground">
+                        {coupon.code}
+                      </span>
+                      <div className="mt-0.5 text-xs text-ui-muted">
+                        Used: {coupon.usage_count}
+                        {coupon.usage_limit ? ` / ${coupon.usage_limit}` : ""}
+                        {coupon.per_customer_limit
+                          ? ` · ${coupon.per_customer_limit}/customer`
+                          : ""}
+                      </div>
+                    </div>
+                    <StatusBadge
+                      status={coupon.is_active ? "Active" : "Inactive"}
+                    />
+                  </div>
+                ))}
               </div>
             )}
-
-            <div className="mt-4">
-              {couponsQuery.kind === "loading" && <LoadingState />}
-              {couponsQuery.kind === "error" && (
-                <ApiErrorState
-                  error={couponsQuery.error}
-                  onRetry={couponsQuery.retry}
-                />
-              )}
-              {couponsQuery.kind === "ready" && (
-                <div className="space-y-2">
-                  {couponsQuery.data.results.length === 0 && (
-                    <p className="py-6 text-center text-sm text-slate-500">
-                      No coupons yet.
-                    </p>
-                  )}
-                  {couponsQuery.data.results.map((coupon) => (
-                    <div
-                      key={coupon.id}
-                      className="flex items-center justify-between rounded-lg border border-slate-200 p-3"
-                    >
-                      <div>
-                        <span className="font-mono font-semibold text-slate-900">
-                          {coupon.code}
-                        </span>
-                        <div className="mt-0.5 text-xs text-slate-500">
-                          Used: {coupon.usage_count}
-                          {coupon.usage_limit ? ` / ${coupon.usage_limit}` : ""}
-                          {coupon.per_customer_limit
-                            ? ` · ${coupon.per_customer_limit}/customer`
-                            : ""}
-                        </div>
-                      </div>
-                      <StatusBadge active={coupon.is_active} />
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
           </div>
-        </div>
+        </Dialog>
       )}
 
       {/* Create Promotion Modal */}
       {showCreate && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
-          <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl max-h-[90vh] overflow-y-auto">
-            <h3 className="text-lg font-semibold text-slate-950">
-              Create Promotion
-            </h3>
-            <form onSubmit={handleCreate} className="mt-4 space-y-3">
+        <Dialog
+          open
+          title={<>Create Promotion</>}
+          onClose={() => setShowCreate(false)}
+          busy={submitting}
+          size="wide"
+          error={actionError}
+        >
+          <form onSubmit={handleCreate} className="mt-4 space-y-3">
+            <FormSection
+              title="Promotion details"
+              description="Give this promotion a recognizable name and optional description."
+            >
               <FormField
                 label="Name"
                 value={promoName}
@@ -466,24 +452,22 @@ export function SellerPromotions() {
                 onChange={(e) => setPromoDescription(e.target.value)}
                 placeholder="Optional description"
               />
-              <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">
-                  Discount type
-                </label>
-                <select
-                  value={discountType}
-                  onChange={(e) =>
-                    setDiscountType(
-                      e.target.value as Promotion["discount_type"],
-                    )
-                  }
-                  className="min-h-9 w-full rounded-lg border border-slate-300 px-2 py-1.5 text-sm"
-                >
-                  <option value="PERCENTAGE">Percentage</option>
-                  <option value="FIXED_AMOUNT">Fixed amount</option>
-                  <option value="FREE_SHIPPING">Free shipping</option>
-                </select>
-              </div>
+            </FormSection>
+            <FormSection
+              title="Discount and eligibility"
+              description="Choose the discount and any order thresholds. Rules are validated by the backend."
+            >
+              <SelectField
+                label="Discount type"
+                value={discountType}
+                onChange={(e) =>
+                  setDiscountType(e.target.value as Promotion["discount_type"])
+                }
+              >
+                <option value="PERCENTAGE">Percentage</option>
+                <option value="FIXED_AMOUNT">Fixed amount</option>
+                <option value="FREE_SHIPPING">Free shipping</option>
+              </SelectField>
               {discountType !== "FREE_SHIPPING" && (
                 <FormField
                   label="Discount value"
@@ -512,6 +496,11 @@ export function SellerPromotions() {
                   placeholder="0.00"
                 />
               )}
+            </FormSection>
+            <FormSection
+              title="Schedule and usage"
+              description="Set when the promotion applies and optional usage limits."
+            >
               <FormField
                 label="Starts at"
                 type="datetime-local"
@@ -532,28 +521,26 @@ export function SellerPromotions() {
                 onChange={(e) => setUsageLimit(e.target.value)}
                 placeholder="0 = unlimited"
               />
-              {actionError && (
-                <p className="text-xs text-red-600">{actionError}</p>
-              )}
-              <div className="flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowCreate(false)}
-                  className={secondaryButton}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className={primaryButton}
-                >
-                  {submitting ? "Creating…" : "Create promotion"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+            </FormSection>
+            <div className="flex flex-wrap gap-2 md:justify-end">
+              <button
+                type="button"
+                onClick={() => setShowCreate(false)}
+                className={secondaryButton}
+                data-dialog-cancel
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={submitting}
+                className={primaryButton}
+              >
+                {submitting ? "Creating…" : "Create promotion"}
+              </button>
+            </div>
+          </form>
+        </Dialog>
       )}
     </section>
   );

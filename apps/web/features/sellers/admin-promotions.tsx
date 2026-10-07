@@ -1,8 +1,19 @@
 "use client";
 
+import { Pagination } from "@/components/ui/pagination";
+
+import { DataTable } from "@/components/ui/data-table";
+
+import { FormSection } from "@/components/ui/layout";
+
+import { Dialog } from "@/components/ui/dialog";
+
 import { useCallback, useState } from "react";
 import {
   ApiErrorState,
+  PageHeader,
+  StatusBadge,
+  SelectField,
   LoadingState,
   primaryButton,
   secondaryButton,
@@ -15,30 +26,10 @@ import { hasPlatformPermission } from "@/lib/permissions";
 import { useAuth } from "@/features/auth/auth-provider";
 import { ForbiddenScreen } from "@/features/workspaces/forbidden-screen";
 
-function DiscountBadge({ type }: { type: Promotion["discount_type"] }) {
-  const label =
-    type === "PERCENTAGE"
-      ? "Percentage"
-      : type === "FIXED_AMOUNT"
-        ? "Fixed"
-        : "Free Shipping";
-  return (
-    <span className="inline-flex items-center rounded-full bg-violet-50 px-2 py-0.5 text-xs font-medium text-violet-700">
-      {label}
-    </span>
-  );
-}
-
 function ScopeBadge({ scope }: { scope: "PLATFORM" | "SELLER" }) {
-  const cls =
-    scope === "PLATFORM"
-      ? "bg-teal-50 text-teal-700"
-      : "bg-slate-100 text-slate-600";
   return (
-    <span
-      className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${cls}`}
-    >
-      {scope}
+    <span className="text-ui-caption capitalize text-ui-secondary">
+      {scope.toLowerCase()}
     </span>
   );
 }
@@ -133,28 +124,24 @@ export function AdminPromotions() {
 
   return (
     <section>
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-semibold text-slate-950">
-            Platform Promotions
-          </h1>
-          <p className="mt-1 text-sm text-slate-600">
-            Manage platform-wide promotions and seller-scoped discounts.
-          </p>
-        </div>
-        {canManage && (
-          <button
-            type="button"
-            onClick={() => {
-              resetForm();
-              setShowCreate(true);
-            }}
-            className={primaryButton}
-          >
-            New platform promotion
-          </button>
-        )}
-      </div>
+      <PageHeader
+        title="Platform Promotions"
+        description="Manage platform-wide promotions and seller-scoped discounts."
+        actions={
+          canManage && (
+            <button
+              type="button"
+              onClick={() => {
+                resetForm();
+                setShowCreate(true);
+              }}
+              className={primaryButton}
+            >
+              New platform promotion
+            </button>
+          )
+        }
+      />
 
       {actionError && !showCreate && (
         <p
@@ -165,105 +152,98 @@ export function AdminPromotions() {
         </p>
       )}
 
-      <div className="mt-6 overflow-hidden rounded-xl border border-slate-200">
-        <table className="w-full text-sm">
-          <thead className="bg-slate-50">
-            <tr>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600">
-                Promotion
-              </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600">
-                Scope
-              </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600">
-                Discount
-              </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600">
-                Usage
-              </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600">
-                Active
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
-            {promotions.length === 0 && (
-              <tr>
-                <td
-                  colSpan={5}
-                  className="px-4 py-8 text-center text-sm text-slate-500"
-                >
-                  No promotions yet.
-                </td>
-              </tr>
-            )}
-            {promotions.map((promo) => (
-              <tr key={promo.id} className="hover:bg-slate-50">
-                <td className="px-4 py-3">
-                  <div className="font-medium text-slate-900">{promo.name}</div>
-                  <div className="text-xs text-slate-500">
+      <div className="mt-6">
+        <DataTable
+          caption="Platform promotions"
+          rows={promotions}
+          rowKey={(promo) => promo.id}
+          columns={[
+            {
+              id: "promotion",
+              heading: "Promotion",
+              cell: (promo) => (
+                <>
+                  <div className="font-medium text-ui-foreground">
+                    {promo.name}
+                  </div>
+                  <div className="text-xs text-ui-muted">
                     {promo.description}
                   </div>
-                </td>
-                <td className="px-4 py-3">
+                </>
+              ),
+            },
+            {
+              id: "scope",
+              heading: "Scope",
+              cell: (promo) => (
+                <>
                   <ScopeBadge scope={promo.scope} />
-                </td>
-                <td className="px-4 py-3">
-                  <DiscountBadge type={promo.discount_type} />
-                  <div className="mt-0.5 text-xs text-slate-600">
+                </>
+              ),
+            },
+            {
+              id: "discount",
+              heading: "Discount",
+              cell: (promo) => (
+                <>
+                  <div className="mt-0.5 text-xs text-ui-secondary">
                     {promo.discount_type === "PERCENTAGE"
                       ? `${promo.discount_value}%`
                       : promo.discount_type === "FIXED_AMOUNT"
                         ? `${promo.discount_value} off`
                         : "Free shipping"}
                   </div>
-                </td>
-                <td className="px-4 py-3 text-slate-700">
+                </>
+              ),
+            },
+            {
+              id: "usage",
+              heading: "Usage",
+              align: "right",
+              cell: (promo) => (
+                <>
                   {promo.usage_count}
                   {promo.usage_limit ? ` / ${promo.usage_limit}` : ""}
-                </td>
-                <td className="px-4 py-3">
-                  <span
-                    className={`inline-block h-2 w-2 rounded-full ${promo.is_active ? "bg-emerald-500" : "bg-slate-300"}`}
+                </>
+              ),
+            },
+            {
+              id: "status",
+              heading: "Status",
+              cell: (promo) => (
+                <>
+                  <StatusBadge
+                    status={promo.is_active ? "Active" : "Inactive"}
                   />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                </>
+              ),
+            },
+          ]}
+        />
       </div>
 
       {promotionsQuery.data.count > 25 && (
-        <div className="mt-4 flex items-center justify-between text-sm text-slate-600">
-          <button
-            type="button"
-            disabled={page === 1}
-            onClick={() => setPage((p) => p - 1)}
-            className={secondaryButton}
-          >
-            Previous
-          </button>
-          <span>
-            Page {page} of {Math.ceil(promotionsQuery.data.count / 25)}
-          </span>
-          <button
-            type="button"
-            disabled={page * 25 >= promotionsQuery.data.count}
-            onClick={() => setPage((p) => p + 1)}
-            className={secondaryButton}
-          >
-            Next
-          </button>
-        </div>
+        <Pagination
+          page={page}
+          count={promotionsQuery.data.count}
+          onPageChange={setPage}
+        />
       )}
 
       {showCreate && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
-          <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl max-h-[90vh] overflow-y-auto">
-            <h3 className="text-lg font-semibold text-slate-950">
-              Create Platform Promotion
-            </h3>
-            <form onSubmit={handleCreate} className="mt-4 space-y-3">
+        <Dialog
+          open
+          title={<>Create Platform Promotion</>}
+          onClose={() => setShowCreate(false)}
+          busy={submitting}
+          size="wide"
+          error={actionError}
+        >
+          <form onSubmit={handleCreate} className="mt-4 space-y-3">
+            <FormSection
+              title="Promotion details"
+              description="Give this promotion a recognizable name and optional description."
+            >
               <FormField
                 label="Name"
                 value={promoName}
@@ -277,24 +257,22 @@ export function AdminPromotions() {
                 onChange={(e) => setPromoDescription(e.target.value)}
                 placeholder="Optional description"
               />
-              <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">
-                  Discount type
-                </label>
-                <select
-                  value={discountType}
-                  onChange={(e) =>
-                    setDiscountType(
-                      e.target.value as Promotion["discount_type"],
-                    )
-                  }
-                  className="min-h-9 w-full rounded-lg border border-slate-300 px-2 py-1.5 text-sm"
-                >
-                  <option value="PERCENTAGE">Percentage</option>
-                  <option value="FIXED_AMOUNT">Fixed amount</option>
-                  <option value="FREE_SHIPPING">Free shipping</option>
-                </select>
-              </div>
+            </FormSection>
+            <FormSection
+              title="Discount and eligibility"
+              description="Choose the discount and any order thresholds. Rules are validated by the backend."
+            >
+              <SelectField
+                label="Discount type"
+                value={discountType}
+                onChange={(e) =>
+                  setDiscountType(e.target.value as Promotion["discount_type"])
+                }
+              >
+                <option value="PERCENTAGE">Percentage</option>
+                <option value="FIXED_AMOUNT">Fixed amount</option>
+                <option value="FREE_SHIPPING">Free shipping</option>
+              </SelectField>
               {discountType !== "FREE_SHIPPING" && (
                 <FormField
                   label="Discount value"
@@ -314,6 +292,11 @@ export function AdminPromotions() {
                 onChange={(e) => setMinOrder(e.target.value)}
                 placeholder="0.00"
               />
+            </FormSection>
+            <FormSection
+              title="Schedule and usage"
+              description="Set when the promotion applies and optional usage limits."
+            >
               <FormField
                 label="Starts at"
                 type="datetime-local"
@@ -334,28 +317,26 @@ export function AdminPromotions() {
                 onChange={(e) => setUsageLimit(e.target.value)}
                 placeholder="0 = unlimited"
               />
-              {actionError && (
-                <p className="text-xs text-red-600">{actionError}</p>
-              )}
-              <div className="flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowCreate(false)}
-                  className={secondaryButton}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className={primaryButton}
-                >
-                  {submitting ? "Creating…" : "Create promotion"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+            </FormSection>
+            <div className="flex flex-wrap gap-2 md:justify-end">
+              <button
+                type="button"
+                onClick={() => setShowCreate(false)}
+                className={secondaryButton}
+                data-dialog-cancel
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={submitting}
+                className={primaryButton}
+              >
+                {submitting ? "Creating…" : "Create promotion"}
+              </button>
+            </div>
+          </form>
+        </Dialog>
       )}
     </section>
   );

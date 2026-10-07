@@ -1,5 +1,8 @@
 "use client";
 
+import { Dialog } from "@/components/ui/dialog";
+import { FormSection } from "@/components/ui/layout";
+
 import Link from "next/link";
 import { useCallback, useState } from "react";
 import { useAuth } from "@/features/auth/auth-provider";
@@ -10,18 +13,24 @@ import { useApiQuery } from "@/lib/api/use-api-query";
 import { DataTable, type Column } from "@/components/ui/data-table";
 import { Pagination } from "@/components/ui/pagination";
 import {
+  FilterBar,
+  FilterSummary,
+  SearchInput,
+} from "@/components/ui/filter-bar";
+import { Identifier } from "@/components/ui/identifier";
+import {
+  useTableQuery,
+  useDebouncedValue,
+} from "@/components/ui/use-table-query";
+import {
   ApiErrorState,
   FormField,
-  LoadingState,
   PageHeader,
   primaryButton,
   secondaryButton,
 } from "@/components/ui/primitives";
 import { selectStyle } from "@/features/sellers/forms";
 import { inventoryApi, type InventoryItem } from "./api";
-
-const searchInputStyle =
-  "min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-teal-700 focus:outline-none";
 
 export function SellerInventory() {
   const access = useSeller();
@@ -58,9 +67,14 @@ function InventoryList({
   canAdjust?: boolean;
   platform?: boolean;
 }) {
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState("");
-  const [lowStockOnly, setLowStockOnly] = useState(false);
+  const table = useTableQuery({ search: 100, low_stock: ["true"] });
+  const { page, setPage } = table;
+  const search = useDebouncedValue(table.values.search);
+  const lowStockOnly = table.values.low_stock === "true";
+  const activeFilters = [
+    table.values.search ? `Search: ${table.values.search}` : "",
+    lowStockOnly ? "Low stock only" : "",
+  ].filter(Boolean);
   const [adjustingItem, setAdjustingItem] = useState<InventoryItem | null>(
     null,
   );
@@ -86,12 +100,7 @@ function InventoryList({
 
   const query = useApiQuery(queryKey, load);
 
-  if (query.kind === "loading")
-    return <LoadingState label="Loading inventory…" />;
-  if (query.kind === "error")
-    return <ApiErrorState error={query.error} onRetry={query.retry} />;
-
-  const items = query.data.results;
+  const items = query.kind === "ready" ? query.data.results : [];
 
   return (
     <div className="space-y-6">
@@ -99,7 +108,7 @@ function InventoryList({
         title={platform ? "Platform Inventory" : "Inventory Ledger"}
         description={
           platform
-            ? "Authoritative multi-seller warehouse stock levels, reservations, and availability."
+            ? "Stock and reservations across seller warehouses."
             : "Live stock ledger, reservations, available quantities, and reorder alerts."
         }
         actions={
@@ -116,43 +125,33 @@ function InventoryList({
         }
       />
 
-      <div className="flex flex-wrap items-center gap-4 rounded-xl border border-slate-200 bg-white p-4">
-        <div className="flex-1 min-w-[200px]">
-          <label htmlFor="inventory-search" className="sr-only">
-            Search inventory
-          </label>
-          <input
-            id="inventory-search"
-            type="search"
-            placeholder="Search by SKU, barcode, product, or warehouse…"
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setPage(1);
-            }}
-            className={searchInputStyle}
+      <div>
+        <FilterBar>
+          <SearchInput
+            label="Search inventory"
+            placeholder="SKU, product or warehouse"
+            value={table.values.search}
+            onChange={(value) => table.setFilters({ search: value }, true)}
           />
-        </div>
-
-        <div className="flex items-center gap-2">
-          <input
-            id="filter-low-stock"
-            type="checkbox"
-            checked={lowStockOnly}
-            onChange={(e) => {
-              setLowStockOnly(e.target.checked);
-              setPage(1);
-            }}
-            className="h-4 w-4 rounded border-slate-300 text-teal-800 focus:ring-teal-700"
-          />
-          <label
-            htmlFor="filter-low-stock"
-            className="text-sm font-medium text-slate-700"
-          >
+          <label className="flex min-h-11 cursor-pointer items-center gap-2 text-sm font-medium">
+            <input
+              type="checkbox"
+              className="size-4 accent-ui-accent"
+              checked={lowStockOnly}
+              onChange={(event) =>
+                table.setFilters({
+                  low_stock: event.target.checked ? "true" : "",
+                })
+              }
+            />
             Low stock only
           </label>
-        </div>
+        </FilterBar>
+        <FilterSummary filters={activeFilters} onClear={table.clear} />
       </div>
+      {query.kind === "error" && (
+        <ApiErrorState error={query.error} onRetry={query.retry} />
+      )}
 
       {adjustingItem && sellerId && (
         <StockAdjustModal
@@ -173,12 +172,10 @@ function InventoryList({
             heading: "SKU / Product",
             cell: (item) => (
               <div>
-                <div className="font-mono text-xs font-semibold text-slate-900">
-                  {item.variant.sku}
-                </div>
-                <div className="text-xs text-slate-600">
+                <div className="text-sm font-medium text-ui-foreground">
                   {item.variant.product_name}
                 </div>
+                <Identifier value={item.variant.sku} label="SKU" copyable />
               </div>
             ),
           },
@@ -187,10 +184,10 @@ function InventoryList({
             heading: "Warehouse",
             cell: (item) => (
               <div>
-                <div className="font-medium text-slate-900">
+                <div className="font-medium text-ui-foreground">
                   {item.warehouse.name}
                 </div>
-                <div className="font-mono text-xs text-slate-500">
+                <div className="font-mono text-xs text-ui-muted">
                   {item.warehouse.code}
                 </div>
               </div>
@@ -198,28 +195,33 @@ function InventoryList({
           },
           {
             id: "on_hand",
+            align: "right" as const,
             heading: "On Hand",
             cell: (item) => (
-              <span className="font-semibold text-slate-900">
+              <span className="font-semibold text-ui-foreground">
                 {item.quantity_on_hand}
               </span>
             ),
           },
           {
             id: "reserved",
+            align: "right" as const,
             heading: "Reserved",
             cell: (item) => (
-              <span className="text-slate-600">{item.quantity_reserved}</span>
+              <span className="text-ui-secondary">
+                {item.quantity_reserved}
+              </span>
             ),
           },
           {
             id: "available",
+            align: "right" as const,
             heading: "Available",
             cell: (item) => (
-              <span className="inline-flex items-center gap-1.5 font-bold text-teal-900">
+              <span className="inline-flex items-center gap-1.5 font-bold text-ui-accent">
                 {item.available_quantity}
                 {item.is_low_stock && (
-                  <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-amber-900">
+                  <span className="rounded bg-ui-warning-surface px-2 py-1 text-ui-caption font-medium text-ui-warning">
                     Low Stock
                   </span>
                 )}
@@ -228,9 +230,10 @@ function InventoryList({
           },
           {
             id: "reorder",
+            align: "right" as const,
             heading: "Reorder At",
             cell: (item) => (
-              <span className="text-xs text-slate-500">
+              <span className="text-xs text-ui-muted">
                 {item.reorder_level}
               </span>
             ),
@@ -243,15 +246,17 @@ function InventoryList({
                 <button
                   type="button"
                   onClick={() => setAdjustingItem(item)}
-                  className="text-xs font-semibold text-teal-800 hover:text-teal-950 underline"
+                  className="text-xs font-semibold text-ui-accent hover:text-ui-accent underline"
                 >
                   Adjust stock
                 </button>
               ) : null,
           },
         ];
-        return (
+        return query.kind === "error" ? null : (
           <DataTable
+            loading={query.kind === "loading"}
+            filtered={activeFilters.length > 0}
             caption="Inventory items"
             rows={items}
             rowKey={(item) => item.id}
@@ -260,10 +265,11 @@ function InventoryList({
         );
       })()}
 
-      {query.data.count > 25 && (
+      {query.kind === "ready" && query.data.count > 25 && (
         <Pagination
           page={page}
-          count={query.data.count}
+          busy={query.kind !== "ready"}
+          count={query.kind === "ready" ? query.data.count : 0}
           onPageChange={setPage}
         />
       )}
@@ -332,101 +338,92 @@ function StockAdjustModal({
   };
 
   return (
-    <div
-      role="dialog"
-      aria-labelledby="stock-adjust-title"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4"
-    >
-      <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl space-y-4">
-        <h2
-          id="stock-adjust-title"
-          className="text-lg font-semibold text-slate-900"
-        >
-          Adjust Stock: {item.variant.sku}
-        </h2>
-        <p className="text-xs text-slate-500">
+    <Dialog
+      open
+      title={<>Adjust Stock: {item.variant.sku}</>}
+      description={
+        <>
           Warehouse: {item.warehouse.name} ({item.warehouse.code}) | On hand:{" "}
           {item.quantity_on_hand} | Reserved: {item.quantity_reserved} |
           Available: {item.available_quantity}
-        </p>
-
-        {error && (
-          <div
-            role="alert"
-            className="rounded-lg border border-red-200 bg-red-50 p-3 text-xs text-red-800"
+        </>
+      }
+      onClose={onClose}
+      busy={submitting}
+      error={error}
+    >
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label
+            htmlFor="stock-action-type"
+            className="mb-2 block text-xs font-semibold text-ui-secondary"
           >
-            {error}
+            Action type
+          </label>
+          <select
+            id="stock-action-type"
+            value={mode}
+            onChange={(e) =>
+              setMode(e.target.value as "adjust" | "reserve" | "release")
+            }
+            className={`${selectStyle} w-full`}
+          >
+            <option value="adjust">Stock Count Adjustment (+ / -)</option>
+            <option value="reserve">Hold / Reserve Quantity</option>
+            <option value="release">Release Reserved Quantity</option>
+          </select>
+        </div>
+
+        {mode === "adjust" ? (
+          <div>
+            <FormField
+              label="Adjustment delta (+ or - quantity)"
+              type="number"
+              required
+              value={delta || ""}
+              onChange={(e) => setDelta(parseInt(e.target.value, 10) || 0)}
+              hint="Use positive numbers to add stock, negative to write off."
+            />
+          </div>
+        ) : (
+          <div>
+            <FormField
+              label={
+                mode === "reserve"
+                  ? "Quantity to reserve"
+                  : "Quantity to release"
+              }
+              type="number"
+              min={1}
+              required
+              value={qty}
+              onChange={(e) =>
+                setQty(Math.max(1, parseInt(e.target.value, 10) || 1))
+              }
+              hint={
+                mode === "reserve"
+                  ? `Max available to reserve: ${item.available_quantity}`
+                  : `Max reserved to release: ${item.quantity_reserved}`
+              }
+            />
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label
-              htmlFor="stock-action-type"
-              className="mb-2 block text-xs font-semibold text-slate-700"
-            >
-              Action type
-            </label>
-            <select
-              id="stock-action-type"
-              value={mode}
-              onChange={(e) =>
-                setMode(e.target.value as "adjust" | "reserve" | "release")
-              }
-              className={`${selectStyle} w-full`}
-            >
-              <option value="adjust">Stock Count Adjustment (+ / -)</option>
-              <option value="reserve">Hold / Reserve Quantity</option>
-              <option value="release">Release Reserved Quantity</option>
-            </select>
-          </div>
+        <div>
+          <FormField
+            label="Reason for adjustment"
+            required
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            placeholder="e.g. Audit variance, damage, stock arrival"
+          />
+        </div>
 
-          {mode === "adjust" ? (
-            <div>
-              <FormField
-                label="Adjustment delta (+ or - quantity)"
-                type="number"
-                required
-                value={delta || ""}
-                onChange={(e) => setDelta(parseInt(e.target.value, 10) || 0)}
-                hint="Use positive numbers to add stock, negative to write off."
-              />
-            </div>
-          ) : (
-            <div>
-              <FormField
-                label={
-                  mode === "reserve"
-                    ? "Quantity to reserve"
-                    : "Quantity to release"
-                }
-                type="number"
-                min={1}
-                required
-                value={qty}
-                onChange={(e) =>
-                  setQty(Math.max(1, parseInt(e.target.value, 10) || 1))
-                }
-                hint={
-                  mode === "reserve"
-                    ? `Max available to reserve: ${item.available_quantity}`
-                    : `Max reserved to release: ${item.quantity_reserved}`
-                }
-              />
-            </div>
-          )}
-
-          <div>
-            <FormField
-              label="Reason for adjustment"
-              required
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              placeholder="e.g. Audit variance, damage, stock arrival"
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
+        <FormSection
+          title="Transaction reference"
+          description="Optional references connect this ledger entry to a purchase order, return or audit."
+        >
+          <div className="grid gap-3 sm:grid-cols-2">
             <FormField
               label="Reference type (optional)"
               value={refType}
@@ -440,30 +437,28 @@ function StockAdjustModal({
               placeholder="e.g. PO-8921"
             />
           </div>
-
-          <div className="flex justify-end gap-3 pt-3">
-            <button
-              type="button"
-              onClick={onClose}
-              className={secondaryButton}
-              disabled={submitting}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className={primaryButton}
-              disabled={
-                submitting ||
-                (mode === "adjust" && delta === 0) ||
-                !reason.trim()
-              }
-            >
-              {submitting ? "Processing…" : "Submit adjustment"}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+        </FormSection>
+        <div className="flex justify-end gap-3 pt-3">
+          <button
+            type="button"
+            onClick={onClose}
+            className={secondaryButton}
+            disabled={submitting}
+            data-dialog-cancel
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className={primaryButton}
+            disabled={
+              submitting || (mode === "adjust" && delta === 0) || !reason.trim()
+            }
+          >
+            {submitting ? "Processing…" : "Submit adjustment"}
+          </button>
+        </div>
+      </form>
+    </Dialog>
   );
 }

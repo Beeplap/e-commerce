@@ -1,0 +1,1548 @@
+{
+  "base": "http://127.0.0.1:3001",
+  "baseline": "803970d plus Phase 35 foundation",
+  "state": "anonymous, existing development catalog; no catalog, account, order or payment data seeded; no cart/payment mutations submitted",
+  "routes": [
+    {
+      "name": "home",
+      "path": "/",
+      "width": 375,
+      "status": 200,
+      "finalPath": "/",
+      "metrics": {
+        "viewport": 375,
+        "documentWidth": 388,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "Georgia, \"Times New Roman\", serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [
+          "/products/9c3f2a5b-7e14-40e7-9f57-73d4fcab7d1b",
+          "/products/e0d7a86d-2555-4d44-80ee-c606cd56dd68"
+        ],
+        "heading": "Lightning commerce, direct from trusted sellers."
+      },
+      "screenshot": "home-375.png"
+    },
+    {
+      "name": "home",
+      "path": "/",
+      "width": 430,
+      "status": 200,
+      "finalPath": "/",
+      "metrics": {
+        "viewport": 430,
+        "documentWidth": 430,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "Georgia, \"Times New Roman\", serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [
+          "/products/9c3f2a5b-7e14-40e7-9f57-73d4fcab7d1b",
+          "/products/e0d7a86d-2555-4d44-80ee-c606cd56dd68"
+        ],
+        "heading": "Lightning commerce, direct from trusted sellers."
+      },
+      "screenshot": "home-430.png"
+    },
+    {
+      "name": "home",
+      "path": "/",
+      "width": 768,
+      "status": 200,
+      "finalPath": "/",
+      "metrics": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "Georgia, \"Times New Roman\", serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [
+          "/products/9c3f2a5b-7e14-40e7-9f57-73d4fcab7d1b",
+          "/products/e0d7a86d-2555-4d44-80ee-c606cd56dd68"
+        ],
+        "heading": "Lightning commerce, direct from trusted sellers."
+      },
+      "screenshot": "home-768.png"
+    },
+    {
+      "name": "home",
+      "path": "/",
+      "width": 1024,
+      "status": 200,
+      "finalPath": "/",
+      "metrics": {
+        "viewport": 1024,
+        "documentWidth": 1024,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "Georgia, \"Times New Roman\", serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [
+          "/products/9c3f2a5b-7e14-40e7-9f57-73d4fcab7d1b",
+          "/products/e0d7a86d-2555-4d44-80ee-c606cd56dd68"
+        ],
+        "heading": "Lightning commerce, direct from trusted sellers."
+      },
+      "screenshot": "home-1024.png"
+    },
+    {
+      "name": "home",
+      "path": "/",
+      "width": 1440,
+      "status": 200,
+      "finalPath": "/",
+      "metrics": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "Georgia, \"Times New Roman\", serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [
+          "/products/9c3f2a5b-7e14-40e7-9f57-73d4fcab7d1b",
+          "/products/e0d7a86d-2555-4d44-80ee-c606cd56dd68"
+        ],
+        "heading": "Lightning commerce, direct from trusted sellers."
+      },
+      "screenshot": "home-1440.png"
+    },
+    {
+      "name": "home",
+      "path": "/",
+      "width": 1920,
+      "status": 200,
+      "finalPath": "/",
+      "metrics": {
+        "viewport": 1920,
+        "documentWidth": 1920,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "Georgia, \"Times New Roman\", serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [
+          "/products/9c3f2a5b-7e14-40e7-9f57-73d4fcab7d1b",
+          "/products/e0d7a86d-2555-4d44-80ee-c606cd56dd68"
+        ],
+        "heading": "Lightning commerce, direct from trusted sellers."
+      },
+      "screenshot": "home-1920.png"
+    },
+    {
+      "name": "shop",
+      "path": "/search",
+      "width": 375,
+      "status": 200,
+      "finalPath": "/search",
+      "metrics": {
+        "viewport": 375,
+        "documentWidth": 388,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [
+          "/products/9c3f2a5b-7e14-40e7-9f57-73d4fcab7d1b",
+          "/products/e0d7a86d-2555-4d44-80ee-c606cd56dd68"
+        ],
+        "heading": "Explore All Products"
+      },
+      "screenshot": "shop-375.png"
+    },
+    {
+      "name": "shop",
+      "path": "/search",
+      "width": 430,
+      "status": 200,
+      "finalPath": "/search",
+      "metrics": {
+        "viewport": 430,
+        "documentWidth": 430,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [
+          "/products/9c3f2a5b-7e14-40e7-9f57-73d4fcab7d1b",
+          "/products/e0d7a86d-2555-4d44-80ee-c606cd56dd68"
+        ],
+        "heading": "Explore All Products"
+      },
+      "screenshot": "shop-430.png"
+    },
+    {
+      "name": "shop",
+      "path": "/search",
+      "width": 768,
+      "status": 200,
+      "finalPath": "/search",
+      "metrics": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [
+          "/products/9c3f2a5b-7e14-40e7-9f57-73d4fcab7d1b",
+          "/products/e0d7a86d-2555-4d44-80ee-c606cd56dd68"
+        ],
+        "heading": "Explore All Products"
+      },
+      "screenshot": "shop-768.png"
+    },
+    {
+      "name": "shop",
+      "path": "/search",
+      "width": 1024,
+      "status": 200,
+      "finalPath": "/search",
+      "metrics": {
+        "viewport": 1024,
+        "documentWidth": 1024,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [
+          "/products/9c3f2a5b-7e14-40e7-9f57-73d4fcab7d1b",
+          "/products/e0d7a86d-2555-4d44-80ee-c606cd56dd68"
+        ],
+        "heading": "Explore All Products"
+      },
+      "screenshot": "shop-1024.png"
+    },
+    {
+      "name": "shop",
+      "path": "/search",
+      "width": 1440,
+      "status": 200,
+      "finalPath": "/search",
+      "metrics": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [
+          "/products/9c3f2a5b-7e14-40e7-9f57-73d4fcab7d1b",
+          "/products/e0d7a86d-2555-4d44-80ee-c606cd56dd68"
+        ],
+        "heading": "Explore All Products"
+      },
+      "screenshot": "shop-1440.png"
+    },
+    {
+      "name": "shop",
+      "path": "/search",
+      "width": 1920,
+      "status": 200,
+      "finalPath": "/search",
+      "metrics": {
+        "viewport": 1920,
+        "documentWidth": 1920,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [
+          "/products/9c3f2a5b-7e14-40e7-9f57-73d4fcab7d1b",
+          "/products/e0d7a86d-2555-4d44-80ee-c606cd56dd68"
+        ],
+        "heading": "Explore All Products"
+      },
+      "screenshot": "shop-1920.png"
+    },
+    {
+      "name": "category-unavailable",
+      "path": "/categories/00000000-0000-4000-8000-000000000035",
+      "width": 375,
+      "status": 200,
+      "finalPath": "/categories/00000000-0000-4000-8000-000000000035",
+      "metrics": {
+        "viewport": 375,
+        "documentWidth": 388,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "Category"
+      },
+      "screenshot": "category-unavailable-375.png"
+    },
+    {
+      "name": "category-unavailable",
+      "path": "/categories/00000000-0000-4000-8000-000000000035",
+      "width": 430,
+      "status": 200,
+      "finalPath": "/categories/00000000-0000-4000-8000-000000000035",
+      "metrics": {
+        "viewport": 430,
+        "documentWidth": 430,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "Category"
+      },
+      "screenshot": "category-unavailable-430.png"
+    },
+    {
+      "name": "category-unavailable",
+      "path": "/categories/00000000-0000-4000-8000-000000000035",
+      "width": 768,
+      "status": 200,
+      "finalPath": "/categories/00000000-0000-4000-8000-000000000035",
+      "metrics": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "Category"
+      },
+      "screenshot": "category-unavailable-768.png"
+    },
+    {
+      "name": "category-unavailable",
+      "path": "/categories/00000000-0000-4000-8000-000000000035",
+      "width": 1024,
+      "status": 200,
+      "finalPath": "/categories/00000000-0000-4000-8000-000000000035",
+      "metrics": {
+        "viewport": 1024,
+        "documentWidth": 1024,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "Category"
+      },
+      "screenshot": "category-unavailable-1024.png"
+    },
+    {
+      "name": "category-unavailable",
+      "path": "/categories/00000000-0000-4000-8000-000000000035",
+      "width": 1440,
+      "status": 200,
+      "finalPath": "/categories/00000000-0000-4000-8000-000000000035",
+      "metrics": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "Category"
+      },
+      "screenshot": "category-unavailable-1440.png"
+    },
+    {
+      "name": "category-unavailable",
+      "path": "/categories/00000000-0000-4000-8000-000000000035",
+      "width": 1920,
+      "status": 200,
+      "finalPath": "/categories/00000000-0000-4000-8000-000000000035",
+      "metrics": {
+        "viewport": 1920,
+        "documentWidth": 1920,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "Category"
+      },
+      "screenshot": "category-unavailable-1920.png"
+    },
+    {
+      "name": "product-unavailable",
+      "path": "/products/00000000-0000-4000-8000-000000000035",
+      "width": 375,
+      "status": 200,
+      "finalPath": "/products/00000000-0000-4000-8000-000000000035",
+      "metrics": {
+        "viewport": 375,
+        "documentWidth": 388,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "Product Unavailable"
+      },
+      "screenshot": "product-unavailable-375.png"
+    },
+    {
+      "name": "product-unavailable",
+      "path": "/products/00000000-0000-4000-8000-000000000035",
+      "width": 430,
+      "status": 200,
+      "finalPath": "/products/00000000-0000-4000-8000-000000000035",
+      "metrics": {
+        "viewport": 430,
+        "documentWidth": 430,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "Product Unavailable"
+      },
+      "screenshot": "product-unavailable-430.png"
+    },
+    {
+      "name": "product-unavailable",
+      "path": "/products/00000000-0000-4000-8000-000000000035",
+      "width": 768,
+      "status": 200,
+      "finalPath": "/products/00000000-0000-4000-8000-000000000035",
+      "metrics": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "Product Unavailable"
+      },
+      "screenshot": "product-unavailable-768.png"
+    },
+    {
+      "name": "product-unavailable",
+      "path": "/products/00000000-0000-4000-8000-000000000035",
+      "width": 1024,
+      "status": 200,
+      "finalPath": "/products/00000000-0000-4000-8000-000000000035",
+      "metrics": {
+        "viewport": 1024,
+        "documentWidth": 1024,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "Product Unavailable"
+      },
+      "screenshot": "product-unavailable-1024.png"
+    },
+    {
+      "name": "product-unavailable",
+      "path": "/products/00000000-0000-4000-8000-000000000035",
+      "width": 1440,
+      "status": 200,
+      "finalPath": "/products/00000000-0000-4000-8000-000000000035",
+      "metrics": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "Product Unavailable"
+      },
+      "screenshot": "product-unavailable-1440.png"
+    },
+    {
+      "name": "product-unavailable",
+      "path": "/products/00000000-0000-4000-8000-000000000035",
+      "width": 1920,
+      "status": 200,
+      "finalPath": "/products/00000000-0000-4000-8000-000000000035",
+      "metrics": {
+        "viewport": 1920,
+        "documentWidth": 1920,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "Product Unavailable"
+      },
+      "screenshot": "product-unavailable-1920.png"
+    },
+    {
+      "name": "seller-unavailable",
+      "path": "/sellers/00000000-0000-4000-8000-000000000035",
+      "width": 375,
+      "status": 200,
+      "finalPath": "/sellers/00000000-0000-4000-8000-000000000035",
+      "metrics": {
+        "viewport": 375,
+        "documentWidth": 388,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "Seller Store Unavailable"
+      },
+      "screenshot": "seller-unavailable-375.png"
+    },
+    {
+      "name": "seller-unavailable",
+      "path": "/sellers/00000000-0000-4000-8000-000000000035",
+      "width": 430,
+      "status": 200,
+      "finalPath": "/sellers/00000000-0000-4000-8000-000000000035",
+      "metrics": {
+        "viewport": 430,
+        "documentWidth": 430,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "Seller Store Unavailable"
+      },
+      "screenshot": "seller-unavailable-430.png"
+    },
+    {
+      "name": "seller-unavailable",
+      "path": "/sellers/00000000-0000-4000-8000-000000000035",
+      "width": 768,
+      "status": 200,
+      "finalPath": "/sellers/00000000-0000-4000-8000-000000000035",
+      "metrics": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "Seller Store Unavailable"
+      },
+      "screenshot": "seller-unavailable-768.png"
+    },
+    {
+      "name": "seller-unavailable",
+      "path": "/sellers/00000000-0000-4000-8000-000000000035",
+      "width": 1024,
+      "status": 200,
+      "finalPath": "/sellers/00000000-0000-4000-8000-000000000035",
+      "metrics": {
+        "viewport": 1024,
+        "documentWidth": 1024,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "Seller Store Unavailable"
+      },
+      "screenshot": "seller-unavailable-1024.png"
+    },
+    {
+      "name": "seller-unavailable",
+      "path": "/sellers/00000000-0000-4000-8000-000000000035",
+      "width": 1440,
+      "status": 200,
+      "finalPath": "/sellers/00000000-0000-4000-8000-000000000035",
+      "metrics": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "Seller Store Unavailable"
+      },
+      "screenshot": "seller-unavailable-1440.png"
+    },
+    {
+      "name": "seller-unavailable",
+      "path": "/sellers/00000000-0000-4000-8000-000000000035",
+      "width": 1920,
+      "status": 200,
+      "finalPath": "/sellers/00000000-0000-4000-8000-000000000035",
+      "metrics": {
+        "viewport": 1920,
+        "documentWidth": 1920,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "Seller Store Unavailable"
+      },
+      "screenshot": "seller-unavailable-1920.png"
+    },
+    {
+      "name": "cart",
+      "path": "/cart",
+      "width": 375,
+      "status": 200,
+      "finalPath": "/cart",
+      "metrics": {
+        "viewport": 375,
+        "documentWidth": 388,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "Shopping Cart"
+      },
+      "screenshot": "cart-375.png"
+    },
+    {
+      "name": "cart",
+      "path": "/cart",
+      "width": 430,
+      "status": 200,
+      "finalPath": "/cart",
+      "metrics": {
+        "viewport": 430,
+        "documentWidth": 430,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "Shopping Cart"
+      },
+      "screenshot": "cart-430.png"
+    },
+    {
+      "name": "cart",
+      "path": "/cart",
+      "width": 768,
+      "status": 200,
+      "finalPath": "/cart",
+      "metrics": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "Shopping Cart"
+      },
+      "screenshot": "cart-768.png"
+    },
+    {
+      "name": "cart",
+      "path": "/cart",
+      "width": 1024,
+      "status": 200,
+      "finalPath": "/cart",
+      "metrics": {
+        "viewport": 1024,
+        "documentWidth": 1024,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "Shopping Cart"
+      },
+      "screenshot": "cart-1024.png"
+    },
+    {
+      "name": "cart",
+      "path": "/cart",
+      "width": 1440,
+      "status": 200,
+      "finalPath": "/cart",
+      "metrics": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "Shopping Cart"
+      },
+      "screenshot": "cart-1440.png"
+    },
+    {
+      "name": "cart",
+      "path": "/cart",
+      "width": 1920,
+      "status": 200,
+      "finalPath": "/cart",
+      "metrics": {
+        "viewport": 1920,
+        "documentWidth": 1920,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "Shopping Cart"
+      },
+      "screenshot": "cart-1920.png"
+    },
+    {
+      "name": "checkout",
+      "path": "/checkout",
+      "width": 375,
+      "status": 200,
+      "finalPath": "/checkout",
+      "metrics": {
+        "viewport": 375,
+        "documentWidth": 388,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "Customer Checkout"
+      },
+      "screenshot": "checkout-375.png"
+    },
+    {
+      "name": "checkout",
+      "path": "/checkout",
+      "width": 430,
+      "status": 200,
+      "finalPath": "/checkout",
+      "metrics": {
+        "viewport": 430,
+        "documentWidth": 430,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "Customer Checkout"
+      },
+      "screenshot": "checkout-430.png"
+    },
+    {
+      "name": "checkout",
+      "path": "/checkout",
+      "width": 768,
+      "status": 200,
+      "finalPath": "/checkout",
+      "metrics": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "Customer Checkout"
+      },
+      "screenshot": "checkout-768.png"
+    },
+    {
+      "name": "checkout",
+      "path": "/checkout",
+      "width": 1024,
+      "status": 200,
+      "finalPath": "/checkout",
+      "metrics": {
+        "viewport": 1024,
+        "documentWidth": 1024,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "Customer Checkout"
+      },
+      "screenshot": "checkout-1024.png"
+    },
+    {
+      "name": "checkout",
+      "path": "/checkout",
+      "width": 1440,
+      "status": 200,
+      "finalPath": "/checkout",
+      "metrics": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "Customer Checkout"
+      },
+      "screenshot": "checkout-1440.png"
+    },
+    {
+      "name": "checkout",
+      "path": "/checkout",
+      "width": 1920,
+      "status": 200,
+      "finalPath": "/checkout",
+      "metrics": {
+        "viewport": 1920,
+        "documentWidth": 1920,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "Customer Checkout"
+      },
+      "screenshot": "checkout-1920.png"
+    },
+    {
+      "name": "payment-no-order",
+      "path": "/checkout/pay",
+      "width": 375,
+      "status": 200,
+      "finalPath": "/checkout/pay",
+      "metrics": {
+        "viewport": 375,
+        "documentWidth": 388,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "No pending order found"
+      },
+      "screenshot": "payment-no-order-375.png"
+    },
+    {
+      "name": "payment-no-order",
+      "path": "/checkout/pay",
+      "width": 430,
+      "status": 200,
+      "finalPath": "/checkout/pay",
+      "metrics": {
+        "viewport": 430,
+        "documentWidth": 430,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "No pending order found"
+      },
+      "screenshot": "payment-no-order-430.png"
+    },
+    {
+      "name": "payment-no-order",
+      "path": "/checkout/pay",
+      "width": 768,
+      "status": 200,
+      "finalPath": "/checkout/pay",
+      "metrics": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "No pending order found"
+      },
+      "screenshot": "payment-no-order-768.png"
+    },
+    {
+      "name": "payment-no-order",
+      "path": "/checkout/pay",
+      "width": 1024,
+      "status": 200,
+      "finalPath": "/checkout/pay",
+      "metrics": {
+        "viewport": 1024,
+        "documentWidth": 1024,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "No pending order found"
+      },
+      "screenshot": "payment-no-order-1024.png"
+    },
+    {
+      "name": "payment-no-order",
+      "path": "/checkout/pay",
+      "width": 1440,
+      "status": 200,
+      "finalPath": "/checkout/pay",
+      "metrics": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "No pending order found"
+      },
+      "screenshot": "payment-no-order-1440.png"
+    },
+    {
+      "name": "payment-no-order",
+      "path": "/checkout/pay",
+      "width": 1920,
+      "status": 200,
+      "finalPath": "/checkout/pay",
+      "metrics": {
+        "viewport": 1920,
+        "documentWidth": 1920,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "No pending order found"
+      },
+      "screenshot": "payment-no-order-1920.png"
+    },
+    {
+      "name": "success-no-order",
+      "path": "/checkout/success",
+      "width": 375,
+      "status": 200,
+      "finalPath": "/checkout/success",
+      "metrics": {
+        "viewport": 375,
+        "documentWidth": 388,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "Order Confirmed!"
+      },
+      "screenshot": "success-no-order-375.png"
+    },
+    {
+      "name": "success-no-order",
+      "path": "/checkout/success",
+      "width": 430,
+      "status": 200,
+      "finalPath": "/checkout/success",
+      "metrics": {
+        "viewport": 430,
+        "documentWidth": 430,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "Order Confirmed!"
+      },
+      "screenshot": "success-no-order-430.png"
+    },
+    {
+      "name": "success-no-order",
+      "path": "/checkout/success",
+      "width": 768,
+      "status": 200,
+      "finalPath": "/checkout/success",
+      "metrics": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "Order Confirmed!"
+      },
+      "screenshot": "success-no-order-768.png"
+    },
+    {
+      "name": "success-no-order",
+      "path": "/checkout/success",
+      "width": 1024,
+      "status": 200,
+      "finalPath": "/checkout/success",
+      "metrics": {
+        "viewport": 1024,
+        "documentWidth": 1024,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "Order Confirmed!"
+      },
+      "screenshot": "success-no-order-1024.png"
+    },
+    {
+      "name": "success-no-order",
+      "path": "/checkout/success",
+      "width": 1440,
+      "status": 200,
+      "finalPath": "/checkout/success",
+      "metrics": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "Order Confirmed!"
+      },
+      "screenshot": "success-no-order-1440.png"
+    },
+    {
+      "name": "success-no-order",
+      "path": "/checkout/success",
+      "width": 1920,
+      "status": 200,
+      "finalPath": "/checkout/success",
+      "metrics": {
+        "viewport": 1920,
+        "documentWidth": 1920,
+        "background": "rgb(244, 238, 230)",
+        "foreground": "rgb(30, 26, 24)",
+        "bodyFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "headingFont": "\"Segoe UI\", system-ui, -apple-system, sans-serif",
+        "footerBackground": "rgb(36, 30, 26)",
+        "searchFont": "16px",
+        "searchName": "Search products, brands and categories",
+        "operationalAccent": "#176b57",
+        "productDestinations": [],
+        "heading": "Order Confirmed!"
+      },
+      "screenshot": "success-no-order-1920.png"
+    },
+    {
+      "name": "category-existing",
+      "path": "/categories/0acee008-c160-433c-8af4-eeff973627c3",
+      "width": 375,
+      "status": 200,
+      "metrics": {
+        "viewport": 375,
+        "documentWidth": 388,
+        "background": "rgb(244, 238, 230)",
+        "priceLabels": ["40.00\u00a0USD", "25.00\u00a0USD"],
+        "heading": "Gadgets",
+        "errorState": false
+      },
+      "screenshot": "category-existing-375.png"
+    },
+    {
+      "name": "category-existing",
+      "path": "/categories/0acee008-c160-433c-8af4-eeff973627c3",
+      "width": 430,
+      "status": 200,
+      "metrics": {
+        "viewport": 430,
+        "documentWidth": 430,
+        "background": "rgb(244, 238, 230)",
+        "priceLabels": ["40.00\u00a0USD", "25.00\u00a0USD"],
+        "heading": "Gadgets",
+        "errorState": false
+      },
+      "screenshot": "category-existing-430.png"
+    },
+    {
+      "name": "category-existing",
+      "path": "/categories/0acee008-c160-433c-8af4-eeff973627c3",
+      "width": 768,
+      "status": 200,
+      "metrics": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "background": "rgb(244, 238, 230)",
+        "priceLabels": ["40.00\u00a0USD", "25.00\u00a0USD"],
+        "heading": "Gadgets",
+        "errorState": false
+      },
+      "screenshot": "category-existing-768.png"
+    },
+    {
+      "name": "category-existing",
+      "path": "/categories/0acee008-c160-433c-8af4-eeff973627c3",
+      "width": 1024,
+      "status": 200,
+      "metrics": {
+        "viewport": 1024,
+        "documentWidth": 1024,
+        "background": "rgb(244, 238, 230)",
+        "priceLabels": ["40.00\u00a0USD", "25.00\u00a0USD"],
+        "heading": "Gadgets",
+        "errorState": false
+      },
+      "screenshot": "category-existing-1024.png"
+    },
+    {
+      "name": "category-existing",
+      "path": "/categories/0acee008-c160-433c-8af4-eeff973627c3",
+      "width": 1440,
+      "status": 200,
+      "metrics": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "background": "rgb(244, 238, 230)",
+        "priceLabels": ["40.00\u00a0USD", "25.00\u00a0USD"],
+        "heading": "Gadgets",
+        "errorState": false
+      },
+      "screenshot": "category-existing-1440.png"
+    },
+    {
+      "name": "category-existing",
+      "path": "/categories/0acee008-c160-433c-8af4-eeff973627c3",
+      "width": 1920,
+      "status": 200,
+      "metrics": {
+        "viewport": 1920,
+        "documentWidth": 1920,
+        "background": "rgb(244, 238, 230)",
+        "priceLabels": ["40.00\u00a0USD", "25.00\u00a0USD"],
+        "heading": "Gadgets",
+        "errorState": false
+      },
+      "screenshot": "category-existing-1920.png"
+    },
+    {
+      "name": "product-existing",
+      "path": "/products/9c3f2a5b-7e14-40e7-9f57-73d4fcab7d1b",
+      "width": 375,
+      "status": 200,
+      "metrics": {
+        "viewport": 375,
+        "documentWidth": 388,
+        "background": "rgb(244, 238, 230)",
+        "priceLabels": [],
+        "heading": "Product Unavailable",
+        "errorState": true
+      },
+      "screenshot": "product-existing-375.png"
+    },
+    {
+      "name": "product-existing",
+      "path": "/products/9c3f2a5b-7e14-40e7-9f57-73d4fcab7d1b",
+      "width": 430,
+      "status": 200,
+      "metrics": {
+        "viewport": 430,
+        "documentWidth": 430,
+        "background": "rgb(244, 238, 230)",
+        "priceLabels": [],
+        "heading": "Product Unavailable",
+        "errorState": true
+      },
+      "screenshot": "product-existing-430.png"
+    },
+    {
+      "name": "product-existing",
+      "path": "/products/9c3f2a5b-7e14-40e7-9f57-73d4fcab7d1b",
+      "width": 768,
+      "status": 200,
+      "metrics": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "background": "rgb(244, 238, 230)",
+        "priceLabels": [],
+        "heading": "Product Unavailable",
+        "errorState": true
+      },
+      "screenshot": "product-existing-768.png"
+    },
+    {
+      "name": "product-existing",
+      "path": "/products/9c3f2a5b-7e14-40e7-9f57-73d4fcab7d1b",
+      "width": 1024,
+      "status": 200,
+      "metrics": {
+        "viewport": 1024,
+        "documentWidth": 1024,
+        "background": "rgb(244, 238, 230)",
+        "priceLabels": [],
+        "heading": "Product Unavailable",
+        "errorState": true
+      },
+      "screenshot": "product-existing-1024.png"
+    },
+    {
+      "name": "product-existing",
+      "path": "/products/9c3f2a5b-7e14-40e7-9f57-73d4fcab7d1b",
+      "width": 1440,
+      "status": 200,
+      "metrics": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "background": "rgb(244, 238, 230)",
+        "priceLabels": [],
+        "heading": "Product Unavailable",
+        "errorState": true
+      },
+      "screenshot": "product-existing-1440.png"
+    },
+    {
+      "name": "product-existing",
+      "path": "/products/9c3f2a5b-7e14-40e7-9f57-73d4fcab7d1b",
+      "width": 1920,
+      "status": 200,
+      "metrics": {
+        "viewport": 1920,
+        "documentWidth": 1920,
+        "background": "rgb(244, 238, 230)",
+        "priceLabels": [],
+        "heading": "Product Unavailable",
+        "errorState": true
+      },
+      "screenshot": "product-existing-1920.png"
+    },
+    {
+      "name": "seller-existing",
+      "path": "/sellers/560692de-30c5-471b-893f-cadb55fcd8dc",
+      "width": 375,
+      "status": 200,
+      "metrics": {
+        "viewport": 375,
+        "documentWidth": 388,
+        "background": "rgb(244, 238, 230)",
+        "priceLabels": [],
+        "heading": "Seller Store Unavailable",
+        "errorState": true
+      },
+      "screenshot": "seller-existing-375.png"
+    },
+    {
+      "name": "seller-existing",
+      "path": "/sellers/560692de-30c5-471b-893f-cadb55fcd8dc",
+      "width": 430,
+      "status": 200,
+      "metrics": {
+        "viewport": 430,
+        "documentWidth": 430,
+        "background": "rgb(244, 238, 230)",
+        "priceLabels": [],
+        "heading": "Seller Store Unavailable",
+        "errorState": true
+      },
+      "screenshot": "seller-existing-430.png"
+    },
+    {
+      "name": "seller-existing",
+      "path": "/sellers/560692de-30c5-471b-893f-cadb55fcd8dc",
+      "width": 768,
+      "status": 200,
+      "metrics": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "background": "rgb(244, 238, 230)",
+        "priceLabels": [],
+        "heading": "Seller Store Unavailable",
+        "errorState": true
+      },
+      "screenshot": "seller-existing-768.png"
+    },
+    {
+      "name": "seller-existing",
+      "path": "/sellers/560692de-30c5-471b-893f-cadb55fcd8dc",
+      "width": 1024,
+      "status": 200,
+      "metrics": {
+        "viewport": 1024,
+        "documentWidth": 1024,
+        "background": "rgb(244, 238, 230)",
+        "priceLabels": [],
+        "heading": "Seller Store Unavailable",
+        "errorState": true
+      },
+      "screenshot": "seller-existing-1024.png"
+    },
+    {
+      "name": "seller-existing",
+      "path": "/sellers/560692de-30c5-471b-893f-cadb55fcd8dc",
+      "width": 1440,
+      "status": 200,
+      "metrics": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "background": "rgb(244, 238, 230)",
+        "priceLabels": [],
+        "heading": "Seller Store Unavailable",
+        "errorState": true
+      },
+      "screenshot": "seller-existing-1440.png"
+    },
+    {
+      "name": "seller-existing",
+      "path": "/sellers/560692de-30c5-471b-893f-cadb55fcd8dc",
+      "width": 1920,
+      "status": 200,
+      "metrics": {
+        "viewport": 1920,
+        "documentWidth": 1920,
+        "background": "rgb(244, 238, 230)",
+        "priceLabels": [],
+        "heading": "Seller Store Unavailable",
+        "errorState": true
+      },
+      "screenshot": "seller-existing-1920.png"
+    }
+  ],
+  "reducedMotion": {
+    "animations": 0,
+    "duration": "0s"
+  },
+  "operationalLogin": {
+    "customerBoundaries": 0,
+    "bodyBackground": "rgb(247, 248, 250)",
+    "operationalAccent": "#176b57"
+  },
+  "pageErrors": [],
+  "retainedScreenshots": [
+    "home-viewport-375.png",
+    "home-viewport-430.png",
+    "home-viewport-768.png",
+    "home-viewport-1024.png",
+    "home-viewport-1440.png",
+    "home-viewport-1920.png",
+    "home-430.png",
+    "home-1440.png",
+    "shop-375.png",
+    "shop-768.png",
+    "shop-1440.png",
+    "category-existing-430.png",
+    "product-existing-430.png",
+    "seller-existing-430.png",
+    "category-unavailable-430.png",
+    "mobile-menu-375.png",
+    "cart-430.png",
+    "cart-1440.png",
+    "checkout-375.png",
+    "checkout-1440.png",
+    "payment-no-order-430.png",
+    "success-no-order-1440.png",
+    "cart-drawer-375.png",
+    "cart-drawer-1440.png",
+    "fixture-modal-375.png",
+    "fixture-modal-430.png",
+    "fixture-modal-1440.png",
+    "fixture-drawer-375.png",
+    "fixture-drawer-430.png",
+    "fixture-drawer-1440.png"
+  ],
+  "localCaptureDirectory": ".artifacts/storefront-phase35 (ignored; complete capture set)",
+  "viewportHeight": 900,
+  "deviceScaleFactor": 1,
+  "locale": "en-US",
+  "timezone": "UTC"
+}

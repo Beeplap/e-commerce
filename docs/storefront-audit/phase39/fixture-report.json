@@ -1,0 +1,1479 @@
+{
+  "state": "SUPPLEMENTAL INTERCEPTED FIXTURES ONLY; solid PNG rectangles test image containment; no real merchandise/photography, no backend/cart writes",
+  "cases": [
+    {
+      "case": "gallery",
+      "width": 375,
+      "metrics": {
+        "viewport": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "gallery": {
+          "x": 20,
+          "y": 468.65625,
+          "width": 335,
+          "height": 335,
+          "top": 468.65625,
+          "right": 355,
+          "bottom": 803.65625,
+          "left": 20
+        },
+        "primary": {
+          "x": 166,
+          "y": 1339.625,
+          "width": 189,
+          "height": 48,
+          "top": 1339.625,
+          "right": 355,
+          "bottom": 1387.625,
+          "left": 166
+        },
+        "options": [
+          {
+            "label": "Carbon / Standard\n125.00\u00a0NPR",
+            "pressed": "true",
+            "height": 72
+          },
+          {
+            "label": "Ivory / Standard\n130.00\u00a0NPR",
+            "pressed": "false",
+            "height": 72
+          },
+          {
+            "label": "Copper / Standard\n140.00\u00a0NPR\nOut of stock",
+            "pressed": "false",
+            "height": 97
+          }
+        ],
+        "image": {
+          "complete": true,
+          "naturalWidth": 600,
+          "fit": "contain"
+        }
+      },
+      "pageErrors": []
+    },
+    {
+      "case": "gallery",
+      "width": 430,
+      "metrics": {
+        "viewport": 430,
+        "documentWidth": 430,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "gallery": {
+          "x": 20,
+          "y": 439.65625,
+          "width": 390,
+          "height": 390,
+          "top": 439.65625,
+          "right": 410,
+          "bottom": 829.65625,
+          "left": 20
+        },
+        "primary": {
+          "x": 166,
+          "y": 1366.015625,
+          "width": 244,
+          "height": 48,
+          "top": 1366.015625,
+          "right": 410,
+          "bottom": 1414.015625,
+          "left": 166
+        },
+        "options": [
+          {
+            "label": "Carbon / Standard\n125.00\u00a0NPR",
+            "pressed": "true",
+            "height": 72
+          },
+          {
+            "label": "Ivory / Standard\n130.00\u00a0NPR",
+            "pressed": "false",
+            "height": 72
+          },
+          {
+            "label": "Copper / Standard\n140.00\u00a0NPR\nOut of stock",
+            "pressed": "false",
+            "height": 97
+          }
+        ],
+        "image": {
+          "complete": true,
+          "naturalWidth": 600,
+          "fit": "contain"
+        }
+      },
+      "pageErrors": []
+    },
+    {
+      "case": "gallery",
+      "width": 768,
+      "metrics": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "gallery": {
+          "x": 32,
+          "y": 172,
+          "width": 359.4375,
+          "height": 359.4375,
+          "top": 172,
+          "right": 391.4375,
+          "bottom": 531.4375,
+          "left": 32
+        },
+        "primary": {
+          "x": 569.4375,
+          "y": 821.359375,
+          "width": 166.5625,
+          "height": 48,
+          "top": 821.359375,
+          "right": 736,
+          "bottom": 869.359375,
+          "left": 569.4375
+        },
+        "options": [
+          {
+            "label": "Carbon / Standard\n125.00\u00a0NPR",
+            "pressed": "true",
+            "height": 72
+          },
+          {
+            "label": "Ivory / Standard\n130.00\u00a0NPR",
+            "pressed": "false",
+            "height": 72
+          },
+          {
+            "label": "Copper / Standard\n140.00\u00a0NPR\nOut of stock",
+            "pressed": "false",
+            "height": 97
+          }
+        ],
+        "image": {
+          "complete": true,
+          "naturalWidth": 600,
+          "fit": "contain"
+        }
+      },
+      "pageErrors": []
+    },
+    {
+      "case": "gallery",
+      "width": 1024,
+      "metrics": {
+        "viewport": 1024,
+        "documentWidth": 1024,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "gallery": {
+          "x": 32,
+          "y": 172,
+          "width": 487.8125,
+          "height": 487.8125,
+          "top": 172,
+          "right": 519.8125,
+          "bottom": 659.8125,
+          "left": 32
+        },
+        "primary": {
+          "x": 713.8125,
+          "y": 811.109375,
+          "width": 278.171875,
+          "height": 48,
+          "top": 811.109375,
+          "right": 991.984375,
+          "bottom": 859.109375,
+          "left": 713.8125
+        },
+        "options": [
+          {
+            "label": "Carbon / Standard\n125.00\u00a0NPR",
+            "pressed": "true",
+            "height": 72
+          },
+          {
+            "label": "Ivory / Standard\n130.00\u00a0NPR",
+            "pressed": "false",
+            "height": 72
+          },
+          {
+            "label": "Copper / Standard\n140.00\u00a0NPR\nOut of stock",
+            "pressed": "false",
+            "height": 97
+          }
+        ],
+        "image": {
+          "complete": true,
+          "naturalWidth": 600,
+          "fit": "contain"
+        }
+      },
+      "pageErrors": []
+    },
+    {
+      "case": "gallery",
+      "width": 1440,
+      "metrics": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "gallery": {
+          "x": 80,
+          "y": 172,
+          "width": 658.96875,
+          "height": 658.96875,
+          "top": 172,
+          "right": 738.96875,
+          "bottom": 830.96875,
+          "left": 80
+        },
+        "primary": {
+          "x": 932.96875,
+          "y": 798.484375,
+          "width": 427.03125,
+          "height": 48,
+          "top": 798.484375,
+          "right": 1360,
+          "bottom": 846.484375,
+          "left": 932.96875
+        },
+        "options": [
+          {
+            "label": "Carbon / Standard\n125.00\u00a0NPR",
+            "pressed": "true",
+            "height": 72
+          },
+          {
+            "label": "Ivory / Standard\n130.00\u00a0NPR",
+            "pressed": "false",
+            "height": 72
+          },
+          {
+            "label": "Copper / Standard\n140.00\u00a0NPR\nOut of stock",
+            "pressed": "false",
+            "height": 97
+          }
+        ],
+        "image": {
+          "complete": true,
+          "naturalWidth": 600,
+          "fit": "contain"
+        }
+      },
+      "pageErrors": []
+    },
+    {
+      "case": "gallery",
+      "width": 1920,
+      "metrics": {
+        "viewport": 1920,
+        "documentWidth": 1920,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "gallery": {
+          "x": 320,
+          "y": 172,
+          "width": 658.96875,
+          "height": 658.96875,
+          "top": 172,
+          "right": 978.96875,
+          "bottom": 830.96875,
+          "left": 320
+        },
+        "primary": {
+          "x": 1172.96875,
+          "y": 798.484375,
+          "width": 427.03125,
+          "height": 48,
+          "top": 798.484375,
+          "right": 1600,
+          "bottom": 846.484375,
+          "left": 1172.96875
+        },
+        "options": [
+          {
+            "label": "Carbon / Standard\n125.00\u00a0NPR",
+            "pressed": "true",
+            "height": 72
+          },
+          {
+            "label": "Ivory / Standard\n130.00\u00a0NPR",
+            "pressed": "false",
+            "height": 72
+          },
+          {
+            "label": "Copper / Standard\n140.00\u00a0NPR\nOut of stock",
+            "pressed": "false",
+            "height": 97
+          }
+        ],
+        "image": {
+          "complete": true,
+          "naturalWidth": 600,
+          "fit": "contain"
+        }
+      },
+      "pageErrors": []
+    },
+    {
+      "case": "long",
+      "width": 375,
+      "metrics": {
+        "viewport": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "gallery": {
+          "x": 20,
+          "y": 612,
+          "width": 335,
+          "height": 335,
+          "top": 612,
+          "right": 355,
+          "bottom": 947,
+          "left": 20
+        },
+        "primary": {
+          "x": 166,
+          "y": 1682.359375,
+          "width": 189,
+          "height": 48,
+          "top": 1682.359375,
+          "right": 355,
+          "bottom": 1730.359375,
+          "left": 166
+        },
+        "options": [
+          {
+            "label": "An unusually long option name with_valuevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevalue / Large size option information\n9,007,199,254,740,993.01\u00a0NPR",
+            "pressed": "true",
+            "height": 240
+          },
+          {
+            "label": "Ivory / Standard\n130.00\u00a0NPR",
+            "pressed": "false",
+            "height": 240
+          },
+          {
+            "label": "Copper / Standard\n140.00\u00a0NPR\nOut of stock",
+            "pressed": "false",
+            "height": 97
+          }
+        ],
+        "image": {
+          "complete": true,
+          "naturalWidth": 600,
+          "fit": "contain"
+        }
+      },
+      "pageErrors": []
+    },
+    {
+      "case": "long",
+      "width": 430,
+      "metrics": {
+        "viewport": 430,
+        "documentWidth": 430,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "gallery": {
+          "x": 20,
+          "y": 585.125,
+          "width": 390,
+          "height": 390,
+          "top": 585.125,
+          "right": 410,
+          "bottom": 975.125,
+          "left": 20
+        },
+        "primary": {
+          "x": 166,
+          "y": 1690.15625,
+          "width": 244,
+          "height": 48,
+          "top": 1690.15625,
+          "right": 410,
+          "bottom": 1738.15625,
+          "left": 166
+        },
+        "options": [
+          {
+            "label": "An unusually long option name with_valuevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevalue / Large size option information\n9,007,199,254,740,993.01\u00a0NPR",
+            "pressed": "true",
+            "height": 219
+          },
+          {
+            "label": "Ivory / Standard\n130.00\u00a0NPR",
+            "pressed": "false",
+            "height": 219
+          },
+          {
+            "label": "Copper / Standard\n140.00\u00a0NPR\nOut of stock",
+            "pressed": "false",
+            "height": 97
+          }
+        ],
+        "image": {
+          "complete": true,
+          "naturalWidth": 600,
+          "fit": "contain"
+        }
+      },
+      "pageErrors": []
+    },
+    {
+      "case": "long",
+      "width": 768,
+      "metrics": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "gallery": {
+          "x": 32,
+          "y": 172,
+          "width": 359.4375,
+          "height": 359.4375,
+          "top": 172,
+          "right": 391.4375,
+          "bottom": 531.4375,
+          "left": 32
+        },
+        "primary": {
+          "x": 569.4375,
+          "y": 1265.671875,
+          "width": 166.5625,
+          "height": 48,
+          "top": 1265.671875,
+          "right": 736,
+          "bottom": 1313.671875,
+          "left": 569.4375
+        },
+        "options": [
+          {
+            "label": "An unusually long option name with_valuevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevalue / Large size option information\n9,007,199,254,740,993.01\u00a0NPR",
+            "pressed": "true",
+            "height": 240
+          },
+          {
+            "label": "Ivory / Standard\n130.00\u00a0NPR",
+            "pressed": "false",
+            "height": 240
+          },
+          {
+            "label": "Copper / Standard\n140.00\u00a0NPR\nOut of stock",
+            "pressed": "false",
+            "height": 97
+          }
+        ],
+        "image": {
+          "complete": true,
+          "naturalWidth": 600,
+          "fit": "contain"
+        }
+      },
+      "pageErrors": []
+    },
+    {
+      "case": "long",
+      "width": 1024,
+      "metrics": {
+        "viewport": 1024,
+        "documentWidth": 1024,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "gallery": {
+          "x": 32,
+          "y": 172,
+          "width": 487.8125,
+          "height": 487.8125,
+          "top": 172,
+          "right": 519.8125,
+          "bottom": 659.8125,
+          "left": 32
+        },
+        "primary": {
+          "x": 713.8125,
+          "y": 1142.3125,
+          "width": 278.171875,
+          "height": 48,
+          "top": 1142.3125,
+          "right": 991.984375,
+          "bottom": 1190.3125,
+          "left": 713.8125
+        },
+        "options": [
+          {
+            "label": "An unusually long option name with_valuevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevalue / Large size option information\n9,007,199,254,740,993.01\u00a0NPR",
+            "pressed": "true",
+            "height": 198
+          },
+          {
+            "label": "Ivory / Standard\n130.00\u00a0NPR",
+            "pressed": "false",
+            "height": 198
+          },
+          {
+            "label": "Copper / Standard\n140.00\u00a0NPR\nOut of stock",
+            "pressed": "false",
+            "height": 97
+          }
+        ],
+        "image": {
+          "complete": true,
+          "naturalWidth": 600,
+          "fit": "contain"
+        }
+      },
+      "pageErrors": []
+    },
+    {
+      "case": "long",
+      "width": 1440,
+      "metrics": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "gallery": {
+          "x": 80,
+          "y": 172,
+          "width": 658.96875,
+          "height": 658.96875,
+          "top": 172,
+          "right": 738.96875,
+          "bottom": 830.96875,
+          "left": 80
+        },
+        "primary": {
+          "x": 932.96875,
+          "y": 1043.96875,
+          "width": 427.03125,
+          "height": 48,
+          "top": 1043.96875,
+          "right": 1360,
+          "bottom": 1091.96875,
+          "left": 932.96875
+        },
+        "options": [
+          {
+            "label": "An unusually long option name with_valuevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevalue / Large size option information\n9,007,199,254,740,993.01\u00a0NPR",
+            "pressed": "true",
+            "height": 135
+          },
+          {
+            "label": "Ivory / Standard\n130.00\u00a0NPR",
+            "pressed": "false",
+            "height": 135
+          },
+          {
+            "label": "Copper / Standard\n140.00\u00a0NPR\nOut of stock",
+            "pressed": "false",
+            "height": 97
+          }
+        ],
+        "image": {
+          "complete": true,
+          "naturalWidth": 600,
+          "fit": "contain"
+        }
+      },
+      "pageErrors": []
+    },
+    {
+      "case": "long",
+      "width": 1920,
+      "metrics": {
+        "viewport": 1920,
+        "documentWidth": 1920,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "gallery": {
+          "x": 320,
+          "y": 172,
+          "width": 658.96875,
+          "height": 658.96875,
+          "top": 172,
+          "right": 978.96875,
+          "bottom": 830.96875,
+          "left": 320
+        },
+        "primary": {
+          "x": 1172.96875,
+          "y": 1043.96875,
+          "width": 427.03125,
+          "height": 48,
+          "top": 1043.96875,
+          "right": 1600,
+          "bottom": 1091.96875,
+          "left": 1172.96875
+        },
+        "options": [
+          {
+            "label": "An unusually long option name with_valuevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevalue / Large size option information\n9,007,199,254,740,993.01\u00a0NPR",
+            "pressed": "true",
+            "height": 135
+          },
+          {
+            "label": "Ivory / Standard\n130.00\u00a0NPR",
+            "pressed": "false",
+            "height": 135
+          },
+          {
+            "label": "Copper / Standard\n140.00\u00a0NPR\nOut of stock",
+            "pressed": "false",
+            "height": 97
+          }
+        ],
+        "image": {
+          "complete": true,
+          "naturalWidth": 600,
+          "fit": "contain"
+        }
+      },
+      "pageErrors": []
+    },
+    {
+      "case": "no-options",
+      "width": 375,
+      "metrics": {
+        "viewport": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "gallery": {
+          "x": 20,
+          "y": 468.65625,
+          "width": 335,
+          "height": 335,
+          "top": 468.65625,
+          "right": 355,
+          "bottom": 803.65625,
+          "left": 20
+        },
+        "primary": {
+          "x": 166,
+          "y": 1101.625,
+          "width": 189,
+          "height": 48,
+          "top": 1101.625,
+          "right": 355,
+          "bottom": 1149.625,
+          "left": 166
+        },
+        "options": [],
+        "image": {
+          "complete": true,
+          "naturalWidth": 600,
+          "fit": "contain"
+        }
+      },
+      "pageErrors": []
+    },
+    {
+      "case": "no-options",
+      "width": 1440,
+      "metrics": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "gallery": {
+          "x": 80,
+          "y": 172,
+          "width": 658.96875,
+          "height": 658.96875,
+          "top": 172,
+          "right": 738.96875,
+          "bottom": 830.96875,
+          "left": 80
+        },
+        "primary": {
+          "x": 932.96875,
+          "y": 560.484375,
+          "width": 427.03125,
+          "height": 48,
+          "top": 560.484375,
+          "right": 1360,
+          "bottom": 608.484375,
+          "left": 932.96875
+        },
+        "options": [],
+        "image": {
+          "complete": true,
+          "naturalWidth": 600,
+          "fit": "contain"
+        }
+      },
+      "pageErrors": []
+    },
+    {
+      "case": "out-of-stock",
+      "width": 375,
+      "metrics": {
+        "viewport": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "gallery": {
+          "x": 20,
+          "y": 468.65625,
+          "width": 335,
+          "height": 335,
+          "top": 468.65625,
+          "right": 355,
+          "bottom": 803.65625,
+          "left": 20
+        },
+        "primary": {
+          "x": 166,
+          "y": 1259.625,
+          "width": 189,
+          "height": 48,
+          "top": 1259.625,
+          "right": 355,
+          "bottom": 1307.625,
+          "left": 166
+        },
+        "options": [
+          {
+            "label": "Carbon / Standard\n125.00\u00a0NPR\nOut of stock",
+            "pressed": "true",
+            "height": 97
+          },
+          {
+            "label": "Ivory / Standard\n130.00\u00a0NPR\nOut of stock",
+            "pressed": "false",
+            "height": 97
+          }
+        ],
+        "image": {
+          "complete": true,
+          "naturalWidth": 600,
+          "fit": "contain"
+        }
+      },
+      "pageErrors": []
+    },
+    {
+      "case": "out-of-stock",
+      "width": 1440,
+      "metrics": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "gallery": {
+          "x": 80,
+          "y": 172,
+          "width": 658.96875,
+          "height": 658.96875,
+          "top": 172,
+          "right": 738.96875,
+          "bottom": 830.96875,
+          "left": 80
+        },
+        "primary": {
+          "x": 932.96875,
+          "y": 718.484375,
+          "width": 427.03125,
+          "height": 48,
+          "top": 718.484375,
+          "right": 1360,
+          "bottom": 766.484375,
+          "left": 932.96875
+        },
+        "options": [
+          {
+            "label": "Carbon / Standard\n125.00\u00a0NPR\nOut of stock",
+            "pressed": "true",
+            "height": 97
+          },
+          {
+            "label": "Ivory / Standard\n130.00\u00a0NPR\nOut of stock",
+            "pressed": "false",
+            "height": 97
+          }
+        ],
+        "image": {
+          "complete": true,
+          "naturalWidth": 600,
+          "fit": "contain"
+        }
+      },
+      "pageErrors": []
+    },
+    {
+      "case": "detail-error",
+      "width": 375,
+      "metrics": {
+        "viewport": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "gallery": null,
+        "primary": null,
+        "options": [],
+        "image": null
+      },
+      "pageErrors": []
+    },
+    {
+      "case": "detail-error",
+      "width": 1440,
+      "metrics": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "gallery": null,
+        "primary": null,
+        "options": [],
+        "image": null
+      },
+      "pageErrors": []
+    },
+    {
+      "case": "detail-missing",
+      "width": 375,
+      "metrics": {
+        "viewport": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "gallery": null,
+        "primary": null,
+        "options": [],
+        "image": null
+      },
+      "pageErrors": []
+    },
+    {
+      "case": "detail-missing",
+      "width": 1440,
+      "metrics": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "gallery": null,
+        "primary": null,
+        "options": [],
+        "image": null
+      },
+      "pageErrors": []
+    },
+    {
+      "case": "detail-malformed",
+      "width": 375,
+      "metrics": {
+        "viewport": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "gallery": null,
+        "primary": null,
+        "options": [],
+        "image": null
+      },
+      "pageErrors": []
+    },
+    {
+      "case": "detail-malformed",
+      "width": 1440,
+      "metrics": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "gallery": null,
+        "primary": null,
+        "options": [],
+        "image": null
+      },
+      "pageErrors": []
+    },
+    {
+      "case": "detail-loading",
+      "width": 375,
+      "metrics": {
+        "viewport": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 0,
+        "duplicateIds": [],
+        "gallery": null,
+        "primary": null,
+        "options": [],
+        "image": null
+      },
+      "pageErrors": []
+    },
+    {
+      "case": "detail-loading",
+      "width": 1440,
+      "metrics": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 0,
+        "duplicateIds": [],
+        "gallery": null,
+        "primary": null,
+        "options": [],
+        "image": null
+      },
+      "pageErrors": []
+    },
+    {
+      "case": "image-error",
+      "width": 375,
+      "metrics": {
+        "viewport": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "gallery": {
+          "x": 20,
+          "y": 468.65625,
+          "width": 335,
+          "height": 335,
+          "top": 468.65625,
+          "right": 355,
+          "bottom": 803.65625,
+          "left": 20
+        },
+        "primary": {
+          "x": 166,
+          "y": 1339.625,
+          "width": 189,
+          "height": 48,
+          "top": 1339.625,
+          "right": 355,
+          "bottom": 1387.625,
+          "left": 166
+        },
+        "options": [
+          {
+            "label": "Carbon / Standard\n125.00\u00a0NPR",
+            "pressed": "true",
+            "height": 72
+          },
+          {
+            "label": "Ivory / Standard\n130.00\u00a0NPR",
+            "pressed": "false",
+            "height": 72
+          },
+          {
+            "label": "Copper / Standard\n140.00\u00a0NPR\nOut of stock",
+            "pressed": "false",
+            "height": 97
+          }
+        ],
+        "image": null
+      },
+      "pageErrors": []
+    },
+    {
+      "case": "image-error",
+      "width": 1440,
+      "metrics": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "gallery": {
+          "x": 80,
+          "y": 172,
+          "width": 658.96875,
+          "height": 658.96875,
+          "top": 172,
+          "right": 738.96875,
+          "bottom": 830.96875,
+          "left": 80
+        },
+        "primary": {
+          "x": 932.96875,
+          "y": 798.484375,
+          "width": 427.03125,
+          "height": 48,
+          "top": 798.484375,
+          "right": 1360,
+          "bottom": 846.484375,
+          "left": 932.96875
+        },
+        "options": [
+          {
+            "label": "Carbon / Standard\n125.00\u00a0NPR",
+            "pressed": "true",
+            "height": 72
+          },
+          {
+            "label": "Ivory / Standard\n130.00\u00a0NPR",
+            "pressed": "false",
+            "height": 72
+          },
+          {
+            "label": "Copper / Standard\n140.00\u00a0NPR\nOut of stock",
+            "pressed": "false",
+            "height": 97
+          }
+        ],
+        "image": null
+      },
+      "pageErrors": []
+    },
+    {
+      "case": "image-loading",
+      "width": 375,
+      "metrics": {
+        "viewport": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "gallery": {
+          "x": 20,
+          "y": 468.65625,
+          "width": 335,
+          "height": 335,
+          "top": 468.65625,
+          "right": 355,
+          "bottom": 803.65625,
+          "left": 20
+        },
+        "primary": {
+          "x": 166,
+          "y": 1339.625,
+          "width": 189,
+          "height": 48,
+          "top": 1339.625,
+          "right": 355,
+          "bottom": 1387.625,
+          "left": 166
+        },
+        "options": [
+          {
+            "label": "Carbon / Standard\n125.00\u00a0NPR",
+            "pressed": "true",
+            "height": 72
+          },
+          {
+            "label": "Ivory / Standard\n130.00\u00a0NPR",
+            "pressed": "false",
+            "height": 72
+          },
+          {
+            "label": "Copper / Standard\n140.00\u00a0NPR\nOut of stock",
+            "pressed": "false",
+            "height": 97
+          }
+        ],
+        "image": {
+          "complete": false,
+          "naturalWidth": 0,
+          "fit": "contain"
+        }
+      },
+      "pageErrors": []
+    },
+    {
+      "case": "image-loading",
+      "width": 1440,
+      "metrics": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "gallery": {
+          "x": 80,
+          "y": 172,
+          "width": 658.96875,
+          "height": 658.96875,
+          "top": 172,
+          "right": 738.96875,
+          "bottom": 830.96875,
+          "left": 80
+        },
+        "primary": {
+          "x": 932.96875,
+          "y": 798.484375,
+          "width": 427.03125,
+          "height": 48,
+          "top": 798.484375,
+          "right": 1360,
+          "bottom": 846.484375,
+          "left": 932.96875
+        },
+        "options": [
+          {
+            "label": "Carbon / Standard\n125.00\u00a0NPR",
+            "pressed": "true",
+            "height": 72
+          },
+          {
+            "label": "Ivory / Standard\n130.00\u00a0NPR",
+            "pressed": "false",
+            "height": 72
+          },
+          {
+            "label": "Copper / Standard\n140.00\u00a0NPR\nOut of stock",
+            "pressed": "false",
+            "height": 97
+          }
+        ],
+        "image": {
+          "complete": false,
+          "naturalWidth": 0,
+          "fit": "contain"
+        }
+      },
+      "pageErrors": []
+    },
+    {
+      "case": "related-error",
+      "width": 375,
+      "metrics": {
+        "viewport": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "gallery": {
+          "x": 20,
+          "y": 468.65625,
+          "width": 335,
+          "height": 335,
+          "top": 468.65625,
+          "right": 355,
+          "bottom": 803.65625,
+          "left": 20
+        },
+        "primary": {
+          "x": 166,
+          "y": 1339.625,
+          "width": 189,
+          "height": 48,
+          "top": 1339.625,
+          "right": 355,
+          "bottom": 1387.625,
+          "left": 166
+        },
+        "options": [
+          {
+            "label": "Carbon / Standard\n125.00\u00a0NPR",
+            "pressed": "true",
+            "height": 72
+          },
+          {
+            "label": "Ivory / Standard\n130.00\u00a0NPR",
+            "pressed": "false",
+            "height": 72
+          },
+          {
+            "label": "Copper / Standard\n140.00\u00a0NPR\nOut of stock",
+            "pressed": "false",
+            "height": 97
+          }
+        ],
+        "image": {
+          "complete": true,
+          "naturalWidth": 600,
+          "fit": "contain"
+        }
+      },
+      "pageErrors": []
+    },
+    {
+      "case": "related-error",
+      "width": 1440,
+      "metrics": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "gallery": {
+          "x": 80,
+          "y": 172,
+          "width": 658.96875,
+          "height": 658.96875,
+          "top": 172,
+          "right": 738.96875,
+          "bottom": 830.96875,
+          "left": 80
+        },
+        "primary": {
+          "x": 932.96875,
+          "y": 798.484375,
+          "width": 427.03125,
+          "height": 48,
+          "top": 798.484375,
+          "right": 1360,
+          "bottom": 846.484375,
+          "left": 932.96875
+        },
+        "options": [
+          {
+            "label": "Carbon / Standard\n125.00\u00a0NPR",
+            "pressed": "true",
+            "height": 72
+          },
+          {
+            "label": "Ivory / Standard\n130.00\u00a0NPR",
+            "pressed": "false",
+            "height": 72
+          },
+          {
+            "label": "Copper / Standard\n140.00\u00a0NPR\nOut of stock",
+            "pressed": "false",
+            "height": 97
+          }
+        ],
+        "image": {
+          "complete": true,
+          "naturalWidth": 600,
+          "fit": "contain"
+        }
+      },
+      "pageErrors": []
+    },
+    {
+      "case": "cart-success",
+      "width": 375,
+      "metrics": {
+        "viewport": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "gallery": {
+          "x": 20,
+          "y": 468.65625,
+          "width": 335,
+          "height": 335,
+          "top": 468.65625,
+          "right": 355,
+          "bottom": 803.65625,
+          "left": 20
+        },
+        "primary": {
+          "x": 166,
+          "y": 1339.625,
+          "width": 189,
+          "height": 48,
+          "top": 1339.625,
+          "right": 355,
+          "bottom": 1387.625,
+          "left": 166
+        },
+        "options": [
+          {
+            "label": "Carbon / Standard\n125.00\u00a0NPR",
+            "pressed": "true",
+            "height": 72
+          },
+          {
+            "label": "Ivory / Standard\n130.00\u00a0NPR",
+            "pressed": "false",
+            "height": 72
+          },
+          {
+            "label": "Copper / Standard\n140.00\u00a0NPR\nOut of stock",
+            "pressed": "false",
+            "height": 97
+          }
+        ],
+        "image": {
+          "complete": true,
+          "naturalWidth": 600,
+          "fit": "contain"
+        }
+      },
+      "pageErrors": []
+    },
+    {
+      "case": "cart-success",
+      "width": 1440,
+      "metrics": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "gallery": {
+          "x": 80,
+          "y": 172,
+          "width": 658.96875,
+          "height": 658.96875,
+          "top": 172,
+          "right": 738.96875,
+          "bottom": 830.96875,
+          "left": 80
+        },
+        "primary": {
+          "x": 932.96875,
+          "y": 798.484375,
+          "width": 427.03125,
+          "height": 48,
+          "top": 798.484375,
+          "right": 1360,
+          "bottom": 846.484375,
+          "left": 932.96875
+        },
+        "options": [
+          {
+            "label": "Carbon / Standard\n125.00\u00a0NPR",
+            "pressed": "true",
+            "height": 72
+          },
+          {
+            "label": "Ivory / Standard\n130.00\u00a0NPR",
+            "pressed": "false",
+            "height": 72
+          },
+          {
+            "label": "Copper / Standard\n140.00\u00a0NPR\nOut of stock",
+            "pressed": "false",
+            "height": 97
+          }
+        ],
+        "image": {
+          "complete": true,
+          "naturalWidth": 600,
+          "fit": "contain"
+        }
+      },
+      "pageErrors": []
+    }
+  ],
+  "interactions": [
+    {
+      "width": 375,
+      "galleryKeyboard": true,
+      "portraitContained": true,
+      "optionKeyboard": true,
+      "stockBounds": true,
+      "unavailableOption": true,
+      "quantityReset": true,
+      "pendingDisabled": true,
+      "realRejectedFeedback": true,
+      "csrfPresent": true,
+      "onlyVariantAndQuantitySent": true
+    },
+    {
+      "width": 768,
+      "galleryKeyboard": true,
+      "portraitContained": true,
+      "optionKeyboard": true,
+      "stockBounds": true,
+      "unavailableOption": true,
+      "quantityReset": true,
+      "pendingDisabled": true,
+      "realRejectedFeedback": true,
+      "csrfPresent": true,
+      "onlyVariantAndQuantitySent": true
+    },
+    {
+      "width": 1440,
+      "galleryKeyboard": true,
+      "portraitContained": true,
+      "optionKeyboard": true,
+      "stockBounds": true,
+      "unavailableOption": true,
+      "quantityReset": true,
+      "pendingDisabled": true,
+      "realRejectedFeedback": true,
+      "csrfPresent": true,
+      "onlyVariantAndQuantitySent": true
+    },
+    {
+      "case": "detail-error",
+      "width": 375,
+      "retry": true
+    },
+    {
+      "case": "detail-error",
+      "width": 1440,
+      "retry": true
+    },
+    {
+      "case": "detail-loading",
+      "width": 375,
+      "loadedAfterDelay": true
+    },
+    {
+      "case": "detail-loading",
+      "width": 1440,
+      "loadedAfterDelay": true
+    },
+    {
+      "case": "image-loading",
+      "width": 375,
+      "loadedAfterDelay": true
+    },
+    {
+      "case": "image-loading",
+      "width": 1440,
+      "loadedAfterDelay": true
+    },
+    {
+      "case": "related-error",
+      "width": 375,
+      "independentRetry": true
+    },
+    {
+      "case": "related-error",
+      "width": 1440,
+      "independentRetry": true
+    },
+    {
+      "case": "cart-success",
+      "width": 375,
+      "accepted201Only": true,
+      "providerDrawerPreserved": true,
+      "confirmedFeedback": true,
+      "csrfPresent": true,
+      "onlyVariantAndQuantitySent": true
+    },
+    {
+      "case": "cart-success",
+      "width": 1440,
+      "accepted201Only": true,
+      "providerDrawerPreserved": true,
+      "confirmedFeedback": true,
+      "csrfPresent": true,
+      "onlyVariantAndQuantitySent": true
+    }
+  ],
+  "browser": "149.0.7827.55"
+}

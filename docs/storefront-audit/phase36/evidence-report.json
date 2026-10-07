@@ -1,0 +1,299 @@
+{
+  "screenshots": 32,
+  "routeWidthCases": 12,
+  "nativeDrawerCases": 4,
+  "desktopCases": 2,
+  "localLinks": 24,
+  "images": [
+    {
+      "file": "categories-1440.png",
+      "width": 1440,
+      "height": 900,
+      "sha256": "f91a284630c34b96784ae137521a5c38bda5610edf1d8a4eb8e20fddd8f2d8a6"
+    },
+    {
+      "file": "categories-1920.png",
+      "width": 1920,
+      "height": 900,
+      "sha256": "1905358982d75b1f991d01d885f20fac26d160bdf59eb381e283ec7175a92540"
+    },
+    {
+      "file": "home-1024.png",
+      "width": 1024,
+      "height": 2042,
+      "sha256": "1c614650b7b2d5b251bba34ddacc19b044ec185849f023ba0ada1af1e61dd60f"
+    },
+    {
+      "file": "home-1440.png",
+      "width": 1440,
+      "height": 2230,
+      "sha256": "e09ce08d9adbe5274d99d7973620ac0b6e5775f63a6d557edbd20acee6aa4d45"
+    },
+    {
+      "file": "home-1920.png",
+      "width": 1920,
+      "height": 2230,
+      "sha256": "97628d34654c8d6de85956d37da2c4fc585a57887cdaaf71353a76e93ab71164"
+    },
+    {
+      "file": "home-375.png",
+      "width": 375,
+      "height": 2302,
+      "sha256": "773753ca6edafd1f9017246a3fd079af70de17d7df26b340fca59595064406d6"
+    },
+    {
+      "file": "home-430.png",
+      "width": 430,
+      "height": 2312,
+      "sha256": "2031952086d7b163cdcdde0a53a4cad5675d74681fbf677f1a05c745b20887ec"
+    },
+    {
+      "file": "home-768.png",
+      "width": 768,
+      "height": 2018,
+      "sha256": "f8b2383060e598d01352a636ef48b7273532303072686316195b3d9a6fd758fd"
+    },
+    {
+      "file": "home-viewport-1024.png",
+      "width": 1024,
+      "height": 900,
+      "sha256": "75aacf57bf3e2a788dfa486dc92dba1eae967744a20ddecf8a380fbce42fb11e"
+    },
+    {
+      "file": "home-viewport-1440.png",
+      "width": 1440,
+      "height": 900,
+      "sha256": "731358a95f34a944cf5c75360c245ab9b9c7e84e1fc72c0a1328a047264b5b77"
+    },
+    {
+      "file": "home-viewport-1920.png",
+      "width": 1920,
+      "height": 900,
+      "sha256": "89d3ba7585f592f30250d6b9fe756a97da90011cbff850de9af93934d6dc0e92"
+    },
+    {
+      "file": "home-viewport-375.png",
+      "width": 375,
+      "height": 900,
+      "sha256": "a89e44a156ec8d0c9317dfb8237ff42745b1f1875ec7d8686153e0aa3e738d9c"
+    },
+    {
+      "file": "home-viewport-430.png",
+      "width": 430,
+      "height": 900,
+      "sha256": "2cef93a987eb041efb3f1502f62331512e051831abb10ed505e81d55756801be"
+    },
+    {
+      "file": "home-viewport-768.png",
+      "width": 768,
+      "height": 900,
+      "sha256": "69c910610a21f6780584a43517556dd740bd2dba00ecb0f45515f63cdb36ddbb"
+    },
+    {
+      "file": "navigation-1024.png",
+      "width": 1024,
+      "height": 900,
+      "sha256": "8de405306ccb31e9d545143fb0c7747d0b791fb46136a622c52e6685916edb46"
+    },
+    {
+      "file": "navigation-375.png",
+      "width": 375,
+      "height": 900,
+      "sha256": "a8419b246749338c11b0a1cc8774c1e1a2f2513dd850d60e6ad83412e36e4297"
+    },
+    {
+      "file": "navigation-430.png",
+      "width": 430,
+      "height": 900,
+      "sha256": "9016373f2944b3f15af50fdac7a37a93835530c044a6925e13913fd002462bbb"
+    },
+    {
+      "file": "navigation-768.png",
+      "width": 768,
+      "height": 900,
+      "sha256": "1e0ab35569f76b010d6a0b417264db2f646a3ed6f2194b7ec5fcf289fd8bdd05"
+    },
+    {
+      "file": "navigation-search-1024.png",
+      "width": 1024,
+      "height": 900,
+      "sha256": "32d2c3c9fc9f6068b48334adf2c2dbaefcabe96fb6a13fdda1ebc16fd21d5b66"
+    },
+    {
+      "file": "navigation-search-375.png",
+      "width": 375,
+      "height": 900,
+      "sha256": "7aa36a5f9280bc4b0b111d152ed80bb8946846de884a926c7aeeb83e554ce779"
+    },
+    {
+      "file": "navigation-search-430.png",
+      "width": 430,
+      "height": 900,
+      "sha256": "e59dd8e74f2a1a57ba994014bf6b9fd3f104884612461709af01e11313334539"
+    },
+    {
+      "file": "navigation-search-768.png",
+      "width": 768,
+      "height": 900,
+      "sha256": "8e5acc6fa28e9a38617b8b5b398625fb523f6db67180868b712af26d2fe79c6c"
+    },
+    {
+      "file": "search-1440.png",
+      "width": 1440,
+      "height": 900,
+      "sha256": "bbc4369a1a1263425b4e33d38f9f7e9fb989b45f9aa2e8724033de0fd746aff4"
+    },
+    {
+      "file": "search-1920.png",
+      "width": 1920,
+      "height": 900,
+      "sha256": "df0d3d3ce4abeefef975fc1648c889baf951f365c08700fc7d2d9f0fc77feff3"
+    },
+    {
+      "file": "sellers-1440.png",
+      "width": 1440,
+      "height": 900,
+      "sha256": "52457696c5791e20e9580852d2d44f8dc18683169bc76aca7f9c561c54f2ade7"
+    },
+    {
+      "file": "sellers-1920.png",
+      "width": 1920,
+      "height": 900,
+      "sha256": "3db58cdbbbd547be9e568379a1adbca924fb48936fc560e86b3d3428fba810db"
+    },
+    {
+      "file": "shop-1024.png",
+      "width": 1024,
+      "height": 1629,
+      "sha256": "91db097dd2a85525ad3a8535046dd8d86777a08834559c41b83eec1645662662"
+    },
+    {
+      "file": "shop-1440.png",
+      "width": 1440,
+      "height": 1659,
+      "sha256": "5279c5827cd3395cd8146e59331b5dfca3dbae73c1e9c519dbe59426547de0ae"
+    },
+    {
+      "file": "shop-1920.png",
+      "width": 1920,
+      "height": 1659,
+      "sha256": "67eee71e6dfcff69e010a38579ec2ab4c509388b74acb6d64d52aa00c986b404"
+    },
+    {
+      "file": "shop-375.png",
+      "width": 375,
+      "height": 1550,
+      "sha256": "8963b2f898b37e6b81fc591ab0d4955068c5e79ec6047f4a5da832294053af84"
+    },
+    {
+      "file": "shop-430.png",
+      "width": 430,
+      "height": 1558,
+      "sha256": "e97c573f5657c3735b8c83900fa26aadc67b25a692c7bad96080be97a2da236e"
+    },
+    {
+      "file": "shop-768.png",
+      "width": 768,
+      "height": 1667,
+      "sha256": "0dcb51b668dfaca92db068a098aa7d3fc07a7087e2ce99b8d7a987df8b351327"
+    }
+  ],
+  "links": [
+    {
+      "document": "storefront-shell-review.md",
+      "target": "storefront-audit/phase36/capture-report.json"
+    },
+    {
+      "document": "storefront-shell-review.md",
+      "target": "storefront-audit/phase36/home-viewport-375.png"
+    },
+    {
+      "document": "storefront-shell-review.md",
+      "target": "storefront-audit/phase36/home-viewport-430.png"
+    },
+    {
+      "document": "storefront-shell-review.md",
+      "target": "storefront-audit/phase36/home-viewport-768.png"
+    },
+    {
+      "document": "storefront-shell-review.md",
+      "target": "storefront-audit/phase36/home-viewport-1024.png"
+    },
+    {
+      "document": "storefront-shell-review.md",
+      "target": "storefront-audit/phase36/home-viewport-1440.png"
+    },
+    {
+      "document": "storefront-shell-review.md",
+      "target": "storefront-audit/phase36/home-viewport-1920.png"
+    },
+    {
+      "document": "storefront-shell-review.md",
+      "target": "storefront-audit/phase36/home-375.png"
+    },
+    {
+      "document": "storefront-shell-review.md",
+      "target": "storefront-audit/phase36/home-1440.png"
+    },
+    {
+      "document": "storefront-shell-review.md",
+      "target": "storefront-audit/phase36/shop-768.png"
+    },
+    {
+      "document": "storefront-shell-review.md",
+      "target": "storefront-audit/phase36/navigation-375.png"
+    },
+    {
+      "document": "storefront-shell-review.md",
+      "target": "storefront-audit/phase36/navigation-768.png"
+    },
+    {
+      "document": "storefront-shell-review.md",
+      "target": "storefront-audit/phase36/navigation-search-375.png"
+    },
+    {
+      "document": "storefront-shell-review.md",
+      "target": "storefront-audit/phase36/navigation-search-430.png"
+    },
+    {
+      "document": "storefront-shell-review.md",
+      "target": "storefront-audit/phase36/navigation-search-768.png"
+    },
+    {
+      "document": "storefront-shell-review.md",
+      "target": "storefront-audit/phase36/navigation-search-1024.png"
+    },
+    {
+      "document": "storefront-shell-review.md",
+      "target": "storefront-audit/phase36/categories-1440.png"
+    },
+    {
+      "document": "storefront-shell-review.md",
+      "target": "storefront-audit/phase36/sellers-1440.png"
+    },
+    {
+      "document": "storefront-shell-review.md",
+      "target": "storefront-audit/phase36/search-1440.png"
+    },
+    {
+      "document": "storefront-shell-review.md",
+      "target": "storefront-audit/phase36/search-1920.png"
+    },
+    {
+      "document": "storefront-shell-review.md",
+      "target": "testing.md"
+    },
+    {
+      "document": "storefront-shell-review.md",
+      "target": "progress.md"
+    },
+    {
+      "document": "storefront-shell-review.md",
+      "target": "storefront-audit/phase36/contrast-report.json"
+    },
+    {
+      "document": "storefront-shell-review.md",
+      "target": "storefront-audit/phase36/build-report.json"
+    }
+  ]
+}

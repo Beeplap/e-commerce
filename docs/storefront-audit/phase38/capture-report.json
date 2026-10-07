@@ -1,0 +1,408 @@
+{
+  "baseline": "a240719 plus Phase 38",
+  "preview": "Development Next same-origin proxy with existing Django API; production artifacts validated separately, ingress browser acceptance pending",
+  "state": "Anonymous actual existing PostgreSQL catalog; no interception, seeding or mutations",
+  "routes": [
+    {
+      "name": "listing",
+      "width": 375,
+      "status": 200,
+      "metrics": {
+        "viewport": 375,
+        "documentWidth": 375,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 2,
+        "gridColumns": "163.5px 163.5px",
+        "headingHeight": 95.1875,
+        "toolbarWidth": 343,
+        "sidebarVisible": false,
+        "minControlHeight": 18,
+        "operationalAccent": "#176b57",
+        "prices": ["40.00\u00a0USD", "25.00\u00a0USD"]
+      }
+    },
+    {
+      "name": "listing",
+      "width": 430,
+      "status": 200,
+      "metrics": {
+        "viewport": 430,
+        "documentWidth": 430,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 2,
+        "gridColumns": "191px 191px",
+        "headingHeight": 95.1875,
+        "toolbarWidth": 398,
+        "sidebarVisible": false,
+        "minControlHeight": 18,
+        "operationalAccent": "#176b57",
+        "prices": ["40.00\u00a0USD", "25.00\u00a0USD"]
+      }
+    },
+    {
+      "name": "listing",
+      "width": 768,
+      "status": 200,
+      "metrics": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 2,
+        "gridColumns": "226.656px 226.672px 226.672px",
+        "headingHeight": 102.734375,
+        "toolbarWidth": 720,
+        "sidebarVisible": false,
+        "minControlHeight": 18,
+        "operationalAccent": "#176b57",
+        "prices": ["40.00\u00a0USD", "25.00\u00a0USD"]
+      }
+    },
+    {
+      "name": "listing",
+      "width": 1024,
+      "status": 200,
+      "metrics": {
+        "viewport": 1024,
+        "documentWidth": 1024,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 2,
+        "gridColumns": "226.656px 226.672px 226.672px",
+        "headingHeight": 108.640625,
+        "toolbarWidth": 976,
+        "sidebarVisible": true,
+        "minControlHeight": 18,
+        "operationalAccent": "#176b57",
+        "prices": ["40.00\u00a0USD", "25.00\u00a0USD"]
+      }
+    },
+    {
+      "name": "listing",
+      "width": 1440,
+      "status": 200,
+      "metrics": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 2,
+        "gridColumns": "229px 229px 229px 229px",
+        "headingHeight": 109,
+        "toolbarWidth": 1232,
+        "sidebarVisible": true,
+        "minControlHeight": 18,
+        "operationalAccent": "#176b57",
+        "prices": ["40.00\u00a0USD", "25.00\u00a0USD"]
+      }
+    },
+    {
+      "name": "listing",
+      "width": 1920,
+      "status": 200,
+      "metrics": {
+        "viewport": 1920,
+        "documentWidth": 1920,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 2,
+        "gridColumns": "229px 229px 229px 229px",
+        "headingHeight": 109,
+        "toolbarWidth": 1232,
+        "sidebarVisible": true,
+        "minControlHeight": 18,
+        "operationalAccent": "#176b57",
+        "prices": ["40.00\u00a0USD", "25.00\u00a0USD"]
+      }
+    },
+    {
+      "name": "search",
+      "width": 375,
+      "status": 200,
+      "metrics": {
+        "viewport": 375,
+        "documentWidth": 375,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 1,
+        "gridColumns": "163.5px 163.5px",
+        "headingHeight": 120.1875,
+        "toolbarWidth": 343,
+        "sidebarVisible": false,
+        "minControlHeight": 18,
+        "operationalAccent": "#176b57",
+        "prices": ["40.00\u00a0USD"]
+      }
+    },
+    {
+      "name": "search",
+      "width": 430,
+      "status": 200,
+      "metrics": {
+        "viewport": 430,
+        "documentWidth": 430,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 1,
+        "gridColumns": "191px 191px",
+        "headingHeight": 120.1875,
+        "toolbarWidth": 398,
+        "sidebarVisible": false,
+        "minControlHeight": 18,
+        "operationalAccent": "#176b57",
+        "prices": ["40.00\u00a0USD"]
+      }
+    },
+    {
+      "name": "search",
+      "width": 768,
+      "status": 200,
+      "metrics": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 1,
+        "gridColumns": "226.656px 226.672px 226.672px",
+        "headingHeight": 127.734375,
+        "toolbarWidth": 720,
+        "sidebarVisible": false,
+        "minControlHeight": 18,
+        "operationalAccent": "#176b57",
+        "prices": ["40.00\u00a0USD"]
+      }
+    },
+    {
+      "name": "search",
+      "width": 1024,
+      "status": 200,
+      "metrics": {
+        "viewport": 1024,
+        "documentWidth": 1024,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 1,
+        "gridColumns": "226.656px 226.672px 226.672px",
+        "headingHeight": 133.640625,
+        "toolbarWidth": 976,
+        "sidebarVisible": true,
+        "minControlHeight": 18,
+        "operationalAccent": "#176b57",
+        "prices": ["40.00\u00a0USD"]
+      }
+    },
+    {
+      "name": "search",
+      "width": 1440,
+      "status": 200,
+      "metrics": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 1,
+        "gridColumns": "229px 229px 229px 229px",
+        "headingHeight": 134,
+        "toolbarWidth": 1232,
+        "sidebarVisible": true,
+        "minControlHeight": 18,
+        "operationalAccent": "#176b57",
+        "prices": ["40.00\u00a0USD"]
+      }
+    },
+    {
+      "name": "search",
+      "width": 1920,
+      "status": 200,
+      "metrics": {
+        "viewport": 1920,
+        "documentWidth": 1920,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 1,
+        "gridColumns": "229px 229px 229px 229px",
+        "headingHeight": 134,
+        "toolbarWidth": 1232,
+        "sidebarVisible": true,
+        "minControlHeight": 18,
+        "operationalAccent": "#176b57",
+        "prices": ["40.00\u00a0USD"]
+      }
+    },
+    {
+      "name": "category",
+      "width": 375,
+      "status": 200,
+      "metrics": {
+        "viewport": 375,
+        "documentWidth": 375,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 2,
+        "gridColumns": "163.5px 163.5px",
+        "headingHeight": 95.1875,
+        "toolbarWidth": 343,
+        "sidebarVisible": false,
+        "minControlHeight": 18,
+        "operationalAccent": "#176b57",
+        "prices": ["40.00\u00a0USD", "25.00\u00a0USD"]
+      }
+    },
+    {
+      "name": "category",
+      "width": 430,
+      "status": 200,
+      "metrics": {
+        "viewport": 430,
+        "documentWidth": 430,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 2,
+        "gridColumns": "191px 191px",
+        "headingHeight": 95.1875,
+        "toolbarWidth": 398,
+        "sidebarVisible": false,
+        "minControlHeight": 18,
+        "operationalAccent": "#176b57",
+        "prices": ["40.00\u00a0USD", "25.00\u00a0USD"]
+      }
+    },
+    {
+      "name": "category",
+      "width": 768,
+      "status": 200,
+      "metrics": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 2,
+        "gridColumns": "226.656px 226.672px 226.672px",
+        "headingHeight": 102.734375,
+        "toolbarWidth": 720,
+        "sidebarVisible": false,
+        "minControlHeight": 18,
+        "operationalAccent": "#176b57",
+        "prices": ["40.00\u00a0USD", "25.00\u00a0USD"]
+      }
+    },
+    {
+      "name": "category",
+      "width": 1024,
+      "status": 200,
+      "metrics": {
+        "viewport": 1024,
+        "documentWidth": 1024,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 2,
+        "gridColumns": "226.656px 226.672px 226.672px",
+        "headingHeight": 108.640625,
+        "toolbarWidth": 976,
+        "sidebarVisible": true,
+        "minControlHeight": 18,
+        "operationalAccent": "#176b57",
+        "prices": ["40.00\u00a0USD", "25.00\u00a0USD"]
+      }
+    },
+    {
+      "name": "category",
+      "width": 1440,
+      "status": 200,
+      "metrics": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 2,
+        "gridColumns": "229px 229px 229px 229px",
+        "headingHeight": 109,
+        "toolbarWidth": 1232,
+        "sidebarVisible": true,
+        "minControlHeight": 18,
+        "operationalAccent": "#176b57",
+        "prices": ["40.00\u00a0USD", "25.00\u00a0USD"]
+      }
+    },
+    {
+      "name": "category",
+      "width": 1920,
+      "status": 200,
+      "metrics": {
+        "viewport": 1920,
+        "documentWidth": 1920,
+        "h1": 1,
+        "duplicateIds": [],
+        "products": 2,
+        "gridColumns": "229px 229px 229px 229px",
+        "headingHeight": 109,
+        "toolbarWidth": 1232,
+        "sidebarVisible": true,
+        "minControlHeight": 18,
+        "operationalAccent": "#176b57",
+        "prices": ["40.00\u00a0USD", "25.00\u00a0USD"]
+      }
+    }
+  ],
+  "interactions": [
+    {
+      "width": 375,
+      "nativeDrawer": true,
+      "focusContained30Tabs": true,
+      "escapeReturnsToOpener": true,
+      "cancelDiscardsDraft": true,
+      "applyUrl": true,
+      "backForward": true
+    },
+    {
+      "width": 430,
+      "nativeDrawer": true,
+      "focusContained30Tabs": true,
+      "escapeReturnsToOpener": true,
+      "cancelDiscardsDraft": true,
+      "applyUrl": true,
+      "backForward": true
+    },
+    {
+      "width": 768,
+      "nativeDrawer": true,
+      "focusContained30Tabs": true,
+      "escapeReturnsToOpener": true,
+      "cancelDiscardsDraft": true,
+      "applyUrl": true,
+      "backForward": true
+    }
+  ],
+  "headerDrawerChecks": [
+    {
+      "width": 375,
+      "originalScrollLayout": true,
+      "focusContained": true,
+      "escapeReturnsToOpener": true
+    },
+    {
+      "width": 430,
+      "originalScrollLayout": true,
+      "focusContained": true,
+      "escapeReturnsToOpener": true
+    },
+    {
+      "width": 768,
+      "originalScrollLayout": true,
+      "focusContained": true,
+      "escapeReturnsToOpener": true
+    }
+  ],
+  "browser": "149.0.7827.55",
+  "actualCategory": {
+    "id": "0acee008-c160-433c-8af4-eeff973627c3",
+    "name": "Gadgets"
+  },
+  "desktopResizeVisibleFocus": true,
+  "emptyRecoveryRealQuery": true,
+  "skipLink": true,
+  "reducedMotion": true,
+  "pageErrors": []
+}

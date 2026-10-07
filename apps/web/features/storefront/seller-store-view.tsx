@@ -1,12 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import type {
-  StorefrontSellerDetail,
-  StorefrontProductCard,
   Page,
+  StorefrontProductCard,
+  StorefrontSellerDetail,
 } from "@/lib/api/types";
 import { storefrontApi } from "@/lib/api/client";
+import { StorefrontRating } from "@/components/storefront/content";
+import { StorefrontButton } from "@/components/storefront/controls";
 import { ProductCard } from "./product-card";
 
 interface SellerStoreViewProps {
@@ -19,166 +22,158 @@ export function SellerStoreView({ seller }: SellerStoreViewProps) {
   const [sort, setSort] = useState<
     "newest" | "price_asc" | "price_desc" | "rating"
   >("newest");
-  const [page, setPage] = useState<number>(1);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+  const [retry, setRetry] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
     storefrontApi
       .products({ seller: seller.id, sort, page }, controller.signal)
       .then((data) => {
+        if (controller.signal.aborted) return;
         setProductsPage(data);
         setLoading(false);
       })
       .catch(() => {
+        if (controller.signal.aborted) return;
+        setProductsPage(null);
+        setLoadError(true);
         setLoading(false);
       });
     return () => controller.abort();
-  }, [seller.id, sort, page]);
+  }, [seller.id, sort, page, retry]);
+
+  const location = [seller.city, seller.state, seller.country]
+    .filter(Boolean)
+    .join(", ");
+  const count = productsPage?.count ?? 0;
+  const countLabel = `${count} ${count === 1 ? "product" : "products"}`;
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      {/* Seller Header Banner */}
-      <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-        <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-start gap-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-teal-800 text-2xl font-bold text-white shadow">
-              {seller.store_name.slice(0, 2).toUpperCase()}
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-extrabold text-slate-900">
-                  {seller.store_name}
-                </h1>
-                <span className="rounded-full bg-teal-100 px-2.5 py-0.5 text-xs font-bold text-teal-800">
-                  Verified Seller
-                </span>
-              </div>
-              {seller.description && (
-                <p className="mt-1.5 max-w-2xl text-sm text-slate-600">
-                  {seller.description}
-                </p>
-              )}
-              <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-slate-500">
-                {seller.city && seller.country && (
-                  <span>
-                    📍 {seller.city}, {seller.state ? `${seller.state}, ` : ""}
-                    {seller.country}
-                  </span>
-                )}
-                {seller.contact_email && <span>✉️ {seller.contact_email}</span>}
-                <span>📦 {seller.total_products} Active Products</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Rating Summary Card */}
-          {seller.average_rating ? (
-            <div className="flex items-center gap-3 rounded-xl bg-slate-50 p-4 border border-slate-200">
-              <div className="text-3xl font-bold text-slate-900">
-                {seller.average_rating.toFixed(1)}
-              </div>
-              <div className="text-xs text-slate-500">
-                <div className="flex text-amber-400">
-                  {"★".repeat(Math.round(seller.average_rating))}
-                  {"☆".repeat(5 - Math.round(seller.average_rating))}
-                </div>
-                <span>Seller Store Rating</span>
-              </div>
-            </div>
-          ) : (
-            <div className="text-xs text-slate-400">New marketplace seller</div>
+    <div className="sf-seller-store-container">
+      <header className="sf-seller-store-heading">
+        <p className="sf-seller-store-kicker">Independent shop</p>
+        <div className="sf-seller-store-title-row">
+          <h1>{seller.store_name}</h1>
+          <span className="sf-seller-store-verified">Verified seller</span>
+        </div>
+        {seller.description && (
+          <p className="sf-seller-store-description">{seller.description}</p>
+        )}
+        <div className="sf-seller-store-details">
+          {location && <span>{location}</span>}
+          {seller.contact_email && <span>{seller.contact_email}</span>}
+          <span>
+            {seller.total_products} active{" "}
+            {seller.total_products === 1 ? "product" : "products"}
+          </span>
+          {seller.average_rating !== null && (
+            <StorefrontRating value={seller.average_rating} />
           )}
         </div>
-      </section>
+      </header>
 
-      {/* Catalog Controls */}
-      <section className="mt-10">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200 pb-4">
+      <section
+        className="sf-seller-store-catalog"
+        aria-labelledby="seller-products-title"
+      >
+        <div className="sf-seller-store-toolbar">
           <div>
-            <h2 className="text-lg font-bold text-slate-900">Store Products</h2>
-            <p className="text-xs text-slate-500">
-              Showing {productsPage?.results?.length || 0} of{" "}
-              {productsPage?.count || 0} items
+            <h2 id="seller-products-title">From this shop</h2>
+            <p>
+              {loading
+                ? "Loading products"
+                : `${productsPage?.results.length ?? 0} of ${countLabel}`}
             </p>
           </div>
-
-          <div className="flex items-center gap-2 text-xs">
-            <label
-              htmlFor="sort-select"
-              className="font-semibold text-slate-700"
-            >
-              Sort by:
-            </label>
+          <div className="sf-seller-store-sort">
+            <label htmlFor="seller-product-sort">Sort</label>
             <select
-              id="sort-select"
+              id="seller-product-sort"
               value={sort}
-              onChange={(e) => {
-                setSort(e.target.value as typeof sort);
+              onChange={(event) => {
+                setSort(event.target.value as typeof sort);
                 setPage(1);
                 setLoading(true);
+                setLoadError(false);
               }}
-              className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-800 focus:border-teal-700 focus:outline-none"
             >
-              <option value="newest">Newest Arrivals</option>
-              <option value="price_asc">Price: Low to High</option>
-              <option value="price_desc">Price: High to Low</option>
-              <option value="rating">Customer Rating</option>
+              <option value="newest">Newest</option>
+              <option value="price_asc">Price: low to high</option>
+              <option value="price_desc">Price: high to low</option>
+              <option value="rating">Customer rating</option>
             </select>
           </div>
         </div>
 
-        {/* Product Grid */}
         {loading ? (
-          <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            {[1, 2, 3, 4].map((i) => (
-              <div
-                key={i}
-                className="h-72 rounded-xl border border-slate-200 bg-slate-100 animate-pulse"
-              />
+          <div
+            className="sf-seller-product-grid"
+            role="status"
+            aria-label="Loading products"
+          >
+            {[1, 2, 3, 4].map((item) => (
+              <div className="sf-seller-product-skeleton" key={item} />
             ))}
           </div>
-        ) : productsPage && productsPage.results.length > 0 ? (
-          <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        ) : loadError ? (
+          <div className="sf-seller-store-error" role="alert">
+            <p>We couldn’t load this shop’s products.</p>
+            <StorefrontButton
+              variant="secondary"
+              onClick={() => {
+                setLoading(true);
+                setLoadError(false);
+                setRetry((current) => current + 1);
+              }}
+            >
+              Try again
+            </StorefrontButton>
+          </div>
+        ) : productsPage?.results.length ? (
+          <div className="sf-seller-product-grid">
             {productsPage.results.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
         ) : (
-          <div className="mt-12 text-center text-sm text-slate-500">
-            No products found for this seller.
+          <div className="sf-seller-store-empty">
+            <p>No products from this shop yet.</p>
+            <Link href="/search">Browse all products</Link>
           </div>
         )}
 
-        {/* Pagination */}
         {productsPage && productsPage.count > 25 && (
-          <div className="mt-10 flex justify-center gap-2">
-            <button
-              type="button"
-              disabled={page <= 1}
+          <nav
+            className="sf-seller-store-pagination"
+            aria-label="Product pages"
+          >
+            <StorefrontButton
+              variant="secondary"
+              disabled={!productsPage.previous || page <= 1}
               onClick={() => {
-                setPage((p) => Math.max(1, p - 1));
+                setPage((current) => Math.max(1, current - 1));
                 setLoading(true);
+                setLoadError(false);
               }}
-              className="rounded-lg border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-40"
             >
               Previous
-            </button>
-            <span className="flex items-center px-3 text-xs font-medium text-slate-600">
-              Page {page}
-            </span>
-            <button
-              type="button"
+            </StorefrontButton>
+            <span>Page {page}</span>
+            <StorefrontButton
+              variant="secondary"
               disabled={!productsPage.next}
               onClick={() => {
-                setPage((p) => p + 1);
+                setPage((current) => current + 1);
                 setLoading(true);
+                setLoadError(false);
               }}
-              className="rounded-lg border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-40"
             >
               Next
-            </button>
-          </div>
+            </StorefrontButton>
+          </nav>
         )}
       </section>
     </div>

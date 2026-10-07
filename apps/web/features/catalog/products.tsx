@@ -1,7 +1,9 @@
 "use client";
 
+import { QueryRegion } from "@/components/ui/query-region";
+
 import Link from "next/link";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { useAuth } from "@/features/auth/auth-provider";
 import { useSeller } from "@/features/workspaces/seller-workspace";
 import { ForbiddenScreen } from "@/features/workspaces/forbidden-screen";
@@ -11,13 +13,21 @@ import { DataTable } from "@/components/ui/data-table";
 import { Pagination } from "@/components/ui/pagination";
 import {
   ApiErrorState,
-  FormField,
   LoadingState,
   PageHeader,
   StatusBadge,
   primaryButton,
 } from "@/components/ui/primitives";
-import { selectStyle } from "@/features/sellers/forms";
+import {
+  FilterBar,
+  FilterSummary,
+  SearchInput,
+} from "@/components/ui/filter-bar";
+import { SelectField } from "@/components/ui/form-fields";
+import {
+  useTableQuery,
+  useDebouncedValue,
+} from "@/components/ui/use-table-query";
 import { catalogApi, productStatuses, type Context } from "./api";
 
 export function SellerProducts() {
@@ -51,9 +61,17 @@ function Products({
 }) {
   const platform = "platform" in context;
   const sellerId = "sellerId" in context ? context.sellerId : undefined;
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState("");
-  const [status, setStatus] = useState(platform ? "pending_review" : "");
+  const table = useTableQuery(
+    { search: 100, status: productStatuses },
+    { status: platform ? "pending_review" : "" },
+  );
+  const { page, setPage } = table;
+  const { status } = table.values;
+  const search = useDebouncedValue(table.values.search);
+  const activeFilters = [
+    table.values.search ? `Search: ${table.values.search}` : "",
+    status ? `Status: ${status.replaceAll("_", " ")}` : "",
+  ].filter(Boolean);
   const load = useCallback(
     (signal: AbortSignal) =>
       catalogApi.products(
@@ -84,98 +102,98 @@ function Products({
           )
         }
       />
-      <div className="mb-6 grid gap-5 sm:grid-cols-2">
-        <FormField
-          label="Search products"
-          value={search}
-          maxLength={100}
-          onChange={(event) => {
-            setSearch(event.target.value);
-            setPage(1);
-          }}
-        />
-        <label className="block text-sm font-medium">
-          Status
-          <select
-            className={`${selectStyle} mt-2`}
+      <div className="mb-5">
+        <FilterBar>
+          <SearchInput
+            label="Search products"
+            value={table.values.search}
+            onChange={(value) => table.setFilters({ search: value }, true)}
+          />
+          <SelectField
+            label="Status"
             value={status}
-            onChange={(event) => {
-              setStatus(event.target.value);
-              setPage(1);
-            }}
+            onChange={(event) =>
+              table.setFilters({ status: event.target.value })
+            }
           >
             <option value="">All statuses</option>
-            {productStatuses.map((status) => (
-              <option key={status} value={status}>
-                {status.replaceAll("_", " ")}
+            {productStatuses.map((value) => (
+              <option key={value} value={value}>
+                {value.replaceAll("_", " ")}
               </option>
             ))}
-          </select>
-        </label>
+          </SelectField>
+        </FilterBar>
+        <FilterSummary filters={activeFilters} onClear={table.clear} />
       </div>
-      {result.kind === "loading" && <LoadingState />}
-      {result.kind === "error" && (
-        <ApiErrorState error={result.error} onRetry={result.retry} />
-      )}
-      {result.kind === "ready" && (
-        <>
-          <DataTable
-            caption="Products"
-            rows={result.data.results}
-            rowKey={(row) => row.id}
-            columns={[
-              {
-                id: "name",
-                heading: "Product",
-                cell: (row) => (
-                  <Link
-                    className="font-semibold text-teal-900 underline"
-                    href={`/${platform ? "admin" : "seller"}/products/${row.id}`}
-                  >
-                    {row.name}
-                  </Link>
-                ),
-              },
-              {
-                id: "category",
-                heading: "Category",
-                cell: (row) => row.category.name,
-              },
-              {
-                id: "brand",
-                heading: "Brand",
-                cell: (row) => row.brand?.name ?? "—",
-              },
-              {
-                id: "status",
-                heading: "Status",
-                cell: (row) => <StatusBadge status={row.status} />,
-              },
-              ...(platform
-                ? [
-                    {
-                      id: "seller",
-                      heading: "Seller",
-                      cell: (row: { seller_id: string }) => (
-                        <Link
-                          className="text-teal-900 underline"
-                          href={`/admin/sellers/${row.seller_id}`}
-                        >
-                          Inspect seller
-                        </Link>
-                      ),
-                    },
-                  ]
-                : []),
-            ]}
-          />
-          <Pagination
-            page={page}
-            count={result.data.count}
-            onPageChange={setPage}
-          />
-        </>
-      )}
+      <QueryRegion busy={result.kind === "loading"}>
+        {result.kind === "loading" && (
+          <LoadingState variant="table" label="Loading products…" />
+        )}
+        {result.kind === "error" && (
+          <ApiErrorState error={result.error} onRetry={result.retry} />
+        )}
+        {result.kind === "ready" && (
+          <>
+            <DataTable
+              filtered={activeFilters.length > 0}
+              caption="Products"
+              rows={result.data.results}
+              rowKey={(row) => row.id}
+              columns={[
+                {
+                  id: "name",
+                  heading: "Product",
+                  cell: (row) => (
+                    <Link
+                      className="font-semibold text-ui-accent underline"
+                      href={`/${platform ? "admin" : "seller"}/products/${row.id}`}
+                    >
+                      {row.name}
+                    </Link>
+                  ),
+                },
+                {
+                  id: "category",
+                  heading: "Category",
+                  cell: (row) => row.category.name,
+                },
+                {
+                  id: "brand",
+                  heading: "Brand",
+                  cell: (row) => row.brand?.name ?? "—",
+                },
+                {
+                  id: "status",
+                  heading: "Status",
+                  cell: (row) => <StatusBadge status={row.status} />,
+                },
+                ...(platform
+                  ? [
+                      {
+                        id: "seller",
+                        heading: "Seller",
+                        cell: (row: { seller_id: string }) => (
+                          <Link
+                            className="text-ui-accent underline"
+                            href={`/admin/sellers/${row.seller_id}`}
+                          >
+                            Inspect seller
+                          </Link>
+                        ),
+                      },
+                    ]
+                  : []),
+              ]}
+            />
+            <Pagination
+              page={page}
+              count={result.data.count}
+              onPageChange={setPage}
+            />
+          </>
+        )}
+      </QueryRegion>
     </>
   );
 }

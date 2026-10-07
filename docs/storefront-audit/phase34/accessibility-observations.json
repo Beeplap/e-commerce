@@ -1,0 +1,23 @@
+{
+  "caption": {
+    "text": "\u00a9 2026 QuickCommerce, Inc.",
+    "rgb": [144, 161, 185],
+    "background": [247, 248, 250],
+    "contrast": 2.475115244933658
+  },
+  "searchNames": [
+    {
+      "label": null,
+      "labelledby": null,
+      "labels": 0
+    }
+  ],
+  "skipLinks": [
+    {
+      "text": "Shop Now",
+      "target": "#catalog"
+    }
+  ],
+  "menuRemainsAfterEscape": true,
+  "mobileToggleExpanded": null
+}

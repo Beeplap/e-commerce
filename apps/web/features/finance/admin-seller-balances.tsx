@@ -1,5 +1,9 @@
 "use client";
 
+import { QueryRegion } from "@/components/ui/query-region";
+
+import { Dialog } from "@/components/ui/dialog";
+
 import Link from "next/link";
 import { useCallback, useState } from "react";
 import { useAuth } from "@/features/auth/auth-provider";
@@ -11,6 +15,7 @@ import { Pagination } from "@/components/ui/pagination";
 import { Money, DateDisplay } from "@/components/ui/displays";
 import {
   ApiErrorState,
+  FormField,
   LoadingState,
   PageHeader,
   primaryButton,
@@ -23,7 +28,7 @@ import {
 } from "./api";
 
 const inputStyle =
-  "min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-teal-700 focus:outline-none";
+  "min-h-11 w-full rounded-lg border border-ui-control-border bg-ui-surface px-3 py-2 text-sm text-ui-foreground focus:border-teal-700 focus:outline-none";
 
 export function AdminSellerBalances() {
   const { state } = useAuth();
@@ -72,10 +77,10 @@ function SellerBalancesList({ canManage }: { canManage: boolean }) {
       heading: "Seller",
       cell: (item) => (
         <div>
-          <span className="font-semibold text-slate-900">
+          <span className="font-semibold text-ui-foreground">
             {item.seller_name}
           </span>
-          <span className="block text-xs text-slate-500">
+          <span className="block text-xs text-ui-muted">
             @{item.seller_slug}
           </span>
         </div>
@@ -83,27 +88,30 @@ function SellerBalancesList({ canManage }: { canManage: boolean }) {
     },
     {
       id: "current_balance",
+      align: "right" as const,
       heading: "Available Balance",
       cell: (item) => (
-        <span className="font-semibold text-emerald-700">
+        <span className="font-semibold text-ui-success">
           <Money amount={item.current_balance} currency={item.currency} />
         </span>
       ),
     },
     {
       id: "pending_balance",
+      align: "right" as const,
       heading: "Pending Escrow",
       cell: (item) => (
-        <span className="text-slate-600">
+        <span className="text-ui-secondary">
           <Money amount={item.pending_balance} currency={item.currency} />
         </span>
       ),
     },
     {
       id: "total_paid_out",
+      align: "right" as const,
       heading: "Total Paid Out",
       cell: (item) => (
-        <span className="text-slate-900">
+        <span className="text-ui-foreground">
           <Money amount={item.total_paid_out} currency={item.currency} />
         </span>
       ),
@@ -121,22 +129,22 @@ function SellerBalancesList({ canManage }: { canManage: boolean }) {
           <button
             type="button"
             onClick={() => setAdjustingSeller(item)}
-            className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+            className="rounded-lg border border-ui-control-border bg-ui-surface px-3 py-1.5 text-xs font-semibold text-ui-secondary hover:bg-ui-surface-muted"
           >
             Adjust Balance
           </button>
         ) : (
-          <span className="text-xs text-slate-400">View only</span>
+          <span className="text-xs text-ui-muted">View only</span>
         ),
     },
   ];
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <div className="space-y-6">
       <div className="mb-4">
         <Link
           href="/admin/finance"
-          className="text-sm font-medium text-teal-800 hover:underline"
+          className="text-sm font-medium text-ui-accent hover:underline"
         >
           &larr; Back to Finance Overview
         </Link>
@@ -144,18 +152,23 @@ function SellerBalancesList({ canManage }: { canManage: boolean }) {
 
       <PageHeader
         title="Seller Balances"
-        description="Inspect authoritatively tracked seller balances and post manual compensating adjustments with attributable audit descriptions."
+        description="Review seller balances and record adjustments."
       />
 
       {/* Search Bar */}
-      <form onSubmit={handleSearchSubmit} className="mb-6 flex gap-3">
-        <input
-          type="text"
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-          placeholder="Search by seller name or slug…"
-          className={`max-w-md ${inputStyle}`}
-        />
+      <form
+        onSubmit={handleSearchSubmit}
+        className="mb-6 flex flex-wrap items-end gap-3"
+      >
+        <div className="min-w-0 flex-1 max-w-md">
+          <FormField
+            label="Search sellers"
+            type="search"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            placeholder="Search by seller name or slug…"
+          />
+        </div>
         <button type="submit" className={secondaryButton}>
           Search
         </button>
@@ -167,36 +180,40 @@ function SellerBalancesList({ canManage }: { canManage: boolean }) {
               setAppliedSearch("");
               setPage(1);
             }}
-            className="text-sm font-medium text-slate-600 hover:text-slate-900"
+            className="text-sm font-medium text-ui-secondary hover:text-ui-foreground"
           >
             Clear
           </button>
         )}
       </form>
 
-      {query.kind === "loading" && <LoadingState />}
-      {query.kind === "error" && (
-        <ApiErrorState error={query.error} onRetry={query.retry} />
-      )}
+      <QueryRegion busy={query.kind === "loading"}>
+        {query.kind === "loading" && (
+          <LoadingState variant="table" label="Loading seller balances…" />
+        )}
+        {query.kind === "error" && (
+          <ApiErrorState error={query.error} onRetry={query.retry} />
+        )}
 
-      {query.kind === "ready" && (
-        <div className="space-y-4">
-          <DataTable
-            rows={query.data.results}
-            columns={columns}
-            rowKey={(item) => item.seller_id}
-            caption="Seller Balances"
-          />
-
-          {query.data.count > 25 && (
-            <Pagination
-              page={page}
-              count={query.data.count}
-              onPageChange={(p) => setPage(p)}
+        {query.kind === "ready" && (
+          <div className="space-y-4">
+            <DataTable
+              rows={query.data.results}
+              columns={columns}
+              rowKey={(item) => item.seller_id}
+              caption="Seller Balances"
             />
-          )}
-        </div>
-      )}
+
+            {query.data.count > 25 && (
+              <Pagination
+                page={page}
+                count={query.data.count}
+                onPageChange={(p) => setPage(p)}
+              />
+            )}
+          </div>
+        )}
+      </QueryRegion>
 
       {/* Balance Adjustment Modal */}
       {adjustingSeller && (
@@ -247,99 +264,81 @@ function AdjustBalanceModal({
   };
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="adjust-balance-title"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4"
-    >
-      <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
-        <h2
-          id="adjust-balance-title"
-          className="text-lg font-bold text-slate-900"
-        >
-          Adjust Seller Balance
-        </h2>
-        <p className="mt-1 text-xs text-slate-500">
+    <Dialog
+      open
+      title={<>Adjust Seller Balance</>}
+      description={
+        <>
           Target:{" "}
-          <strong className="text-slate-800">{seller.seller_name}</strong> (
+          <strong className="text-ui-foreground">{seller.seller_name}</strong> (
           {seller.currency})
-        </p>
+        </>
+      }
+      onClose={onClose}
+      busy={submitting}
+      error={error}
+    >
+      <form onSubmit={handleSubmit} className="mt-4 space-y-4">
+        <div>
+          <label
+            htmlFor="adjust-amount"
+            className="block text-xs font-semibold text-ui-secondary"
+          >
+            Adjustment Amount ({seller.currency}) *
+          </label>
+          <p className="mb-1 text-xs text-ui-muted">
+            Enter a positive amount to credit (e.g. 50.00) or negative to debit
+            (e.g. -25.00).
+          </p>
+          <input
+            id="adjust-amount"
+            type="text"
+            required
+            pattern="^-?\d+(\.\d{1,2})?$"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            placeholder="e.g. 50.00 or -25.00"
+            className={`mt-1 ${inputStyle}`}
+          />
+        </div>
 
-        <form onSubmit={handleSubmit} className="mt-4 space-y-4">
-          <div>
-            <label
-              htmlFor="adjust-amount"
-              className="block text-xs font-semibold text-slate-700"
-            >
-              Adjustment Amount ({seller.currency}) *
-            </label>
-            <p className="mb-1 text-xs text-slate-500">
-              Enter a positive amount to credit (e.g. 50.00) or negative to
-              debit (e.g. -25.00).
-            </p>
-            <input
-              id="adjust-amount"
-              type="text"
-              required
-              pattern="^-?\d+(\.\d{1,2})?$"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              placeholder="e.g. 50.00 or -25.00"
-              className={`mt-1 ${inputStyle}`}
-            />
-          </div>
+        <div>
+          <label
+            htmlFor="adjust-description"
+            className="block text-xs font-semibold text-ui-secondary"
+          >
+            Description *
+          </label>
+          <p className="mb-1 text-xs text-ui-muted">
+            State the reason for this compensating ledger entry for accounting
+            records.
+          </p>
+          <textarea
+            id="adjust-description"
+            rows={3}
+            required
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="e.g. Manual credit for promotional fee refund"
+            className={`mt-1 ${inputStyle}`}
+          />
+        </div>
 
-          <div>
-            <label
-              htmlFor="adjust-description"
-              className="block text-xs font-semibold text-slate-700"
-            >
-              Description *
-            </label>
-            <p className="mb-1 text-xs text-slate-500">
-              State the reason for this compensating ledger entry for accounting
-              records.
-            </p>
-            <textarea
-              id="adjust-description"
-              rows={3}
-              required
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="e.g. Manual credit for promotional fee refund"
-              className={`mt-1 ${inputStyle}`}
-            />
-          </div>
-
-          {error && (
-            <div
-              role="alert"
-              className="rounded-lg bg-rose-50 p-3 text-xs text-rose-800"
-            >
-              {error}
-            </div>
-          )}
-
-          <div className="flex justify-end gap-3 pt-2">
-            <button
-              type="button"
-              disabled={submitting}
-              onClick={onClose}
-              className={secondaryButton}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={submitting}
-              className={primaryButton}
-            >
-              {submitting ? "Applying…" : "Apply Adjustment"}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+        <div className="flex justify-end gap-3 pt-2">
+          <button
+            type="button"
+            disabled={submitting}
+            onClick={onClose}
+            className={secondaryButton}
+            data-dialog-cancel
+          >
+            Cancel
+          </button>
+          <button type="submit" disabled={submitting} className={primaryButton}>
+            {submitting ? "Applying…" : "Apply Adjustment"}
+          </button>
+        </div>
+      </form>
+    </Dialog>
   );
 }

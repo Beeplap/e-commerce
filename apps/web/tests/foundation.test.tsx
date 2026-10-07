@@ -32,11 +32,11 @@ describe("platform foundation", () => {
     expect(
       screen.getByRole("heading", {
         level: 1,
-        name: /Lightning commerce/i,
+        name: /Good finds.*Independent shops/i,
       }),
     ).toBeVisible();
     expect(
-      screen.getByRole("link", { name: "Sell on QuickCommerce" }),
+      screen.getByRole("link", { name: "Become a seller" }),
     ).toHaveAttribute("href", "/onboarding");
   });
 

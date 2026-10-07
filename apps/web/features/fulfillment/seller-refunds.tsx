@@ -1,5 +1,7 @@
 "use client";
 
+import { Dialog } from "@/components/ui/dialog";
+
 import { useCallback, useState } from "react";
 import { useSeller } from "@/features/workspaces/seller-workspace";
 import { ForbiddenScreen } from "@/features/workspaces/forbidden-screen";
@@ -85,7 +87,7 @@ function RefundsContent({
     }
   };
 
-  if (query.kind === "loading") return <LoadingState />;
+  if (query.kind === "loading") return <LoadingState variant="table" />;
   if (query.kind === "error")
     return <ApiErrorState error={query.error} onRetry={query.retry} />;
 
@@ -96,7 +98,7 @@ function RefundsContent({
       id: "number",
       heading: "Refund #",
       cell: (row) => (
-        <span className="font-mono text-xs font-semibold text-slate-900">
+        <span className="font-mono text-xs font-semibold text-ui-foreground">
           {row.refund_number}
         </span>
       ),
@@ -105,13 +107,14 @@ function RefundsContent({
       id: "order",
       heading: "Order #",
       cell: (row) => (
-        <span className="font-mono text-xs text-slate-600">
+        <span className="font-mono text-xs text-ui-secondary">
           {row.seller_order_number}
         </span>
       ),
     },
     {
       id: "amount",
+      align: "right" as const,
       heading: "Refund Amount",
       cell: (row) => (
         <span className="font-semibold text-red-600">
@@ -121,18 +124,20 @@ function RefundsContent({
     },
     {
       id: "commission",
+      align: "right" as const,
       heading: "Comm. Reversal",
       cell: (row) => (
-        <span className="text-teal-700 font-mono text-xs">
+        <span className="text-ui-accent font-mono text-xs">
           +<Money amount={row.commission_reversed} currency={row.currency} />
         </span>
       ),
     },
     {
       id: "net",
+      align: "right" as const,
       heading: "Net Deduction",
       cell: (row) => (
-        <span className="font-medium text-slate-900 font-mono text-xs">
+        <span className="font-medium text-ui-foreground font-mono text-xs">
           -<Money amount={row.seller_deduction} currency={row.currency} />
         </span>
       ),
@@ -141,7 +146,7 @@ function RefundsContent({
       id: "reason",
       heading: "Reason",
       cell: (row) => (
-        <span className="text-slate-600 text-xs">{row.reason}</span>
+        <span className="text-ui-secondary text-xs">{row.reason}</span>
       ),
     },
     {
@@ -160,7 +165,7 @@ function RefundsContent({
     <section>
       <PageHeader
         title="Refunds & Financial Adjustments"
-        description="Review customer refunds, automatic marketplace commission reversals, and net ledger adjustments."
+        description="Review refunds and their ledger entries."
         actions={
           canManage && (
             <button
@@ -183,70 +188,85 @@ function RefundsContent({
 
       {/* Create Refund Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
-          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
-            <h2 className="text-xl font-semibold text-slate-950">
-              Issue Order Refund
-            </h2>
-            <p className="mt-1 text-sm text-slate-600">
+        <Dialog
+          open
+          title={<>Issue Order Refund</>}
+          description={
+            <>
               Process a customer refund with automatic proportional commission
               reversal and compensating ledger entries.
-            </p>
-            {formError && (
-              <div className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">
-                {formError}
-              </div>
-            )}
-            <form onSubmit={handleCreateRefund} className="mt-4 space-y-4">
-              <FormField
-                label="Seller Order ID"
-                value={orderId}
-                onChange={(e) => setOrderId(e.target.value)}
-                placeholder="UUID of order to refund"
-                required
-              />
-              <FormField
-                label="Refund Amount (USD)"
-                type="number"
-                step="0.01"
-                min="0.01"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                placeholder="0.00"
-                required
-              />
-              <FormField
-                label="Reason"
-                value={reason}
-                onChange={(e) => setReason(e.target.value)}
-                placeholder="e.g. Return received, defective item concession"
-                required
-              />
-              <FormField
-                label="Return Request ID (Optional)"
-                value={returnId}
-                onChange={(e) => setReturnId(e.target.value)}
-                placeholder="UUID of return request if applicable"
-              />
-              <div className="mt-6 flex justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={() => setShowCreateModal(false)}
-                  className={secondaryButton}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white hover:bg-red-700"
-                >
-                  {submitting ? "Processing…" : "Confirm Refund"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+            </>
+          }
+          onClose={() => setShowCreateModal(false)}
+          busy={submitting}
+          error={formError}
+        >
+          <form onSubmit={handleCreateRefund} className="mt-4 space-y-4">
+            <FormField
+              label="Seller Order ID"
+              value={orderId}
+              onChange={(e) => setOrderId(e.target.value)}
+              placeholder="UUID of order to refund"
+              required
+            />
+            <FormField
+              label="Refund Amount (order currency)"
+              hint="Enter the amount in the original order currency. Django validates the remaining refundable amount."
+              type="number"
+              step="0.01"
+              min="0.01"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              placeholder="0.00"
+              required
+            />
+            <FormField
+              label="Reason"
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              placeholder="e.g. Return received, defective item concession"
+              required
+            />
+            <FormField
+              label="Return Request ID (Optional)"
+              value={returnId}
+              onChange={(e) => setReturnId(e.target.value)}
+              placeholder="UUID of return request if applicable"
+            />
+            <div className="rounded-control border border-ui-border bg-ui-surface-muted p-3 text-ui-body">
+              <p className="font-medium">Review refund</p>
+              <p className="mt-1 break-words">
+                Seller order: {orderId || "Enter the order identifier above"}
+              </p>
+              <p>
+                Amount: {amount || "Enter an amount above"} in the order
+                currency
+              </p>
+              <p className="mt-2 text-ui-secondary">
+                Confirming records a customer refund and adjusts the commission
+                and seller ledger. Check the order, amount and reason before
+                continuing.
+              </p>
+            </div>
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setShowCreateModal(false)}
+                className={secondaryButton}
+                data-dialog-cancel
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={submitting}
+                className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white hover:bg-red-700"
+              >
+                {submitting ? "Processing…" : "Confirm Refund"}
+              </button>
+            </div>
+          </form>
+        </Dialog>
       )}
     </section>
   );

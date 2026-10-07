@@ -1,0 +1,905 @@
+{
+  "state": "Explicit intercepted synthetic fixtures only. No fixtures, catalog assets, orders or payments enter Django/database.",
+  "cases": [
+    {
+      "name": "fixture-saved",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": "static",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-saved-375.png"]
+    },
+    {
+      "name": "fixture-saved",
+      "width": 430,
+      "metrics": {
+        "width": 430,
+        "documentWidth": 430,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": "static",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-saved-430.png"]
+    },
+    {
+      "name": "fixture-saved",
+      "width": 768,
+      "metrics": {
+        "width": 768,
+        "documentWidth": 768,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": "sticky",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-saved-768.png"]
+    },
+    {
+      "name": "fixture-saved",
+      "width": 1024,
+      "metrics": {
+        "width": 1024,
+        "documentWidth": 1024,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": "sticky",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-saved-1024.png"]
+    },
+    {
+      "name": "fixture-saved",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": "sticky",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-saved-1440.png"]
+    },
+    {
+      "name": "fixture-saved",
+      "width": 1920,
+      "metrics": {
+        "width": 1920,
+        "documentWidth": 1920,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": "sticky",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-saved-1920.png"]
+    },
+    {
+      "name": "fixture-guest",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": "static",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-guest-375.png"]
+    },
+    {
+      "name": "fixture-guest",
+      "width": 430,
+      "metrics": {
+        "width": 430,
+        "documentWidth": 430,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": "static",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-guest-430.png"]
+    },
+    {
+      "name": "fixture-guest",
+      "width": 768,
+      "metrics": {
+        "width": 768,
+        "documentWidth": 768,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": "sticky",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-guest-768.png"]
+    },
+    {
+      "name": "fixture-guest",
+      "width": 1024,
+      "metrics": {
+        "width": 1024,
+        "documentWidth": 1024,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": "sticky",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-guest-1024.png"]
+    },
+    {
+      "name": "fixture-guest",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": "sticky",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-guest-1440.png"]
+    },
+    {
+      "name": "fixture-guest",
+      "width": 1920,
+      "metrics": {
+        "width": 1920,
+        "documentWidth": 1920,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": "sticky",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-guest-1920.png"]
+    },
+    {
+      "name": "fixture-payment",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-payment-375.png"]
+    },
+    {
+      "name": "fixture-payment",
+      "width": 430,
+      "metrics": {
+        "width": 430,
+        "documentWidth": 430,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-payment-430.png"]
+    },
+    {
+      "name": "fixture-payment",
+      "width": 768,
+      "metrics": {
+        "width": 768,
+        "documentWidth": 768,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-payment-768.png"]
+    },
+    {
+      "name": "fixture-payment",
+      "width": 1024,
+      "metrics": {
+        "width": 1024,
+        "documentWidth": 1024,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-payment-1024.png"]
+    },
+    {
+      "name": "fixture-payment",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-payment-1440.png"]
+    },
+    {
+      "name": "fixture-payment",
+      "width": 1920,
+      "metrics": {
+        "width": 1920,
+        "documentWidth": 1920,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-payment-1920.png"]
+    },
+    {
+      "name": "fixture-paid",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-paid-375.png"]
+    },
+    {
+      "name": "fixture-paid",
+      "width": 430,
+      "metrics": {
+        "width": 430,
+        "documentWidth": 430,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-paid-430.png"]
+    },
+    {
+      "name": "fixture-paid",
+      "width": 768,
+      "metrics": {
+        "width": 768,
+        "documentWidth": 768,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-paid-768.png"]
+    },
+    {
+      "name": "fixture-paid",
+      "width": 1024,
+      "metrics": {
+        "width": 1024,
+        "documentWidth": 1024,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-paid-1024.png"]
+    },
+    {
+      "name": "fixture-paid",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-paid-1440.png"]
+    },
+    {
+      "name": "fixture-paid",
+      "width": 1920,
+      "metrics": {
+        "width": 1920,
+        "documentWidth": 1920,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-paid-1920.png"]
+    },
+    {
+      "name": "fixture-unverified",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-unverified-375.png"]
+    },
+    {
+      "name": "fixture-unverified",
+      "width": 430,
+      "metrics": {
+        "width": 430,
+        "documentWidth": 430,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-unverified-430.png"]
+    },
+    {
+      "name": "fixture-unverified",
+      "width": 768,
+      "metrics": {
+        "width": 768,
+        "documentWidth": 768,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-unverified-768.png"]
+    },
+    {
+      "name": "fixture-unverified",
+      "width": 1024,
+      "metrics": {
+        "width": 1024,
+        "documentWidth": 1024,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-unverified-1024.png"]
+    },
+    {
+      "name": "fixture-unverified",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-unverified-1440.png"]
+    },
+    {
+      "name": "fixture-unverified",
+      "width": 1920,
+      "metrics": {
+        "width": 1920,
+        "documentWidth": 1920,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-unverified-1920.png"]
+    },
+    {
+      "name": "fixture-long",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": "static",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-long-375.png"]
+    },
+    {
+      "name": "fixture-long",
+      "width": 430,
+      "metrics": {
+        "width": 430,
+        "documentWidth": 430,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": "static",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-long-430.png"]
+    },
+    {
+      "name": "fixture-long",
+      "width": 768,
+      "metrics": {
+        "width": 768,
+        "documentWidth": 768,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": "sticky",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-long-768.png"]
+    },
+    {
+      "name": "fixture-long",
+      "width": 1024,
+      "metrics": {
+        "width": 1024,
+        "documentWidth": 1024,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": "sticky",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-long-1024.png"]
+    },
+    {
+      "name": "fixture-long",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": "sticky",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-long-1440.png"]
+    },
+    {
+      "name": "fixture-long",
+      "width": 1920,
+      "metrics": {
+        "width": 1920,
+        "documentWidth": 1920,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": "sticky",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-long-1920.png"]
+    },
+    {
+      "name": "fixture-quote-error",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": "static",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-quote-error-375.png"]
+    },
+    {
+      "name": "fixture-quote-error",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": "sticky",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-quote-error-1440.png"]
+    },
+    {
+      "name": "fixture-address-error",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": "static",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-address-error-375.png"]
+    },
+    {
+      "name": "fixture-address-error",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": "sticky",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-address-error-1440.png"]
+    },
+    {
+      "name": "fixture-stock",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": "static",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-stock-375.png"]
+    },
+    {
+      "name": "fixture-stock",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": "sticky",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-stock-1440.png"]
+    },
+    {
+      "name": "fixture-cart-loading",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-cart-loading-375.png"]
+    },
+    {
+      "name": "fixture-cart-loading",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-cart-loading-1440.png"]
+    },
+    {
+      "name": "fixture-quote-loading",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": "static",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-quote-loading-375.png"]
+    },
+    {
+      "name": "fixture-quote-loading",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": "sticky",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-quote-loading-1440.png"]
+    },
+    {
+      "name": "fixture-order-error",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-order-error-375.png"]
+    },
+    {
+      "name": "fixture-order-error",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-order-error-1440.png"]
+    },
+    {
+      "name": "fixture-placement-uncertain",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": "static",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-placement-uncertain-375.png"]
+    },
+    {
+      "name": "fixture-placement-uncertain",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": "sticky",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-placement-uncertain-1440.png"]
+    },
+    {
+      "name": "fixture-decline",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-decline-375.png"]
+    },
+    {
+      "name": "fixture-decline",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-decline-1440.png"]
+    },
+    {
+      "name": "fixture-email-invalid",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": "static",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-email-invalid-375.png"]
+    },
+    {
+      "name": "fixture-card-invalid",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-card-invalid-375.png"]
+    },
+    {
+      "name": "fixture-guest-captured",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-guest-captured-375.png"]
+    },
+    {
+      "name": "fixture-email-invalid",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": "sticky",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-email-invalid-1440.png"]
+    },
+    {
+      "name": "fixture-card-invalid",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-card-invalid-1440.png"]
+    },
+    {
+      "name": "fixture-guest-captured",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "summaryPosition": null,
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-guest-captured-1440.png"]
+    }
+  ],
+  "interactions": [
+    {
+      "width": 375,
+      "guestPlacementToPaymentToCapture": true,
+      "uuidOnlyNavigation": true,
+      "focusedInlineEmailAndCardErrors": true,
+      "serverAmountsOnly": true,
+      "freshCsrfAndExplicitPayloads": true,
+      "opaqueTokenOnly": true,
+      "guestReloadNotForgedSuccess": true,
+      "placementCalls": 1,
+      "intentCalls": 1,
+      "confirmCalls": 1
+    },
+    {
+      "width": 1440,
+      "guestPlacementToPaymentToCapture": true,
+      "uuidOnlyNavigation": true,
+      "focusedInlineEmailAndCardErrors": true,
+      "serverAmountsOnly": true,
+      "freshCsrfAndExplicitPayloads": true,
+      "opaqueTokenOnly": true,
+      "guestReloadNotForgedSuccess": true,
+      "placementCalls": 1,
+      "intentCalls": 1,
+      "confirmCalls": 1
+    }
+  ],
+  "pageErrors": [],
+  "browser": "149.0.7827.55"
+}

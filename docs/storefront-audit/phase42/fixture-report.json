@@ -1,0 +1,1017 @@
+{
+  "state": "Explicit intercepted synthetic fixtures. No customer accounts, profile changes, orders, addresses, reviews or returns enter Django/database.",
+  "cases": [
+    {
+      "name": "fixture-signedin-login",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-signedin-login-375.png"]
+    },
+    {
+      "name": "fixture-overview",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-overview-375.png"]
+    },
+    {
+      "name": "fixture-profile",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-profile-375.png"]
+    },
+    {
+      "name": "fixture-addresses",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-addresses-375.png"]
+    },
+    {
+      "name": "fixture-orders",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-orders-375.png"]
+    },
+    {
+      "name": "fixture-detail",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-detail-375.png"]
+    },
+    {
+      "name": "fixture-signedin-login",
+      "width": 430,
+      "metrics": {
+        "width": 430,
+        "documentWidth": 430,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-signedin-login-430.png"]
+    },
+    {
+      "name": "fixture-overview",
+      "width": 430,
+      "metrics": {
+        "width": 430,
+        "documentWidth": 430,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-overview-430.png"]
+    },
+    {
+      "name": "fixture-profile",
+      "width": 430,
+      "metrics": {
+        "width": 430,
+        "documentWidth": 430,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-profile-430.png"]
+    },
+    {
+      "name": "fixture-addresses",
+      "width": 430,
+      "metrics": {
+        "width": 430,
+        "documentWidth": 430,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-addresses-430.png"]
+    },
+    {
+      "name": "fixture-orders",
+      "width": 430,
+      "metrics": {
+        "width": 430,
+        "documentWidth": 430,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-orders-430.png"]
+    },
+    {
+      "name": "fixture-detail",
+      "width": 430,
+      "metrics": {
+        "width": 430,
+        "documentWidth": 430,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-detail-430.png"]
+    },
+    {
+      "name": "fixture-signedin-login",
+      "width": 768,
+      "metrics": {
+        "width": 768,
+        "documentWidth": 768,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-signedin-login-768.png"]
+    },
+    {
+      "name": "fixture-overview",
+      "width": 768,
+      "metrics": {
+        "width": 768,
+        "documentWidth": 768,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-overview-768.png"]
+    },
+    {
+      "name": "fixture-profile",
+      "width": 768,
+      "metrics": {
+        "width": 768,
+        "documentWidth": 768,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-profile-768.png"]
+    },
+    {
+      "name": "fixture-addresses",
+      "width": 768,
+      "metrics": {
+        "width": 768,
+        "documentWidth": 768,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-addresses-768.png"]
+    },
+    {
+      "name": "fixture-orders",
+      "width": 768,
+      "metrics": {
+        "width": 768,
+        "documentWidth": 768,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-orders-768.png"]
+    },
+    {
+      "name": "fixture-detail",
+      "width": 768,
+      "metrics": {
+        "width": 768,
+        "documentWidth": 768,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-detail-768.png"]
+    },
+    {
+      "name": "fixture-signedin-login",
+      "width": 1024,
+      "metrics": {
+        "width": 1024,
+        "documentWidth": 1024,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-signedin-login-1024.png"]
+    },
+    {
+      "name": "fixture-overview",
+      "width": 1024,
+      "metrics": {
+        "width": 1024,
+        "documentWidth": 1024,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-overview-1024.png"]
+    },
+    {
+      "name": "fixture-profile",
+      "width": 1024,
+      "metrics": {
+        "width": 1024,
+        "documentWidth": 1024,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-profile-1024.png"]
+    },
+    {
+      "name": "fixture-addresses",
+      "width": 1024,
+      "metrics": {
+        "width": 1024,
+        "documentWidth": 1024,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-addresses-1024.png"]
+    },
+    {
+      "name": "fixture-orders",
+      "width": 1024,
+      "metrics": {
+        "width": 1024,
+        "documentWidth": 1024,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-orders-1024.png"]
+    },
+    {
+      "name": "fixture-detail",
+      "width": 1024,
+      "metrics": {
+        "width": 1024,
+        "documentWidth": 1024,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-detail-1024.png"]
+    },
+    {
+      "name": "fixture-signedin-login",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-signedin-login-1440.png"]
+    },
+    {
+      "name": "fixture-overview",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-overview-1440.png"]
+    },
+    {
+      "name": "fixture-profile",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-profile-1440.png"]
+    },
+    {
+      "name": "fixture-addresses",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-addresses-1440.png"]
+    },
+    {
+      "name": "fixture-orders",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-orders-1440.png"]
+    },
+    {
+      "name": "fixture-detail",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-detail-1440.png"]
+    },
+    {
+      "name": "fixture-signedin-login",
+      "width": 1920,
+      "metrics": {
+        "width": 1920,
+        "documentWidth": 1920,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-signedin-login-1920.png"]
+    },
+    {
+      "name": "fixture-overview",
+      "width": 1920,
+      "metrics": {
+        "width": 1920,
+        "documentWidth": 1920,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-overview-1920.png"]
+    },
+    {
+      "name": "fixture-profile",
+      "width": 1920,
+      "metrics": {
+        "width": 1920,
+        "documentWidth": 1920,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-profile-1920.png"]
+    },
+    {
+      "name": "fixture-addresses",
+      "width": 1920,
+      "metrics": {
+        "width": 1920,
+        "documentWidth": 1920,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-addresses-1920.png"]
+    },
+    {
+      "name": "fixture-orders",
+      "width": 1920,
+      "metrics": {
+        "width": 1920,
+        "documentWidth": 1920,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-orders-1920.png"]
+    },
+    {
+      "name": "fixture-detail",
+      "width": 1920,
+      "metrics": {
+        "width": 1920,
+        "documentWidth": 1920,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-detail-1920.png"]
+    },
+    {
+      "name": "fixture-empty-orders",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-empty-orders-375.png"]
+    },
+    {
+      "name": "fixture-empty-addresses",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-empty-addresses-375.png"]
+    },
+    {
+      "name": "fixture-readError-orders",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-readError-orders-375.png"]
+    },
+    {
+      "name": "fixture-readError-profile",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-readError-profile-375.png"]
+    },
+    {
+      "name": "fixture-loadGate-orders",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-loadGate-orders-375.png"]
+    },
+    {
+      "name": "fixture-loadGate-profile",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-loadGate-profile-375.png"]
+    },
+    {
+      "name": "fixture-long-detail",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-long-detail-375.png"]
+    },
+    {
+      "name": "fixture-long-addresses",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-long-addresses-375.png"]
+    },
+    {
+      "name": "fixture-long-profile",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-long-profile-375.png"]
+    },
+    {
+      "name": "fixture-unverified-profile",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-unverified-profile-375.png"]
+    },
+    {
+      "name": "fixture-address-dialog",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-address-dialog-375.png"]
+    },
+    {
+      "name": "fixture-address-error",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-address-error-375.png"]
+    },
+    {
+      "name": "fixture-password-error-cleared",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-password-error-cleared-375.png"]
+    },
+    {
+      "name": "fixture-review-dialog",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-review-dialog-375.png"]
+    },
+    {
+      "name": "fixture-return-dialog",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-return-dialog-375.png"]
+    },
+    {
+      "name": "fixture-cancel-dialog",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-cancel-dialog-375.png"]
+    },
+    {
+      "name": "fixture-cancel-error",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-cancel-error-375.png"]
+    },
+    {
+      "name": "fixture-empty-orders",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-empty-orders-1440.png"]
+    },
+    {
+      "name": "fixture-empty-addresses",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-empty-addresses-1440.png"]
+    },
+    {
+      "name": "fixture-readError-orders",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-readError-orders-1440.png"]
+    },
+    {
+      "name": "fixture-readError-profile",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-readError-profile-1440.png"]
+    },
+    {
+      "name": "fixture-loadGate-orders",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-loadGate-orders-1440.png"]
+    },
+    {
+      "name": "fixture-loadGate-profile",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-loadGate-profile-1440.png"]
+    },
+    {
+      "name": "fixture-long-detail",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-long-detail-1440.png"]
+    },
+    {
+      "name": "fixture-long-addresses",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-long-addresses-1440.png"]
+    },
+    {
+      "name": "fixture-long-profile",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-long-profile-1440.png"]
+    },
+    {
+      "name": "fixture-unverified-profile",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-unverified-profile-1440.png"]
+    },
+    {
+      "name": "fixture-address-dialog",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-address-dialog-1440.png"]
+    },
+    {
+      "name": "fixture-address-error",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-address-error-1440.png"]
+    },
+    {
+      "name": "fixture-password-error-cleared",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-password-error-cleared-1440.png"]
+    },
+    {
+      "name": "fixture-review-dialog",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-review-dialog-1440.png"]
+    },
+    {
+      "name": "fixture-return-dialog",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-return-dialog-1440.png"]
+    },
+    {
+      "name": "fixture-cancel-dialog",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-cancel-dialog-1440.png"]
+    },
+    {
+      "name": "fixture-cancel-error",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "smallControls": 0
+      },
+      "screenshots": ["fixture-cancel-error-1440.png"]
+    }
+  ],
+  "interactions": [
+    {
+      "width": 375,
+      "nativeModalFocusTabEscapeOpenerReturn": true,
+      "inlinePostalCodeErrorAndSummaryFocus": true,
+      "profileSessionRefresh": true,
+      "passwordInputsClearedAfterRejection": true,
+      "reviewModerationAndReturnApprovalHonest": true,
+      "cancellationRejectRecover": true,
+      "logoutFailRetainsSessionThenAcceptedNavigation": true,
+      "freshCsrfForEveryUnsafeCommand": true,
+      "explicitAllowlistedPayloads": true,
+      "commandCount": 10,
+      "csrfCalls": 10
+    },
+    {
+      "width": 1440,
+      "nativeModalFocusTabEscapeOpenerReturn": true,
+      "inlinePostalCodeErrorAndSummaryFocus": true,
+      "profileSessionRefresh": true,
+      "passwordInputsClearedAfterRejection": true,
+      "reviewModerationAndReturnApprovalHonest": true,
+      "cancellationRejectRecover": true,
+      "logoutFailRetainsSessionThenAcceptedNavigation": true,
+      "freshCsrfForEveryUnsafeCommand": true,
+      "explicitAllowlistedPayloads": true,
+      "commandCount": 10,
+      "csrfCalls": 10
+    }
+  ],
+  "pageErrors": [],
+  "browser": "149.0.7827.55"
+}

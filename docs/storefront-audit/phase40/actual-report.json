@@ -1,0 +1,311 @@
+{
+  "state": "Actual development proxy/API read failures; no explicit cart mutations, no fixtures or database seeds",
+  "cases": [
+    {
+      "name": "actual-cart-error",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": [
+        "actual-cart-error-375.png",
+        "actual-cart-error-viewport-375.png"
+      ]
+    },
+    {
+      "name": "actual-drawer-error",
+      "width": 375,
+      "metrics": {
+        "width": 375,
+        "documentWidth": 375,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": {
+          "rect": {
+            "x": -4.2778520584106445,
+            "y": 0,
+            "width": 375,
+            "height": 900,
+            "top": 0,
+            "right": 370.72214794158936,
+            "bottom": 900,
+            "left": -4.2778520584106445
+          },
+          "insideFocus": true,
+          "scrollHeight": 900,
+          "clientHeight": 900
+        }
+      },
+      "screenshots": ["actual-drawer-error-375.png"]
+    },
+    {
+      "name": "actual-cart-error",
+      "width": 430,
+      "metrics": {
+        "width": 430,
+        "documentWidth": 430,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": [
+        "actual-cart-error-430.png",
+        "actual-cart-error-viewport-430.png"
+      ]
+    },
+    {
+      "name": "actual-drawer-error",
+      "width": 430,
+      "metrics": {
+        "width": 430,
+        "documentWidth": 430,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": {
+          "rect": {
+            "x": -5.101423263549805,
+            "y": 0,
+            "width": 430,
+            "height": 900,
+            "top": 0,
+            "right": 424.8985767364502,
+            "bottom": 900,
+            "left": -5.101423263549805
+          },
+          "insideFocus": true,
+          "scrollHeight": 900,
+          "clientHeight": 900
+        }
+      },
+      "screenshots": ["actual-drawer-error-430.png"]
+    },
+    {
+      "name": "actual-cart-error",
+      "width": 768,
+      "metrics": {
+        "width": 768,
+        "documentWidth": 768,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": [
+        "actual-cart-error-768.png",
+        "actual-cart-error-viewport-768.png"
+      ]
+    },
+    {
+      "name": "actual-drawer-error",
+      "width": 768,
+      "metrics": {
+        "width": 768,
+        "documentWidth": 768,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": {
+          "rect": {
+            "x": 250.8963165283203,
+            "y": 0,
+            "width": 512,
+            "height": 900,
+            "top": 0,
+            "right": 762.8963165283203,
+            "bottom": 900,
+            "left": 250.8963165283203
+          },
+          "insideFocus": true,
+          "scrollHeight": 900,
+          "clientHeight": 900
+        }
+      },
+      "screenshots": ["actual-drawer-error-768.png"]
+    },
+    {
+      "name": "actual-cart-error",
+      "width": 1024,
+      "metrics": {
+        "width": 1024,
+        "documentWidth": 1024,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": [
+        "actual-cart-error-1024.png",
+        "actual-cart-error-viewport-1024.png"
+      ]
+    },
+    {
+      "name": "actual-drawer-error",
+      "width": 1024,
+      "metrics": {
+        "width": 1024,
+        "documentWidth": 1024,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": {
+          "rect": {
+            "x": 506.89501953125,
+            "y": 0,
+            "width": 512,
+            "height": 900,
+            "top": 0,
+            "right": 1018.89501953125,
+            "bottom": 900,
+            "left": 506.89501953125
+          },
+          "insideFocus": true,
+          "scrollHeight": 900,
+          "clientHeight": 900
+        }
+      },
+      "screenshots": ["actual-drawer-error-1024.png"]
+    },
+    {
+      "name": "actual-cart-error",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": [
+        "actual-cart-error-1440.png",
+        "actual-cart-error-viewport-1440.png"
+      ]
+    },
+    {
+      "name": "actual-drawer-error",
+      "width": 1440,
+      "metrics": {
+        "width": 1440,
+        "documentWidth": 1440,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": {
+          "rect": {
+            "x": 922,
+            "y": 0,
+            "width": 512,
+            "height": 900,
+            "top": 0,
+            "right": 1434,
+            "bottom": 900,
+            "left": 922
+          },
+          "insideFocus": true,
+          "scrollHeight": 900,
+          "clientHeight": 900
+        }
+      },
+      "screenshots": ["actual-drawer-error-1440.png"]
+    },
+    {
+      "name": "actual-cart-error",
+      "width": 1920,
+      "metrics": {
+        "width": 1920,
+        "documentWidth": 1920,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": null
+      },
+      "screenshots": [
+        "actual-cart-error-1920.png",
+        "actual-cart-error-viewport-1920.png"
+      ]
+    },
+    {
+      "name": "actual-drawer-error",
+      "width": 1920,
+      "metrics": {
+        "width": 1920,
+        "documentWidth": 1920,
+        "main": 1,
+        "h1": 1,
+        "duplicateIds": [],
+        "operationalAccent": "#176b57",
+        "dialog": {
+          "rect": {
+            "x": 1402.8963623046875,
+            "y": 0,
+            "width": 512,
+            "height": 900,
+            "top": 0,
+            "right": 1914.8963623046875,
+            "bottom": 900,
+            "left": 1402.8963623046875
+          },
+          "insideFocus": true,
+          "scrollHeight": 900,
+          "clientHeight": 900
+        }
+      },
+      "screenshots": ["actual-drawer-error-1920.png"]
+    }
+  ],
+  "interactions": [
+    {
+      "width": 375,
+      "nativeFocusEscapeReturn": true,
+      "failedReadNotEmpty": true
+    },
+    {
+      "width": 430,
+      "nativeFocusEscapeReturn": true,
+      "failedReadNotEmpty": true
+    },
+    {
+      "width": 768,
+      "nativeFocusEscapeReturn": true,
+      "failedReadNotEmpty": true
+    },
+    {
+      "width": 1024,
+      "nativeFocusEscapeReturn": true,
+      "failedReadNotEmpty": true
+    },
+    {
+      "width": 1440,
+      "nativeFocusEscapeReturn": true,
+      "failedReadNotEmpty": true
+    },
+    {
+      "width": 1920,
+      "nativeFocusEscapeReturn": true,
+      "failedReadNotEmpty": true
+    }
+  ],
+  "pageErrors": [],
+  "cartProxyStatus": 308,
+  "skipReducedMotionRetry": true,
+  "browser": "149.0.7827.55"
+}

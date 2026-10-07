@@ -65,7 +65,7 @@ export function DocumentPanel({
     <section className="space-y-5" aria-label="Verification documents">
       <div className={panel}>
         <h2 className="mb-4 text-xl font-semibold">Verification documents</h2>
-        <p className="mb-5 text-sm text-slate-600">
+        <p className="mb-5 text-sm text-ui-secondary">
           Business registration must be verified before seller approval.
           Downloads are private and recorded in the audit history.
         </p>
@@ -78,7 +78,7 @@ export function DocumentPanel({
         {query.kind === "ready" && (
           <>
             {query.data.results.length === 0 && <p>No documents submitted.</p>}
-            <ul className="divide-y divide-slate-200">
+            <ul className="divide-y divide-ui-border">
               {query.data.results.map((document) => (
                 <li key={document.id} className="space-y-3 py-4">
                   <div className="flex flex-wrap items-center gap-3">
@@ -89,7 +89,7 @@ export function DocumentPanel({
                     </h3>
                     <StatusBadge status={document.status} />
                   </div>
-                  <p className="text-sm text-slate-600">
+                  <p className="text-sm text-ui-secondary">
                     Expires: {document.expires_at ?? "No expiry supplied"}
                   </p>
                   {document.rejection_reason && (

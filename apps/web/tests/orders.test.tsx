@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { AuthProvider } from "@/features/auth/auth-provider";
 import { SellerWorkspace } from "@/features/workspaces/seller-workspace";
 import { SellerOrders } from "@/features/orders/seller-orders";
@@ -114,11 +114,6 @@ const platformOrderDetailA: PlatformOrderDetail = {
     },
   ],
 };
-
-beforeAll(() => {
-  HTMLDialogElement.prototype.showModal = vi.fn();
-  HTMLDialogElement.prototype.close = vi.fn();
-});
 
 afterEach(() => {
   vi.restoreAllMocks();

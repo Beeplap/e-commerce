@@ -1,5 +1,9 @@
 "use client";
 
+import { Timeline } from "@/components/ui/timeline";
+import { DetailGrid } from "@/components/ui/detail-layout";
+import { Dialog } from "@/components/ui/dialog";
+
 import { useCallback, useState } from "react";
 import { useSeller } from "@/features/workspaces/seller-workspace";
 import { ForbiddenScreen } from "@/features/workspaces/forbidden-screen";
@@ -7,6 +11,7 @@ import { useApiQuery } from "@/lib/api/use-api-query";
 import { DateDisplay } from "@/components/ui/displays";
 import {
   ApiErrorState,
+  SelectField,
   FormField,
   LoadingState,
   PageHeader,
@@ -150,7 +155,7 @@ function ShipmentsContent({
     }
   };
 
-  if (query.kind === "loading") return <LoadingState />;
+  if (query.kind === "loading") return <LoadingState variant="table" />;
   if (query.kind === "error")
     return <ApiErrorState error={query.error} onRetry={query.retry} />;
 
@@ -161,7 +166,7 @@ function ShipmentsContent({
       id: "number",
       heading: "Shipment #",
       cell: (row) => (
-        <span className="font-mono text-xs font-semibold text-slate-900">
+        <span className="font-mono text-xs font-semibold text-ui-foreground">
           {row.shipment_number}
         </span>
       ),
@@ -170,7 +175,7 @@ function ShipmentsContent({
       id: "order",
       heading: "Order #",
       cell: (row) => (
-        <span className="font-mono text-xs text-slate-600">
+        <span className="font-mono text-xs text-ui-secondary">
           {row.seller_order_number}
         </span>
       ),
@@ -180,9 +185,9 @@ function ShipmentsContent({
       heading: "Carrier & Tracking",
       cell: (row) => (
         <div>
-          <div className="font-medium text-slate-900">{row.carrier}</div>
+          <div className="font-medium text-ui-foreground">{row.carrier}</div>
           {row.tracking_number && (
-            <div className="text-xs text-slate-500 font-mono">
+            <div className="text-xs text-ui-muted font-mono">
               {row.tracking_number}
             </div>
           )}
@@ -196,9 +201,10 @@ function ShipmentsContent({
     },
     {
       id: "items",
+      align: "right" as const,
       heading: "Items",
       cell: (row) => (
-        <span className="text-slate-600">
+        <span className="text-ui-secondary">
           {row.items.reduce((acc, it) => acc + it.quantity, 0)} units
         </span>
       ),
@@ -216,7 +222,7 @@ function ShipmentsContent({
           <button
             type="button"
             onClick={() => setSelectedShipment(row)}
-            className="text-xs font-medium text-teal-700 hover:text-teal-900"
+            className="text-xs font-medium text-ui-accent hover:text-ui-accent"
           >
             Inspect
           </button>
@@ -224,7 +230,7 @@ function ShipmentsContent({
             <button
               type="button"
               onClick={() => handleDeliver(row.id)}
-              className="text-xs font-medium text-slate-600 hover:text-slate-900"
+              className="text-xs font-medium text-ui-secondary hover:text-ui-foreground"
             >
               Deliver
             </button>
@@ -238,7 +244,7 @@ function ShipmentsContent({
     <section>
       <PageHeader
         title="Shipments & Fulfillment"
-        description="Track outbound packages, carrier events, and dispatch shipments for confirmed orders."
+        description="Create shipments and track delivery."
         actions={
           canManage && (
             <button
@@ -261,7 +267,7 @@ function ShipmentsContent({
             id="shipment-status-filter"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-950"
+            className="rounded-lg border border-ui-control-border bg-ui-surface px-3 py-2 text-sm text-ui-foreground"
           >
             <option value="">All statuses</option>
             <option value="pending">Pending</option>
@@ -282,241 +288,252 @@ function ShipmentsContent({
 
       {/* Create Shipment Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
-          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
-            <h2 className="text-xl font-semibold text-slate-950">
-              Create Outbound Shipment
-            </h2>
-            <p className="mt-1 text-sm text-slate-600">
-              Specify the order, carrier details, and order item to fulfill.
-            </p>
-            {formError && (
-              <div className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">
-                {formError}
-              </div>
-            )}
-            <form onSubmit={handleCreateShipment} className="mt-4 space-y-4">
-              <FormField
-                label="Seller Order ID"
-                value={orderId}
-                onChange={(e) => setOrderId(e.target.value)}
-                placeholder="UUID of confirmed order"
-                required
-              />
-              <FormField
-                label="Order Item ID"
-                value={orderItemId}
-                onChange={(e) => setOrderItemId(e.target.value)}
-                placeholder="UUID of order item"
-                required
-              />
-              <FormField
-                label="Quantity"
-                type="number"
-                min="1"
-                value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
-                required
-              />
-              <FormField
-                label="Carrier"
-                value={carrier}
-                onChange={(e) => setCarrier(e.target.value)}
-                placeholder="e.g. FedEx, UPS, DHL"
-                required
-              />
-              <FormField
-                label="Tracking Number"
-                value={trackingNumber}
-                onChange={(e) => setTrackingNumber(e.target.value)}
-                placeholder="Optional carrier tracking code"
-              />
-              <div className="mt-6 flex justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={() => setShowCreateModal(false)}
-                  className={secondaryButton}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className={primaryButton}
-                >
-                  {submitting ? "Creating…" : "Dispatch Shipment"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+        <Dialog
+          open
+          title={<>Create Outbound Shipment</>}
+          description={
+            <>Specify the order, carrier details, and order item to fulfill.</>
+          }
+          onClose={() => setShowCreateModal(false)}
+          busy={submitting}
+          size="wide"
+          error={formError}
+        >
+          <form onSubmit={handleCreateShipment} className="mt-4 space-y-4">
+            <FormField
+              label="Seller Order ID"
+              value={orderId}
+              onChange={(e) => setOrderId(e.target.value)}
+              placeholder="UUID of confirmed order"
+              required
+            />
+            <FormField
+              label="Order Item ID"
+              value={orderItemId}
+              onChange={(e) => setOrderItemId(e.target.value)}
+              placeholder="UUID of order item"
+              required
+            />
+            <FormField
+              label="Quantity"
+              type="number"
+              min="1"
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.value)}
+              required
+            />
+            <FormField
+              label="Carrier"
+              value={carrier}
+              onChange={(e) => setCarrier(e.target.value)}
+              placeholder="e.g. FedEx, UPS, DHL"
+              required
+            />
+            <FormField
+              label="Tracking Number"
+              value={trackingNumber}
+              onChange={(e) => setTrackingNumber(e.target.value)}
+              placeholder="Optional carrier tracking code"
+            />
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setShowCreateModal(false)}
+                className={secondaryButton}
+                data-dialog-cancel
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={submitting}
+                className={primaryButton}
+              >
+                {submitting ? "Creating…" : "Dispatch Shipment"}
+              </button>
+            </div>
+          </form>
+        </Dialog>
       )}
 
       {/* Inspect Shipment Modal */}
       {selectedShipment && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
-          <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-slate-950 font-mono">
-                {selectedShipment.shipment_number}
-              </h2>
-              <StatusBadge status={selectedShipment.status} />
+        <Dialog
+          open
+          title={<>{selectedShipment.shipment_number}</>}
+          onClose={() => setSelectedShipment(null)}
+          busy={submitting}
+          size="wide"
+        >
+          <div className="flex items-center justify-between">
+            <StatusBadge status={selectedShipment.status} />
+          </div>
+          <div className="mt-4 space-y-2 text-sm text-ui-secondary">
+            <div>
+              Carrier:{" "}
+              <span className="font-medium text-ui-foreground">
+                {selectedShipment.carrier}
+              </span>
             </div>
-            <div className="mt-4 space-y-2 text-sm text-slate-600">
+            {selectedShipment.tracking_number && (
               <div>
-                Carrier:{" "}
-                <span className="font-medium text-slate-900">
-                  {selectedShipment.carrier}
+                Tracking:{" "}
+                <span className="font-mono text-ui-foreground">
+                  {selectedShipment.tracking_number}
                 </span>
               </div>
-              {selectedShipment.tracking_number && (
-                <div>
-                  Tracking:{" "}
-                  <span className="font-mono text-slate-900">
-                    {selectedShipment.tracking_number}
-                  </span>
-                </div>
-              )}
-              <div>
-                Order:{" "}
-                <span className="font-mono text-slate-900">
-                  {selectedShipment.seller_order_number}
-                </span>
-              </div>
-            </div>
-
-            <div className="mt-6">
-              <h3 className="text-sm font-semibold text-slate-900">
-                Shipment Items
-              </h3>
-              <ul className="mt-2 divide-y divide-slate-100 rounded-lg border border-slate-200 p-3">
-                {selectedShipment.items.map((item) => (
-                  <li
-                    key={item.id}
-                    className="py-2 flex justify-between text-sm"
-                  >
-                    <span>
-                      {item.product_name_snapshot || item.sku_snapshot}
-                    </span>
-                    <span className="font-semibold text-slate-900">
-                      x{item.quantity}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="mt-6">
-              <div className="flex items-center justify-between">
-                <h3 className="text-sm font-semibold text-slate-900">
-                  Tracking Timeline
-                </h3>
-                {canManage && (
-                  <button
-                    type="button"
-                    onClick={() => setShowEventModal(true)}
-                    className="text-xs font-medium text-teal-700 hover:text-teal-900"
-                  >
-                    + Add Event
-                  </button>
-                )}
-              </div>
-              <ul className="mt-2 space-y-3">
-                {selectedShipment.tracking_events.map((evt) => (
-                  <li
-                    key={evt.id}
-                    className="rounded-lg bg-slate-50 p-3 text-sm"
-                  >
-                    <div className="flex items-center justify-between font-medium text-slate-900">
-                      <span className="capitalize">{evt.status}</span>
-                      <span className="text-xs text-slate-500 font-normal">
-                        <DateDisplay value={evt.timestamp} />
-                      </span>
-                    </div>
-                    {evt.location && (
-                      <div className="text-xs text-slate-600">
-                        {evt.location}
-                      </div>
-                    )}
-                    <div className="text-xs text-slate-500 mt-1">
-                      {evt.description}
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="mt-6 flex justify-end gap-3">
-              <button
-                type="button"
-                onClick={() => setSelectedShipment(null)}
-                className={secondaryButton}
-              >
-                Close
-              </button>
+            )}
+            <div>
+              Order:{" "}
+              <span className="font-mono text-ui-foreground">
+                {selectedShipment.seller_order_number}
+              </span>
             </div>
           </div>
-        </div>
+
+          <DetailGrid
+            items={[
+              {
+                label: "Created",
+                value: <DateDisplay value={selectedShipment.created_at} />,
+              },
+              {
+                label: "Shipped",
+                value: selectedShipment.shipped_at ? (
+                  <DateDisplay value={selectedShipment.shipped_at} />
+                ) : (
+                  "Not shipped"
+                ),
+              },
+              {
+                label: "Expected delivery",
+                value: selectedShipment.estimated_delivery_at ? (
+                  <DateDisplay value={selectedShipment.estimated_delivery_at} />
+                ) : (
+                  "Not supplied"
+                ),
+              },
+              {
+                label: "Delivered",
+                value: selectedShipment.delivered_at ? (
+                  <DateDisplay value={selectedShipment.delivered_at} />
+                ) : (
+                  "Not delivered"
+                ),
+              },
+            ]}
+          />
+          <div className="mt-6">
+            <h3 className="text-sm font-semibold text-ui-foreground">
+              Shipment Items
+            </h3>
+            <ul className="mt-2 divide-y divide-ui-border rounded-lg border border-ui-border p-3">
+              {selectedShipment.items.map((item) => (
+                <li key={item.id} className="py-2 flex justify-between text-sm">
+                  <span>{item.product_name_snapshot || item.sku_snapshot}</span>
+                  <span className="font-semibold text-ui-foreground">
+                    x{item.quantity}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="mt-6">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-semibold text-ui-foreground">
+                Tracking Timeline
+              </h3>
+              {canManage && (
+                <button
+                  type="button"
+                  onClick={() => setShowEventModal(true)}
+                  className="text-xs font-medium text-ui-accent hover:text-ui-accent"
+                >
+                  + Add Event
+                </button>
+              )}
+            </div>
+            <Timeline
+              label="Shipment tracking events"
+              entries={selectedShipment.tracking_events.map((event) => ({
+                id: event.id,
+                title: event.status.replaceAll("_", " "),
+                occurredAt: event.timestamp,
+                description: (
+                  <>
+                    {event.location && <p>{event.location}</p>}
+                    {event.description}
+                  </>
+                ),
+              }))}
+            />
+          </div>
+
+          <div className="mt-6 flex justify-end gap-3">
+            <button
+              type="button"
+              onClick={() => setSelectedShipment(null)}
+              className={secondaryButton}
+              data-dialog-cancel
+            >
+              Close
+            </button>
+          </div>
+        </Dialog>
       )}
 
       {/* Add Tracking Event Modal */}
       {showEventModal && selectedShipment && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
-          <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
-            <h3 className="text-lg font-semibold text-slate-950">
-              Add Tracking Event
-            </h3>
-            {formError && (
-              <div className="mt-2 rounded-lg bg-red-50 p-2 text-xs text-red-700">
-                {formError}
-              </div>
-            )}
-            <form onSubmit={handleAddEvent} className="mt-4 space-y-3">
-              <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">
-                  Status
-                </label>
-                <select
-                  value={eventStatus}
-                  onChange={(e) => setEventStatus(e.target.value)}
-                  className="w-full rounded-lg border border-slate-300 p-2 text-sm"
-                >
-                  <option value="in_transit">In Transit</option>
-                  <option value="out_for_delivery">Out for Delivery</option>
-                  <option value="delivered">Delivered</option>
-                </select>
-              </div>
-              <FormField
-                label="Location"
-                value={eventLocation}
-                onChange={(e) => setEventLocation(e.target.value)}
-                placeholder="e.g. Distribution Center"
-              />
-              <FormField
-                label="Description"
-                value={eventDescription}
-                onChange={(e) => setEventDescription(e.target.value)}
-                placeholder="e.g. Package arrived at sort facility"
-              />
-              <div className="mt-4 flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowEventModal(false)}
-                  className={secondaryButton}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className={primaryButton}
-                >
-                  {submitting ? "Saving…" : "Save Event"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+        <Dialog
+          open
+          title={<>Add Tracking Event</>}
+          onClose={() => setShowEventModal(false)}
+          busy={submitting}
+          size="wide"
+          error={formError}
+        >
+          <form onSubmit={handleAddEvent} className="mt-4 space-y-3">
+            <SelectField
+              label="Status"
+              value={eventStatus}
+              onChange={(e) => setEventStatus(e.target.value)}
+            >
+              <option value="in_transit">In Transit</option>
+              <option value="out_for_delivery">Out for Delivery</option>
+              <option value="delivered">Delivered</option>
+            </SelectField>
+            <FormField
+              label="Location"
+              value={eventLocation}
+              onChange={(e) => setEventLocation(e.target.value)}
+              placeholder="e.g. Distribution Center"
+            />
+            <FormField
+              label="Description"
+              value={eventDescription}
+              onChange={(e) => setEventDescription(e.target.value)}
+              placeholder="e.g. Package arrived at sort facility"
+            />
+            <div className="mt-4 flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setShowEventModal(false)}
+                className={secondaryButton}
+                data-dialog-cancel
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={submitting}
+                className={primaryButton}
+              >
+                {submitting ? "Saving…" : "Save Event"}
+              </button>
+            </div>
+          </form>
+        </Dialog>
       )}
     </section>
   );

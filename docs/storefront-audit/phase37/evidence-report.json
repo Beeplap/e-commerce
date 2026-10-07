@@ -1,0 +1,290 @@
+{
+  "screenshots": 32,
+  "actualRouteWidthCases": 6,
+  "supplementalFixtureCases": 20,
+  "localLinks": 22,
+  "images": [
+    {
+      "file": "fixture-catalog-error-1440.png",
+      "width": 1440,
+      "height": 2063,
+      "sha256": "a7ac642893c6ccc5ac25b220188fdc875757b76f500396b55ca728bb711354c9"
+    },
+    {
+      "file": "fixture-catalog-error-375.png",
+      "width": 375,
+      "height": 2782,
+      "sha256": "d4c27a84634b2feda7d7b339c0bf0a315e439a5c4bdae18872efb59d2a5a0d1c"
+    },
+    {
+      "file": "fixture-category-error-1440.png",
+      "width": 1440,
+      "height": 2202,
+      "sha256": "fb438a638694b083ea7a769a2899d7827058583a8af41899ef2f1a657c68d00b"
+    },
+    {
+      "file": "fixture-category-error-375.png",
+      "width": 375,
+      "height": 3005,
+      "sha256": "101c941766c1dbda0b52e7d91b1eacd0934471fbd558375678565a3f6410f5f4"
+    },
+    {
+      "file": "fixture-dense-1024.png",
+      "width": 1024,
+      "height": 3203,
+      "sha256": "1c1931a82f984ecad7037de03d01c1352165f5fb92351cc729fc1cfeaa9f1b34"
+    },
+    {
+      "file": "fixture-dense-1440.png",
+      "width": 1440,
+      "height": 3406,
+      "sha256": "413f801ae7db5e683daa4a9f26c14ab3f419a7e67c44dfead98298d862d611e8"
+    },
+    {
+      "file": "fixture-dense-1920.png",
+      "width": 1920,
+      "height": 3406,
+      "sha256": "8309c7530af5a25519daf3483c4f97b2817076c5b45065aca1e4a859737890cd"
+    },
+    {
+      "file": "fixture-dense-375.png",
+      "width": 375,
+      "height": 4889,
+      "sha256": "14390703b1021f3dcb1af10ac3a76c6fbab461cc8abfe77a7cb0c87e102a3453"
+    },
+    {
+      "file": "fixture-dense-430.png",
+      "width": 430,
+      "height": 4920,
+      "sha256": "72782a06d07a5b1bb372d9445dbb93506973064cb7d513ba2de055a4daec0657"
+    },
+    {
+      "file": "fixture-dense-768.png",
+      "width": 768,
+      "height": 4418,
+      "sha256": "d05c155a57b338e9b1b10799c21a7912f1dfb9d5f4169a250c7faf19d645843a"
+    },
+    {
+      "file": "fixture-empty-1440.png",
+      "width": 1440,
+      "height": 2127,
+      "sha256": "0f501fd03bb7113d17e08c48fdbfee0edbc49d2887060ccb0ff76b8dff805a13"
+    },
+    {
+      "file": "fixture-empty-375.png",
+      "width": 375,
+      "height": 2811,
+      "sha256": "9dec01267aa2272d435d807ed04192a39db24439d7296c3801fa020bcc4ffb0d"
+    },
+    {
+      "file": "fixture-loading-1440.png",
+      "width": 1440,
+      "height": 2126,
+      "sha256": "438253b0e76d0cf1dace9d5933938083eed372c614f7e8a838971404f671c152"
+    },
+    {
+      "file": "fixture-loading-375.png",
+      "width": 375,
+      "height": 3108,
+      "sha256": "6dd687fa8ba40b8cc9e321904cf46e0653bbebcdf99b2588008948d5cb506d14"
+    },
+    {
+      "file": "fixture-long-1024.png",
+      "width": 1024,
+      "height": 2719,
+      "sha256": "8f76026334c49c7eb329bdf1b9446b8f167d6a7fd51c2a73e0f289389b71a271"
+    },
+    {
+      "file": "fixture-long-1440.png",
+      "width": 1440,
+      "height": 2592,
+      "sha256": "12ff9f3e7a09e99b3252c0c7a44b8dd19fda64d1f45f315878344db93292708a"
+    },
+    {
+      "file": "fixture-long-1920.png",
+      "width": 1920,
+      "height": 2592,
+      "sha256": "b79b152a5f1707af0c4ebe7ed0d4ce0d9cbc0771ebd03e885d299fbd3c88ea61"
+    },
+    {
+      "file": "fixture-long-375.png",
+      "width": 375,
+      "height": 3657,
+      "sha256": "d577c94d6cdc9f19797431360cde8ae9a3e7a2c810261ff1c1ec7855e877b314"
+    },
+    {
+      "file": "fixture-long-430.png",
+      "width": 430,
+      "height": 3658,
+      "sha256": "81856c889466065f7bcaa97e5fc85d7a82e2e9579059ccd2417f6aae7ea67db5"
+    },
+    {
+      "file": "fixture-long-768.png",
+      "width": 768,
+      "height": 2701,
+      "sha256": "366de887d27299aaae4ed7ba2824bd5237c1aed6b281d92434fe2ac16bf99bb8"
+    },
+    {
+      "file": "home-1024.png",
+      "width": 1024,
+      "height": 2134,
+      "sha256": "0d6445e0f5693182a5e8eefe35c65781039ca5ef46800a3e2d300e46aa591a6d"
+    },
+    {
+      "file": "home-1440.png",
+      "width": 1440,
+      "height": 2178,
+      "sha256": "753f05fb64434cec0abcc66d595eba5286d4518c7b4d32894a254ee9f13ccce7"
+    },
+    {
+      "file": "home-1920.png",
+      "width": 1920,
+      "height": 2178,
+      "sha256": "4381d602dbb23813be21c2765958f1a3ce4fadcc7610ad648d71b4c51cc64ad0"
+    },
+    {
+      "file": "home-375.png",
+      "width": 375,
+      "height": 3045,
+      "sha256": "3dc2d3d97012c4d48612411b0569308d388756852e4b197e5150f2c21f7ee1f3"
+    },
+    {
+      "file": "home-430.png",
+      "width": 430,
+      "height": 3046,
+      "sha256": "8d2be59cb1896cec5f1ce5fdc0cf54944ad0d88acf8a58c9db6b9b1c2cbd9e93"
+    },
+    {
+      "file": "home-768.png",
+      "width": 768,
+      "height": 2143,
+      "sha256": "cdf0c425b81031a6f1335e225a1078d5938193353b704544da23a35764038b7c"
+    },
+    {
+      "file": "home-viewport-1024.png",
+      "width": 1024,
+      "height": 900,
+      "sha256": "93e6067158a224b76959be611e614e105efc32aaf3f26269a58d9728643a99c2"
+    },
+    {
+      "file": "home-viewport-1440.png",
+      "width": 1440,
+      "height": 900,
+      "sha256": "359415e06541cd4408f18bb9ddc1244f2e3538654c3e3144adae430dc2f9e9da"
+    },
+    {
+      "file": "home-viewport-1920.png",
+      "width": 1920,
+      "height": 900,
+      "sha256": "cbf9a38cc084016addae29404adba5adf0fa4ef3d2e20f4cce24ac238ad9c844"
+    },
+    {
+      "file": "home-viewport-375.png",
+      "width": 375,
+      "height": 900,
+      "sha256": "f6909f08c36acc3f89254ebff3b602e70d4f68627e1c3ef48fe58a0295869f8d"
+    },
+    {
+      "file": "home-viewport-430.png",
+      "width": 430,
+      "height": 900,
+      "sha256": "867cf9f6f3e08924cbf4e32d38c20316c303300670f4639066098210253785b8"
+    },
+    {
+      "file": "home-viewport-768.png",
+      "width": 768,
+      "height": 900,
+      "sha256": "1bf682388d73d4f53fef127d7ff7cb4999100e1414dfd0d07739e289c0b4267f"
+    }
+  ],
+  "links": [
+    {
+      "document": "storefront-homepage-review.md",
+      "target": "storefront-audit/phase37/home-viewport-375.png"
+    },
+    {
+      "document": "storefront-homepage-review.md",
+      "target": "storefront-audit/phase37/home-viewport-430.png"
+    },
+    {
+      "document": "storefront-homepage-review.md",
+      "target": "storefront-audit/phase37/home-viewport-768.png"
+    },
+    {
+      "document": "storefront-homepage-review.md",
+      "target": "storefront-audit/phase37/home-viewport-1024.png"
+    },
+    {
+      "document": "storefront-homepage-review.md",
+      "target": "storefront-audit/phase37/home-viewport-1440.png"
+    },
+    {
+      "document": "storefront-homepage-review.md",
+      "target": "storefront-audit/phase37/home-viewport-1920.png"
+    },
+    {
+      "document": "storefront-homepage-review.md",
+      "target": "storefront-audit/phase37/home-375.png"
+    },
+    {
+      "document": "storefront-homepage-review.md",
+      "target": "storefront-audit/phase37/home-1440.png"
+    },
+    {
+      "document": "storefront-homepage-review.md",
+      "target": "storefront-audit/phase37/capture-report.json"
+    },
+    {
+      "document": "storefront-homepage-review.md",
+      "target": "storefront-audit/phase37/fixture-empty-375.png"
+    },
+    {
+      "document": "storefront-homepage-review.md",
+      "target": "storefront-audit/phase37/fixture-catalog-error-1440.png"
+    },
+    {
+      "document": "storefront-homepage-review.md",
+      "target": "storefront-audit/phase37/fixture-category-error-375.png"
+    },
+    {
+      "document": "storefront-homepage-review.md",
+      "target": "storefront-audit/phase37/fixture-loading-1440.png"
+    },
+    {
+      "document": "storefront-homepage-review.md",
+      "target": "storefront-audit/phase37/fixture-dense-375.png"
+    },
+    {
+      "document": "storefront-homepage-review.md",
+      "target": "storefront-audit/phase37/fixture-dense-1440.png"
+    },
+    {
+      "document": "storefront-homepage-review.md",
+      "target": "storefront-audit/phase37/fixture-long-375.png"
+    },
+    {
+      "document": "storefront-homepage-review.md",
+      "target": "storefront-audit/phase37/fixture-report.json"
+    },
+    {
+      "document": "storefront-homepage-review.md",
+      "target": "storefront-audit/phase37/contrast-report.json"
+    },
+    {
+      "document": "storefront-homepage-review.md",
+      "target": "storefront-audit/phase37/build-report.json"
+    },
+    {
+      "document": "storefront-homepage-review.md",
+      "target": "storefront-audit/phase37/evidence-report.json"
+    },
+    {
+      "document": "storefront-homepage-review.md",
+      "target": "progress.md"
+    },
+    {
+      "document": "storefront-homepage-review.md",
+      "target": "testing.md"
+    }
+  ]
+}

@@ -1,5 +1,12 @@
 # Project progress
 
+## Storefront microinteractions - Phase 43
+
+- Implemented small button press, product hover/focus, navigation pending, menu/dialog/drawer and feedback transitions. Same-origin private storefront images now retain their layout while loading and show an accessible failure fallback. All motion is limited to storefront classes and removed by the reduced-motion preference; no endpoint, API authority, auth/CSRF behavior, dependency or backend contract changed.
+- Chromium 149 visual review and browser assertions pass at 375, 430, 768, 1024, 1440 and 1920px with no horizontal overflow. Menu Escape restores focus; native filter and cart drawers animate; accepted cart add retains CSRF and exact allowlisted fields; loading/failure image states are visible; reduced motion yields no animation or transition. Browser used deterministic intercepted fixtures; this is not live commerce or production visual acceptance. Captures/report are local ignored artifacts; review and limits are in `docs/storefront-microinteractions-review.md`.
+- `pnpm check` passes against PostgreSQL: 398 backend tests and 472 frontend tests across 38 files, Ruff format/lint, strict mypy, Django checks, no migration drift, offline OpenAPI, Prettier, zero-warning ESLint, strict TypeScript and Next production build (59 source pages, 50 static artifacts). `docker compose ... config --quiet` passes through the existing Ubuntu WSL Docker CLI; all 22 storefront palette checks, production build artifact audit and `git diff --check` pass. No dependency or migration was added.
+- Isolated on `ui-overhaul-phase43-motion`, based on the completed Phase 42 branch. Original user worktrees and functional `CURRENT_PHASE.md` remain untouched. Phase 43 complete; Phase 44 must wait for an explicit request.
+
 ## Customer auth/account polish - Phase 42
 
 - The user's next continue after completed Phase 41 authorizes only Phase 42 of `instructions4.md`. Work is isolated on `ui-overhaul-phase42-account`, based on validated `c369935`. Original concurrent backend/account/product/seller/proxy edits, user branches and functional selector are preserved. Phase 43 is not started.

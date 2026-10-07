@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { StorefrontProductCard } from "@/lib/api/types";
+import { StorefrontLinkPending } from "@/components/storefront/navigation-pending";
 import {
   StorefrontImage,
   StorefrontPrice,
@@ -22,6 +23,7 @@ export function DiscoveryProduct({
         className="sf-discovery-image"
       >
         <StorefrontImage src={product.thumbnail_url} alt={product.title} />
+        <StorefrontLinkPending />
       </Link>
       <div className="sf-discovery-product-details">
         <Link

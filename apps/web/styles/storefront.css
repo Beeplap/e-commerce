@@ -787,9 +787,42 @@
   background: var(--sf-surface-strong);
 }
 .sf-image img {
+  position: relative;
+  z-index: 1;
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+.sf-image[data-image-state="loading"] > img,
+.sf-image[data-image-state="failed"] > img {
+  opacity: 0;
+}
+.sf-image[data-image-state="failed"] > .sf-image-placeholder {
+  position: absolute;
+  inset: 0;
+}
+.sf-image-loading {
+  position: absolute;
+  inset: 0;
+  background: var(--sf-surface-strong);
+}
+.sf-image > .sf-badge {
+  z-index: 2;
+}
+.sf-link-pending {
+  position: fixed;
+  z-index: 100;
+  inset: 0 auto auto 0;
+  width: 100vw;
+  height: 2px;
+  pointer-events: none;
+  transform: scaleX(0);
+  transform-origin: left;
+  background: var(--sf-link);
+  opacity: 0;
+}
+.sf-link-pending[data-pending="true"] {
+  opacity: 1;
 }
 .sf-image-placeholder {
   display: grid;
@@ -908,8 +941,20 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
+  .sf-link-pending {
+    transition: opacity var(--sf-duration-fast) linear;
+  }
+  .sf-link-pending[data-pending="true"] {
+    animation: sf-route-pending 1s ease-in-out infinite alternate;
+  }
   .sf-skeleton {
     animation: sf-pulse var(--sf-duration-skeleton) ease-in-out infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-link-pending[data-pending="true"] {
+    transform: scaleX(0.4);
   }
 }
 @keyframes sf-pulse {
@@ -928,5 +973,133 @@
     animation: none !important;
     transition: none !important;
     scroll-behavior: auto !important;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sf-button:not(:disabled):active {
+    transform: translateY(1px);
+  }
+  .sf-image-loading {
+    background-image: linear-gradient(
+      105deg,
+      var(--sf-surface-strong) 38%,
+      var(--sf-surface) 50%,
+      var(--sf-surface-strong) 62%
+    );
+    background-size: 220% 100%;
+    animation: sf-image-shimmer 1.5s ease-in-out infinite;
+  }
+  .sf-nav-panel {
+    animation: sf-menu-enter var(--sf-duration-fast) var(--sf-ease) both;
+  }
+  .sf-overlay .ui-dialog[open] {
+    animation: sf-dialog-enter var(--sf-duration-fast) var(--sf-ease) both;
+  }
+  .sf-overlay .ui-drawer[open],
+  .sf-cart-overlay .ui-drawer[open],
+  .sf-discovery-filter-overlay .ui-drawer[open] {
+    animation: sf-drawer-enter var(--sf-duration-normal) var(--sf-ease) both;
+  }
+  .sf-notice,
+  .sf-pdp-feedback [data-tone] {
+    animation: sf-feedback-enter var(--sf-duration-normal) var(--sf-ease) both;
+  }
+  .sf-discovery-product,
+  .sf-home-product,
+  .sf-product-card {
+    transition:
+      transform var(--sf-duration-fast) var(--sf-ease),
+      box-shadow var(--sf-duration-fast) var(--sf-ease);
+  }
+  .sf-button,
+  .sf-home-product a,
+  .sf-discovery-product a,
+  .sf-product-card a,
+  .sf-pdp-thumbnails button {
+    transition-property: background-color, color, border-color, transform;
+  }
+  .sf-image img,
+  .sf-pdp-image img,
+  .sf-cart-thumbnail img {
+    transition:
+      opacity var(--sf-duration-normal) var(--sf-ease),
+      transform var(--sf-duration-fast) var(--sf-ease);
+  }
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .sf-discovery-product:hover,
+  .sf-discovery-product:focus-within,
+  .sf-home-product:hover,
+  .sf-home-product:focus-within,
+  .sf-product-card:hover,
+  .sf-product-card:focus-within {
+    transform: translateY(-2px);
+    box-shadow: var(--sf-shadow-small);
+  }
+  .sf-discovery-image:hover .sf-image img,
+  .sf-home-product-image:hover .sf-image img,
+  .sf-product-card:hover .sf-image img {
+    transform: scale(1.015);
+  }
+}
+
+@keyframes sf-image-shimmer {
+  to {
+    background-position: -220% 0;
+  }
+}
+
+@keyframes sf-menu-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-0.25rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes sf-dialog-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes sf-drawer-enter {
+  from {
+    opacity: 0.96;
+    translate: 0.75rem 0;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes sf-feedback-enter {
+  from {
+    opacity: 0;
+    transform: translateY(0.25rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes sf-route-pending {
+  from {
+    transform: scaleX(0.18);
+  }
+  to {
+    transform: scaleX(0.72);
   }
 }

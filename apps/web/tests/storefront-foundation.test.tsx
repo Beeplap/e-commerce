@@ -156,6 +156,47 @@ describe("Customer design foundation", () => {
     );
   });
 
+  it("shows image feedback while a same-origin stream loads and after it fails", () => {
+    const view = render(
+      <StorefrontImage
+        src="/api/v1/storefront/product-image"
+        alt="Linen shirt"
+      />,
+    );
+    const image = screen.getByRole("img", { name: "Linen shirt" });
+    expect(image.parentElement).toHaveAttribute("data-image-state", "loading");
+    expect(
+      image.parentElement?.querySelector(".sf-image-loading"),
+    ).toBeTruthy();
+    fireEvent.load(image);
+    expect(image.parentElement).toHaveAttribute("data-image-state", "loaded");
+    expect(image).toHaveAttribute("data-loaded", "true");
+
+    fireEvent.error(image);
+    expect(image.parentElement).toHaveAttribute("data-image-state", "failed");
+    expect(image).toHaveAttribute("src", "/api/v1/storefront/product-image");
+    expect(screen.queryByRole("img", { name: "Linen shirt" })).toBeNull();
+    expect(
+      screen.getByRole("img", { name: "Image unavailable: Linen shirt" }),
+    ).toBeInTheDocument();
+
+    view.rerender(
+      <StorefrontImage
+        src="/api/v1/storefront/next-image"
+        alt="Canvas bag"
+        eager
+      />,
+    );
+    expect(screen.getByRole("img", { name: "Canvas bag" })).toHaveAttribute(
+      "src",
+      "/api/v1/storefront/next-image",
+    );
+    expect(screen.getByRole("img", { name: "Canvas bag" })).toHaveAttribute(
+      "fetchpriority",
+      "high",
+    );
+  });
+
   it("uses readable rating evidence and a semantic current breadcrumb", () => {
     render(
       <>

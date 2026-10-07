@@ -15,7 +15,7 @@ export function ProductCard({ product }: { product: ProductCardType }) {
     product.compare_at_price,
   );
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-sf-image border border-sf-border bg-sf-surface">
+    <div className="sf-product-card group relative flex flex-col overflow-hidden rounded-sf-image border border-sf-border bg-sf-surface">
       <Link href={`/products/${product.id}`} className="relative block">
         <StorefrontImage src={product.thumbnail_url} alt={product.title}>
           {discountPercent !== null && (

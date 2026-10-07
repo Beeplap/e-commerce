@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
 import { StorefrontButton } from "@/components/storefront/controls";
 import { StorefrontOverlay } from "@/components/storefront/feedback";
+import { StorefrontLinkPending } from "@/components/storefront/navigation-pending";
 import { useAuth } from "@/features/auth/auth-provider";
 import { useCart } from "@/features/cart/cart-context";
 import { StorefrontBrand } from "./brand";
@@ -58,6 +59,7 @@ function DiscoveryLinks({
           >
             {item.name}
             <ShellIcon name="arrow" />
+            <StorefrontLinkPending />
           </Link>
         </li>
       ))}
@@ -164,6 +166,7 @@ function HeaderShell({
             }
           >
             Shop
+            <StorefrontLinkPending />
           </Link>
           {(["categories", "sellers"] as const).map((type) => (
             <div className="sf-nav-disclosure" key={type}>
@@ -217,7 +220,10 @@ function HeaderShell({
               )}
             </div>
           ))}
-          <Link href="/search?sort=newest">New arrivals</Link>
+          <Link href="/search?sort=newest">
+            New arrivals
+            <StorefrontLinkPending />
+          </Link>
         </nav>
         <SearchBar className="sf-header-search" onNavigate={closeNavigation} />
         <div className="sf-header-actions">
@@ -235,6 +241,7 @@ function HeaderShell({
             <span className="sf-action-word">
               {user ? "Account" : "Sign In"}
             </span>
+            <StorefrontLinkPending />
           </Link>
           <button
             type="button"
@@ -301,6 +308,7 @@ function HeaderShell({
               >
                 Shop all products
                 <ShellIcon name="arrow" />
+                <StorefrontLinkPending />
               </Link>
               <Link
                 className="sf-mobile-primary"
@@ -309,6 +317,7 @@ function HeaderShell({
               >
                 New arrivals
                 <ShellIcon name="arrow" />
+                <StorefrontLinkPending />
               </Link>
               <section className="sf-mobile-section" aria-label="Categories">
                 <h3>Categories</h3>
@@ -363,6 +372,7 @@ function HeaderShell({
                 >
                   {user ? "Your account" : "Sign In"}
                   <ShellIcon name="account" />
+                  <StorefrontLinkPending />
                 </Link>
                 <Link
                   className="sf-mobile-primary"
@@ -371,6 +381,7 @@ function HeaderShell({
                 >
                   Your cart
                   <span className="sf-mobile-meta">{countDescription}</span>
+                  <StorefrontLinkPending />
                 </Link>
                 {user && (
                   <Link

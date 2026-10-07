@@ -111,37 +111,7 @@ export function StorefrontSeller({ id, name }: { id: string; name: string }) {
   );
 }
 
-export function StorefrontImage({
-  src,
-  alt,
-  eager = false,
-  children,
-}: {
-  src: string | null;
-  alt: string;
-  eager?: boolean;
-  children?: ReactNode;
-}) {
-  return (
-    <div className="sf-image">
-      {src ? (
-        // Existing authenticated/same-origin image URLs remain unchanged.
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={src}
-          alt={alt}
-          loading={eager ? "eager" : "lazy"}
-          decoding="async"
-        />
-      ) : (
-        <span className="sf-image-placeholder">
-          Image unavailable<span className="sr-only"> for {alt}</span>
-        </span>
-      )}
-      {children}
-    </div>
-  );
-}
+export { StorefrontImage } from "./image";
 
 export function StorefrontBreadcrumb({
   items,

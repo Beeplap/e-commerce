@@ -8,7 +8,6 @@ import {
   HomeEditorial,
   HomeHero,
   HomeShops,
-  HomeValues,
 } from "./sections";
 import { useHomeCatalog } from "./use-home-catalog";
 
@@ -29,7 +28,6 @@ export function HomeStorefront() {
         />
         <HomeShops catalog={discovery.catalog} />
         <HomeEditorial />
-        <HomeValues />
       </main>
       <StorefrontFooter />
     </div>

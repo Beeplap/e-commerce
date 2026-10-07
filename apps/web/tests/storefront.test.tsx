@@ -208,16 +208,22 @@ describe("Customer Storefront UI Components", () => {
     ).toHaveAttribute("href", "/account/orders");
   });
 
-  it("renders ProductCard with title, discount, rating, and seller name", () => {
+  it("renders a quiet seller product listing with real price and rating", () => {
     render(<ProductCard product={mockProductCard} />);
 
+    expect(
+      screen.getByRole("link", { name: "View Super Phone X" }),
+    ).toBeInTheDocument();
     expect(screen.getByText("Super Phone X")).toBeInTheDocument();
     expect(screen.getByText("799.00 USD")).toBeInTheDocument();
     expect(screen.getByText("999.00 USD")).toBeInTheDocument();
-    expect(screen.getByText("20% OFF")).toBeInTheDocument();
-    expect(screen.getByText("In Stock")).toBeInTheDocument();
-    expect(screen.getByText("Apex Official")).toBeInTheDocument();
+    expect(screen.getByText("In stock")).toBeInTheDocument();
     expect(screen.getByText("(42)")).toBeInTheDocument();
+    expect(screen.queryByText("20% OFF")).not.toBeInTheDocument();
+    expect(screen.queryByText("Apex Official")).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "View" }),
+    ).not.toBeInTheDocument();
   });
 
   it("renders ProductDetailView and interacts with variant selector and cart", async () => {

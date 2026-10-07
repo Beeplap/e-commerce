@@ -106,8 +106,11 @@ describe("Phase 37 homepage", () => {
       within(arrivals).getByRole("link", { name: "View Reading lamp" }),
     ).toHaveAttribute("href", `/products/${product.id}`);
     expect(
-      screen.getByRole("link", { name: "Sell on QuickCommerce" }),
+      screen.getByRole("link", { name: "Become a seller" }),
     ).toHaveAttribute("href", "/onboarding");
+    expect(
+      screen.queryByText(/Know the shop|See the price|Look a little closer/),
+    ).not.toBeInTheDocument();
     expect(screen.getByRole("main")).toHaveAttribute(
       "id",
       "storefront-content",

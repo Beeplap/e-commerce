@@ -36,7 +36,7 @@ describe("platform foundation", () => {
       }),
     ).toBeVisible();
     expect(
-      screen.getByRole("link", { name: "Sell on QuickCommerce" }),
+      screen.getByRole("link", { name: "Become a seller" }),
     ).toHaveAttribute("href", "/onboarding");
   });
 

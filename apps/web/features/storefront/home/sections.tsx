@@ -349,53 +349,17 @@ export function HomeEditorial() {
     >
       <div className="sf-home-container sf-home-editorial-inner">
         <div>
-          <p className="sf-home-eyebrow">A different way to browse</p>
-          <h2 id="home-editorial-title">
-            Start with a find.
-            <br />
-            <em>Stay for the shop.</em>
-          </h2>
+          <h2 id="home-editorial-title">Bring your shop to QuickCommerce</h2>
         </div>
         <div>
           <p>
-            Every product leads to an independent store. Explore its collection,
-            find your favourites, and make the marketplace your own.
+            Create a seller account to list your products in the marketplace.
           </p>
           <Link href="/onboarding" className="sf-home-text-link">
-            Sell on QuickCommerce <ShellIcon name="arrow" />
+            Become a seller <ShellIcon name="arrow" />
           </Link>
         </div>
       </div>
-    </section>
-  );
-}
-
-export function HomeValues() {
-  return (
-    <section
-      className="sf-home-values sf-home-container"
-      aria-label="Shopping with clarity"
-    >
-      <dl>
-        <div>
-          <dt>Know the shop</dt>
-          <dd>Seller names and storefront links accompany every product.</dd>
-        </div>
-        <div>
-          <dt>See the price</dt>
-          <dd>
-            Product prices show their currency, with previous prices where
-            available.
-          </dd>
-        </div>
-        <div>
-          <dt>Look a little closer</dt>
-          <dd>
-            Explore product details, available options and reviews before
-            choosing.
-          </dd>
-        </div>
-      </dl>
     </section>
   );
 }

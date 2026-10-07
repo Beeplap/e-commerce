@@ -344,24 +344,6 @@
   font-size: var(--sf-type-small);
   line-height: var(--sf-leading-body);
 }
-.sf-home-values {
-  padding-block: var(--sf-space-8);
-}
-.sf-home-values dl {
-  display: grid;
-  gap: var(--sf-space-6);
-}
-.sf-home-values dt {
-  margin-block-end: var(--sf-space-2);
-  font-size: var(--sf-type-small);
-  font-weight: 600;
-}
-.sf-home-values dd {
-  max-width: 40ch;
-  color: var(--sf-muted);
-  font-size: var(--sf-type-small);
-  line-height: var(--sf-leading-body);
-}
 .sf-home .sf-shell-footer {
   margin-block-start: var(--sf-space-4);
 }
@@ -396,9 +378,6 @@
   .sf-home-editorial-inner {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .sf-home-values dl {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
   .sf-home-products,
   .sf-home-product-loading {
     gap: var(--sf-space-8) var(--sf-space-6);
@@ -426,8 +405,7 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
   .sf-home-arrivals,
-  .sf-home-shops,
-  .sf-home-values {
+  .sf-home-shops {
     padding-block: var(--sf-space-10);
   }
   .sf-home-products,

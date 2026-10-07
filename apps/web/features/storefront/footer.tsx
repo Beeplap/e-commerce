@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { StorefrontBrand } from "./brand";
-import { ShellIcon } from "./shell-icons";
 
 const groups = [
   {
@@ -32,23 +31,10 @@ export function StorefrontFooter() {
   return (
     <footer className="sf-footer sf-shell-footer">
       <div className="sf-footer-inner">
-        <div className="sf-footer-intro">
-          <div>
-            <p className="sf-footer-eyebrow">The independent marketplace</p>
-            <h2 className="sf-display">
-              Independent shops.
-              <br />
-              One place to explore.
-            </h2>
-          </div>
-          <Link href="/search" className="sf-footer-explore">
-            Explore the catalog <ShellIcon name="arrow" />
-          </Link>
-        </div>
         <div className="sf-footer-navigation">
           {groups.map((group) => (
             <nav key={group.title} aria-label={`Footer ${group.title}`}>
-              <h3>{group.title}</h3>
+              <h2>{group.title}</h2>
               <ul>
                 {group.links.map((link) => (
                   <li key={link.href}>

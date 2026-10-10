@@ -96,6 +96,7 @@ class CustomerProfileView(BrowserAPIView):
 
 class CustomerOrdersListView(BrowserAPIView):
     permission_classes = [IsAuthenticated]
+    allowed_query_parameters = frozenset({"page"})
 
     @extend_schema(
         responses={200: CustomerOrderListSerializer(many=True)},

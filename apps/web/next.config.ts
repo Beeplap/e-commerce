@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  skipTrailingSlashRedirect: true,
   output: "standalone",
   poweredByHeader: false,
   reactStrictMode: true,
@@ -8,6 +9,10 @@ const nextConfig: NextConfig = {
     // Local development proxy only. Production ingress owns /api routing.
     return process.env.NODE_ENV === "development"
       ? [
+          {
+            source: "/api/:path*/",
+            destination: "http://127.0.0.1:8000/api/:path*/",
+          },
           {
             source: "/api/:path*",
             destination: "http://127.0.0.1:8000/api/:path*",

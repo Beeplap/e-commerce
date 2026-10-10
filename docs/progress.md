@@ -19,6 +19,29 @@
 
 # Project progress
 
+## Direct integration into GitHub main
+
+- At the user's explicit request, integrated `ui-overhaul` with the current remote `main` directly, without creating a pull request or rewriting branch history. Preserved the newer Phase 34?46 storefront, native overlays, exact money, API error/cancellation handling and the separate customer-account route group.
+- Resolved conflicts by retaining the current storefront implementations and moved account pages; the older monolithic storefront and duplicate account routes were not restored. Incorporated the copper operational palette, the committed customer-orders query allowlist and development proxy fixes.
+- Validation: the backend portion of `pnpm check` passed Ruff format/lint, strict mypy (190 files), Django checks, migration drift, offline OpenAPI validation and **398 PostgreSQL tests**. The first frontend run caught a passive-effect focus timing race; the unchanged focus assertion now waits for the effect. Final repository formatting, ESLint, TypeScript, **474 frontend tests across 39 files**, and production build all passed. No assertion or security control was weakened.
+- Quiet Compose validation, all 22 storefront contrast/isolation checks and the 59-page production artifact audit passed. Playwright verified the rendered ivory canvas, copper heading and no page-wide overflow at 375, 430, 768, 1024, 1440 and 1920px; the 375/1440px screenshots were visually inspected. The local API server was unavailable for these preview captures, so populated/authenticated visual acceptance is not newly claimed.
+- Historical `reference-palette` screenshots depict the older isolated preview, not the newer combined storefront. No numbered phase was advanced or started. WSL was kept running during database validation; the earlier interrupted Windows-to-WSL run is preserved in the historical notes below.
+
+## Reference palette correction
+
+- Updated the shared interface and storefront from green/blue-gray to the supplied warm ivory, copper and charcoal palette. The storefront hero now uses an ivory surface with copper brand emphasis and legible charcoal copy; shared action, focus, selection, borders and neutral page surfaces follow the same palette. Semantic success, warning, danger and information colors remain distinct.
+- Fixed a storefront-header overflow discovered by Playwright at 375px. Captured the home page at 375, 430, 768, 1024, 1440 and 1920px and the login page at 375 and 1440px; verified the rendered palette, keyboard focus and absence of page-wide overflow. Evidence and API limitations are in `docs/screenshots/reference-palette/README.md`.
+- Measured 18 palette pairings against the 4.5:1 normal-text and 3:1 large-text/control targets; lightened the selected surface after detecting insufficient contrast for the copper link color. Backend/API/auth/CSRF/tenant behavior and security controls are unchanged.
+- Full `pnpm check` was attempted: backend Ruff, strict mypy (190 files), Django checks and offline schema validation passed; PostgreSQL test setup remained blocked by intermittent Windows-to-WSL connection timeouts (**29 passed, 369 setup errors**). Compose configuration validation passed through WSL. No phase selector was advanced and no roadmap phase was started.
+- Final frontend validation passed: `pnpm format:check`, `pnpm lint`, `pnpm typecheck`, `pnpm test` (**219 passed across 30 files**), `pnpm build` and `git diff --check`. The palette was initially isolated on `ui-overhaul-reference-palette`; it has now been integrated into `ui-overhaul` as recorded below.
+
+## UI branch conflict resolution and palette integration
+
+- Finished the interrupted merge of remote `ui-overhaul` into the local branch. Resolved the sole add/add conflict in workspace navigation by retaining the local Orders, Addresses and Profile account links; preserved permission-based seller/platform navigation.
+- Merged `ui-overhaul-reference-palette` into `ui-overhaul` without additional conflicts, preserving the committed customer integration fixes. The original checkout now contains the ivory, copper and charcoal theme; Playwright verified the actual rendered copper heading and ivory canvas at `http://127.0.0.1:3000`.
+- Combined frontend validation passed: repository formatting, ESLint, strict TypeScript, **219 tests across 30 files**, and the Next.js production build. Compose configuration validation passed through WSL. No backend, authentication, CSRF or tenant policy was modified by this integration; no next phase was started.
+- Full `pnpm check` was attempted: backend Ruff formatting/lint, strict mypy (190 source files), Django checks, migration drift and offline schema validation passed. PostgreSQL-backed catalog/inventory tests reported errors, then the run stopped progressing and was interrupted. The migration-history probe also reported a database connection problem. Full backend validation remains incomplete; no backend changes were made to bypass the failures. The explicit user request to push is fulfilled without advancing any phase.
+
 ## Storefront responsive and accessibility master pass - Phase 44
 
 - Audited home/search/category/product detail/cart/checkout/sign-in/account overview/profile/orders/order detail/addresses at 375, 430, 768, 1024, 1280, 1440 and 1920px (84 route/viewport combinations; 48 representative screenshots). No horizontal overflow, heading skips, duplicate IDs, unlabeled form controls, unnamed interactive elements or browser/API fixture errors. Visual captures and detailed limits are in `docs/storefront-responsive-accessibility-review.md`.

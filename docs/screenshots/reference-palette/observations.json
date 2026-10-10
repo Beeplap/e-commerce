@@ -1,0 +1,194 @@
+[
+  {
+    "width": 375,
+    "colors": {
+      "canvas": "rgb(244, 238, 230)",
+      "hero": "rgb(244, 238, 230)",
+      "copper": "rgb(184, 106, 44)",
+      "ink": "rgb(30, 26, 24)",
+      "overflow": false
+    },
+    "focus": {
+      "color": "rgb(141, 78, 31)",
+      "width": "3px"
+    },
+    "api": [
+      {
+        "path": "storefront/categories",
+        "status": 500
+      },
+      {
+        "path": "storefront/categories",
+        "status": 500
+      },
+      {
+        "path": "storefront/products?sort=newest",
+        "status": 500
+      },
+      {
+        "path": "auth/me",
+        "status": 500
+      }
+    ]
+  },
+  {
+    "width": 430,
+    "colors": {
+      "canvas": "rgb(244, 238, 230)",
+      "hero": "rgb(244, 238, 230)",
+      "copper": "rgb(184, 106, 44)",
+      "ink": "rgb(30, 26, 24)",
+      "overflow": false
+    },
+    "focus": {
+      "color": "rgb(141, 78, 31)",
+      "width": "3px"
+    },
+    "api": [
+      {
+        "path": "storefront/categories",
+        "status": 500
+      },
+      {
+        "path": "storefront/categories",
+        "status": 500
+      },
+      {
+        "path": "storefront/products?sort=newest",
+        "status": 500
+      },
+      {
+        "path": "auth/me",
+        "status": 500
+      }
+    ]
+  },
+  {
+    "width": 768,
+    "colors": {
+      "canvas": "rgb(244, 238, 230)",
+      "hero": "rgb(244, 238, 230)",
+      "copper": "rgb(184, 106, 44)",
+      "ink": "rgb(30, 26, 24)",
+      "overflow": false
+    },
+    "focus": {
+      "color": "rgb(141, 78, 31)",
+      "width": "3px"
+    },
+    "api": [
+      {
+        "path": "storefront/categories",
+        "status": 500
+      },
+      {
+        "path": "storefront/categories",
+        "status": 500
+      },
+      {
+        "path": "storefront/products?sort=newest",
+        "status": 500
+      },
+      {
+        "path": "auth/me",
+        "status": 500
+      }
+    ]
+  },
+  {
+    "width": 1024,
+    "colors": {
+      "canvas": "rgb(244, 238, 230)",
+      "hero": "rgb(244, 238, 230)",
+      "copper": "rgb(184, 106, 44)",
+      "ink": "rgb(30, 26, 24)",
+      "overflow": false
+    },
+    "focus": {
+      "color": "rgb(141, 78, 31)",
+      "width": "3px"
+    },
+    "api": [
+      {
+        "path": "storefront/categories",
+        "status": 500
+      },
+      {
+        "path": "storefront/categories",
+        "status": 500
+      },
+      {
+        "path": "storefront/products?sort=newest",
+        "status": 500
+      },
+      {
+        "path": "auth/me",
+        "status": 500
+      }
+    ]
+  },
+  {
+    "width": 1440,
+    "colors": {
+      "canvas": "rgb(244, 238, 230)",
+      "hero": "rgb(244, 238, 230)",
+      "copper": "rgb(184, 106, 44)",
+      "ink": "rgb(30, 26, 24)",
+      "overflow": false
+    },
+    "focus": {
+      "color": "rgb(141, 78, 31)",
+      "width": "3px"
+    },
+    "api": [
+      {
+        "path": "storefront/categories",
+        "status": 500
+      },
+      {
+        "path": "storefront/categories",
+        "status": 500
+      },
+      {
+        "path": "storefront/products?sort=newest",
+        "status": 500
+      },
+      {
+        "path": "auth/me",
+        "status": 500
+      }
+    ]
+  },
+  {
+    "width": 1920,
+    "colors": {
+      "canvas": "rgb(244, 238, 230)",
+      "hero": "rgb(244, 238, 230)",
+      "copper": "rgb(184, 106, 44)",
+      "ink": "rgb(30, 26, 24)",
+      "overflow": false
+    },
+    "focus": {
+      "color": "rgb(141, 78, 31)",
+      "width": "3px"
+    },
+    "api": [
+      {
+        "path": "storefront/categories",
+        "status": 500
+      },
+      {
+        "path": "storefront/categories",
+        "status": 500
+      },
+      {
+        "path": "auth/me",
+        "status": 500
+      },
+      {
+        "path": "storefront/products?sort=newest",
+        "status": 500
+      }
+    ]
+  }
+]

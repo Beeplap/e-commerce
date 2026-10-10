@@ -30,7 +30,7 @@ import {
 } from "./api";
 
 const inputStyle =
-  "min-h-11 w-full rounded-lg border border-ui-control-border bg-ui-surface px-3 py-2 text-sm text-ui-foreground focus:border-teal-700 focus:outline-none";
+  "min-h-11 w-full rounded-lg border border-ui-control-border bg-ui-surface px-3 py-2 text-sm text-ui-foreground focus:border-orange-700 focus:outline-none";
 
 export function AdminCommissions() {
   const { state } = useAuth();
@@ -455,7 +455,7 @@ function CreatePlanModal({
             type="checkbox"
             checked={isDefault}
             onChange={(e) => setIsDefault(e.target.checked)}
-            className="h-4 w-4 rounded border-ui-control-border text-ui-accent focus:ring-teal-500"
+            className="h-4 w-4 rounded border-ui-control-border text-ui-accent focus:ring-ui-focus"
           />
           <label
             htmlFor="plan-is-default"
@@ -591,7 +591,7 @@ function EditPlanModal({
             type="checkbox"
             checked={isActive}
             onChange={(e) => setIsActive(e.target.checked)}
-            className="h-4 w-4 rounded border-ui-control-border text-ui-accent focus:ring-teal-500"
+            className="h-4 w-4 rounded border-ui-control-border text-ui-accent focus:ring-ui-focus"
           />
           <label
             htmlFor="edit-plan-is-active"
@@ -607,7 +607,7 @@ function EditPlanModal({
             type="checkbox"
             checked={isDefault}
             onChange={(e) => setIsDefault(e.target.checked)}
-            className="h-4 w-4 rounded border-ui-control-border text-ui-accent focus:ring-teal-500"
+            className="h-4 w-4 rounded border-ui-control-border text-ui-accent focus:ring-ui-focus"
           />
           <label
             htmlFor="edit-plan-is-default"

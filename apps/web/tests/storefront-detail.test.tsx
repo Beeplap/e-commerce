@@ -527,7 +527,8 @@ describe("Gallery, choices and truthful purchase feedback", () => {
     expect(await screen.findByRole("alert")).toHaveTextContent(
       "Not enough stock.",
     );
-    expect(screen.getByRole("alert")).toHaveFocus();
+    // Error feedback receives focus in a passive effect after it is rendered.
+    await waitFor(() => expect(screen.getByRole("alert")).toHaveFocus());
     expect(screen.getByTestId("selected-quantity")).toHaveTextContent("2");
     expect(screen.queryByText(/added to cart/)).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Add to cart" }));

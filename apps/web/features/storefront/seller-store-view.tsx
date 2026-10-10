@@ -39,10 +39,10 @@ export function SellerStoreView({ seller }: SellerStoreViewProps) {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       {/* Seller Header Banner */}
-      <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+      <section className="overflow-hidden rounded-2xl border border-slate-200 bg-ui-surface p-6 shadow-sm sm:p-8">
         <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-start gap-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-teal-800 text-2xl font-bold text-white shadow">
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-orange-800 text-2xl font-bold text-white shadow">
               {seller.store_name.slice(0, 2).toUpperCase()}
             </div>
             <div>
@@ -50,7 +50,7 @@ export function SellerStoreView({ seller }: SellerStoreViewProps) {
                 <h1 className="text-2xl font-extrabold text-slate-900">
                   {seller.store_name}
                 </h1>
-                <span className="rounded-full bg-teal-100 px-2.5 py-0.5 text-xs font-bold text-teal-800">
+                <span className="rounded-full bg-orange-100 px-2.5 py-0.5 text-xs font-bold text-orange-800">
                   Verified Seller
                 </span>
               </div>
@@ -118,7 +118,7 @@ export function SellerStoreView({ seller }: SellerStoreViewProps) {
                 setPage(1);
                 setLoading(true);
               }}
-              className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-800 focus:border-teal-700 focus:outline-none"
+              className="rounded-lg border border-slate-300 bg-ui-surface px-3 py-1.5 text-xs text-slate-800 focus:border-orange-700 focus:outline-none"
             >
               <option value="newest">Newest Arrivals</option>
               <option value="price_asc">Price: Low to High</option>

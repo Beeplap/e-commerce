@@ -67,7 +67,7 @@ export default function SellerStorePage({ params }: SellerPageProps) {
             <div className="mt-6">
               <Link
                 href="/"
-                className="rounded-lg bg-teal-800 px-5 py-2.5 text-sm font-semibold text-white hover:bg-teal-900 transition"
+                className="rounded-lg bg-orange-800 px-5 py-2.5 text-sm font-semibold text-white hover:bg-orange-900 transition"
               >
                 Return to Storefront
               </Link>

@@ -58,13 +58,13 @@ export function ProductDetailView({ product }: ProductDetailViewProps) {
         aria-label="Breadcrumb"
         className="mb-6 flex items-center gap-2 text-xs text-slate-500"
       >
-        <Link href="/" className="hover:text-teal-700 transition">
+        <Link href="/" className="hover:text-orange-700 transition">
           Home
         </Link>
         <span>/</span>
         <Link
           href={`/categories/${product.category.id}`}
-          className="hover:text-teal-700 transition"
+          className="hover:text-orange-700 transition"
         >
           {product.category.name}
         </Link>
@@ -115,7 +115,7 @@ export function ProductDetailView({ product }: ProductDetailViewProps) {
                   onClick={() => setSelectedImage(img.url)}
                   className={`relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg border-2 transition ${
                     selectedImage === img.url
-                      ? "border-teal-700 ring-2 ring-teal-200"
+                      ? "border-orange-700 ring-2 ring-orange-200"
                       : "border-slate-200"
                   }`}
                 >
@@ -134,7 +134,7 @@ export function ProductDetailView({ product }: ProductDetailViewProps) {
         {/* Product Info & Controls */}
         <div className="flex flex-col">
           {/* Brand & Category badges */}
-          <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-wider text-teal-800">
+          <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-wider text-orange-800">
             {product.brand && (
               <Link
                 href={`/brands/${product.brand.id}`}
@@ -182,11 +182,11 @@ export function ProductDetailView({ product }: ProductDetailViewProps) {
             <span className="text-slate-500">Sold & Shipped by:</span>
             <Link
               href={`/sellers/${product.seller.id}`}
-              className="font-semibold text-teal-900 hover:underline"
+              className="font-semibold text-orange-900 hover:underline"
             >
               {product.seller.store_name}
             </Link>
-            <span className="rounded bg-teal-100 px-1.5 py-0.5 text-[10px] font-bold text-teal-800">
+            <span className="rounded bg-orange-100 px-1.5 py-0.5 text-[10px] font-bold text-orange-800">
               Verified Seller
             </span>
           </div>
@@ -233,7 +233,7 @@ export function ProductDetailView({ product }: ProductDetailViewProps) {
                       onClick={() => setSelectedVariant(v)}
                       className={`flex flex-col items-start rounded-xl border p-3 text-left transition ${
                         isSelected
-                          ? "border-teal-700 bg-teal-50/50 ring-2 ring-teal-600"
+                          ? "border-orange-700 bg-orange-50/50 ring-2 ring-ui-focus"
                           : "border-slate-200 hover:border-slate-300"
                       }`}
                     >
@@ -312,7 +312,7 @@ export function ProductDetailView({ product }: ProductDetailViewProps) {
               type="button"
               onClick={handleAddToCart}
               disabled={!isAvailable}
-              className="flex-1 rounded-xl bg-teal-800 px-6 py-3 text-sm font-bold text-white shadow transition hover:bg-teal-900 disabled:cursor-not-allowed disabled:opacity-40"
+              className="flex-1 rounded-xl bg-orange-800 px-6 py-3 text-sm font-bold text-white shadow transition hover:bg-orange-900 disabled:cursor-not-allowed disabled:opacity-40"
             >
               Add to Cart
             </button>
@@ -401,7 +401,7 @@ export function ProductDetailView({ product }: ProductDetailViewProps) {
               product.recent_reviews.map((rev) => (
                 <article
                   key={rev.id}
-                  className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm space-y-2"
+                  className="rounded-xl border border-slate-200 bg-ui-surface p-5 shadow-sm space-y-2"
                 >
                   <div className="flex items-center justify-between text-xs">
                     <div className="flex items-center gap-2">
@@ -433,8 +433,8 @@ export function ProductDetailView({ product }: ProductDetailViewProps) {
 
                   {/* Seller Response */}
                   {rev.seller_response && (
-                    <div className="mt-3 rounded-lg border-l-2 border-teal-700 bg-slate-50 p-3 text-xs">
-                      <div className="font-semibold text-teal-900">
+                    <div className="mt-3 rounded-lg border-l-2 border-orange-700 bg-slate-50 p-3 text-xs">
+                      <div className="font-semibold text-orange-900">
                         Seller Response:
                       </div>
                       <p className="mt-0.5 text-slate-600">

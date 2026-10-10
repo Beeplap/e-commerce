@@ -41,7 +41,7 @@ export function SearchFiltersSidebar({
   return (
     <aside className={`space-y-6 ${className}`}>
       {/* In-Stock Only Toggle */}
-      <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="rounded-xl border border-slate-200 bg-ui-surface p-4 shadow-sm">
         <label className="flex items-center justify-between cursor-pointer">
           <span className="text-sm font-semibold text-slate-800">
             In-Stock Only
@@ -55,7 +55,7 @@ export function SearchFiltersSidebar({
                 in_stock: e.target.checked || undefined,
               })
             }
-            className="h-4 w-4 rounded border-slate-300 text-teal-700 focus:ring-teal-700 cursor-pointer"
+            className="h-4 w-4 rounded border-slate-300 text-orange-700 focus:ring-ui-focus cursor-pointer"
           />
         </label>
         {facets && (
@@ -68,7 +68,7 @@ export function SearchFiltersSidebar({
 
       {/* Categories Facet */}
       {facets && facets.categories.length > 0 && (
-        <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+        <div className="rounded-xl border border-slate-200 bg-ui-surface p-4 shadow-sm">
           <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
             Categories
           </h3>
@@ -87,7 +87,7 @@ export function SearchFiltersSidebar({
                   }
                   className={`flex w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-xs transition ${
                     isSelected
-                      ? "bg-teal-50 font-semibold text-teal-900"
+                      ? "bg-orange-50 font-semibold text-orange-900"
                       : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                   }`}
                 >
@@ -95,7 +95,7 @@ export function SearchFiltersSidebar({
                   <span
                     className={`ml-2 rounded px-1.5 py-0.5 text-[10px] ${
                       isSelected
-                        ? "bg-teal-200 text-teal-900"
+                        ? "bg-orange-200 text-orange-900"
                         : "bg-slate-100 text-slate-400"
                     }`}
                   >
@@ -110,7 +110,7 @@ export function SearchFiltersSidebar({
 
       {/* Brands Facet */}
       {facets && facets.brands.length > 0 && (
-        <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+        <div className="rounded-xl border border-slate-200 bg-ui-surface p-4 shadow-sm">
           <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
             Brands
           </h3>
@@ -129,7 +129,7 @@ export function SearchFiltersSidebar({
                   }
                   className={`flex w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-xs transition ${
                     isSelected
-                      ? "bg-teal-50 font-semibold text-teal-900"
+                      ? "bg-orange-50 font-semibold text-orange-900"
                       : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                   }`}
                 >
@@ -137,7 +137,7 @@ export function SearchFiltersSidebar({
                   <span
                     className={`ml-2 rounded px-1.5 py-0.5 text-[10px] ${
                       isSelected
-                        ? "bg-teal-200 text-teal-900"
+                        ? "bg-orange-200 text-orange-900"
                         : "bg-slate-100 text-slate-400"
                     }`}
                   >
@@ -151,7 +151,7 @@ export function SearchFiltersSidebar({
       )}
 
       {/* Price Brackets & Range */}
-      <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="rounded-xl border border-slate-200 bg-ui-surface p-4 shadow-sm">
         <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
           Price Range
         </h3>
@@ -189,7 +189,7 @@ export function SearchFiltersSidebar({
                   }}
                   className={`flex w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-xs transition ${
                     isSelected
-                      ? "bg-teal-50 font-semibold text-teal-900"
+                      ? "bg-orange-50 font-semibold text-orange-900"
                       : "text-slate-600 hover:bg-slate-50"
                   }`}
                 >
@@ -197,7 +197,7 @@ export function SearchFiltersSidebar({
                   <span
                     className={`ml-2 rounded px-1.5 py-0.5 text-[10px] ${
                       isSelected
-                        ? "bg-teal-200 text-teal-900"
+                        ? "bg-orange-200 text-orange-900"
                         : "bg-slate-100 text-slate-400"
                     }`}
                   >
@@ -221,7 +221,7 @@ export function SearchFiltersSidebar({
               min="0"
               value={customMin}
               onChange={(e) => setCustomMin(e.target.value)}
-              className="w-full rounded-lg border border-slate-200 px-2 py-1 text-slate-800 placeholder-slate-400 focus:border-teal-700 focus:outline-none"
+              className="w-full rounded-lg border border-slate-200 px-2 py-1 text-slate-800 placeholder-slate-400 focus:border-orange-700 focus:outline-none"
             />
             <span className="text-slate-400">–</span>
             <input
@@ -230,11 +230,11 @@ export function SearchFiltersSidebar({
               min="0"
               value={customMax}
               onChange={(e) => setCustomMax(e.target.value)}
-              className="w-full rounded-lg border border-slate-200 px-2 py-1 text-slate-800 placeholder-slate-400 focus:border-teal-700 focus:outline-none"
+              className="w-full rounded-lg border border-slate-200 px-2 py-1 text-slate-800 placeholder-slate-400 focus:border-orange-700 focus:outline-none"
             />
             <button
               type="submit"
-              className="rounded-lg bg-teal-700 px-3 py-1 font-semibold text-white hover:bg-teal-800 transition"
+              className="rounded-lg bg-orange-700 px-3 py-1 font-semibold text-white hover:bg-orange-800 transition"
             >
               Go
             </button>
@@ -244,7 +244,7 @@ export function SearchFiltersSidebar({
 
       {/* Customer Rating Facet */}
       {facets && facets.rating_brackets.length > 0 && (
-        <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+        <div className="rounded-xl border border-slate-200 bg-ui-surface p-4 shadow-sm">
           <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
             Customer Rating
           </h3>
@@ -263,7 +263,7 @@ export function SearchFiltersSidebar({
                   }
                   className={`flex w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-xs transition ${
                     isSelected
-                      ? "bg-teal-50 font-semibold text-teal-900"
+                      ? "bg-orange-50 font-semibold text-orange-900"
                       : "text-slate-600 hover:bg-slate-50"
                   }`}
                 >
@@ -277,7 +277,7 @@ export function SearchFiltersSidebar({
                   <span
                     className={`ml-2 rounded px-1.5 py-0.5 text-[10px] ${
                       isSelected
-                        ? "bg-teal-200 text-teal-900"
+                        ? "bg-orange-200 text-orange-900"
                         : "bg-slate-100 text-slate-400"
                     }`}
                   >
@@ -371,13 +371,13 @@ export function ActiveFilterBadges({
       {chips.map((chip) => (
         <span
           key={chip.id}
-          className="inline-flex items-center gap-1.5 rounded-full border border-teal-200 bg-teal-50 px-3 py-1 text-xs font-medium text-teal-800 shadow-sm"
+          className="inline-flex items-center gap-1.5 rounded-full border border-orange-200 bg-orange-50 px-3 py-1 text-xs font-medium text-orange-800 shadow-sm"
         >
           {chip.label}
           <button
             type="button"
             onClick={chip.onRemove}
-            className="hover:text-teal-950 font-bold ml-1"
+            className="hover:text-orange-950 font-bold ml-1"
             aria-label={`Remove filter ${chip.label}`}
           >
             ✕

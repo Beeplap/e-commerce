@@ -65,7 +65,7 @@ export function ReturnModal({
       aria-labelledby="return-modal-title"
       className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm"
     >
-      <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-xl animate-in fade-in zoom-in-95">
+      <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-ui-surface p-6 shadow-xl animate-in fade-in zoom-in-95">
         <div className="flex items-center justify-between border-b border-slate-100 pb-3">
           <h2
             id="return-modal-title"
@@ -112,7 +112,7 @@ export function ReturnModal({
                 value={quantity}
                 onChange={(e) => setQuantity(Number(e.target.value))}
                 data-testid="return-quantity-select"
-                className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-800 focus:border-teal-700 focus:outline-none focus:ring-1 focus:ring-teal-700 bg-white"
+                className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-800 focus:border-orange-700 focus:outline-none focus:ring-1 focus:ring-ui-focus bg-ui-surface"
               >
                 {Array.from({ length: maxQuantity }, (_, i) => i + 1).map(
                   (num) => (
@@ -136,7 +136,7 @@ export function ReturnModal({
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
                 data-testid="return-reason-select"
-                className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-800 focus:border-teal-700 focus:outline-none focus:ring-1 focus:ring-teal-700 bg-white"
+                className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-800 focus:border-orange-700 focus:outline-none focus:ring-1 focus:ring-ui-focus bg-ui-surface"
               >
                 <option value="defective">Defective / Does not work</option>
                 <option value="damaged">Damaged during shipping</option>
@@ -161,7 +161,7 @@ export function ReturnModal({
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Provide any additional details or serial numbers to expedite return approval."
               data-testid="return-notes-input"
-              className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:border-teal-700 focus:outline-none focus:ring-1 focus:ring-teal-700"
+              className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:border-orange-700 focus:outline-none focus:ring-1 focus:ring-ui-focus"
             />
           </div>
 
@@ -177,7 +177,7 @@ export function ReturnModal({
               type="submit"
               disabled={submitting}
               data-testid="submit-return-button"
-              className="rounded-xl bg-teal-800 px-5 py-2 text-xs font-bold text-white shadow-sm hover:bg-teal-900 disabled:opacity-50 transition"
+              className="rounded-xl bg-orange-800 px-5 py-2 text-xs font-bold text-white shadow-sm hover:bg-orange-900 disabled:opacity-50 transition"
             >
               {submitting ? "Requesting..." : "Submit Return Request"}
             </button>

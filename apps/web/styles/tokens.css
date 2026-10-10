@@ -1,17 +1,18 @@
-/* Shared presentation tokens. Domain colors and layouts migrate in UI Phase 24+. */
+/* Shared presentation tokens for QuickCommerce's warm ivory and copper palette. */
 :root {
-  --ui-canvas: #f7f8fa;
-  --ui-surface: #ffffff;
-  --ui-surface-muted: #f0f2f4;
-  --ui-foreground: #20252b;
-  --ui-secondary: #56606d;
-  --ui-muted: #64707d;
-  --ui-border: #dce1e6;
-  --ui-control-border: #89939f;
-  --ui-accent: #176b57;
-  --ui-accent-hover: #125744;
-  --ui-selected: #e8f3ee;
-  --ui-focus: #177a68;
+  --ui-canvas: #f4eee6;
+  --ui-surface: #fbf8f2;
+  --ui-surface-muted: #eee3d7;
+  --ui-foreground: #1e1a18;
+  --ui-secondary: #3a332e;
+  --ui-muted: #756a61;
+  --ui-border: #dec7b0;
+  --ui-control-border: #98775e;
+  --ui-brand: #b86a2c;
+  --ui-accent: #9f5822;
+  --ui-accent-hover: #864818;
+  --ui-selected: #f8eddf;
+  --ui-focus: #8d4e1f;
   --ui-success: #176346;
   --ui-success-surface: #edf7f0;
   --ui-warning: #855400;
@@ -44,6 +45,7 @@
   --color-ui-muted: var(--ui-muted);
   --color-ui-border: var(--ui-border);
   --color-ui-control-border: var(--ui-control-border);
+  --color-ui-brand: var(--ui-brand);
   --color-ui-accent: var(--ui-accent);
   --color-ui-accent-hover: var(--ui-accent-hover);
   --color-ui-selected: var(--ui-selected);
@@ -57,6 +59,28 @@
   --color-ui-info: var(--ui-info);
   --color-ui-info-surface: var(--ui-info-surface);
   --color-ui-disabled: var(--ui-disabled);
+  --color-slate-50: #f4eee6;
+  --color-slate-100: #eee3d7;
+  --color-slate-200: #dec7b0;
+  --color-slate-300: #98775e;
+  --color-slate-400: #78695d;
+  --color-slate-500: #6d6057;
+  --color-slate-600: #534941;
+  --color-slate-700: #3a332e;
+  --color-slate-800: #2a2420;
+  --color-slate-900: #1e1a18;
+  --color-slate-950: #15110f;
+  --color-orange-50: #fbf6f0;
+  --color-orange-100: #f3e6d7;
+  --color-orange-200: #e5ceb7;
+  --color-orange-300: #d4ae8b;
+  --color-orange-400: #bb8355;
+  --color-orange-500: #a96836;
+  --color-orange-600: #9f5822;
+  --color-orange-700: #914d1c;
+  --color-orange-800: #783d13;
+  --color-orange-900: #62300f;
+  --color-orange-950: #41200f;
   --font-ui: var(--ui-font-sans);
   --radius-control: var(--ui-radius-control);
   --radius-panel: var(--ui-radius-panel);

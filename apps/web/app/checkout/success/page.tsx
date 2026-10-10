@@ -15,7 +15,7 @@ function SuccessContent() {
 
   return (
     <div className="mx-auto max-w-3xl w-full px-4 py-16 sm:px-6 lg:px-8">
-      <div className="rounded-2xl border border-slate-200 bg-white p-8 sm:p-12 text-center shadow-sm">
+      <div className="rounded-2xl border border-slate-200 bg-ui-surface p-8 sm:p-12 text-center shadow-sm">
         {/* Checkmark Icon */}
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
           <svg
@@ -50,7 +50,7 @@ function SuccessContent() {
               </span>
               <p
                 data-testid="success-order-number"
-                className="text-lg font-mono font-bold text-teal-900"
+                className="text-lg font-mono font-bold text-orange-900"
               >
                 {orderNumber}
               </p>
@@ -81,13 +81,13 @@ function SuccessContent() {
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link
             href="/account"
-            className="w-full sm:w-auto rounded-xl bg-teal-800 px-6 py-3 text-sm font-bold text-white shadow-sm hover:bg-teal-900 transition"
+            className="w-full sm:w-auto rounded-xl bg-orange-800 px-6 py-3 text-sm font-bold text-white shadow-sm hover:bg-orange-900 transition"
           >
             Track My Orders
           </Link>
           <Link
             href="/"
-            className="w-full sm:w-auto rounded-xl border border-slate-300 bg-white px-6 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition"
+            className="w-full sm:w-auto rounded-xl border border-slate-300 bg-ui-surface px-6 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition"
           >
             Continue Shopping
           </Link>

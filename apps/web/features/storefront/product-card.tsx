@@ -18,7 +18,7 @@ export function ProductCard({ product }: ProductCardProps) {
       : null;
 
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:shadow-md">
+    <div className="group relative flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-ui-surface shadow-sm transition hover:shadow-md">
       {/* Image Container */}
       <Link
         href={`/products/${product.id}`}
@@ -75,7 +75,7 @@ export function ProductCard({ product }: ProductCardProps) {
         <div className="mb-1 flex items-center justify-between text-xs text-slate-500">
           <Link
             href={`/categories/${product.category_id}`}
-            className="truncate hover:text-teal-700 transition"
+            className="truncate hover:text-orange-700 transition"
           >
             {product.category_name}
           </Link>
@@ -85,7 +85,7 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
 
         {/* Title */}
-        <h3 className="text-sm font-semibold text-slate-900 group-hover:text-teal-700 transition line-clamp-2">
+        <h3 className="text-sm font-semibold text-slate-900 group-hover:text-orange-700 transition line-clamp-2">
           <Link href={`/products/${product.id}`}>{product.title}</Link>
         </h3>
 
@@ -112,7 +112,7 @@ export function ProductCard({ product }: ProductCardProps) {
           Sold by{" "}
           <Link
             href={`/sellers/${product.seller.id}`}
-            className="font-medium text-slate-700 hover:text-teal-700 transition underline underline-offset-2"
+            className="font-medium text-slate-700 hover:text-orange-700 transition underline underline-offset-2"
           >
             {product.seller.store_name}
           </Link>
@@ -133,7 +133,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
           <Link
             href={`/products/${product.id}`}
-            className="rounded-lg bg-teal-50 px-3 py-1.5 text-xs font-semibold text-teal-800 transition hover:bg-teal-700 hover:text-white"
+            className="rounded-lg bg-orange-50 px-3 py-1.5 text-xs font-semibold text-orange-800 transition hover:bg-orange-700 hover:text-white"
           >
             View
           </Link>

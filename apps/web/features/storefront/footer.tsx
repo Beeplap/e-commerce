@@ -8,7 +8,7 @@ export function StorefrontFooter() {
           {/* Brand Info */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-teal-700 font-bold text-white">
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-700 font-bold text-white">
                 QC
               </span>
               <span className="text-lg font-bold text-slate-900">
@@ -31,17 +31,17 @@ export function StorefrontFooter() {
             </h3>
             <ul className="mt-4 space-y-2 text-sm">
               <li>
-                <Link href="/" className="hover:text-teal-700 transition">
+                <Link href="/" className="hover:text-orange-700 transition">
                   All Products
                 </Link>
               </li>
               <li>
-                <Link href="/" className="hover:text-teal-700 transition">
+                <Link href="/" className="hover:text-orange-700 transition">
                   Featured Categories
                 </Link>
               </li>
               <li>
-                <Link href="/" className="hover:text-teal-700 transition">
+                <Link href="/" className="hover:text-orange-700 transition">
                   Top Sellers
                 </Link>
               </li>
@@ -57,20 +57,23 @@ export function StorefrontFooter() {
               <li>
                 <Link
                   href="/onboarding"
-                  className="hover:text-teal-700 transition"
+                  className="hover:text-orange-700 transition"
                 >
                   Become a Seller
                 </Link>
               </li>
               <li>
-                <Link href="/login" className="hover:text-teal-700 transition">
+                <Link
+                  href="/login"
+                  className="hover:text-orange-700 transition"
+                >
                   Seller Portal
                 </Link>
               </li>
               <li>
                 <Link
                   href="/workspaces"
-                  className="hover:text-teal-700 transition"
+                  className="hover:text-orange-700 transition"
                 >
                   Seller Dashboard
                 </Link>
@@ -85,17 +88,18 @@ export function StorefrontFooter() {
             </h3>
             <ul className="mt-4 space-y-2 text-sm text-slate-500">
               <li className="flex items-center gap-2">
-                <span className="text-teal-600">✓</span> 100% Verified Sellers
+                <span className="text-emerald-700">✓</span> 100% Verified
+                Sellers
               </li>
               <li className="flex items-center gap-2">
-                <span className="text-teal-600">✓</span> Real-Time Stock
+                <span className="text-emerald-700">✓</span> Real-Time Stock
                 Tracking
               </li>
               <li className="flex items-center gap-2">
-                <span className="text-teal-600">✓</span> Transparent Reviews
+                <span className="text-emerald-700">✓</span> Transparent Reviews
               </li>
               <li className="flex items-center gap-2">
-                <span className="text-teal-600">✓</span> Secure Checkout &
+                <span className="text-emerald-700">✓</span> Secure Checkout &
                 Returns
               </li>
             </ul>

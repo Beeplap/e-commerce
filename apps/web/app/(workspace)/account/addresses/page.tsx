@@ -180,7 +180,7 @@ export default function CustomerAddressesPage() {
           type="button"
           onClick={openAddModal}
           data-testid="add-address-button"
-          className="inline-flex items-center justify-center rounded-xl bg-teal-800 px-4 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-teal-900 transition"
+          className="inline-flex items-center justify-center rounded-xl bg-orange-800 px-4 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-orange-900 transition"
         >
           + Add New Address
         </button>
@@ -209,7 +209,7 @@ export default function CustomerAddressesPage() {
           Loading addresses...
         </div>
       ) : addresses.length === 0 ? (
-        <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center shadow-sm">
+        <div className="rounded-2xl border border-slate-200 bg-ui-surface p-12 text-center shadow-sm">
           <h2 className="text-base font-bold text-slate-900">
             No saved addresses
           </h2>
@@ -221,7 +221,7 @@ export default function CustomerAddressesPage() {
             <button
               type="button"
               onClick={openAddModal}
-              className="rounded-xl bg-teal-800 px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-teal-900 transition"
+              className="rounded-xl bg-orange-800 px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-orange-900 transition"
             >
               Add First Address
             </button>
@@ -236,9 +236,9 @@ export default function CustomerAddressesPage() {
             <div
               key={addr.id}
               data-testid={`address-card-${addr.id}`}
-              className={`rounded-2xl border bg-white p-6 shadow-sm flex flex-col justify-between transition ${
+              className={`rounded-2xl border bg-ui-surface p-6 shadow-sm flex flex-col justify-between transition ${
                 addr.is_default
-                  ? "border-teal-700 ring-1 ring-teal-700"
+                  ? "border-orange-700 ring-1 ring-orange-700"
                   : "border-slate-200 hover:border-slate-300"
               }`}
             >
@@ -250,7 +250,7 @@ export default function CustomerAddressesPage() {
                   {addr.is_default && (
                     <span
                       data-testid="default-badge"
-                      className="inline-flex rounded-full bg-teal-100 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-teal-800"
+                      className="inline-flex rounded-full bg-orange-100 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-orange-800"
                     >
                       Default
                     </span>
@@ -276,7 +276,7 @@ export default function CustomerAddressesPage() {
                     type="button"
                     onClick={() => openEditModal(addr)}
                     data-testid={`edit-address-${addr.id}`}
-                    className="font-semibold text-teal-800 hover:underline"
+                    className="font-semibold text-orange-800 hover:underline"
                   >
                     Edit
                   </button>
@@ -309,7 +309,7 @@ export default function CustomerAddressesPage() {
       {/* Address Form Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl sm:p-8">
+          <div className="w-full max-w-lg rounded-2xl bg-ui-surface p-6 shadow-2xl sm:p-8">
             <h2 className="text-lg font-black text-slate-900">
               {editingAddressId ? "Edit Address" : "Add New Address"}
             </h2>
@@ -344,7 +344,7 @@ export default function CustomerAddressesPage() {
                       setFormData({ ...formData, full_name: e.target.value })
                     }
                     data-testid="address-input-fullname"
-                    className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-teal-700 focus:outline-none"
+                    className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-orange-700 focus:outline-none"
                     placeholder="Jane Doe"
                   />
                 </div>
@@ -360,7 +360,7 @@ export default function CustomerAddressesPage() {
                       setFormData({ ...formData, phone: e.target.value })
                     }
                     data-testid="address-input-phone"
-                    className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-teal-700 focus:outline-none"
+                    className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-orange-700 focus:outline-none"
                     placeholder="+1 555-0100"
                   />
                 </div>
@@ -378,7 +378,7 @@ export default function CustomerAddressesPage() {
                     setFormData({ ...formData, line1: e.target.value })
                   }
                   data-testid="address-input-line1"
-                  className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-teal-700 focus:outline-none"
+                  className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-orange-700 focus:outline-none"
                   placeholder="123 Market St"
                 />
               </div>
@@ -394,7 +394,7 @@ export default function CustomerAddressesPage() {
                     setFormData({ ...formData, line2: e.target.value })
                   }
                   data-testid="address-input-line2"
-                  className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-teal-700 focus:outline-none"
+                  className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-orange-700 focus:outline-none"
                   placeholder="Suite 400"
                 />
               </div>
@@ -412,7 +412,7 @@ export default function CustomerAddressesPage() {
                       setFormData({ ...formData, city: e.target.value })
                     }
                     data-testid="address-input-city"
-                    className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-teal-700 focus:outline-none"
+                    className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-orange-700 focus:outline-none"
                     placeholder="San Francisco"
                   />
                 </div>
@@ -428,7 +428,7 @@ export default function CustomerAddressesPage() {
                       setFormData({ ...formData, state: e.target.value })
                     }
                     data-testid="address-input-state"
-                    className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-teal-700 focus:outline-none"
+                    className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-orange-700 focus:outline-none"
                     placeholder="CA"
                   />
                 </div>
@@ -444,7 +444,7 @@ export default function CustomerAddressesPage() {
                       setFormData({ ...formData, postal_code: e.target.value })
                     }
                     data-testid="address-input-postal"
-                    className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-teal-700 focus:outline-none"
+                    className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-orange-700 focus:outline-none"
                     placeholder="94105"
                   />
                 </div>
@@ -465,7 +465,7 @@ export default function CustomerAddressesPage() {
                     })
                   }
                   data-testid="address-input-country"
-                  className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-teal-700 focus:outline-none"
+                  className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-orange-700 focus:outline-none"
                   placeholder="US"
                   maxLength={2}
                 />
@@ -480,7 +480,7 @@ export default function CustomerAddressesPage() {
                     setFormData({ ...formData, is_default: e.target.checked })
                   }
                   data-testid="address-input-isdefault"
-                  className="h-4 w-4 rounded border-slate-300 text-teal-800 focus:ring-teal-700"
+                  className="h-4 w-4 rounded border-slate-300 text-orange-800 focus:ring-ui-focus"
                 />
                 <label
                   htmlFor="is_default"
@@ -494,7 +494,7 @@ export default function CustomerAddressesPage() {
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="rounded-xl border border-slate-300 bg-white px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition"
+                  className="rounded-xl border border-slate-300 bg-ui-surface px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition"
                 >
                   Cancel
                 </button>
@@ -502,7 +502,7 @@ export default function CustomerAddressesPage() {
                   type="submit"
                   disabled={formSubmitting}
                   data-testid="save-address-submit"
-                  className="rounded-xl bg-teal-800 px-5 py-2 text-xs font-bold text-white shadow-sm hover:bg-teal-900 disabled:opacity-50 transition"
+                  className="rounded-xl bg-orange-800 px-5 py-2 text-xs font-bold text-white shadow-sm hover:bg-orange-900 disabled:opacity-50 transition"
                 >
                   {formSubmitting
                     ? "Saving..."

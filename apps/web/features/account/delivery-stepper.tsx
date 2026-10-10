@@ -49,7 +49,7 @@ export function DeliveryStepper({
   const currentIndex = isCancelled ? -1 : getStepIndex(normalizedStatus);
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div className="rounded-xl border border-slate-200 bg-ui-surface p-6 shadow-sm">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 gap-2">
         <div>
           <h3 className="text-sm font-bold text-slate-900">
@@ -61,7 +61,7 @@ export function DeliveryStepper({
               <span className="font-semibold text-slate-800">{carrier}</span> ·
               Tracking:{" "}
               <span
-                className="font-mono font-semibold text-teal-800"
+                className="font-mono font-semibold text-orange-800"
                 data-testid="carrier-tracking-number"
               >
                 {trackingNumber}
@@ -77,7 +77,7 @@ export function DeliveryStepper({
                 ? "bg-rose-100 text-rose-800"
                 : normalizedStatus === "delivered"
                   ? "bg-emerald-100 text-emerald-800"
-                  : "bg-teal-100 text-teal-800"
+                  : "bg-orange-100 text-orange-800"
             }`}
           >
             {status}
@@ -98,7 +98,7 @@ export function DeliveryStepper({
           <div className="relative flex items-center justify-between">
             <div className="absolute left-0 top-1/2 -z-0 h-0.5 w-full -translate-y-1/2 bg-slate-200" />
             <div
-              className="absolute left-0 top-1/2 -z-0 h-0.5 -translate-y-1/2 bg-teal-700 transition-all duration-500"
+              className="absolute left-0 top-1/2 -z-0 h-0.5 -translate-y-1/2 bg-orange-700 transition-all duration-500"
               style={{
                 width: `${(Math.max(0, currentIndex) / (STEPS.length - 1)) * 100}%`,
               }}
@@ -116,9 +116,9 @@ export function DeliveryStepper({
                     data-testid={`step-indicator-${step.key}`}
                     className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold transition ${
                       isCompleted
-                        ? "bg-teal-800 text-white ring-4 ring-teal-50"
-                        : "bg-white border-2 border-slate-300 text-slate-400"
-                    } ${isCurrent ? "scale-110 shadow-md ring-teal-200" : ""}`}
+                        ? "bg-orange-800 text-white ring-4 ring-orange-50"
+                        : "bg-ui-surface border-2 border-slate-300 text-slate-400"
+                    } ${isCurrent ? "scale-110 shadow-md ring-orange-200" : ""}`}
                   >
                     {isCompleted ? "✓" : idx + 1}
                   </div>
@@ -149,7 +149,7 @@ export function DeliveryStepper({
                 data-testid={`tracking-event-${evt.id}`}
                 className="flex items-start gap-3 text-xs"
               >
-                <div className="mt-1 h-2 w-2 rounded-full bg-teal-700" />
+                <div className="mt-1 h-2 w-2 rounded-full bg-orange-700" />
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
                     <span className="font-bold text-slate-800">

@@ -180,7 +180,7 @@ export function SearchBar({
               if (data && query.trim()) setIsOpen(true);
             }}
             onKeyDown={handleKeyDown}
-            className="w-full rounded-xl border border-slate-300 bg-slate-50/80 px-4 py-2.5 pl-10 pr-10 text-sm text-slate-800 placeholder-slate-400 shadow-inner transition focus:border-teal-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-teal-700"
+            className="w-full rounded-xl border border-slate-300 bg-slate-50/80 px-4 py-2.5 pl-10 pr-10 text-sm text-slate-800 placeholder-slate-400 shadow-inner transition focus:border-orange-700 focus:bg-ui-surface focus:outline-none focus:ring-1 focus:ring-ui-focus"
           />
           <div className="pointer-events-none absolute left-3 text-slate-400">
             <svg
@@ -200,7 +200,7 @@ export function SearchBar({
           </div>
           {loading ? (
             <div className="absolute right-3">
-              <div className="h-4 w-4 animate-spin rounded-full border-2 border-teal-600 border-t-transparent" />
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-orange-600 border-t-transparent" />
             </div>
           ) : query ? (
             <button
@@ -224,7 +224,7 @@ export function SearchBar({
         <div
           id="search-suggestions-dropdown"
           role="listbox"
-          className="absolute left-0 right-0 top-full z-50 mt-1.5 max-h-96 overflow-y-auto rounded-xl border border-slate-200 bg-white py-2 shadow-xl"
+          className="absolute left-0 right-0 top-full z-50 mt-1.5 max-h-96 overflow-y-auto rounded-xl border border-slate-200 bg-ui-surface py-2 shadow-xl"
         >
           {/* Text Suggestions */}
           {data.suggestions.length > 0 && (
@@ -251,7 +251,7 @@ export function SearchBar({
                       }}
                       className={`flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-sm text-slate-700 transition ${
                         isSelected
-                          ? "bg-teal-50 text-teal-900 font-semibold"
+                          ? "bg-orange-50 text-orange-900 font-semibold"
                           : "hover:bg-slate-50"
                       }`}
                     >
@@ -289,7 +289,7 @@ export function SearchBar({
                     key={c.id}
                     href={`/categories/${c.id}`}
                     onClick={() => setIsOpen(false)}
-                    className="rounded-md bg-teal-50 px-2.5 py-1 text-xs font-medium text-teal-800 hover:bg-teal-100 transition"
+                    className="rounded-md bg-orange-50 px-2.5 py-1 text-xs font-medium text-orange-800 hover:bg-orange-100 transition"
                   >
                     {c.name}
                   </Link>
@@ -369,7 +369,7 @@ export function SearchBar({
             <button
               type="button"
               onClick={() => handleSubmit()}
-              className="w-full text-xs font-semibold text-teal-700 hover:text-teal-900 hover:underline"
+              className="w-full text-xs font-semibold text-orange-700 hover:text-orange-900 hover:underline"
             >
               View all results for &ldquo;{query.trim()}&rdquo; →
             </button>

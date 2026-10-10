@@ -2,7 +2,7 @@
 
 ## Human-oriented hierarchy
 
-Use framing to separate tasks, not to decorate every record. Phase 32 gives finance work distinct pending-action, current-funds and lifetime-activity groups; exact amounts retain shared decimal display. Reviews, roles and notifications use separated rows, and promotion scope/discount evidence does not need another badge. Specialized staff/commission editors retain named local scroll regions; ordinary promotions use the shared stacked table. Shared headers and shell gutters own page spacing. Preserve different table/form/detail/dashboard compositions and concise action wording. Apply tokens to administrative surfaces without changing the public storefront.
+Use framing to separate tasks, not to decorate every record. Phase 32 gives finance work distinct pending-action, current-funds and lifetime-activity groups; exact amounts retain shared decimal display. Reviews, roles and notifications use separated rows, and promotion scope/discount evidence does not need another badge. Specialized staff/commission editors retain named local scroll regions; ordinary promotions use the shared stacked table. Shared headers and shell gutters own page spacing. Preserve different table/form/detail/dashboard compositions and concise action wording. Apply the shared palette consistently to administrative and storefront surfaces without changing their distinct compositions.
 
 Finance visibility follows existing Django capabilities: `finance.read` does not imply `payouts.read`. A finance-only overview must remain useful without fetching payout evidence or offering its commands. This presentation rule cannot authorize any backend operation. Cross-seller financial summaries still lack reporting-currency metadata; retaining the existing USD convention is not a conversion guarantee.
 
@@ -55,10 +55,11 @@ Use 1px neutral dividers where they clarify groups/rows. Avoid border-plus-shado
 
 Single light theme initially. The baseline has no dark mode. Add dark mode only as a separate intentional contract with complete foreground/surface/interactive coverage, never a cosmetic toggle over light-only feature code.
 
-- Canvas `#f7f8fa`; primary surface `#ffffff`; muted/hover surface `#f0f2f4`.
-- Primary text `#20252b`; secondary `#56606d`; muted/caption `#64707d`.
-- Structural border `#dce1e6`; control boundary `#89939f`.
-- Action/selection accent `#176b57`; hover `#125744`; selected surface `#e8f3ee`; focus `#177a68`.
+- Canvas `#f4eee6`; primary surface `#fbf8f2`; muted/hover surface `#eee3d7`.
+- Primary text `#1e1a18`; secondary `#3a332e`; muted/caption `#756a61`.
+- Structural border `#dec7b0`; control boundary `#98775e`.
+- Action/selection accent `#9f5822`; hover `#864818`; selected surface `#f8eddf`; focus `#8d4e1f`.
+- Reference copper `#b86a2c` is reserved for large display text; small text and filled actions use the darker accent to preserve contrast. Legacy orange utilities use the shared copper scale and slate utilities use warm neutral shades. Brand greens must not be reintroduced; green remains a semantic success color.
 - Success text `#176346` on `#edf7f0`; warning `#855400` on `#fff5df`; danger `#a63535` on `#fff0ef`; information `#285d89` on `#edf4fa`.
 - Disabled text `#606a76` on the muted surface. Do not lower the opacity of an entire control indiscriminately; disabled text still needs to be readable.
 

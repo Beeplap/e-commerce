@@ -80,11 +80,14 @@ export default function CustomerOrderDetailPage() {
         aria-label="Breadcrumb"
         className="mb-4 flex items-center gap-2 text-xs text-slate-500"
       >
-        <Link href="/account" className="hover:text-teal-700 transition">
+        <Link href="/account" className="hover:text-orange-700 transition">
           Account
         </Link>
         <span>/</span>
-        <Link href="/account/orders" className="hover:text-teal-700 transition">
+        <Link
+          href="/account/orders"
+          className="hover:text-orange-700 transition"
+        >
           Orders
         </Link>
         <span>/</span>
@@ -108,7 +111,7 @@ export default function CustomerOrderDetailPage() {
           Loading order details...
         </div>
       ) : !order ? (
-        <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center shadow-sm">
+        <div className="rounded-2xl border border-slate-200 bg-ui-surface p-12 text-center shadow-sm">
           <h2 className="text-base font-bold text-slate-900">
             Order not found
           </h2>
@@ -118,7 +121,7 @@ export default function CustomerOrderDetailPage() {
           <div className="mt-6">
             <Link
               href="/account/orders"
-              className="rounded-xl bg-teal-800 px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-teal-900 transition"
+              className="rounded-xl bg-orange-800 px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-orange-900 transition"
             >
               Back to Orders
             </Link>
@@ -127,7 +130,7 @@ export default function CustomerOrderDetailPage() {
       ) : (
         <div className="space-y-8">
           {/* Order Header Card */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="rounded-2xl border border-slate-200 bg-ui-surface p-6 shadow-sm">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 gap-4">
               <div>
                 <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
@@ -152,7 +155,7 @@ export default function CustomerOrderDetailPage() {
                       ? "bg-rose-100 text-rose-800"
                       : order.status === "delivered"
                         ? "bg-emerald-100 text-emerald-800"
-                        : "bg-teal-100 text-teal-800"
+                        : "bg-orange-100 text-orange-800"
                   }`}
                 >
                   {order.status}
@@ -163,7 +166,7 @@ export default function CustomerOrderDetailPage() {
                     type="button"
                     data-testid="cancel-order-button"
                     onClick={() => setShowCancelPrompt(true)}
-                    className="rounded-xl border border-rose-300 bg-white px-3.5 py-1.5 text-xs font-bold text-rose-700 hover:bg-rose-50 transition"
+                    className="rounded-xl border border-rose-300 bg-ui-surface px-3.5 py-1.5 text-xs font-bold text-rose-700 hover:bg-rose-50 transition"
                   >
                     Cancel Order
                   </button>
@@ -190,7 +193,7 @@ export default function CustomerOrderDetailPage() {
                     value={cancelReason}
                     onChange={(e) => setCancelReason(e.target.value)}
                     placeholder="Reason for cancellation (optional)"
-                    className="w-full rounded-lg border border-rose-300 bg-white px-3 py-1.5 text-xs text-slate-800 focus:outline-none"
+                    className="w-full rounded-lg border border-rose-300 bg-ui-surface px-3 py-1.5 text-xs text-slate-800 focus:outline-none"
                   />
                 </div>
                 <div className="mt-3 flex items-center gap-2">
@@ -206,7 +209,7 @@ export default function CustomerOrderDetailPage() {
                   <button
                     type="button"
                     onClick={() => setShowCancelPrompt(false)}
-                    className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
+                    className="rounded-lg border border-slate-300 bg-ui-surface px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
                   >
                     Dismiss
                   </button>
@@ -236,7 +239,7 @@ export default function CustomerOrderDetailPage() {
               />
 
               {/* Package Items Table */}
-              <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+              <div className="rounded-xl border border-slate-200 bg-ui-surface shadow-sm overflow-hidden">
                 <table className="w-full text-left text-xs">
                   <thead className="border-b border-slate-200 bg-slate-50 font-bold text-slate-700">
                     <tr>
@@ -274,7 +277,7 @@ export default function CustomerOrderDetailPage() {
                                 type="button"
                                 data-testid={`write-review-btn-${item.id}`}
                                 onClick={() => setReviewItem(item)}
-                                className="rounded-lg bg-teal-50 border border-teal-200 px-2.5 py-1 text-[11px] font-bold text-teal-800 hover:bg-teal-100 transition"
+                                className="rounded-lg bg-orange-50 border border-orange-200 px-2.5 py-1 text-[11px] font-bold text-orange-800 hover:bg-orange-100 transition"
                               >
                                 Write Review
                               </button>
@@ -301,7 +304,7 @@ export default function CustomerOrderDetailPage() {
 
           {/* Financial Totals & Addresses Grid */}
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="rounded-2xl border border-slate-200 bg-ui-surface p-6 shadow-sm">
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
                 Payment Summary
               </h3>
@@ -339,7 +342,7 @@ export default function CustomerOrderDetailPage() {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="rounded-2xl border border-slate-200 bg-ui-surface p-6 shadow-sm">
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
                 Shipping Destination
               </h3>

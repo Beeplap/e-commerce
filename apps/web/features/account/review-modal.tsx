@@ -63,7 +63,7 @@ export function ReviewModal({
       aria-labelledby="review-modal-title"
       className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm"
     >
-      <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-xl animate-in fade-in zoom-in-95">
+      <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-ui-surface p-6 shadow-xl animate-in fade-in zoom-in-95">
         <div className="flex items-center justify-between border-b border-slate-100 pb-3">
           <h2
             id="review-modal-title"
@@ -139,7 +139,7 @@ export function ReviewModal({
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Great sound quality, very comfortable!"
               data-testid="review-title-input"
-              className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:border-teal-700 focus:outline-none focus:ring-1 focus:ring-teal-700"
+              className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:border-orange-700 focus:outline-none focus:ring-1 focus:ring-ui-focus"
             />
           </div>
 
@@ -158,7 +158,7 @@ export function ReviewModal({
               onChange={(e) => setBody(e.target.value)}
               placeholder="Describe your experience with the item, build quality, performance, etc."
               data-testid="review-body-input"
-              className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:border-teal-700 focus:outline-none focus:ring-1 focus:ring-teal-700"
+              className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:border-orange-700 focus:outline-none focus:ring-1 focus:ring-ui-focus"
             />
           </div>
 
@@ -174,7 +174,7 @@ export function ReviewModal({
               type="submit"
               disabled={submitting}
               data-testid="submit-review-button"
-              className="rounded-xl bg-teal-800 px-5 py-2 text-xs font-bold text-white shadow-sm hover:bg-teal-900 disabled:opacity-50 transition"
+              className="rounded-xl bg-orange-800 px-5 py-2 text-xs font-bold text-white shadow-sm hover:bg-orange-900 disabled:opacity-50 transition"
             >
               {submitting ? "Submitting..." : "Submit Review"}
             </button>

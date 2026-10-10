@@ -53,7 +53,7 @@ export default function CustomerOrdersPage() {
           Loading your order history...
         </div>
       ) : orders.length === 0 ? (
-        <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center shadow-sm">
+        <div className="rounded-2xl border border-slate-200 bg-ui-surface p-12 text-center shadow-sm">
           <h2 className="text-base font-bold text-slate-900">No orders yet</h2>
           <p className="mt-1 text-xs text-slate-500">
             When you place orders across marketplace merchants, they will appear
@@ -62,7 +62,7 @@ export default function CustomerOrdersPage() {
           <div className="mt-6">
             <Link
               href="/"
-              className="rounded-xl bg-teal-800 px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-teal-900 transition"
+              className="rounded-xl bg-orange-800 px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-orange-900 transition"
             >
               Start Shopping
             </Link>
@@ -74,7 +74,7 @@ export default function CustomerOrdersPage() {
             <div
               key={order.id}
               data-testid={`customer-order-card-${order.id}`}
-              className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:border-slate-300 transition"
+              className="rounded-2xl border border-slate-200 bg-ui-surface p-6 shadow-sm hover:border-slate-300 transition"
             >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 gap-3">
                 <div>
@@ -109,7 +109,7 @@ export default function CustomerOrdersPage() {
                         ? "bg-rose-100 text-rose-800"
                         : order.status === "delivered"
                           ? "bg-emerald-100 text-emerald-800"
-                          : "bg-teal-100 text-teal-800"
+                          : "bg-orange-100 text-orange-800"
                     }`}
                   >
                     {order.status}
@@ -147,7 +147,7 @@ export default function CustomerOrdersPage() {
                 <Link
                   href={`/account/orders/${order.id}`}
                   data-testid={`view-order-link-${order.id}`}
-                  className="rounded-xl border border-slate-300 bg-white px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition"
+                  className="rounded-xl border border-slate-300 bg-ui-surface px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition"
                 >
                   View Details & Tracking →
                 </Link>

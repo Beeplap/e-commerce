@@ -147,14 +147,14 @@ export function PaymentForm({
   };
 
   const inputClass =
-    "w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:border-teal-700 focus:outline-none focus:ring-1 focus:ring-teal-700";
+    "w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:border-orange-700 focus:outline-none focus:ring-1 focus:ring-ui-focus";
 
   return (
     <form
       onSubmit={handleSubmit}
       noValidate
       aria-label="Card payment"
-      className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+      className="rounded-2xl border border-slate-200 bg-ui-surface p-6 shadow-sm"
     >
       <h2 className="text-base font-bold text-slate-900">Payment details</h2>
       <p className="mt-1 text-xs text-slate-500">
@@ -273,7 +273,7 @@ export function PaymentForm({
       <button
         type="submit"
         disabled={submitting || declined}
-        className="mt-6 w-full rounded-xl bg-teal-800 py-3.5 text-sm font-bold text-white shadow-sm transition hover:bg-teal-900 disabled:opacity-40"
+        className="mt-6 w-full rounded-xl bg-orange-800 py-3.5 text-sm font-bold text-white shadow-sm transition hover:bg-orange-900 disabled:opacity-40"
       >
         {submitting ? "Processing payment..." : `Pay ${total} ${currency}`}
       </button>

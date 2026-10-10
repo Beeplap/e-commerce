@@ -224,7 +224,7 @@ export default function CheckoutPage() {
       <div className="min-h-screen flex flex-col bg-slate-50">
         <StorefrontHeader />
         <main className="flex-1 mx-auto max-w-3xl w-full px-4 py-16 text-center">
-          <div className="rounded-2xl border border-slate-200 bg-white p-12 shadow-sm">
+          <div className="rounded-2xl border border-slate-200 bg-ui-surface p-12 shadow-sm">
             <h1 className="text-xl font-bold text-slate-900">
               Your cart is empty
             </h1>
@@ -234,7 +234,7 @@ export default function CheckoutPage() {
             <div className="mt-6">
               <Link
                 href="/"
-                className="rounded-xl bg-teal-800 px-6 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-teal-900 transition"
+                className="rounded-xl bg-orange-800 px-6 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-orange-900 transition"
               >
                 Browse Products
               </Link>
@@ -256,11 +256,11 @@ export default function CheckoutPage() {
           aria-label="Breadcrumb"
           className="mb-6 flex items-center gap-2 text-xs text-slate-500"
         >
-          <Link href="/" className="hover:text-teal-700 transition">
+          <Link href="/" className="hover:text-orange-700 transition">
             Home
           </Link>
           <span>/</span>
-          <Link href="/cart" className="hover:text-teal-700 transition">
+          <Link href="/cart" className="hover:text-orange-700 transition">
             Cart
           </Link>
           <span>/</span>
@@ -294,10 +294,10 @@ export default function CheckoutPage() {
           {/* Left Column: Addresses & Shipping (8 cols) */}
           <div className="lg:col-span-8 space-y-8">
             {/* Step 1: Customer & Shipping Address */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="rounded-2xl border border-slate-200 bg-ui-surface p-6 shadow-sm">
               <div className="flex items-center justify-between border-b border-slate-100 pb-4">
                 <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-teal-800 text-xs text-white">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-orange-800 text-xs text-white">
                     1
                   </span>
                   Shipping Address
@@ -306,7 +306,7 @@ export default function CheckoutPage() {
                   <button
                     type="button"
                     onClick={() => setUseNewAddress(!useNewAddress)}
-                    className="text-xs font-semibold text-teal-800 hover:underline"
+                    className="text-xs font-semibold text-orange-800 hover:underline"
                   >
                     {useNewAddress ? "Use saved address" : "+ Add new address"}
                   </button>
@@ -329,7 +329,7 @@ export default function CheckoutPage() {
                     value={guestEmail}
                     onChange={(e) => setGuestEmail(e.target.value)}
                     placeholder="you@example.com"
-                    className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 placeholder:text-slate-400 focus:border-teal-700 focus:outline-none focus:ring-1 focus:ring-teal-700"
+                    className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 placeholder:text-slate-400 focus:border-orange-700 focus:outline-none focus:ring-1 focus:ring-ui-focus"
                   />
                 </div>
               )}
@@ -342,7 +342,7 @@ export default function CheckoutPage() {
                       key={addr.id}
                       className={`flex items-start gap-3 rounded-xl border p-4 cursor-pointer transition ${
                         selectedAddressId === addr.id
-                          ? "border-teal-700 bg-teal-50/40 ring-1 ring-teal-700"
+                          ? "border-orange-700 bg-orange-50/40 ring-1 ring-orange-700"
                           : "border-slate-200 hover:bg-slate-50"
                       }`}
                     >
@@ -352,7 +352,7 @@ export default function CheckoutPage() {
                         value={addr.id}
                         checked={selectedAddressId === addr.id}
                         onChange={() => setSelectedAddressId(addr.id)}
-                        className="mt-1 text-teal-800 focus:ring-teal-700"
+                        className="mt-1 text-orange-800 focus:ring-ui-focus"
                       />
                       <div className="text-xs">
                         <div className="flex items-center gap-2">
@@ -360,7 +360,7 @@ export default function CheckoutPage() {
                             {addr.full_name}
                           </span>
                           {addr.is_default && (
-                            <span className="rounded bg-teal-100 px-1.5 py-0.5 text-[10px] font-bold text-teal-800">
+                            <span className="rounded bg-orange-100 px-1.5 py-0.5 text-[10px] font-bold text-orange-800">
                               DEFAULT
                             </span>
                           )}
@@ -397,7 +397,7 @@ export default function CheckoutPage() {
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
                       placeholder="Jane Doe"
-                      className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:border-teal-700 focus:outline-none focus:ring-1 focus:ring-teal-700"
+                      className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:border-orange-700 focus:outline-none focus:ring-1 focus:ring-ui-focus"
                     />
                   </div>
 
@@ -415,7 +415,7 @@ export default function CheckoutPage() {
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="+1 (555) 000-0000"
-                      className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:border-teal-700 focus:outline-none focus:ring-1 focus:ring-teal-700"
+                      className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:border-orange-700 focus:outline-none focus:ring-1 focus:ring-ui-focus"
                     />
                   </div>
 
@@ -430,7 +430,7 @@ export default function CheckoutPage() {
                       id="country"
                       value={country}
                       onChange={(e) => setCountry(e.target.value)}
-                      className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:border-teal-700 focus:outline-none focus:ring-1 focus:ring-teal-700 bg-white"
+                      className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:border-orange-700 focus:outline-none focus:ring-1 focus:ring-ui-focus bg-ui-surface"
                     >
                       <option value="US">United States (US)</option>
                       <option value="CA">Canada (CA)</option>
@@ -453,7 +453,7 @@ export default function CheckoutPage() {
                       value={line1}
                       onChange={(e) => setLine1(e.target.value)}
                       placeholder="123 Market St"
-                      className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:border-teal-700 focus:outline-none focus:ring-1 focus:ring-teal-700"
+                      className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:border-orange-700 focus:outline-none focus:ring-1 focus:ring-ui-focus"
                     />
                   </div>
 
@@ -470,7 +470,7 @@ export default function CheckoutPage() {
                       value={line2}
                       onChange={(e) => setLine2(e.target.value)}
                       placeholder="Apt 4B"
-                      className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:border-teal-700 focus:outline-none focus:ring-1 focus:ring-teal-700"
+                      className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:border-orange-700 focus:outline-none focus:ring-1 focus:ring-ui-focus"
                     />
                   </div>
 
@@ -488,7 +488,7 @@ export default function CheckoutPage() {
                       value={city}
                       onChange={(e) => setCity(e.target.value)}
                       placeholder="Austin"
-                      className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:border-teal-700 focus:outline-none focus:ring-1 focus:ring-teal-700"
+                      className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:border-orange-700 focus:outline-none focus:ring-1 focus:ring-ui-focus"
                     />
                   </div>
 
@@ -507,7 +507,7 @@ export default function CheckoutPage() {
                         value={state}
                         onChange={(e) => setState(e.target.value)}
                         placeholder="TX"
-                        className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:border-teal-700 focus:outline-none focus:ring-1 focus:ring-teal-700"
+                        className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:border-orange-700 focus:outline-none focus:ring-1 focus:ring-ui-focus"
                       />
                     </div>
                     <div>
@@ -524,7 +524,7 @@ export default function CheckoutPage() {
                         value={postalCode}
                         onChange={(e) => setPostalCode(e.target.value)}
                         placeholder="78701"
-                        className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:border-teal-700 focus:outline-none focus:ring-1 focus:ring-teal-700"
+                        className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:border-orange-700 focus:outline-none focus:ring-1 focus:ring-ui-focus"
                       />
                     </div>
                   </div>
@@ -533,10 +533,10 @@ export default function CheckoutPage() {
             </div>
 
             {/* Step 2: Multi-Seller Shipping Options */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="rounded-2xl border border-slate-200 bg-ui-surface p-6 shadow-sm">
               <div className="border-b border-slate-100 pb-4">
                 <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-teal-800 text-xs text-white">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-orange-800 text-xs text-white">
                     2
                   </span>
                   Shipping Method & Multi-Seller Delivery
@@ -555,7 +555,7 @@ export default function CheckoutPage() {
                       className="rounded-xl border border-slate-200 p-4 bg-slate-50/50"
                     >
                       <div className="flex items-center justify-between pb-3 border-b border-slate-200/60">
-                        <span className="text-xs font-bold text-teal-900 uppercase tracking-wider">
+                        <span className="text-xs font-bold text-orange-900 uppercase tracking-wider">
                           Seller: {seller.seller_name}
                         </span>
                         <span className="text-xs text-slate-500">
@@ -577,8 +577,8 @@ export default function CheckoutPage() {
                                 htmlFor={`shipping-${method.method_id}`}
                                 className={`flex items-center justify-between p-3 rounded-lg border text-xs cursor-pointer transition ${
                                   isSelected
-                                    ? "border-teal-700 bg-white ring-1 ring-teal-700 font-semibold"
-                                    : "border-slate-200 bg-white hover:bg-slate-50"
+                                    ? "border-orange-700 bg-ui-surface ring-1 ring-orange-700 font-semibold"
+                                    : "border-slate-200 bg-ui-surface hover:bg-slate-50"
                                 }`}
                               >
                                 <div className="flex items-center gap-2.5">
@@ -596,7 +596,7 @@ export default function CheckoutPage() {
                                         method.method_id,
                                       )
                                     }
-                                    className="text-teal-800 focus:ring-teal-700"
+                                    className="text-orange-800 focus:ring-ui-focus"
                                   />
                                   <div>
                                     <span className="text-slate-900">
@@ -632,7 +632,7 @@ export default function CheckoutPage() {
 
           {/* Right Column: Order Summary & Placement (4 cols) */}
           <div className="lg:col-span-4 space-y-6">
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="rounded-2xl border border-slate-200 bg-ui-surface p-6 shadow-sm">
               <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-4">
                 Order Review
               </h2>
@@ -680,7 +680,7 @@ export default function CheckoutPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting || !cart || cart.total_items === 0}
-                  className="w-full rounded-xl bg-teal-800 py-3.5 text-sm font-bold text-white shadow-sm hover:bg-teal-900 disabled:opacity-40 transition"
+                  className="w-full rounded-xl bg-orange-800 py-3.5 text-sm font-bold text-white shadow-sm hover:bg-orange-900 disabled:opacity-40 transition"
                 >
                   {isSubmitting ? "Placing Order..." : "Confirm & Place Order"}
                 </button>

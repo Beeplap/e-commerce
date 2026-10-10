@@ -1,5 +1,13 @@
 # Project progress
 
+## Reference palette correction
+
+- Updated the shared interface and storefront from green/blue-gray to the supplied warm ivory, copper and charcoal palette. The storefront hero now uses an ivory surface with copper brand emphasis and legible charcoal copy; shared action, focus, selection, borders and neutral page surfaces follow the same palette. Semantic success, warning, danger and information colors remain distinct.
+- Fixed a storefront-header overflow discovered by Playwright at 375px. Captured the home page at 375, 430, 768, 1024, 1440 and 1920px and the login page at 375 and 1440px; verified the rendered palette, keyboard focus and absence of page-wide overflow. Evidence and API limitations are in `docs/screenshots/reference-palette/README.md`.
+- Measured 18 palette pairings against the 4.5:1 normal-text and 3:1 large-text/control targets; lightened the selected surface after detecting insufficient contrast for the copper link color. Backend/API/auth/CSRF/tenant behavior and security controls are unchanged.
+- Full `pnpm check` was attempted: backend Ruff, strict mypy (190 files), Django checks and offline schema validation passed; PostgreSQL test setup remained blocked by intermittent Windows-to-WSL connection timeouts (**29 passed, 369 setup errors**). Compose configuration validation passed through WSL. No phase selector was advanced and no roadmap phase was started.
+- Final frontend validation passed: `pnpm format:check`, `pnpm lint`, `pnpm typecheck`, `pnpm test` (**219 passed across 30 files**), `pnpm build` and `git diff --check`. Work is isolated on `ui-overhaul-reference-palette`; the user's dirty main checkout is preserved and the correction has not been merged into it.
+
 ## UI overhaul — separate `ui-overhaul` branch
 
 - Roadmap: `instrutions3.md`; UI selector: `UI_CURRENT_PHASE.md`. User confirmed automatic validation → documentation → commit → push → next UI phase on 2026-10-03. Concurrent backend scope remains in `CURRENT_PHASE.md`.

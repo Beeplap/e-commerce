@@ -363,7 +363,7 @@ function FinanceDashboard({
                 placeholder="0.00"
                 value={payoutAmount}
                 onChange={(e) => setPayoutAmount(e.target.value)}
-                className="mt-1 w-full rounded-lg border border-ui-control-border px-3 py-2 text-sm text-ui-foreground focus:border-teal-700 focus:outline-none"
+                className="mt-1 w-full rounded-lg border border-ui-control-border px-3 py-2 text-sm text-ui-foreground focus:border-orange-700 focus:outline-none"
               />
             </div>
 
@@ -379,7 +379,7 @@ function FinanceDashboard({
                 rows={2}
                 value={payoutNotes}
                 onChange={(e) => setPayoutNotes(e.target.value)}
-                className="mt-1 w-full rounded-lg border border-ui-control-border px-3 py-2 text-sm text-ui-foreground focus:border-teal-700 focus:outline-none"
+                className="mt-1 w-full rounded-lg border border-ui-control-border px-3 py-2 text-sm text-ui-foreground focus:border-orange-700 focus:outline-none"
               />
             </div>
 

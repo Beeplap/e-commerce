@@ -42,14 +42,14 @@ export function CartDrawer() {
 
       {/* Drawer Panel */}
       <div className="fixed inset-y-0 right-0 flex max-w-full pl-10">
-        <div className="w-screen max-w-md bg-white shadow-2xl flex flex-col">
+        <div className="w-screen max-w-md bg-ui-surface shadow-2xl flex flex-col">
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-slate-50/50">
             <div className="flex items-center gap-2">
               <h2 className="text-lg font-bold text-slate-900">
                 Shopping Cart
               </h2>
-              <span className="inline-flex items-center justify-center rounded-full bg-teal-100 px-2.5 py-0.5 text-xs font-semibold text-teal-800">
+              <span className="inline-flex items-center justify-center rounded-full bg-orange-100 px-2.5 py-0.5 text-xs font-semibold text-orange-800">
                 {totalItems} {totalItems === 1 ? "item" : "items"}
               </span>
             </div>
@@ -79,7 +79,7 @@ export function CartDrawer() {
           <div className="flex-1 overflow-y-auto px-6 py-4 divide-y divide-slate-100">
             {sellers.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center py-12">
-                <div className="h-16 w-16 rounded-full bg-teal-50 flex items-center justify-center text-teal-600 mb-4">
+                <div className="h-16 w-16 rounded-full bg-orange-50 flex items-center justify-center text-orange-600 mb-4">
                   <svg
                     className="h-8 w-8"
                     fill="none"
@@ -104,7 +104,7 @@ export function CartDrawer() {
                 <button
                   type="button"
                   onClick={closeCart}
-                  className="mt-6 rounded-lg bg-teal-800 px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-teal-900 transition"
+                  className="mt-6 rounded-lg bg-orange-800 px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-orange-900 transition"
                 >
                   Start Shopping
                 </button>
@@ -116,7 +116,7 @@ export function CartDrawer() {
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
                       Seller:{" "}
-                      <span className="text-teal-900">
+                      <span className="text-orange-900">
                         {seller.seller_name}
                       </span>
                     </span>
@@ -130,7 +130,7 @@ export function CartDrawer() {
                     {seller.items.map((item) => (
                       <div
                         key={item.id}
-                        className="flex gap-3 rounded-xl border border-slate-100 p-3 hover:border-slate-200 transition bg-white"
+                        className="flex gap-3 rounded-xl border border-slate-100 p-3 hover:border-slate-200 transition bg-ui-surface"
                       >
                         {/* Thumbnail */}
                         <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg bg-slate-100 border border-slate-200 relative">
@@ -168,7 +168,7 @@ export function CartDrawer() {
                               <Link
                                 href={`/products/${item.product_id}`}
                                 onClick={closeCart}
-                                className="text-xs font-bold text-slate-800 hover:text-teal-700 transition line-clamp-1"
+                                className="text-xs font-bold text-slate-800 hover:text-orange-700 transition line-clamp-1"
                               >
                                 {item.product_title}
                               </Link>
@@ -292,7 +292,7 @@ export function CartDrawer() {
                 <Link
                   href="/cart"
                   onClick={closeCart}
-                  className="flex-1 text-center rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 transition"
+                  className="flex-1 text-center rounded-xl border border-slate-300 bg-ui-surface px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 transition"
                 >
                   View Full Cart
                 </Link>
@@ -303,7 +303,7 @@ export function CartDrawer() {
                   className={`flex-1 text-center rounded-xl px-4 py-2.5 text-xs font-bold text-white shadow-sm transition ${
                     hasOutOfStock
                       ? "bg-slate-400 cursor-not-allowed pointer-events-none"
-                      : "bg-teal-800 hover:bg-teal-900"
+                      : "bg-orange-800 hover:bg-orange-900"
                   }`}
                 >
                   Checkout

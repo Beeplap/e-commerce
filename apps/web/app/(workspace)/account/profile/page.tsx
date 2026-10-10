@@ -127,7 +127,7 @@ export default function CustomerProfilePage() {
       ) : (
         <div className="space-y-8 max-w-3xl">
           {/* Personal Details Card */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="rounded-2xl border border-slate-200 bg-ui-surface p-6 shadow-sm">
             <div className="border-b border-slate-100 pb-4 mb-6">
               <h2 className="text-base font-bold text-slate-900">
                 Personal Information
@@ -170,7 +170,7 @@ export default function CustomerProfilePage() {
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     data-testid="profile-input-firstname"
-                    className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-teal-700 focus:outline-none"
+                    className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-orange-700 focus:outline-none"
                     placeholder="Jane"
                   />
                 </div>
@@ -183,7 +183,7 @@ export default function CustomerProfilePage() {
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                     data-testid="profile-input-lastname"
-                    className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-teal-700 focus:outline-none"
+                    className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-orange-700 focus:outline-none"
                     placeholder="Doe"
                   />
                 </div>
@@ -207,7 +207,7 @@ export default function CustomerProfilePage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     data-testid="profile-input-email"
-                    className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-teal-700 focus:outline-none"
+                    className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-orange-700 focus:outline-none"
                     placeholder="jane@example.com"
                   />
                 </div>
@@ -221,7 +221,7 @@ export default function CustomerProfilePage() {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     data-testid="profile-input-phone"
-                    className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-teal-700 focus:outline-none"
+                    className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-orange-700 focus:outline-none"
                     placeholder="+1 555-0100"
                   />
                 </div>
@@ -238,7 +238,7 @@ export default function CustomerProfilePage() {
                   type="submit"
                   disabled={profileSubmitting}
                   data-testid="profile-save-button"
-                  className="rounded-xl bg-teal-800 px-5 py-2 text-xs font-bold text-white shadow-sm hover:bg-teal-900 disabled:opacity-50 transition"
+                  className="rounded-xl bg-orange-800 px-5 py-2 text-xs font-bold text-white shadow-sm hover:bg-orange-900 disabled:opacity-50 transition"
                 >
                   {profileSubmitting ? "Saving..." : "Save Changes"}
                 </button>
@@ -247,7 +247,7 @@ export default function CustomerProfilePage() {
           </div>
 
           {/* Change Password Card */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="rounded-2xl border border-slate-200 bg-ui-surface p-6 shadow-sm">
             <div className="border-b border-slate-100 pb-4 mb-6">
               <h2 className="text-base font-bold text-slate-900">
                 Account Security
@@ -290,7 +290,7 @@ export default function CustomerProfilePage() {
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
                   data-testid="password-input-current"
-                  className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-teal-700 focus:outline-none"
+                  className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-orange-700 focus:outline-none"
                   placeholder="••••••••"
                 />
               </div>
@@ -305,7 +305,7 @@ export default function CustomerProfilePage() {
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   data-testid="password-input-new"
-                  className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-teal-700 focus:outline-none"
+                  className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-orange-700 focus:outline-none"
                   placeholder="••••••••"
                 />
                 <p className="mt-1 text-[11px] text-slate-400">
@@ -323,7 +323,7 @@ export default function CustomerProfilePage() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   data-testid="password-input-confirm"
-                  className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-teal-700 focus:outline-none"
+                  className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-orange-700 focus:outline-none"
                   placeholder="••••••••"
                 />
               </div>

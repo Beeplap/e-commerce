@@ -76,7 +76,7 @@ export default function CartPage() {
           aria-label="Breadcrumb"
           className="mb-6 flex items-center gap-2 text-xs text-slate-500"
         >
-          <Link href="/" className="hover:text-teal-700 transition">
+          <Link href="/" className="hover:text-orange-700 transition">
             Home
           </Link>
           <span>/</span>
@@ -120,8 +120,8 @@ export default function CartPage() {
         )}
 
         {sellers.length === 0 ? (
-          <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center shadow-sm">
-            <div className="mx-auto h-20 w-20 rounded-full bg-teal-50 flex items-center justify-center text-teal-700 mb-4">
+          <div className="rounded-2xl border border-slate-200 bg-ui-surface p-12 text-center shadow-sm">
+            <div className="mx-auto h-20 w-20 rounded-full bg-orange-50 flex items-center justify-center text-orange-700 mb-4">
               <svg
                 className="h-10 w-10"
                 fill="none"
@@ -146,7 +146,7 @@ export default function CartPage() {
             <div className="mt-6 flex justify-center gap-3">
               <Link
                 href="/"
-                className="rounded-xl bg-teal-800 px-6 py-3 text-sm font-bold text-white shadow-sm hover:bg-teal-900 transition"
+                className="rounded-xl bg-orange-800 px-6 py-3 text-sm font-bold text-white shadow-sm hover:bg-orange-900 transition"
               >
                 Explore Catalog
               </Link>
@@ -159,7 +159,7 @@ export default function CartPage() {
               {sellers.map((seller) => (
                 <div
                   key={seller.seller_id}
-                  className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden"
+                  className="rounded-2xl border border-slate-200 bg-ui-surface shadow-sm overflow-hidden"
                 >
                   {/* Seller Header */}
                   <div className="bg-slate-50/80 px-6 py-3.5 border-b border-slate-200 flex items-center justify-between">
@@ -169,7 +169,7 @@ export default function CartPage() {
                       </span>
                       <Link
                         href={`/sellers/${seller.seller_id}`}
-                        className="text-sm font-bold text-teal-900 hover:underline"
+                        className="text-sm font-bold text-orange-900 hover:underline"
                       >
                         {seller.seller_name}
                       </Link>
@@ -221,7 +221,7 @@ export default function CartPage() {
                             <div className="flex items-start justify-between gap-2">
                               <Link
                                 href={`/products/${item.product_id}`}
-                                className="text-sm font-bold text-slate-900 hover:text-teal-700 transition"
+                                className="text-sm font-bold text-slate-900 hover:text-orange-700 transition"
                               >
                                 {item.product_title}
                               </Link>
@@ -257,7 +257,7 @@ export default function CartPage() {
 
                           {/* Controls */}
                           <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3">
-                            <div className="flex items-center rounded-lg border border-slate-300 bg-white">
+                            <div className="flex items-center rounded-lg border border-slate-300 bg-ui-surface">
                               <button
                                 type="button"
                                 onClick={() =>
@@ -311,7 +311,7 @@ export default function CartPage() {
             {/* Order Summary & Coupon (Right 4 Cols) */}
             <div className="lg:col-span-4 space-y-6">
               {/* Order Summary Card */}
-              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+              <div className="rounded-2xl border border-slate-200 bg-ui-surface p-6 shadow-sm">
                 <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-4">
                   Order Summary
                 </h2>
@@ -363,7 +363,7 @@ export default function CartPage() {
                     className={`block w-full text-center rounded-xl py-3.5 text-sm font-bold text-white shadow-sm transition ${
                       hasOutOfStock || sellers.length === 0
                         ? "bg-slate-300 cursor-not-allowed pointer-events-none"
-                        : "bg-teal-800 hover:bg-teal-900"
+                        : "bg-orange-800 hover:bg-orange-900"
                     }`}
                   >
                     Proceed to Checkout
@@ -376,7 +376,7 @@ export default function CartPage() {
               </div>
 
               {/* Promotional Coupon Box */}
-              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+              <div className="rounded-2xl border border-slate-200 bg-ui-surface p-6 shadow-sm">
                 <h3 className="text-sm font-bold text-slate-900 mb-3">
                   Promotional Coupon
                 </h3>
@@ -386,7 +386,7 @@ export default function CartPage() {
                     value={couponCode}
                     onChange={(e) => setCouponCode(e.target.value)}
                     placeholder="Enter coupon code"
-                    className="flex-1 rounded-xl border border-slate-300 px-3.5 py-2 text-xs font-mono uppercase text-slate-800 placeholder:text-slate-400 focus:border-teal-700 focus:outline-none focus:ring-1 focus:ring-teal-700"
+                    className="flex-1 rounded-xl border border-slate-300 px-3.5 py-2 text-xs font-mono uppercase text-slate-800 placeholder:text-slate-400 focus:border-orange-700 focus:outline-none focus:ring-1 focus:ring-ui-focus"
                   />
                   <button
                     type="submit"

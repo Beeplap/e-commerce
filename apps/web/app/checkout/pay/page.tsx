@@ -20,7 +20,7 @@ function PayContent() {
   if (!orderId) {
     return (
       <div className="mx-auto max-w-lg w-full px-4 py-16 text-center">
-        <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+        <div className="rounded-2xl border border-slate-200 bg-ui-surface p-8 shadow-sm">
           <h1 className="text-lg font-bold text-slate-900">
             No pending order found
           </h1>
@@ -30,7 +30,7 @@ function PayContent() {
           <div className="mt-6">
             <Link
               href="/cart"
-              className="rounded-xl bg-teal-800 px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-teal-900 transition"
+              className="rounded-xl bg-orange-800 px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-orange-900 transition"
             >
               Return to Cart
             </Link>
@@ -56,11 +56,11 @@ function PayContent() {
         aria-label="Breadcrumb"
         className="mb-6 flex items-center gap-2 text-xs text-slate-500"
       >
-        <Link href="/" className="hover:text-teal-700 transition">
+        <Link href="/" className="hover:text-orange-700 transition">
           Home
         </Link>
         <span>/</span>
-        <Link href="/cart" className="hover:text-teal-700 transition">
+        <Link href="/cart" className="hover:text-orange-700 transition">
           Cart
         </Link>
         <span>/</span>

@@ -27,6 +27,7 @@ export default function SellerStorePage({ params }: SellerPageProps) {
         setLoading(false);
       })
       .catch((err: unknown) => {
+        if (controller.signal.aborted) return;
         setError(
           err instanceof Error
             ? err.message

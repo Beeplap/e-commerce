@@ -51,7 +51,11 @@ export default function CustomerAddressesPage() {
         setError(null);
       })
       .catch((err: unknown) => {
-        if (err instanceof Error && err.name === "AbortError") return;
+        if (
+          signal?.aborted ||
+          (err instanceof Error && err.name === "AbortError")
+        )
+          return;
         setError("Failed to load your addresses.");
       })
       .finally(() => setLoading(false));

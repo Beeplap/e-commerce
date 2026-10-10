@@ -20,6 +20,7 @@ export default function CustomerOrdersPage() {
         setError(null);
       })
       .catch((err: unknown) => {
+        if (abort.signal.aborted) return;
         if (err instanceof Error && err.name === "AbortError") return;
         setError("Failed to load your orders. Please try again.");
       })

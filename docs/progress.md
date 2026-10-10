@@ -19,6 +19,14 @@
 
 # Project progress
 
+## CI dependency audit and early-failure cleanup repair
+
+- Reproduced the failed `main` Actions run `38030871481`: seven production dependency advisories blocked infrastructure initialization, then unconditional teardown failed because `.env` did not exist.
+- Upgraded the exact Next.js and matching ESLint-config pins to stable 16.3.8 and refreshed compatible transitive resolutions, including `source-map-js` 1.2.2. Official releases/advisories and registry compatibility were checked before the update. `pnpm audit --prod` now passes with **zero known vulnerabilities**; the audit gate remains mandatory with no advisory exceptions.
+- Cleanup checks for the generated `.env` before invoking Compose. Actual shell validation covers missing environment (skip), initialized environment (teardown runs), and Docker error (exit status propagates). Required cleanup failures are not ignored.
+- Locked installation, complete PostgreSQL `pnpm check` (**398 backend + 474 frontend tests**), Ruff, mypy, Django/migration/offline schema checks, repository formatting, ESLint, TypeScript and production build passed. Both quiet Compose configuration checks and the real proxied session/CSRF smoke test passed. No backend, auth, API or tenant policy changed; no phase was started or advanced.
+- Known tooling debt: full development dependency audit still reports the high-severity `braces@3.0.3` glob-pattern issue in ESLint. No patched version is published; it is absent from the production graph. The finding is retained in `docs/security.md` and `docs/stack.md`, rather than suppressed. GitHub repeats application, proxy and production-container checks after push; the committed SHA's result is available in [Actions](https://github.com/Beeplap/e-commerce/actions/workflows/checks.yaml).
+
 ## Direct integration into GitHub main
 
 - At the user's explicit request, integrated `ui-overhaul` with the current remote `main` directly, without creating a pull request or rewriting branch history. Preserved the newer Phase 34?46 storefront, native overlays, exact money, API error/cancellation handling and the separate customer-account route group.

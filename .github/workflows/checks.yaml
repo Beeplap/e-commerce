@@ -61,4 +61,9 @@ jobs:
           test "$(docker run --rm quick-commerce-web:ci whoami)" = "nextjs"
       - name: Stop infrastructure
         if: always()
-        run: docker compose --env-file .env -f infra/compose.yaml down
+        run: |
+          if [ -f .env ]; then
+            docker compose --env-file .env -f infra/compose.yaml down
+          else
+            echo "Infrastructure was not initialized; no generated .env to clean up."
+          fi

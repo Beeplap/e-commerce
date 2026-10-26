@@ -1,5 +1,11 @@
 # Security model
 
+## Settlement currency maintenance
+
+New seller balances inherit the seller currency instead of hardcoded USD. Services and PostgreSQL independently reject foreign-currency settlement, payout and ledger sources, including cross-seller references. Currency identities cannot be changed to relabel history. Inconsistent legacy rows are retained and financial writes fail closed until reviewed reconciliation; the read-only `check_finance_currencies` command returns a nonzero exit code and counts without contact values, payment credentials or amounts.
+
+Browser payment intent/confirmation revalidate and lock an active authenticated User before business locks. Guest order access remains bound to Django's server-side session; CSRF, payment ownership, signed webhooks, production-disabled mock charging and append-only ledgers remain enforced. Confirmation checks financial currency before calling the gateway. This is not a live provider integration or a conversion policy. Platform totals across multiple currencies remain a separate reporting limitation and must not be interpreted as converted financial totals.
+
 ## Authentication and session controls
 
 The UUID custom user uses normalized email authentication and Argon2 password hashing. Django's validators require 12 characters, check common/numeric passwords and compare password text against account attributes. Password hashes and passwords never enter API serializers. The regular account bootstrap command prompts for a validated, confirmed password without accepting it as a command argument; it cannot create Django staff, superuser or platform access.

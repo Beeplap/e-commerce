@@ -35,17 +35,46 @@ class CommissionResult:
     seller_net_amount: Decimal
 
 
+@transaction.atomic
 def ensure_seller_balance(seller_id: UUID) -> SellerBalance:
+    currency = (
+        Seller.objects.select_for_update()
+        .only("default_currency")
+        .get(pk=seller_id)
+        .default_currency
+    )
     balance, _ = SellerBalance.objects.get_or_create(
         seller_id=seller_id,
         defaults={
-            "currency": "USD",
+            "currency": currency,
             "current_balance": Decimal("0.00"),
             "pending_balance": Decimal("0.00"),
             "total_paid_out": Decimal("0.00"),
         },
     )
+    if balance.currency != currency:
+        raise ValidationError(
+            {"currency": "Seller balance currency is inconsistent. Reconciliation is required."}
+        )
     return balance
+
+
+def validate_settlement_currency(seller_order: SellerOrder) -> None:
+    """Validate snapshots before a charge or settlement; never convert historical money."""
+    currency = Seller.objects.values_list("default_currency", flat=True).get(
+        pk=seller_order.seller_id
+    )
+    if seller_order.order.currency != currency:
+        raise ValidationError({"currency": "Order and seller currencies must match."})
+    balance_currency = (
+        SellerBalance.objects.filter(seller_id=seller_order.seller_id)
+        .values_list("currency", flat=True)
+        .first()
+    )
+    if balance_currency is not None and balance_currency != currency:
+        raise ValidationError(
+            {"currency": "Seller balance currency is inconsistent. Reconciliation is required."}
+        )
 
 
 def calculate_commission(
@@ -132,6 +161,7 @@ def calculate_commission(
     )
 
 
+@transaction.atomic
 def record_ledger_entry(
     seller_id: UUID,
     entry_type: str,
@@ -142,7 +172,31 @@ def record_ledger_entry(
     payment_reference: str = "",
     payout_reference: str = "",
 ) -> SellerLedgerEntry:
+    Seller.objects.select_for_update().get(pk=seller_id)
     balance = SellerBalance.objects.select_for_update().get(seller_id=seller_id)
+    currency = Seller.objects.values_list("default_currency", flat=True).get(pk=seller_id)
+    if balance.currency != currency:
+        raise ValidationError({"currency": "Seller balance requires currency reconciliation."})
+    if seller_order is not None:
+        order_currency = (
+            SellerOrder.objects.filter(pk=seller_order.pk, seller_id=seller_id)
+            .values_list("order__currency", flat=True)
+            .first()
+        )
+        if order_currency != currency:
+            raise ValidationError(
+                {"currency": "Ledger order must belong to this seller and currency."}
+            )
+    if payout is not None:
+        payout_currency = (
+            Payout.objects.filter(pk=payout.pk, seller_id=seller_id)
+            .values_list("currency", flat=True)
+            .first()
+        )
+        if payout_currency != currency:
+            raise ValidationError(
+                {"currency": "Ledger payout must belong to this seller and currency."}
+            )
     new_balance = balance.current_balance + amount
 
     if entry_type == SellerLedgerEntry.EntryType.PAYOUT and new_balance < Decimal("0.00"):
@@ -172,7 +226,9 @@ def settle_seller_order(
     seller_order: SellerOrder,
 ) -> tuple[SellerLedgerEntry, SellerLedgerEntry]:
     with transaction.atomic():
+        Seller.objects.select_for_update().get(pk=seller_order.seller_id)
         so = SellerOrder.objects.select_for_update().get(pk=seller_order.pk)
+        validate_settlement_currency(so)
         ensure_seller_balance(so.seller_id)
 
         existing_sale = SellerLedgerEntry.objects.filter(
@@ -294,6 +350,21 @@ def request_payout(
         return payout
 
 
+def _lock_payout(payout_id: UUID) -> Payout:
+    """Called after platform authorization: Seller -> Payout, with legacy currency guards."""
+    seller_id = Payout.objects.values_list("seller_id", flat=True).get(pk=payout_id)
+    seller = Seller.objects.select_for_update().get(pk=seller_id)
+    payout = Payout.objects.select_for_update().get(pk=payout_id)
+    if payout.currency != seller.default_currency:
+        raise ValidationError({"currency": "Payout requires currency reconciliation."})
+    balance_currency = (
+        SellerBalance.objects.filter(seller_id=seller_id).values_list("currency", flat=True).first()
+    )
+    if balance_currency is not None and balance_currency != payout.currency:
+        raise ValidationError({"currency": "Seller balance requires currency reconciliation."})
+    return payout
+
+
 def approve_payout(
     actor: Any,
     payout_id: UUID,
@@ -304,7 +375,7 @@ def approve_payout(
         if not access.role.permissions.filter(code="platform.finance.manage").exists():
             raise PermissionDenied("Missing required platform capability: platform.finance.manage")
 
-        payout = Payout.objects.select_for_update().get(pk=payout_id)
+        payout = _lock_payout(payout_id)
         if SellerMembership.objects.filter(user=actor, seller_id=payout.seller_id).exists():
             raise PermissionDenied("Seller members cannot approve their own payouts.")
 
@@ -340,7 +411,7 @@ def process_payout(
         if not access.role.permissions.filter(code="platform.finance.manage").exists():
             raise PermissionDenied("Missing required platform capability: platform.finance.manage")
 
-        payout = Payout.objects.select_for_update().get(pk=payout_id)
+        payout = _lock_payout(payout_id)
         if SellerMembership.objects.filter(user=actor, seller_id=payout.seller_id).exists():
             raise PermissionDenied("Seller members cannot process their own payouts.")
 
@@ -424,7 +495,7 @@ def reject_payout(
         if not access.role.permissions.filter(code="platform.finance.manage").exists():
             raise PermissionDenied("Missing required platform capability: platform.finance.manage")
 
-        payout = Payout.objects.select_for_update().get(pk=payout_id)
+        payout = _lock_payout(payout_id)
         if SellerMembership.objects.filter(user=actor, seller_id=payout.seller_id).exists():
             raise PermissionDenied("Seller members cannot reject their own payouts.")
 

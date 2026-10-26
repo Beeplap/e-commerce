@@ -39,6 +39,7 @@ class PaymentIntentView(BrowserAPIView):
             order_id=data["order_id"],
             idempotency_key=data["idempotency_key"],
             provider=data["provider"],
+            actor=request.user,
         )
         return Response(
             PaymentOutputSerializer(payment).data,

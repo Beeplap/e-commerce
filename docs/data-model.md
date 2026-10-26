@@ -1,5 +1,11 @@
 # Data model
 
+## Settlement currency constraints
+
+Additive `finance.0003_currency_integrity` installs PostgreSQL triggers without rewriting existing rows. New/updated balances, payouts and ledger entries must match the seller currency; ledger entries must additionally match their linked order/payout currency. Balance/payout seller and currency, and Order currency, cannot be reassigned. Seller currency changes are rejected once orders or financial records exist. Existing append-only and tenant-scope triggers remain in place.
+
+`SellerBalance` retains a single row per seller; no second currency wallet, FX rate or database is introduced. Legacy inconsistent rows remain unchanged for explicit reconciliation and are detected by `check_finance_currencies`. The old USD model defaults are retained for migration compatibility; creation services must explicitly supply the authoritative currency and PostgreSQL rejects an incompatible omitted default.
+
 ## Present schema
 
 `accounts.User` is the custom swappable user in migration `0001_initial` before any domain foreign keys or sessions are used. It contains UUID `id`, unique canonical `email`, first/last name, active/staff/email-verification flags, created/updated timestamps, and Django's password, last-login and PermissionsMixin compatibility fields. No username field exists. The manager strips and lowercases email; PostgreSQL's check constraint rejects noncanonical or empty raw writes and unique email rejects duplicates. Login, password/session workflows and platform access now use this identity. Future relations must target `settings.AUTH_USER_MODEL`.

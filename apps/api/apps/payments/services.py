@@ -19,11 +19,13 @@ from rest_framework import status
 from rest_framework.exceptions import APIException, ValidationError
 
 from apps.events.services import publish_outbox_event
-from apps.finance.services import settle_seller_order
+from apps.finance.services import settle_seller_order, validate_settlement_currency
 from apps.inventory.models import Inventory
 from apps.inventory.services import consume_order_inventory, release_order_inventory
 from apps.orders.models import Order, OrderItem, OrderStatusHistory, SellerOrder
 from apps.payments.models import Payment, PaymentTransaction
+from apps.sellers.lifecycle_services import lock_actor
+from apps.sellers.models import Seller
 
 GUEST_ORDER_SESSION_KEY = "guest_order_ids"
 MAX_REMEMBERED_GUEST_ORDERS = 20
@@ -180,10 +182,13 @@ def create_payment_intent(
     order_id: UUID,
     idempotency_key: str,
     provider: str = "mock",
+    actor: Any = None,
 ) -> tuple[Payment, bool]:
     """Create (or idempotently return) the single active payment for an owned order."""
     key = _clean_idempotency_key(idempotency_key)
     get_gateway(provider)  # fail closed before touching state
+    if actor is not None and getattr(actor, "is_authenticated", False):
+        lock_actor(actor)
 
     order = get_object_or_404(orders.select_for_update(), pk=order_id)
 
@@ -364,8 +369,10 @@ def _fail(
 
 
 def _lock_payment_and_order(payment_id: UUID) -> tuple[Order, Payment]:
-    """Lock Order before Payment (the same order create_payment_intent uses)."""
+    """Serialize sellers before Order/Payment, then inventory and financial children."""
     order_id = get_object_or_404(Payment.objects.only("order_id"), pk=payment_id).order_id
+    seller_ids = SellerOrder.objects.filter(order_id=order_id).values_list("seller_id", flat=True)
+    list(Seller.objects.select_for_update().filter(pk__in=seller_ids).order_by("pk"))
     order = Order.objects.select_for_update().get(pk=order_id)
     payment = Payment.objects.select_for_update().get(pk=payment_id)
     return order, payment
@@ -389,8 +396,10 @@ def confirm_payment(
     token = (payment_token or "").strip()
     if not PAYMENT_TOKEN_PATTERN.fullmatch(token):
         raise ValidationError({"payment_token": "A valid payment token is required."})
+    if actor is not None and getattr(actor, "is_authenticated", False):
+        actor = lock_actor(actor)
 
-    # Ownership check before any lock: other customers' payments are indistinguishable from 404.
+    # Check ownership before business locks; other customers' payments remain a 404.
     get_object_or_404(Payment.objects.filter(order__in=orders), pk=payment_id)
     order, payment = _lock_payment_and_order(payment_id)
 
@@ -409,6 +418,9 @@ def confirm_payment(
         raise PaymentConflict("Part of this order changed before payment. Please contact support.")
     if payment.amount != order.grand_total or payment.currency != order.currency:
         raise PaymentConflict("The order total changed after the payment was created.")
+
+    for seller_order in order.seller_orders.select_related("order").order_by("pk"):
+        validate_settlement_currency(seller_order)
 
     result = gateway.charge(payment=payment, token=token)
     if result.success:

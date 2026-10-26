@@ -1,5 +1,11 @@
 # Validation
 
+## Settlement currency regressions
+
+`tests/test_finance_currency.py` covers NPR payment capture through settlement and payout, partial refunds, concurrent captures by different customers sharing one seller balance, disabled payment actors, currency/tenant mismatches, pre-charge rejection and PostgreSQL currency identity guards. A real backwards/forwards migration test constructs legacy inconsistent records under the old schema, restores the latest migrations in `finally`, and verifies unchanged historical money plus blocked new writes and a failing read-only audit. No trigger is disabled or financial history rewritten.
+
+Two existing finance settlement fixtures now explicitly supply their intended USD currency instead of an invalid empty Order currency. Their historical immutability, exact amount and duplicate-settlement assertions are unchanged. Full validation results are recorded in `docs/progress.md`; this backend maintenance does not change storefront presentation or add a numbered phase.
+
 ## Storefront visual acceptance and final QA (Phase 46)
 
 The final visual browser audit covers 13 shopper routes at 375, 430, 1440 and 1920px (52 screenshot captures), with Chromium keyboard, dialog, error, reduced-motion, accessible-name, heading, overflow and text-contrast checks. The production/fixture distinctions and reviewed screenshots are documented in [the final storefront review](storefront-final-review.md); generated captures/report remain in ignored `.artifacts/phase46-browser/`.

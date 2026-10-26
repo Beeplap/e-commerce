@@ -203,7 +203,9 @@ def test_commission_calculation_rules_and_precedence(setup: FinanceSetup) -> Non
 
 def test_changing_plan_does_not_mutate_historical_records(setup: FinanceSetup) -> None:
     # Record initial order settlement
-    order = Order.objects.create(order_number="ORD-TEST-001", grand_total=Decimal("100.00"))
+    order = Order.objects.create(
+        order_number="ORD-TEST-001", currency="USD", grand_total=Decimal("100.00")
+    )
     seller_order = SellerOrder.objects.create(
         order=order,
         seller=setup.seller_a,
@@ -495,7 +497,9 @@ def test_payout_rejection_workflow(setup: FinanceSetup) -> None:
 
 
 def test_order_settlement_idempotency(setup: FinanceSetup) -> None:
-    order = Order.objects.create(order_number="ORD-SETTLE-001", grand_total=Decimal("150.00"))
+    order = Order.objects.create(
+        order_number="ORD-SETTLE-001", currency="USD", grand_total=Decimal("150.00")
+    )
     seller_order = SellerOrder.objects.create(
         order=order,
         seller=setup.seller_a,

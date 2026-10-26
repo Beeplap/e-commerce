@@ -387,6 +387,38 @@ describe("Cart page and provider", () => {
     ).toHaveAttribute("href", "/search");
     expect(calls).toBe(2);
   });
+  it("requires confirmation before clearing an unreadable cart", async () => {
+    let cleared = false;
+    setup((url) => {
+      if (url.includes("/cart/clear")) {
+        cleared = true;
+        return json(empty);
+      }
+      if (url === "/api/v1/cart/")
+        return json(
+          { currency: ["Your cart contains different currencies."] },
+          400,
+        );
+    });
+    render(view());
+    fireEvent.click(
+      await screen.findByRole("button", { name: "Clear unavailable cart" }),
+    );
+    expect(cleared).toBe(false);
+    const dialog = screen.getByRole("dialog");
+    fireEvent.click(within(dialog).getByRole("button", { name: "Cancel" }));
+    expect(cleared).toBe(false);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Clear unavailable cart" }),
+    );
+    fireEvent.click(
+      within(screen.getByRole("dialog")).getByRole("button", {
+        name: "Clear cart",
+      }),
+    );
+    await screen.findByText("Your cart is currently empty");
+    expect(cleared).toBe(true);
+  });
   it("keeps malformed success as error and blocks purchase", async () => {
     setup((url) =>
       url === "/api/v1/cart/"
@@ -576,7 +608,7 @@ describe("Cart page and provider", () => {
     const error = await screen.findByText(
       "The code preview could not be verified. Try again.",
     );
-    expect(error).toHaveFocus();
+    await waitFor(() => expect(error).toHaveFocus());
     expect(screen.queryByText(/is eligible/)).toBeNull();
   });
   it("discards a late promo preview after quantity acceptance", async () => {

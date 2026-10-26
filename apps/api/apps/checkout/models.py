@@ -7,6 +7,29 @@ from django.conf import settings
 from django.db import models, transaction
 
 
+class CheckoutAttempt(models.Model):
+    """Successful placement replay evidence, accessible only through its owned cart."""
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    cart = models.ForeignKey(
+        "cart.Cart", on_delete=models.CASCADE, related_name="checkout_attempts"
+    )
+    order = models.ForeignKey(
+        "orders.Order", on_delete=models.PROTECT, related_name="checkout_attempts"
+    )
+    key = models.CharField(max_length=128)
+    request_digest = models.CharField(max_length=64)
+    response = models.JSONField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["cart", "key"], name="checkout_attempt_cart_key_unique"
+            ),
+        ]
+
+
 class CustomerAddress(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(

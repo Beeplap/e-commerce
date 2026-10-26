@@ -148,14 +148,18 @@ describe("Customer Checkout & Multi-Seller Workflow", () => {
     const expressRadio = el.closest("label")!.querySelector("input")!;
     fireEvent.click(expressRadio);
 
-    await waitFor(() => {
-      expect(
-        screen.getByRole("radio", { name: /Acme Priority Express/ }),
-      ).toBeChecked();
-      expect(screen.getByTestId("checkout-summary-total")).toHaveTextContent(
-        /65.00\sUSD/,
-      );
-    });
+    // The quote is debounced and reloads its radio group after the response.
+    await waitFor(
+      () => {
+        expect(
+          screen.getByRole("radio", { name: /Acme Priority Express/ }),
+        ).toBeChecked();
+        expect(screen.getByTestId("checkout-summary-total")).toHaveTextContent(
+          /65.00\sUSD/,
+        );
+      },
+      { timeout: 5000 },
+    );
   });
 
   it("submits order placement and navigates to order confirmation", async () => {

@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import hashlib
+import json
+import re
 import uuid
 from decimal import Decimal
 from typing import Any
@@ -7,14 +10,14 @@ from uuid import UUID
 
 from django.contrib.auth import get_user_model
 from django.db import transaction
-from django.db.models import F, Q, Sum
-from rest_framework.exceptions import NotFound, ValidationError
+from django.db.models import Q
+from rest_framework.exceptions import APIException, NotFound, PermissionDenied, ValidationError
 from rest_framework.request import Request
 
 from apps.cart.models import Cart, CartItem
-from apps.cart.services import get_or_create_cart
-from apps.catalog.models import ProductVariant
-from apps.checkout.models import CustomerAddress
+from apps.cart.services import get_cart_currency, get_or_create_cart, get_variant_available_stock
+from apps.catalog.models import Product, ProductVariant
+from apps.checkout.models import CheckoutAttempt, CustomerAddress
 from apps.events.services import publish_outbox_event
 from apps.finance.services import calculate_commission
 from apps.fulfillment.models import ShippingMethod, ShippingRate
@@ -26,6 +29,12 @@ from apps.promotions.services import evaluate_coupon_discount, record_coupon_red
 from apps.sellers.models import Seller
 
 User = get_user_model()
+
+
+class CheckoutConflict(APIException):
+    status_code = 409
+    default_detail = "This checkout key was already used with different order details."
+    default_code = "checkout_conflict"
 
 
 # ---------------------------------------------------------------------------
@@ -173,6 +182,7 @@ def resolve_shipping_options_for_seller(
     seller: Seller,
     country: str,
     seller_subtotal: Decimal,
+    order_weight: Decimal | None = None,
 ) -> list[dict[str, Any]]:
     """
     Finds available active shipping methods and rates for the seller and country.
@@ -190,32 +200,29 @@ def resolve_shipping_options_for_seller(
 
     for method in methods:
         # Find rate matching destination country in shipping zones
-        rate_obj = (
+        rates = (
             ShippingRate.objects.filter(
                 method=method,
                 zone__is_active=True,
-                zone__countries__contains=country,
+                zone__countries__contains=[country],
+                currency=seller.default_currency,
                 min_order_amount__lte=seller_subtotal,
             )
+            .filter(Q(zone__seller=seller) | Q(zone__seller__isnull=True))
             .filter(Q(max_order_amount__isnull=True) | Q(max_order_amount__gte=seller_subtotal))
-            .order_by("rate")
-            .first()
         )
-
-        # Fallback to any active rate for this method if no country-specific zone matched
-        if not rate_obj:
-            rate_obj = (
-                ShippingRate.objects.filter(
-                    method=method,
-                    zone__is_active=True,
-                    min_order_amount__lte=seller_subtotal,
-                )
-                .filter(Q(max_order_amount__isnull=True) | Q(max_order_amount__gte=seller_subtotal))
-                .order_by("rate")
-                .first()
+        if order_weight is None:
+            rates = rates.filter(weight_min=0, weight_max__isnull=True)
+        else:
+            rates = rates.filter(weight_min__lte=order_weight).filter(
+                Q(weight_max__isnull=True) | Q(weight_max__gte=order_weight)
             )
+        rate_obj = rates.order_by("rate", "pk").first()
 
-        rate_val = rate_obj.rate if rate_obj else Decimal("0.00")
+        if not rate_obj:
+            continue
+
+        rate_val = rate_obj.rate
         options.append(
             {
                 "method_id": str(method.pk),
@@ -225,20 +232,6 @@ def resolve_shipping_options_for_seller(
                 "min_days": method.estimated_delivery_days_min,
                 "max_days": method.estimated_delivery_days_max,
                 "rate": str(rate_val),
-            }
-        )
-
-    # If no methods configured, provide a default Free Standard Shipping option
-    if not options:
-        options.append(
-            {
-                "method_id": "00000000-0000-0000-0000-000000000001",
-                "name": "Standard Delivery",
-                "carrier": "Marketplace Logistics",
-                "code": "standard",
-                "min_days": 2,
-                "max_days": 5,
-                "rate": "0.00",
             }
         )
 
@@ -275,9 +268,10 @@ def calculate_checkout_quote(
     if not items:
         raise ValidationError({"cart": "Shopping cart is empty."})
 
+    currency = get_cart_currency(items)
     country = str(shipping_address.get("country", "US")).strip().upper()
-    if len(country) != 2:
-        country = "US"
+    if not re.fullmatch(r"[A-Z]{2}", country):
+        raise ValidationError({"shipping_address": "Provide a two-letter country code."})
 
     selections = shipping_selections or {}
 
@@ -294,6 +288,8 @@ def calculate_checkout_quote(
     grand_tax = Decimal("0.00")
 
     clean_code = (coupon_code or "").strip().upper()
+    if clean_code and not (customer and customer.is_authenticated):
+        raise ValidationError({"coupon_code": "Sign in to redeem a coupon."})
     coupon_eval_summary: dict[str, Any] = {
         "code": clean_code or None,
         "valid": False,
@@ -314,16 +310,7 @@ def calculate_checkout_quote(
             seller_subtotal += line_subtotal
 
             # Stock check
-            avail_stock = (
-                Inventory.objects.filter(
-                    variant=c_item.variant,
-                    warehouse__is_active=True,
-                    warehouse__seller=seller,
-                ).aggregate(avail=Sum(F("quantity_on_hand") - F("quantity_reserved"), default=0))[
-                    "avail"
-                ]
-                or 0
-            )
+            avail_stock = get_variant_available_stock(c_item.variant)
 
             item_quote_list.append(
                 {
@@ -341,7 +328,24 @@ def calculate_checkout_quote(
             )
 
         # Shipping options for seller
-        shipping_options = resolve_shipping_options_for_seller(seller, country, seller_subtotal)
+        weight = (
+            sum(
+                (
+                    (item.variant.weight or Decimal("0")) * item.quantity
+                    for item in seller_cart_items
+                ),
+                Decimal("0"),
+            )
+            if all(item.variant.weight is not None for item in seller_cart_items)
+            else None
+        )
+        shipping_options = resolve_shipping_options_for_seller(
+            seller, country, seller_subtotal, weight
+        )
+        if not shipping_options:
+            raise ValidationError(
+                {"shipping": "Delivery is unavailable for this destination and currency."}
+            )
         chosen_method_id = selections.get(str(seller.pk))
 
         selected_opt = None
@@ -351,7 +355,11 @@ def calculate_checkout_quote(
                     selected_opt = opt
                     break
 
-        if not selected_opt:
+        if chosen_method_id and selected_opt is None:
+            raise ValidationError(
+                {"shipping_selections": "The selected delivery method is unavailable."}
+            )
+        if selected_opt is None:
             selected_opt = shipping_options[0]
 
         seller_shipping_fee = Decimal(selected_opt["rate"])
@@ -417,7 +425,7 @@ def calculate_checkout_quote(
         "discount_total": str(grand_discount.quantize(cents)),
         "tax_total": str(grand_tax.quantize(cents)),
         "grand_total": str(grand_total.quantize(cents)),
-        "currency": "USD",
+        "currency": currency,
         "coupon": coupon_eval_summary,
         "sellers": sellers_quote,
     }
@@ -453,7 +461,40 @@ def place_order(
     user = getattr(request, "user", None)
     is_authenticated = bool(user and user.is_authenticated)
 
+    if is_authenticated and user is not None:
+        user = User.objects.select_for_update().filter(pk=user.pk, is_active=True).first()
+        if user is None:
+            raise PermissionDenied("Authentication required.")
+
     cart = get_or_create_cart(request)
+    cart = Cart.objects.select_for_update().get(pk=cart.pk)
+    key = (idempotency_key or "").strip()
+    if key and not re.fullmatch(r"[A-Za-z0-9_-]{16,128}", key):
+        raise ValidationError({"idempotency_key": "Use a 16-128 character checkout key."})
+    request_digest = hashlib.sha256(
+        json.dumps(
+            {
+                "shipping_address": shipping_address_data or {},
+                "address_id": address_id,
+                "billing_address": billing_address_data,
+                "customer_email": customer_email,
+                "shipping_selections": shipping_selections or {},
+                "coupon_code": coupon_code,
+            },
+            sort_keys=True,
+            default=str,
+            separators=(",", ":"),
+        ).encode()
+    ).hexdigest()
+    if key:
+        previous = CheckoutAttempt.objects.filter(cart=cart, key=key).first()
+        if previous is not None:
+            if previous.request_digest != request_digest:
+                raise CheckoutConflict()
+            return dict(previous.response)
+
+    seller_ids = cart.items.values_list("variant__product__seller_id", flat=True)
+    list(Seller.objects.select_for_update().filter(pk__in=seller_ids).order_by("pk"))
     cart_items = list(
         cart.items.select_related(
             "variant",
@@ -548,6 +589,8 @@ def place_order(
             raise ValidationError(
                 {"variant": f"Variant {item.variant.sku} is not active for sale."}
             )
+        if item.variant.product.status != Product.Status.ACTIVE:
+            raise ValidationError({"product": "This product is no longer available for sale."})
         seller_items_map.setdefault(seller, []).append(item)
 
     # 1. Zero Overselling check with select_for_update locking
@@ -621,7 +664,7 @@ def place_order(
         order_number=generated_order_number,
         customer=user if is_authenticated else None,
         customer_email=final_email,
-        currency="USD",
+        currency=quote["currency"],
         subtotal=Decimal(quote["subtotal"]),
         discount_total=Decimal(quote["discount_total"]),
         tax_total=Decimal(quote["tax_total"]),
@@ -667,14 +710,23 @@ def place_order(
             status=SellerOrder.Status.PENDING,
         )
 
+        remaining_discount = so_discount
+        remaining_subtotal = so_subtotal
         for c_item in seller_order_items:
             assigned_inv = item_inventory_assignments[c_item.pk]
             line_gross = c_item.variant.price * c_item.quantity
 
             # Proportional discount allocation if any
             line_discount = Decimal("0.00")
-            if so_subtotal > Decimal("0.00") and so_discount > Decimal("0.00"):
-                line_discount = ((line_gross / so_subtotal) * so_discount).quantize(Decimal("0.01"))
+            if remaining_subtotal > Decimal("0.00") and remaining_discount > Decimal("0.00"):
+                line_discount = min(
+                    line_gross,
+                    ((line_gross / remaining_subtotal) * remaining_discount).quantize(
+                        Decimal("0.01")
+                    ),
+                )
+            remaining_discount -= line_discount
+            remaining_subtotal -= line_gross
 
             line_tax = Decimal("0.00")
             line_total = max(Decimal("0.00"), line_gross - line_discount + line_tax)
@@ -779,7 +831,7 @@ def place_order(
     # 7. Atomically clear items from customer's cart
     cart.items.all().delete()
 
-    return {
+    response = {
         "order_id": str(master_order.pk),
         "order_number": master_order.order_number,
         "customer_email": master_order.customer_email,
@@ -793,3 +845,8 @@ def place_order(
             "status": "pending_payment",
         },
     }
+    if key:
+        CheckoutAttempt.objects.create(
+            cart=cart, order=master_order, key=key, request_digest=request_digest, response=response
+        )
+    return response

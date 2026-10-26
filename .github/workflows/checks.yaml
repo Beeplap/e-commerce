@@ -28,6 +28,7 @@ jobs:
       - name: Security and dependency audit
         run: |
           pnpm audit --prod
+          pnpm audit
       - name: Initialize local infrastructure
         run: |
           pnpm setup:env

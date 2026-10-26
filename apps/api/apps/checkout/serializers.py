@@ -114,8 +114,12 @@ class PlaceOrderInputSerializer(StrictSerializer):
     coupon_code = serializers.CharField(
         required=False, allow_blank=True, allow_null=True, default=None
     )
-    idempotency_key = serializers.CharField(
-        required=False, allow_blank=True, allow_null=True, default=None
+    idempotency_key = serializers.RegexField(
+        regex=r"^[A-Za-z0-9_-]{16,128}$",
+        required=False,
+        allow_blank=True,
+        allow_null=True,
+        default=None,
     )
 
 

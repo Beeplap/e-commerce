@@ -8,7 +8,11 @@ import {
 } from "@/components/storefront/controls";
 import { Money } from "@/components/ui/displays";
 import { ApiError, checkoutApi, errorMessage } from "@/lib/api/client";
-import type { CheckoutQuote, CustomerAddress } from "@/lib/api/types";
+import type {
+  CheckoutQuote,
+  CustomerAddress,
+  PlaceOrderInput,
+} from "@/lib/api/types";
 import { useAuth } from "../auth/auth-provider";
 import { useCart } from "../cart/cart-context";
 import {
@@ -79,6 +83,8 @@ function CheckoutForm({ email: accountEmail }: { email: string | null }) {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [uncertain, setUncertain] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const placementAttempt = useRef<PlaceOrderInput | null>(null);
+  const [placementAccepted, setPlacementAccepted] = useState(false);
   const inFlight = useRef(false),
     alive = useRef(true),
     form = useRef<HTMLFormElement>(null);
@@ -201,19 +207,27 @@ function CheckoutForm({ email: accountEmail }: { email: string | null }) {
       );
       return;
     }
+    const attempt: PlaceOrderInput = {
+      ...payload,
+      ...(!accountEmail ? { customer_email: email.trim() } : {}),
+      idempotency_key: crypto.randomUUID(),
+    };
+    placementAttempt.current = attempt;
+    await place(attempt);
+  };
+  const place = async (attempt: PlaceOrderInput) => {
+    if (inFlight.current) return;
     inFlight.current = true;
     setSubmitting(true);
     setSubmitError(null);
     const submittedKey = key;
     let received = false;
     try {
-      const result = await checkoutApi.placeOrder({
-        ...payload,
-        ...(!accountEmail ? { customer_email: email.trim() } : {}),
-      });
+      const result = await checkoutApi.placeOrder(attempt);
       received = true;
       const order = placedEvidence(result);
       if (!alive.current) return;
+      setPlacementAccepted(true);
       setUncertain(true);
       rememberPlacement(order);
       router.push(`/checkout/pay?order_id=${order.id}`);
@@ -236,7 +250,7 @@ function CheckoutForm({ email: accountEmail }: { email: string | null }) {
       ) {
         setUncertain(true);
         setSubmitError(
-          "We could not verify whether the order was placed. Check your orders before submitting again. If you checked out as a guest, keep this browser session and contact support with what happened.",
+          "We could not verify whether the order was placed. Retry order confirmation to safely check the original attempt, or check your orders. Keep this browser session while confirming a guest order.",
         );
       } else {
         setSubmitError(errorMessage(error));
@@ -256,6 +270,30 @@ function CheckoutForm({ email: accountEmail }: { email: string | null }) {
       }
     }
   };
+  const retryPlacement =
+    uncertain && !placementAccepted ? (
+      <StorefrontButton
+        type="button"
+        busy={submitting}
+        onClick={() => {
+          const attempt = placementAttempt.current;
+          if (attempt) void place(attempt);
+        }}
+      >
+        Retry order confirmation
+      </StorefrontButton>
+    ) : null;
+  if (retryPlacement && (status !== "ready" || !cart?.total_items))
+    return (
+      <div className="sf-checkout-state" role="alert" ref={alert} tabIndex={-1}>
+        <p>{submitError}</p>
+        <p>
+          This retries the original order details and cannot place a second
+          order.
+        </p>
+        {retryPlacement}
+      </div>
+    );
   if (status === "loading")
     return (
       <div className="sf-checkout-state" role="status">
@@ -520,6 +558,7 @@ function CheckoutForm({ email: accountEmail }: { email: string | null }) {
             tabIndex={-1}
           >
             <p>{submitError}</p>
+            {retryPlacement}
             {uncertain && accountEmail && (
               <Link href="/account/orders">Check your orders</Link>
             )}

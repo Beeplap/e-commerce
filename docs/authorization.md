@@ -115,3 +115,7 @@ Frontend capabilities are hints for rendering controls and are never sent as tru
   - Granted explicitly to `SUPER_ADMIN` via application capability grants. Seller users, unauthenticated users, or platform users lacking `platform.analytics.read` receive 403 Forbidden.
   - Marketplace aggregation: authoritatively computes total GMV, platform commission revenues, customer and seller counts, refund and return rates, outstanding seller balances, and upcoming payouts.
   - Query parameters: strictly allowlisted to `start_date` and `end_date`.
+
+## Checkout replay and contact changes
+
+Checkout attempts are retrieved only after resolving and locking the request's owned Cart and, for authenticated callers, revalidating the active User. Reusing another shopper's key yields no access to their order; keys are scoped per Cart. Guest sessions cannot use saved customer addresses. Replays remain subject to session identity and CSRF, and do not attach anonymous orders to a different signed-in account. Coupon redemption requires an authenticated customer to preserve the existing accountable usage limits. Email changes act on the locked current user, revoke verification of a changed address, and write an atomic safe audit record.

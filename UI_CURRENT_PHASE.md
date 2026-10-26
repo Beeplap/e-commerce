@@ -2,4 +2,6 @@
 
 STOREFRONT VISUAL OVERHAUL COMPLETE
 
-Phase 46 — Visual Acceptance and Final QA is complete on `ui-overhaul-phase46-visual-acceptance`, based on the pushed Phase 45 commit `bc56e9a7ceb0e3ae8b350059fde9d2bb7b3206d0`. The shopper-route visual review, frontend checks, palette/build audits, final review and progress documentation are recorded in `docs/storefront-final-review.md`, `docs/testing.md` and `docs/progress.md`. The PostgreSQL-dependent aggregate gate could not complete because the local database service was unavailable; this limitation is recorded explicitly. No backend/API/auth/CSRF/authorization/tenant-isolation/money code was changed. No later phase is defined or started.
+Phase 46 and the storefront visual roadmap are complete and integrated into `main`. The initial PostgreSQL validation limitation was resolved by subsequent full checks and [successful GitHub validation](https://github.com/Beeplap/e-commerce/actions/runs/38031684273). Historical visual-review limits remain documented in `docs/storefront-final-review.md`.
+
+The October 26 user-authorized repository repair is maintenance of existing workflows, recorded in `docs/progress.md`; it is not a new numbered phase. No later phase is defined or started.

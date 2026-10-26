@@ -12,3 +12,5 @@ Validation summary:
 - Offline OpenAPI: drf-spectacular schema validated without warnings.
 - Production build: Next.js App Router Turbopack standalone output built cleanly across 52 routes.
 - Full system documentation: architecture, data-model, security, authorization, testing, progress, deployment, and customer-commerce-release completed.
+
+Subsequent maintenance validation (October 26, 2026): the user-authorized existing-workflow repair passed `pnpm check` with 424 PostgreSQL backend tests and 477 frontend tests, including lint, strict types, schema/migration checks and the production build. Both dependency audits, quiet Compose configuration and the real session/CSRF proxy smoke test passed. See `docs/progress.md` for changes and remaining operational acceptance limits. Both implementation roadmaps remain complete; this maintenance does not introduce another phase.

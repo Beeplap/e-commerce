@@ -2,7 +2,7 @@ from typing import Any
 from uuid import UUID
 
 from django.core.files.storage import storages
-from django.http import FileResponse
+from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
@@ -235,8 +235,12 @@ class StorefrontImageDownloadView(PublicStorefrontAPIView):
             ),
             pk=image_id,
         )
+        try:
+            image_file = storages["catalog"].open(image.storage_key, "rb")
+        except FileNotFoundError as error:
+            raise Http404("Product image not found.") from error
         response = FileResponse(
-            storages["catalog"].open(image.storage_key, "rb"),
+            image_file,
             as_attachment=False,
             content_type=image.content_type,
         )

@@ -137,7 +137,7 @@ def get_storefront_products_queryset(
 def format_product_card(product: Product) -> dict[str, Any]:
     images = list(product.images.all())
     thumbnail_url = (
-        f"/api/v1/storefront/products/{product.pk}/images/{images[0].pk}/" if images else None
+        f"/api/v1/storefront/products/{product.pk}/images/{images[0].pk}" if images else None
     )
 
     variants = list(product.variants.all())
@@ -178,7 +178,7 @@ def format_product_card(product: Product) -> dict[str, Any]:
         "brand_name": product.brand.name if product.brand else None,
         "starting_price": starting_price,
         "compare_at_price": compare_at,
-        "currency": "USD",
+        "currency": product.seller.default_currency,
         "thumbnail_url": thumbnail_url,
         "in_stock": in_stock,
         "average_rating": rating_val,
@@ -265,7 +265,7 @@ def get_storefront_product_detail(product_id: UUID) -> dict[str, Any]:
     formatted_images = [
         {
             "id": img.pk,
-            "url": f"/api/v1/storefront/products/{product.pk}/images/{img.pk}/",
+            "url": f"/api/v1/storefront/products/{product.pk}/images/{img.pk}",
             "alt_text": img.alt_text,
             "sort_order": img.sort_order,
         }
@@ -344,7 +344,7 @@ def get_storefront_product_detail(product_id: UUID) -> dict[str, Any]:
         },
         "starting_price": starting_price,
         "compare_at_price": compare_at,
-        "currency": "USD",
+        "currency": product.seller.default_currency,
         "in_stock": total_stock > 0,
         "total_available_stock": total_stock,
         "average_rating": avg_rating,

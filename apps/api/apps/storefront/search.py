@@ -356,7 +356,7 @@ def execute_search_suggestions(query: str | None) -> dict[str, Any]:
             seller__status=Seller.Status.ACTIVE,
         )
         .filter(Q(name__icontains=q) | Q(brand__name__icontains=q) | Q(category__name__icontains=q))
-        .select_related("category")
+        .select_related("category", "seller")
         .prefetch_related(
             Prefetch(
                 "images",
@@ -375,7 +375,7 @@ def execute_search_suggestions(query: str | None) -> dict[str, Any]:
     suggest_products: list[dict[str, Any]] = []
     for prod in products_qs:
         images = list(prod.images.all())
-        thumb = f"/api/v1/storefront/products/{prod.pk}/images/{images[0].pk}/" if images else None
+        thumb = f"/api/v1/storefront/products/{prod.pk}/images/{images[0].pk}" if images else None
         variants = list(prod.variants.all())
         price_str = f"{variants[0].price:.2f}" if variants else "0.00"
 
@@ -385,7 +385,7 @@ def execute_search_suggestions(query: str | None) -> dict[str, Any]:
                 "title": prod.name,
                 "slug": prod.slug,
                 "starting_price": price_str,
-                "currency": "USD",
+                "currency": prod.seller.default_currency,
                 "thumbnail_url": thumb,
                 "category_name": prod.category.name,
             }

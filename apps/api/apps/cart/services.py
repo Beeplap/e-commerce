@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Iterable
 from decimal import Decimal
 from typing import Any
 from uuid import UUID
@@ -17,6 +18,15 @@ from apps.sellers.models import Seller
 from .models import Cart, CartItem
 
 User = get_user_model()
+
+
+def get_cart_currency(items: Iterable[CartItem]) -> str:
+    currencies = {item.variant.product.seller.default_currency for item in items}
+    if len(currencies) > 1:
+        raise ValidationError(
+            {"currency": "A cart must contain one currency. Remove incompatible items or clear it."}
+        )
+    return next(iter(currencies), "USD")
 
 
 def get_variant_available_stock(variant: ProductVariant) -> int:
@@ -65,6 +75,7 @@ def add_item_to_cart(cart: Cart, *, variant_id: UUID, quantity: int = 1) -> Cart
     Adds a product variant to the cart or increments existing quantity.
     Validates variant and seller active state and caps requested quantity at available stock.
     """
+    Cart.objects.select_for_update().get(pk=cart.pk)
     if quantity <= 0:
         raise ValidationError({"quantity": "Quantity must be greater than zero."})
 
@@ -79,6 +90,12 @@ def add_item_to_cart(cart: Cart, *, variant_id: UUID, quantity: int = 1) -> Cart
         or variant.product.seller.status != Seller.Status.ACTIVE
     ):
         raise ValidationError({"variant_id": "This product variant is currently unavailable."})
+
+    currencies = set(
+        cart.items.values_list("variant__product__seller__default_currency", flat=True)
+    )
+    if currencies and currencies != {variant.product.seller.default_currency}:
+        raise ValidationError({"currency": "Items in one cart must use the same currency."})
 
     available = get_variant_available_stock(variant)
     if available <= 0:
@@ -102,6 +119,7 @@ def update_item_quantity(cart: Cart, *, item_id: UUID, quantity: int) -> CartIte
     If quantity is 0, removes the item.
     Enforces strict cart ownership: throws 404 if item does not belong to this cart.
     """
+    Cart.objects.select_for_update().get(pk=cart.pk)
     item = cart.items.select_related("variant__product__seller").filter(id=item_id).first()
     if not item:
         raise NotFound("Cart item not found.")
@@ -123,6 +141,7 @@ def remove_item_from_cart(cart: Cart, *, item_id: UUID) -> bool:
     Removes a specific item from the cart.
     Enforces strict cart ownership: throws 404 if item does not belong to this cart.
     """
+    Cart.objects.select_for_update().get(pk=cart.pk)
     item = cart.items.filter(id=item_id).first()
     if not item:
         raise NotFound("Cart item not found.")
@@ -136,6 +155,7 @@ def clear_cart(cart: Cart) -> None:
     """
     Empties all items from the cart.
     """
+    Cart.objects.select_for_update().get(pk=cart.pk)
     cart.items.all().delete()
 
 
@@ -146,11 +166,15 @@ def merge_guest_cart_into_user_cart(*, guest_session_key: str, user: Any) -> Car
     Caps merged quantities at current available stock without exceeding limits.
     Deletes the guest cart upon completion.
     """
+    User.objects.select_for_update().get(pk=user.pk, is_active=True)
     user_cart, _ = Cart.objects.get_or_create(user=user)
     guest_cart = Cart.objects.filter(session_key=guest_session_key).first()
     if not guest_cart:
         return user_cart
 
+    list(
+        Cart.objects.select_for_update().filter(pk__in=[user_cart.pk, guest_cart.pk]).order_by("pk")
+    )
     guest_items = list(guest_cart.items.select_related("variant__product__seller").all())
     for g_item in guest_items:
         available = get_variant_available_stock(g_item.variant)
@@ -308,7 +332,7 @@ def format_cart_response(cart: Cart) -> dict[str, Any]:
         "total_items": total_items,
         "total_unique_items": len(items),
         "subtotal": f"{subtotal_acc:.2f}",
-        "currency": "USD",
+        "currency": get_cart_currency(items),
         "has_out_of_stock_items": has_out_of_stock,
         "sellers": sellers_list,
     }

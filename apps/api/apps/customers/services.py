@@ -8,9 +8,10 @@ from django.core.validators import validate_email
 from django.db import transaction
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import PermissionDenied, ValidationError
 
 from apps.accounts.models import UserManager
+from apps.audit.models import AuditLog
 from apps.customers.models import CustomerProfile
 from apps.fulfillment.models import ReturnRequest
 from apps.fulfillment.services import create_return_request
@@ -38,6 +39,9 @@ def get_customer_profile(user: Any) -> dict[str, Any]:
 
 @transaction.atomic
 def update_customer_profile(user: Any, data: dict[str, Any]) -> dict[str, Any]:
+    user = User.objects.select_for_update().filter(pk=user.pk, is_active=True).first()
+    if user is None:
+        raise PermissionDenied("Authentication required.")
     update_fields: list[str] = ["updated_at"]
 
     if "first_name" in data:
@@ -53,6 +57,16 @@ def update_customer_profile(user: Any, data: dict[str, Any]) -> dict[str, Any]:
         validate_email(new_email)
         if User.objects.exclude(pk=user.pk).filter(email=new_email).exists():
             raise ValidationError({"email": ["This email is already in use."]})
+        if new_email != user.email:
+            user.is_email_verified = False
+            update_fields.append("is_email_verified")
+            AuditLog.objects.create(
+                actor_id=user.pk,
+                action="customer.email.changed",
+                target_type="user",
+                target_id=user.pk,
+                changes={"fields": ["email", "is_email_verified"]},
+            )
         user.email = new_email
         update_fields.append("email")
 

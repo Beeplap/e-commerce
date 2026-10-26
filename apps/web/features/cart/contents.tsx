@@ -1,8 +1,10 @@
 "use client";
+import { useState } from "react";
 import Link from "next/link";
 import { Money } from "@/components/ui/displays";
 import { StorefrontButton } from "@/components/storefront/controls";
 import { StorefrontSkeleton } from "@/components/storefront/content";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useCart } from "./cart-context";
 import { CouponPreview } from "./coupon-preview";
 import { CartThumbnail } from "./thumbnail";
@@ -17,6 +19,7 @@ export function CartContents({
   compact?: boolean;
   onNavigate?: () => void;
 }) {
+  const [confirmClear, setConfirmClear] = useState(false);
   const {
     cart,
     status,
@@ -77,6 +80,32 @@ export function CartContents({
           <StorefrontButton busy={isLoading} onClick={reload}>
             Try again
           </StorefrontButton>
+          <StorefrontButton
+            variant="quiet"
+            disabled={isLoading}
+            onClick={() => setConfirmClear(true)}
+          >
+            Clear unavailable cart
+          </StorefrontButton>
+          <ConfirmDialog
+            open={confirmClear}
+            title="Clear your cart?"
+            description="This removes every item from your cart so you can start again."
+            confirmLabel="Clear cart"
+            busy={isLoading}
+            error={feedback?.kind === "error" ? feedback.message : undefined}
+            onCancel={() => setConfirmClear(false)}
+            onConfirm={() =>
+              void run(
+                "clear",
+                async () => {
+                  await clearCart();
+                  setConfirmClear(false);
+                },
+                "Cart cleared.",
+              )
+            }
+          />
           <Link
             href="/search"
             onClick={onNavigate}

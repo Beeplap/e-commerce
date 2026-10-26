@@ -11,7 +11,7 @@ import CheckoutPage from "@/app/checkout/page";
 import PayPage from "@/app/checkout/pay/page";
 import SuccessPage from "@/app/checkout/success/page";
 import { AuthProvider, useAuth } from "@/features/auth/auth-provider";
-import { CartProvider } from "@/features/cart/cart-context";
+import { CartProvider, useCart } from "@/features/cart/cart-context";
 import {
   CheckoutSessionProvider,
   useCheckoutSession,
@@ -440,6 +440,70 @@ describe("Checkout recovery and navigation", () => {
         .length,
     ).toBe(1);
     expect(push).not.toHaveBeenCalled();
+  });
+  it("retries an ambiguous placement with the exact same payload and checkout key", async () => {
+    const bodies: Record<string, unknown>[] = [];
+    api((url, init) => {
+      if (!url.includes("/place-order/")) return;
+      bodies.push(JSON.parse(String(init?.body)));
+      return bodies.length === 1 ? json({}, 503) : json(mockPlacedOrder, 201);
+    });
+    render(tree(<CheckoutPage />));
+    fireEvent.click(await ready());
+    const retry = await screen.findByRole("button", {
+      name: "Retry order confirmation",
+    });
+    expect(bodies[0]?.idempotency_key).toMatch(/^[a-z0-9-]{36}$/i);
+    fireEvent.click(retry);
+    fireEvent.click(retry);
+    await waitFor(() =>
+      expect(push).toHaveBeenCalledWith(
+        `/checkout/pay?order_id=${mockOrder.id}`,
+      ),
+    );
+    expect(bodies).toHaveLength(2);
+    expect(bodies[1]).toEqual(bodies[0]);
+  });
+  it("keeps recovery available when the cart was cleared by the ambiguous placement", async () => {
+    let submitted = false;
+    const spy = api((url) => {
+      if (url.includes("/place-order/")) {
+        submitted = true;
+        return json({}, 503);
+      }
+      if (url.includes("/cart/") && submitted)
+        return json({
+          ...mockCart,
+          total_items: 0,
+          total_unique_items: 0,
+          subtotal: "0.00",
+          sellers: [],
+        });
+    });
+    function Reload() {
+      const { refreshCart } = useCart();
+      return (
+        <button onClick={() => void refreshCart()}>Reload externally</button>
+      );
+    }
+    render(
+      tree(
+        <>
+          <CheckoutPage />
+          <Reload />
+        </>,
+      ),
+    );
+    fireEvent.click(await ready());
+    await screen.findByRole("button", { name: "Retry order confirmation" });
+    fireEvent.click(screen.getByRole("button", { name: "Reload externally" }));
+    await screen.findByText(/This retries the original order details/);
+    expect(
+      screen.getByRole("button", { name: "Retry order confirmation" }),
+    ).toBeEnabled();
+    expect(
+      spy.mock.calls.filter(([url]) => String(url).includes("/place-order/")),
+    ).toHaveLength(1);
   });
   it("never confirms a forged guest success URL", async () => {
     query = new URLSearchParams(

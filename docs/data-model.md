@@ -235,3 +235,9 @@ PostgreSQL migration `0002_reviews_integrity` enforces:
 - Self-service cancellation: Permitted only when order is in `pending` payment status and unfulfilled; atomically cancels master and seller orders and immediately invokes `release_order_inventory` across all order item lines with reservation locks.
 - Verified reviews (`reviews.ProductReview`): Permitted only for order items on orders with `payment_status == PAID` and `fulfillment_status == DELIVERED`.
 - Return requests (`fulfillment.ReturnRequest`): Permitted only for items on delivered orders within return windows, issuing formal RMA numbers.
+
+## CheckoutAttempt and currency corrections
+
+`checkout.CheckoutAttempt` has UUID identity, an owned Cart foreign key, a protected Order foreign key, a bounded key (16?128 letters/digits/underscore/hyphen), SHA-256 request digest, successful response snapshot and creation timestamp. PostgreSQL enforces uniqueness of `(cart, key)`. This is private replay metadata, not an authentication credential or financial ledger. Deleting a Cart removes its replay metadata; the Order and inventory/financial ledgers remain intact. No pre-existing orders are rewritten or retrospectively deduplicated.
+
+The authoritative currency is `Seller.default_currency` (there is no separately mutable Product currency). Storefront evidence, cart totals, checkout quotes, order snapshots and later payments now preserve that currency. Empty carts retain the existing USD zero-total placeholder; nonempty carts must contain one currency. ShippingRate currency must match, and discount line allocations reconcile exactly to the seller-order discount.

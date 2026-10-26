@@ -4,6 +4,7 @@ from uuid import UUID
 
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -100,7 +101,11 @@ class CheckoutQuoteView(BrowserAPIView):
         address_id = data.get("address_id")
         user = getattr(request, "user", None)
 
-        if address_id and user and user.is_authenticated:
+        if address_id:
+            if not user or not user.is_authenticated:
+                raise ValidationError(
+                    {"address_id": "Authentication required to use a saved address."}
+                )
             addr = services.get_customer_address(user, address_id)
             shipping_address = {
                 "full_name": addr.full_name,

@@ -2,6 +2,10 @@
 
 This review closes the visual-overhaul roadmap after the completed responsive, accessibility, interaction and human-design passes. The browser review used the running Next.js development server with deterministic API fixtures. It demonstrates presentation and interaction behavior; it does not claim production-data or live transaction acceptance.
 
+## Subsequent validation
+
+The initial Phase 46 database limitation recorded below was resolved by later full PostgreSQL validation and [successful GitHub CI](https://github.com/Beeplap/e-commerce/actions/runs/38031684273). The October 26 user-authorized repository repairs and their validation are recorded in `docs/progress.md`; no additional UI phase was started. The original browser/production acceptance limits below remain applicable.
+
 ## Final design direction
 
 QuickCommerce presents an editorial marketplace for independent sellers. Cream surfaces, dark ink and serif display headings give the storefront a calm retail character. Product evidence and seller identity lead each task, while rules, restrained tonal panels and copper actions provide structure without an admin-dashboard feel. The homepage makes product and seller discovery its main story and avoids unsupported shipping, verification, popularity and promotion claims.

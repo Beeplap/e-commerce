@@ -142,3 +142,9 @@ Every pull request and merge to `main` must pass all CI gates:
    - Next.js production build (`next build` with standalone output across 44 routes)
 5. **Real development proxy smoke test**: Verifies live CSRF acquisition, session authentication, cookie rotation, and logout through Next.js proxy.
 6. **Container build & non-root verification**: Builds both API and Web Dockerfiles and verifies unprivileged non-root users (`appuser`, `nextjs`).
+
+## Checkout repair rollout
+
+Apply additive migration `checkout.0002_checkoutattempt` with `pnpm db:migrate` before deploying the updated backend, then deploy the frontend that uses keyed retries. The migration creates a replay table and its foreign keys/unique constraint; it does not rewrite historical orders. Do not enable the new browser retry flow against an older backend that ignores checkout keys. Follow the existing backup/migration procedure and verify deployment readiness before accepting traffic.
+
+Configure real ShippingMethod/ShippingZone/ShippingRate records for every supported seller, destination and currency. Free shipping requires an explicit zero rate. Weight-limited rates require known variant weights. Checkout now fails closed when these records are absent or ineligible; it no longer fabricates free delivery. Existing mixed-currency carts can be cleared through an explicit confirmation in the unavailable-cart recovery view.

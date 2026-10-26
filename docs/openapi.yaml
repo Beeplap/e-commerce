@@ -8831,8 +8831,12 @@ components:
           type: string
           nullable: true
         idempotency_key:
-          type: string
           nullable: true
+          oneOf:
+          - type: string
+            pattern: ^[A-Za-z0-9_-]{16,128}$
+          - type: string
+            maxLength: 0
     PlaceOrderOutput:
       type: object
       properties:

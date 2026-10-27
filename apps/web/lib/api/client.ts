@@ -38,6 +38,7 @@ import {
   parseMembership,
   parseMembershipPage,
   parsePayment,
+  parseOrderPaymentState,
   parseUser,
   parseCustomerProfile,
   parseCustomerOrderList,
@@ -715,6 +716,11 @@ export const checkoutApi = {
 };
 
 export const paymentsApi = {
+  orderState: (orderId: string, signal?: AbortSignal) =>
+    apiRequest(`/api/v1/checkout/orders/${orderId}/payment-state/`, {
+      parse: (value) => parseOrderPaymentState(value, orderId),
+      signal,
+    }),
   // Same key + same order replays return 200; a new intent returns 201.
   createIntent: (orderId: string, idempotencyKey: string) =>
     apiRequest<PaymentRecord>("/api/v1/checkout/payment-intent/", {

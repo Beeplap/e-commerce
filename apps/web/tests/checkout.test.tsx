@@ -239,7 +239,17 @@ describe("Customer Checkout & Multi-Seller Workflow", () => {
       if (url.includes("/api/v1/storefront/categories")) {
         return json([]);
       }
-      if (url.includes("/api/v1/customer/orders/")) return json(mockOrder);
+      if (url.includes("/payment-state/"))
+        return json({
+          order_id: mockOrder.id,
+          order_number: mockOrder.order_number,
+          grand_total: mockOrder.grand_total,
+          currency: mockOrder.currency,
+          payment_status: mockOrder.payment_status,
+          fulfillment_status: mockOrder.fulfillment_status,
+          payment: null,
+          resume_key: null,
+        });
       if (url.includes("/api/v1/cart/")) {
         return json(mockCart);
       }

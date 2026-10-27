@@ -7,6 +7,7 @@ import type {
   CustomerReturnRecord,
   CustomerReviewRecord,
   Page,
+  OrderPaymentState,
   PaymentRecord,
   PaymentStatus,
   SellerMembership,
@@ -72,6 +73,80 @@ export function parsePayment(value: unknown): PaymentRecord {
     error_code: value.error_code,
     error_message: value.error_message,
     created_at: value.created_at,
+  };
+}
+
+export function parseOrderPaymentState(
+  value: unknown,
+  expectedId: string,
+): OrderPaymentState {
+  if (
+    !record(value) ||
+    value.order_id !== expectedId ||
+    !isUuid(value.order_id) ||
+    typeof value.order_number !== "string" ||
+    !value.order_number.trim() ||
+    value.order_number.length > 64 ||
+    typeof value.grand_total !== "string" ||
+    !/^\d{1,12}\.\d{2}$/.test(value.grand_total) ||
+    typeof value.currency !== "string" ||
+    !/^[A-Z]{3}$/.test(value.currency) ||
+    typeof value.payment_status !== "string" ||
+    !["pending", "authorized", "paid", "failed", "refunded"].includes(
+      value.payment_status,
+    ) ||
+    typeof value.fulfillment_status !== "string" ||
+    !["unfulfilled", "partially_fulfilled", "fulfilled", "cancelled"].includes(
+      value.fulfillment_status,
+    )
+  )
+    return invalidResponse();
+  const payment = value.payment === null ? null : parsePayment(value.payment);
+  if (
+    payment &&
+    (payment.order_id !== expectedId ||
+      payment.order_number !== value.order_number ||
+      payment.amount !== value.grand_total ||
+      payment.currency !== value.currency ||
+      !payment.provider.trim() ||
+      payment.provider.length > 32 ||
+      payment.error_code.length > 64 ||
+      payment.error_message.length > 255 ||
+      payment.created_at.length > 64 ||
+      !Number.isFinite(Date.parse(payment.created_at)))
+  )
+    return invalidResponse();
+  const resumable =
+    payment?.status === "pending" &&
+    value.payment_status === "pending" &&
+    value.fulfillment_status !== "cancelled";
+  if (
+    resumable
+      ? typeof value.resume_key !== "string" ||
+        !/^[A-Za-z0-9_-]{16,128}$/.test(value.resume_key)
+      : value.resume_key !== null
+  )
+    return invalidResponse();
+  // Inconsistent evidence must not offer another payment or claim a successful one.
+  if (
+    payment &&
+    ((payment.status === "captured" && value.payment_status !== "paid") ||
+      (payment.status === "failed" && value.payment_status !== "failed") ||
+      (payment.status === "refunded" && value.payment_status !== "refunded") ||
+      (["pending", "authorized"].includes(payment.status) &&
+        !["pending", "authorized"].includes(value.payment_status)))
+  )
+    return invalidResponse();
+  return {
+    order_id: value.order_id,
+    order_number: value.order_number,
+    grand_total: value.grand_total,
+    currency: value.currency,
+    payment_status: value.payment_status as OrderPaymentState["payment_status"],
+    fulfillment_status:
+      value.fulfillment_status as OrderPaymentState["fulfillment_status"],
+    payment,
+    resume_key: value.resume_key as string | null,
   };
 }
 

@@ -39,25 +39,6 @@ export function CheckoutSuccessContent() {
         </StorefrontButton>
       </div>
     );
-  if (!snapshot && state.kind === "anonymous")
-    return (
-      <div className="sf-checkout-state">
-        <h2>Payment confirmation unavailable</h2>
-        <p>
-          This page does not have a verified payment result. A link alone cannot
-          confirm payment. Keep your guest browser session to review the order’s
-          payment status.
-        </p>
-        <Link
-          className="sf-button"
-          data-variant="primary"
-          href={`/checkout/pay?order_id=${id}`}
-        >
-          Review payment
-        </Link>
-        <Link href="/search">Continue shopping</Link>
-      </div>
-    );
   if (!snapshot && read.kind !== "ready")
     return (
       <div
@@ -71,7 +52,9 @@ export function CheckoutSuccessContent() {
             <StorefrontButton onClick={read.retry}>
               Reload order status
             </StorefrontButton>
-            <Link href="/account/orders">Check your orders</Link>
+            {state.kind === "authenticated" && (
+              <Link href="/account/orders">Check your orders</Link>
+            )}
           </>
         ) : (
           "Loading order status…"
@@ -120,15 +103,17 @@ export function CheckoutSuccessContent() {
             View your order
           </Link>
         )}
-        {order.paymentStatus === "pending" && (
-          <Link
-            className="sf-button"
-            data-variant="primary"
-            href={`/checkout/pay?order_id=${order.id}`}
-          >
-            Continue to payment
-          </Link>
-        )}
+        {order.paymentStatus === "pending" &&
+          !order.cancelled &&
+          !order.processing && (
+            <Link
+              className="sf-button"
+              data-variant="primary"
+              href={`/checkout/pay?order_id=${order.id}`}
+            >
+              Continue to payment
+            </Link>
+          )}
         <Link className="sf-button" data-variant="secondary" href="/search">
           Continue shopping
         </Link>
@@ -136,8 +121,8 @@ export function CheckoutSuccessContent() {
       {state.kind === "anonymous" && (
         <p className="sf-checkout-note">
           Keep this order reference. Guest payment details are available in this
-          browser session; this page’s confirmation is not retained after a
-          reload.
+          browser session, including after a reload. A different browser or an
+          expired session cannot use this reference to access the order.
         </p>
       )}
     </section>

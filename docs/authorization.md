@@ -1,5 +1,9 @@
 # Authorization
 
+## Checkout payment recovery
+
+`GET /api/v1/checkout/orders/{order_id}/payment-state/` deliberately allows guest requests but applies the same Django-owned order scope as intent/confirmation. Signed-in users may read only `Order.customer == request.user`; anonymous users may read only customer-less orders already remembered in their server-side session. The URL UUID and pending replay key are identifiers, never authorization. There is no seller/platform/superuser bypass, guest order enumeration, address/contact read or browser-persisted access grant. Confirmation remains CSRF-protected even for anonymous requests. Session expiration removes guest recovery access.
+
 ## Platform capability foundation
 
 Django remains the only authorization authority. DRF defaults to `config.permissions.DenyAll`, preventing accidental access even to authenticated users. The authentication API explicitly opts into public CSRF/login or authenticated-self operations. `/api/v1/admin/access` uses `PlatformCapabilityRequired` and requires `platform.access` on an active `PlatformAccess` grant. It returns only the signed-in account's safe identity and capabilities. Admin account creation or Django superuser flags never grant application capabilities.

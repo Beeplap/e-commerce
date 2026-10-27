@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
-import { customerApi, errorMessage } from "@/lib/api/client";
+import { paymentsApi, errorMessage } from "@/lib/api/client";
 import { useAuth } from "../auth/auth-provider";
-import { customerOrderEvidence, type OrderEvidence } from "./evidence";
+import { placedEvidence, type OrderEvidence } from "./evidence";
 
 export function useOrderRead(id: string | null, skip: boolean) {
   const { state } = useAuth();
@@ -15,16 +15,20 @@ export function useOrderRead(id: string | null, skip: boolean) {
     order: OrderEvidence | null;
     error?: string;
   } | null>(null);
+  // Clear prior private evidence on every identity/route transition, including
+  // guest -> signed in -> guest where the final textual key can repeat.
+  if (read && read.key !== key) setRead(null);
   useEffect(() => {
-    if (!id || state.kind !== "authenticated" || skip) return;
+    if (!id || !["authenticated", "anonymous"].includes(state.kind) || skip)
+      return;
     const controller = new AbortController();
     const load = async () => {
       setRead({ key, kind: "loading", order: null });
       try {
-        const order = customerOrderEvidence(
-          await customerApi.getOrder(id, controller.signal),
-          id,
-        );
+        const result = await paymentsApi.orderState(id, controller.signal);
+        const order = placedEvidence(result);
+        order.cancelled = result.fulfillment_status === "cancelled";
+        order.processing = result.payment?.status === "authorized";
         if (!controller.signal.aborted) setRead({ key, kind: "ready", order });
       } catch (error: unknown) {
         if (!controller.signal.aborted)

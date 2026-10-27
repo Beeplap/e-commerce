@@ -561,6 +561,18 @@ export interface PaymentRecord {
   created_at: string;
 }
 
+export interface OrderPaymentState {
+  order_id: string;
+  order_number: string;
+  grand_total: string;
+  currency: string;
+  payment_status: "pending" | "authorized" | "paid" | "failed" | "refunded";
+  fulfillment_status:
+    "unfulfilled" | "partially_fulfilled" | "fulfilled" | "cancelled";
+  payment: PaymentRecord | null;
+  resume_key: string | null;
+}
+
 export interface CustomerProfile {
   id: string;
   email: string;

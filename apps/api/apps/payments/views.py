@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from uuid import UUID
+
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import status
 from rest_framework.permissions import AllowAny
@@ -10,13 +12,34 @@ from rest_framework.views import APIView
 from apps.accounts.views import BrowserAPIView
 from apps.payments.models import Payment
 
-from . import services
+from . import selectors, services
 from .serializers import (
     ConfirmPaymentInputSerializer,
+    OrderPaymentStateSerializer,
     PaymentIntentInputSerializer,
     PaymentOutputSerializer,
     WebhookResultSerializer,
 )
+
+
+class OrderPaymentStateView(BrowserAPIView):
+    # Not a public order lookup: guest UUIDs must already belong to this server session.
+    permission_classes = [AllowAny]
+
+    @extend_schema(
+        responses={200: OrderPaymentStateSerializer},
+        description=(
+            "Read minimal payment recovery evidence for the customer's own order or an order "
+            "already bound to this guest's Django session. Does not create or charge a payment."
+        ),
+        tags=["Payments"],
+        operation_id="payments_order_state",
+    )
+    def get(self, request: Request, order_id: UUID) -> Response:
+        state = selectors.order_payment_state(
+            orders=services.payable_orders_for(request), order_id=order_id
+        )
+        return Response(OrderPaymentStateSerializer(state).data)
 
 
 class PaymentIntentView(BrowserAPIView):

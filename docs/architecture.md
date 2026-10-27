@@ -1,5 +1,13 @@
 # Architecture
 
+## Payment reload recovery maintenance (October 27)
+
+`GET /api/v1/checkout/orders/{order_id}/payment-state/` is a minimal ownership-scoped read, not a public order lookup. Both customer and guest checkout clients use it through the same-origin API client; the guest must retain the original Django server-side session. It projects the order reference, exact total/currency, payment/fulfillment states, latest payment evidence and the original replay key only for a pending payable attempt. No address, email, provider reference, card data or guest order list is exposed. Browser snapshots remain in memory and confer no authority.
+
+The selector holds the authorized Order row while reading Payment so confirmation/webhook/intent transactions cannot yield a torn snapshot. It acquires no Seller/Payment locks and performs no mutation or gateway call. Existing mutation lock order is unchanged. Pending recovery reuses the recorded key; captured recovery reports success without a further command; cancelled, failed, refunded or processing evidence cannot offer another payment. Confirmation still applies ownership, CSRF, exact amount/currency and idempotent transaction guards. A concurrent intent creation can produce a visible conflict; explicit retry/reload recovers that attempt without opening a second one.
+
+The route entries remain public Server Component shells. Private reads are cancellable client requests with bounded response validation, no cache, rejected redirects and identity/route isolation. Review is now read-only. No credentials or replay keys enter browser storage or navigation. Backend placement replay evidence remains Cart-scoped; uncertain placement still needs the in-memory original payload/key and cannot yet be recovered after a hard reload. The following Phase 41 account is historical; its original guest payment recovery limitation is resolved by this maintenance.
+
 ## Checkout presentation boundary — Phase 41
 
 Checkout route entries are Server Components containing public shell markup only. Feature-local clients load private checkout/order evidence through Django via the existing same-origin API client. UI snapshots contain only an order UUID/reference, exact server amount/currency and payment status, stay in memory, and reset across auth identities; they never authorize access. Payment/confirmation navigation contains only a single order UUID and ignores caller-supplied totals, email and paid claims. Authenticated reloads use the existing customer-order read; guests retain Django's server-side ownership and use an explicit existing payment-intent action to review an unknown payable amount. Guest success reloads cannot independently confirm payment.

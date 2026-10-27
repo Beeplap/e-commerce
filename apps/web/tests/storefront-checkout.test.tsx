@@ -88,6 +88,13 @@ function api(override: Override = () => undefined, guest = false) {
     if (url.includes("/checkout/place-order/"))
       return json(mockPlacedOrder, 201);
     if (url.includes("/customer/orders/")) return json(mockOrder);
+    if (url.includes("/payment-state/"))
+      return json({
+        ...mockPlacedOrder,
+        fulfillment_status: "unfulfilled",
+        payment: null,
+        resume_key: null,
+      });
     if (url.includes("/checkout/payment-intent/")) return json(payment, 201);
     if (url.includes("/checkout/confirm-payment/"))
       return json({ ...payment, status: "captured" });
@@ -509,10 +516,16 @@ describe("Checkout recovery and navigation", () => {
     query = new URLSearchParams(
       `order_id=${mockOrder.id}&total=0.01&currency=USD&order_number=FAKE&email=leak@example.com`,
     );
-    api(undefined, true);
+    api(
+      (url) =>
+        url.includes("/payment-state/")
+          ? json({ detail: "This resource is unavailable." }, 404)
+          : undefined,
+      true,
+    );
     render(tree(<SuccessPage />));
     expect(
-      await screen.findByText("Payment confirmation unavailable"),
+      await screen.findByText("Order status unavailable"),
     ).toBeInTheDocument();
     expect(
       screen.queryByTestId("success-order-number"),
@@ -522,8 +535,13 @@ describe("Checkout recovery and navigation", () => {
   it("uses server order evidence and displays pending status honestly", async () => {
     query = new URLSearchParams(`order_id=${mockOrder.id}&total=0.01`);
     api((url) =>
-      url.includes("/customer/orders/")
-        ? json({ ...mockOrder, payment_status: "pending" })
+      url.includes("/payment-state/")
+        ? json({
+            ...mockPlacedOrder,
+            fulfillment_status: "unfulfilled",
+            payment: null,
+            resume_key: null,
+          })
         : undefined,
     );
     render(tree(<SuccessPage />));
@@ -535,23 +553,19 @@ describe("Checkout recovery and navigation", () => {
       screen.getByRole("link", { name: "Continue to payment" }),
     ).toHaveAttribute("href", `/checkout/pay?order_id=${mockOrder.id}`);
   });
-  it("requires explicit server review for a guest payment reload, ignoring query amounts", async () => {
+  it("loads guest payment evidence read-only on reload, ignoring query amounts", async () => {
     query = new URLSearchParams(
       `order_id=${mockOrder.id}&total=0.01&currency=ABC&order_number=FAKE`,
     );
     const spy = api(undefined, true);
     render(tree(<PayPage />));
-    const review = await screen.findByRole("button", {
-      name: "Review payment",
-    });
-    expect(screen.queryByLabelText("Card number")).not.toBeInTheDocument();
-    expect(
-      spy.mock.calls.some(([url]) => String(url).includes("payment-intent")),
-    ).toBe(false);
-    fireEvent.click(review);
     expect(
       await screen.findByRole("button", { name: /Pay 55.00\sUSD/ }),
     ).toBeInTheDocument();
+    expect(
+      spy.mock.calls.some(([url]) => String(url).includes("payment-intent")),
+    ).toBe(false);
+    expect(screen.queryByText(/FAKE|0.01|ABC/)).not.toBeInTheDocument();
     expect(
       spy.mock.calls.some(([url]) => String(url).includes("confirm-payment")),
     ).toBe(false);
@@ -568,6 +582,7 @@ describe("Checkout recovery and navigation", () => {
       spy.mock.calls.some(
         ([url]) =>
           String(url).includes("/customer/orders/") ||
+          String(url).includes("/payment-state/") ||
           String(url).includes("payment-intent"),
       ),
     ).toBe(false);

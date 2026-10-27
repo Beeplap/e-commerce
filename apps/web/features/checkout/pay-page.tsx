@@ -43,7 +43,7 @@ export function CheckoutPayContent() {
         </StorefrontButton>
       </div>
     );
-  if (!snapshot && state.kind === "authenticated" && read.kind !== "ready")
+  if (!snapshot && read.kind !== "ready")
     return (
       <div
         className="sf-checkout-state"
@@ -56,16 +56,20 @@ export function CheckoutPayContent() {
             <StorefrontButton onClick={read.retry}>
               Reload order
             </StorefrontButton>
-            <Link href="/account/orders">Check your orders</Link>
+            {state.kind === "authenticated" && (
+              <Link href="/account/orders">Check your orders</Link>
+            )}
           </>
         ) : (
           "Loading your order…"
         )}
       </div>
     );
-  const order =
-    snapshot ?? (state.kind === "authenticated" ? read.order : null);
-  if (order && order.paymentStatus !== "pending")
+  const order = snapshot ?? read.order;
+  if (
+    order &&
+    (order.paymentStatus !== "pending" || order.cancelled || order.processing)
+  )
     return (
       <div className="sf-checkout-state">
         <h2>

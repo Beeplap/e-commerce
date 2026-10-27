@@ -2251,6 +2251,31 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaymentOutput'
           description: Payment declined.
+  /api/v1/checkout/orders/{order_id}/payment-state/:
+    get:
+      operationId: payments_order_state
+      description: Read minimal payment recovery evidence for the customer's own order
+        or an order already bound to this guest's Django session. Does not create
+        or charge a payment.
+      parameters:
+      - in: path
+        name: order_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Payments
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderPaymentState'
+          description: ''
   /api/v1/checkout/payment-intent/:
     post:
       operationId: payments_create_intent
@@ -8438,6 +8463,45 @@ components:
       - unit_price
       - variant_id
       - warehouse_id
+    OrderPaymentState:
+      type: object
+      properties:
+        order_id:
+          type: string
+          format: uuid
+        order_number:
+          type: string
+          maxLength: 64
+        grand_total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+        currency:
+          type: string
+          maxLength: 3
+          minLength: 3
+        payment_status:
+          $ref: '#/components/schemas/OrderPaymentStatusEnum'
+        fulfillment_status:
+          $ref: '#/components/schemas/OrderFulfillmentStatusEnum'
+        payment:
+          allOf:
+          - $ref: '#/components/schemas/PaymentOutput'
+          nullable: true
+        resume_key:
+          type: string
+          nullable: true
+          maxLength: 128
+          minLength: 16
+      required:
+      - currency
+      - fulfillment_status
+      - grand_total
+      - order_id
+      - order_number
+      - payment
+      - payment_status
+      - resume_key
     OrderPaymentStatusEnum:
       enum:
       - pending

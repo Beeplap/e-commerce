@@ -1,5 +1,11 @@
 # Validation
 
+## Payment reload recovery regressions
+
+`tests/test_payment_recovery.py` exercises PostgreSQL-backed ownership-scoped reads before/after intent and capture, no gateway/state effects, exact replay once, original versus expired/foreign guest sessions, cross-customer/superuser denial, inactive sessions, terminal/processing/cancelled states, no-cache responses, CSRF preservation and query/method/UUID rejection. Existing payment integration and idempotency assertions remain unchanged.
+
+`tests/payment-recovery.test.tsx` covers remount recovery of pending attempts, lost intent/capture responses, read-only guest confirmation/review, no extra intent or charge, original replay key with fresh CSRF, terminal/processing suppression, stale-route/unmounted responses, read failure/retry, forged URL claims and malformed/mismatched bounded evidence. Existing checkout/card/privacy tests retain their requirements while using the new minimal recovery contract. Browser fixture evidence and aggregate validation are recorded in `docs/progress.md`; live provider acceptance remains separate.
+
 ## Platform reporting currency repair
 
 `test_reporting_currency.py` exercises real PostgreSQL/API mixed USD/NPR summaries and analytics, omitted-currency defaults, zero-valued empty currencies, shared-category rankings, distinct parent order counts, historical snapshot currencies, malformed legacy labels, capability rejection, invalid/blank/repeated/unallowlisted query fields and invalid/reversed/oversized date ranges. Existing analytics query-budget limits are unchanged. Report fixtures explicitly use valid identities and the real category `orders_count` contract.

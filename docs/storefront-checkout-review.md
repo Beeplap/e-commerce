@@ -1,5 +1,9 @@
 # Checkout visual experience — Phase 41
 
+## October 27 maintenance addendum
+
+The Phase 41 evidence below is historical. Subsequent backend maintenance implemented Cart-scoped placement idempotency, correct currency/shipping and proxy behavior. This maintenance resolves guest payment/confirmation reloads with a new minimal, session/customer-scoped read-only payment-state endpoint. Pending attempts recover their original key, captured attempts need no new payment command, and cancelled/failed/refunded/processing orders cannot offer another payment. Guest review no longer creates an intent. Guest access still requires the original Django session; URL claims never establish a charge or ownership. No card data/key/authority is persisted in browser storage. Hard-reload recovery of an uncertain _placement_ remains separate because the original placement payload/key is still only in memory.
+
 Work is isolated on `ui-overhaul-phase41-checkout` from validated Phase 40 `974b0f5`. The user's next “continue” authorizes checkout only. The original worktree, concurrent account/backend/proxy/product/seller work and functional phase selector are preserved. Phase 42 is not implemented.
 
 ## Implementation and visual critique

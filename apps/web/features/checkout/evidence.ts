@@ -19,6 +19,8 @@ export type OrderEvidence = {
   amount: string;
   currency: string;
   paymentStatus: string;
+  cancelled?: boolean;
+  processing?: boolean;
 };
 const currencyValid = (value: unknown): value is string =>
   typeof value === "string" && /^[A-Z]{3}$/.test(value);

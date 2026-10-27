@@ -590,6 +590,19 @@ describe("Phase 23: Customer Commerce End-to-End Integration Flows", () => {
       .mockImplementation((input: RequestInfo | URL, init?: RequestInit) => {
         const url = String(input);
 
+        if (url.includes("/payment-state/"))
+          return Promise.resolve(
+            json({
+              order_id: "70000000-0000-4000-8000-000000000001",
+              order_number: "ORD-99887766",
+              grand_total: "226.00",
+              currency: "USD",
+              payment_status: "pending",
+              fulfillment_status: "unfulfilled",
+              payment: null,
+              resume_key: null,
+            }),
+          );
         if (url.includes("/api/v1/auth/csrf")) {
           return Promise.resolve(json({ csrf_token: csrf }));
         }

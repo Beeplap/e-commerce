@@ -1,5 +1,9 @@
 # Production deployment architecture
 
+## Payment recovery rollout
+
+Deploy the backend payment-state read before the updated checkout frontend. This maintenance requires no migration, dependency, secret or gateway change. Preserve same-origin `/api/v1/*` routing, `no-store` responses and HttpOnly Django sessions; never cache this order/key projection at ingress. Existing guest session expiration intentionally removes recovery access. Mock charging is still disabled in production. This does not establish hosted-provider reconciliation or uncertain placement recovery after a hard reload.
+
 ## Architecture overview
 
 The quick-commerce production deployment topology follows a vendor-neutral, multi-tier defense-in-depth architecture. It does not assume any specific cloud provider and can run on any container runtime supporting OCI standards (e.g. Docker, Kubernetes, AWS ECS, Google Cloud Run).

@@ -1,5 +1,9 @@
 # Data model
 
+## Payment recovery evidence
+
+Payment recovery introduces no table, migration or stored credential. It reads the existing Order and latest Payment under a short Order lock, producing a consistent bounded projection. The pending Payment's existing idempotency key may be returned only to its authorized customer/guest session for exact confirmation replay. Terminal/processing/cancelled attempts have no resume key. No financial or inventory history is rewritten and no recovery read creates payment transactions.
+
 ## Settlement currency constraints
 
 Additive `finance.0003_currency_integrity` installs PostgreSQL triggers without rewriting existing rows. New/updated balances, payouts and ledger entries must match the seller currency; ledger entries must additionally match their linked order/payout currency. Balance/payout seller and currency, and Order currency, cannot be reassigned. Seller currency changes are rejected once orders or financial records exist. Existing append-only and tenant-scope triggers remain in place.

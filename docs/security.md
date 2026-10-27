@@ -1,5 +1,11 @@
 # Security model
 
+## Payment recovery read boundary (October 27)
+
+The explicit AllowAny payment-state view resolves an Order only through `payable_orders_for`: the authenticated customer owns it, or a customer-less order UUID was already bound to the guest's server-side Django session. Guessed UUIDs, foreign customers/guest sessions, logged-in users attempting to use old guest bindings and superusers receive no bypass. Expired/deactivated sessions cannot recover private evidence. Responses are `no-store`; unsupported queries/methods remain rejected. Reads do not create intents, charge, release inventory or alter audit/financial records, even with the gateway disabled.
+
+Only a pending payable attempt exposes its original replay identifier in the response body. This identifier grants no authority, is not a provider credential, and is never put into URLs or local/session storage. Confirmation independently rechecks session ownership and fresh CSRF, locks the active actor/business rows and safely replays terminal outcomes. Reloading success uses recorded server status, never query claims. Mismatched IDs, amounts, currencies, states or malformed recovery keys fail client validation; stale/unmounted reads cannot initiate a payment command. Raw mock card fields remain transient and clear after tokenization. Production mock charging remains disabled.
+
 ## Settlement currency maintenance
 
 New seller balances inherit the seller currency instead of hardcoded USD. Services and PostgreSQL independently reject foreign-currency settlement, payout and ledger sources, including cross-seller references. Currency identities cannot be changed to relabel history. Inconsistent legacy rows are retained and financial writes fail closed until reviewed reconciliation; the read-only `check_finance_currencies` command returns a nonzero exit code and counts without contact values, payment credentials or amounts.
@@ -110,9 +116,9 @@ Phase 23 provides end-to-end hardening and adversarial verification across all c
 
 ## Checkout presentation evidence (UI Phase 41)
 
-Checkout URLs carry only a valid single order UUID. Client-supplied totals, currency, email and confirmation claims are ignored. Paid presentation requires a validated server capture snapshot or an authenticated existing Django order read. Small order display snapshots stay in memory and reset across session identities; they carry no authorization. Guest ownership remains in Django?s server-side session. Explicit guest payment review uses the existing CSRF-protected intent command, never a new public order endpoint or browser-stored authority.
+Checkout URLs carry only a valid single order UUID. Client-supplied totals, currency, email and confirmation claims are ignored. Paid presentation requires a validated server capture snapshot or an authenticated existing Django order read. Small order display snapshots stay in memory and reset across session identities; they carry no authorization. Guest ownership remains in Django?s server-side session. Guest payment review and confirmation reload now use the minimal session-scoped payment-state read documented above; no browser-stored authority is introduced.
 
-Raw mock card number, expiry and CVC clear immediately after local tokenization. Only the existing opaque token reaches the API, with stable per-view payment idempotency and fresh CSRF. A changed server intent amount requires another review before capture. Late/unmounted responses cannot dispatch a further payment command or show stale private evidence. An already-dispatched unsafe operation remains subject to Django?s transaction and session checks. The UI does not claim backend placement idempotency; ambiguous placement blocks blind retry, and an accepted placement is not repeated for a subsequent cart refresh failure.
+Raw mock card number, expiry and CVC clear immediately after local tokenization. Only the existing opaque token reaches the API, with stable per-view payment idempotency and fresh CSRF. A changed server intent amount requires another review before capture. Late/unmounted responses cannot dispatch a further payment command or show stale private evidence. An already-dispatched unsafe operation remains subject to Django?s transaction and session checks. Backend placement replay is Cart-scoped and the UI retains the original payload/key for explicit same-page recovery; an accepted placement is not repeated for a subsequent cart refresh failure. Hard reload still loses that placement payload/key.
 
 ## Customer auth/account presentation (UI Phase 42)
 

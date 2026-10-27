@@ -106,6 +106,31 @@ export function PaymentForm({
     if (error) alert.current?.focus();
   }, [error]);
   const getIntent = async () => {
+    const recovered = await paymentsApi.orderState(orderId);
+    if (!alive.current) return null;
+    if (recovered.fulfillment_status === "cancelled")
+      throw new ApiError(
+        "This order was cancelled. Check its status before continuing.",
+        409,
+      );
+    if (recovered.payment) {
+      const value = paymentEvidence(recovered.payment, orderId);
+      if (value.status === "captured" && recovered.payment_status === "paid")
+        return value;
+      if (value.status !== "pending" || !recovered.resume_key)
+        throw new ApiError(
+          "This payment is not awaiting confirmation. Check your order status before continuing.",
+          409,
+        );
+      intentKey.current = recovered.resume_key;
+      intent.current = value;
+      return value;
+    }
+    if (recovered.payment_status !== "pending")
+      throw new ApiError(
+        "This order is not awaiting payment. Check its status before continuing.",
+        409,
+      );
     if (!intentKey.current) intentKey.current = newIdempotencyKey("intent");
     const value = paymentEvidence(
       await paymentsApi.createIntent(orderId, intentKey.current),
@@ -114,18 +139,17 @@ export function PaymentForm({
     if (alive.current) intent.current = value;
     return value;
   };
-  // Guest reloads have no order-read API. This explicit existing intent command
-  // retrieves the server amount for review; it does not confirm or charge.
+  // Review is read-only. Only explicit payment submission can create/confirm an intent.
   const reviewPayment = async () => {
     if (inFlight.current) return;
     inFlight.current = true;
     setSubmitting(true);
     setError(null);
     try {
-      const value = await getIntent();
+      const value = await paymentsApi.orderState(orderId);
       if (alive.current)
         setDetails({
-          total: value.amount,
+          total: value.grand_total,
           currency: value.currency,
           orderNumber: value.order_number,
         });
@@ -165,7 +189,11 @@ export function PaymentForm({
     setCvc("");
     try {
       const value = intent.current ?? (await getIntent());
-      if (!alive.current) return;
+      if (!alive.current || !value) return;
+      if (value.status === "captured") {
+        onCaptured(value);
+        return;
+      }
       if (
         value.amount !== details.total ||
         value.currency !== details.currency
@@ -324,7 +352,10 @@ export function PaymentForm({
       {!declined && error && (
         <p className="sf-checkout-note">
           Keep this browser session. Check your order status before retrying if
-          the payment result is uncertain.
+          the payment result is uncertain.{" "}
+          <Link href={`/checkout/success?order_id=${orderId}`}>
+            Check payment status
+          </Link>
         </p>
       )}
     </form>

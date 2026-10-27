@@ -82,6 +82,17 @@ describe("Customer Payment & Idempotency", () => {
     global.fetch = vi.fn(
       async (input: RequestInfo | URL, init?: RequestInit) => {
         const url = String(input);
+        if (url.includes("/payment-state/"))
+          return json({
+            order_id: mockCapturedPayment.order_id,
+            order_number: mockCapturedPayment.order_number,
+            grand_total: "50.00",
+            currency: "USD",
+            payment_status: "pending",
+            fulfillment_status: "unfulfilled",
+            payment: null,
+            resume_key: null,
+          });
         if (url.includes("/api/v1/auth/csrf")) {
           return json({ csrf_token: csrf });
         }
@@ -163,6 +174,17 @@ describe("Customer Payment & Idempotency", () => {
   it("handles 402 decline by displaying clear cancellation and released stock guidance", async () => {
     global.fetch = vi.fn(async (input: RequestInfo | URL) => {
       const url = String(input);
+      if (url.includes("/payment-state/"))
+        return json({
+          order_id: mockCapturedPayment.order_id,
+          order_number: mockCapturedPayment.order_number,
+          grand_total: "50.00",
+          currency: "USD",
+          payment_status: "pending",
+          fulfillment_status: "unfulfilled",
+          payment: null,
+          resume_key: null,
+        });
       if (url.includes("/api/v1/auth/csrf")) {
         return json({ csrf_token: csrf });
       }
@@ -232,6 +254,17 @@ describe("Customer Payment & Idempotency", () => {
     let intentCalls = 0;
     global.fetch = vi.fn(async (input: RequestInfo | URL) => {
       const url = String(input);
+      if (url.includes("/payment-state/"))
+        return json({
+          order_id: mockCapturedPayment.order_id,
+          order_number: mockCapturedPayment.order_number,
+          grand_total: "50.00",
+          currency: "USD",
+          payment_status: "pending",
+          fulfillment_status: "unfulfilled",
+          payment: null,
+          resume_key: null,
+        });
       if (url.includes("/api/v1/auth/csrf")) {
         return json({ csrf_token: csrf });
       }
@@ -286,6 +319,17 @@ describe("Customer Payment & Idempotency", () => {
   it("renders pay page and navigates to order confirmation upon capture", async () => {
     global.fetch = vi.fn(async (input: RequestInfo | URL) => {
       const url = String(input);
+      if (url.includes("/payment-state/"))
+        return json({
+          order_id: mockCapturedPayment.order_id,
+          order_number: mockCapturedPayment.order_number,
+          grand_total: "50.00",
+          currency: "USD",
+          payment_status: "pending",
+          fulfillment_status: "unfulfilled",
+          payment: null,
+          resume_key: null,
+        });
       if (url.includes("/api/v1/auth/csrf")) {
         return json({ csrf_token: csrf });
       }

@@ -1,13 +1,30 @@
 from __future__ import annotations
 
+from datetime import timedelta
 from typing import Any
 
+from django.utils import timezone
 from rest_framework import serializers
+
+from apps.finance.reporting import ReportingCurrencyFilterSerializer
 
 
 class DateRangeSerializer(serializers.Serializer[Any]):
     start_date = serializers.CharField()
     end_date = serializers.CharField()
+
+
+class PlatformDashboardFilterSerializer(ReportingCurrencyFilterSerializer):
+    start_date = serializers.DateTimeField(required=False)
+    end_date = serializers.DateTimeField(required=False)
+
+    def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
+        attrs = super().validate(attrs)
+        end = attrs.get("end_date", timezone.now())
+        start = attrs.get("start_date", end - timedelta(days=30))
+        if start > end or end - start > timedelta(days=366):
+            raise serializers.ValidationError("Choose an ordered date range of at most 366 days.")
+        return {**attrs, "start_date": start, "end_date": end}
 
 
 class SalesOverTimePointSerializer(serializers.Serializer[Any]):
@@ -59,7 +76,7 @@ class PlatformSalesOverTimePointSerializer(serializers.Serializer[Any]):
 class TopCategorySerializer(serializers.Serializer[Any]):
     id = serializers.CharField()
     name = serializers.CharField()
-    units_sold = serializers.IntegerField()
+    orders_count = serializers.IntegerField()
     revenue = serializers.CharField()
 
 
@@ -71,6 +88,8 @@ class TopSellerSerializer(serializers.Serializer[Any]):
 
 
 class PlatformDashboardMetricsSerializer(serializers.Serializer[Any]):
+    currency = serializers.CharField()
+    available_currencies = serializers.ListField(child=serializers.CharField(), max_length=256)
     date_range = DateRangeSerializer()
     gmv = serializers.CharField()
     platform_revenue = serializers.CharField()

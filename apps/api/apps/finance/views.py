@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from apps.accounts.views import BrowserAPIView
 from apps.finance import selectors, services
 from apps.finance import serializers as schemas
+from apps.finance.reporting import ReportingCurrencyFilterSerializer
 from apps.platform_access.permissions import PlatformCapabilityRequired
 from apps.sellers.permissions import SellerCapabilityRequired
 from apps.sellers.selectors import SellerAccess
@@ -128,11 +129,17 @@ class SellerPayoutDetailView(SellerPayoutBase):
 
 @extend_schema(tags=["Platform finance"])
 class AdminFinanceSummaryView(AdminFinanceReadBase):
+    allowed_query_parameters = frozenset({"currency"})
+
     @extend_schema(
-        responses=schemas.AdminFinanceSummarySerializer, operation_id="admin_finance_summary"
+        responses=schemas.AdminFinanceSummarySerializer,
+        operation_id="admin_finance_summary",
+        parameters=[ReportingCurrencyFilterSerializer],
     )
     def get(self, request: Request) -> Response:
-        summary = selectors.admin_finance_summary(request.user)
+        filters = ReportingCurrencyFilterSerializer(data=request.query_params)
+        filters.is_valid(raise_exception=True)
+        summary = selectors.admin_finance_summary(request.user, **filters.validated_data)
         return Response(schemas.AdminFinanceSummarySerializer(summary).data)
 
 

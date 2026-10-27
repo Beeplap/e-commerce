@@ -474,7 +474,7 @@ describe("Cart page and provider", () => {
     await screen.findByText(item.product_title);
     fireEvent.click(screen.getByRole("button", { name: "Increase quantity" }));
     const error = await screen.findByText("Only 2 available");
-    expect(error).toHaveFocus();
+    await waitFor(() => expect(error).toHaveFocus());
     expect(screen.getByTestId(`cart-page-qty-${item.id}`)).toHaveTextContent(
       "2",
     );

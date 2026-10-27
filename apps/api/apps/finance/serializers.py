@@ -262,6 +262,8 @@ class AdminBalanceAdjustmentSerializer(serializers.Serializer[Any]):
 
 
 class AdminFinanceSummarySerializer(serializers.Serializer[Any]):
+    currency = serializers.CharField()
+    available_currencies = serializers.ListField(child=serializers.CharField(), max_length=256)
     total_gross_sales = serializers.DecimalField(max_digits=16, decimal_places=2)
     total_commissions = serializers.DecimalField(max_digits=16, decimal_places=2)
     total_available_balances = serializers.DecimalField(max_digits=16, decimal_places=2)

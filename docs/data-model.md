@@ -6,6 +6,8 @@ Additive `finance.0003_currency_integrity` installs PostgreSQL triggers without 
 
 `SellerBalance` retains a single row per seller; no second currency wallet, FX rate or database is introduced. Legacy inconsistent rows remain unchanged for explicit reconciliation and are detected by `check_finance_currencies`. The old USD model defaults are retained for migration compatibility; creation services must explicitly supply the authoritative currency and PostgreSQL rejects an incompatible omitted default.
 
+Platform reporting adds no table or migration. Finance aggregates use the recorded `SellerLedgerEntry.currency`, `SellerBalance.currency` and `Payout.currency`; order metrics, rankings and trends use the parent `Order.currency`. Historical amounts are never relabeled from a seller's current setting. The response's explicit currency applies to all monetary fields and financial/order cohorts, while documented seller/buyer/plan counts remain global. There is no combined total across currencies or FX schema.
+
 ## Present schema
 
 `accounts.User` is the custom swappable user in migration `0001_initial` before any domain foreign keys or sessions are used. It contains UUID `id`, unique canonical `email`, first/last name, active/staff/email-verification flags, created/updated timestamps, and Django's password, last-login and PermissionsMixin compatibility fields. No username field exists. The manager strips and lowercases email; PostgreSQL's check constraint rejects noncanonical or empty raw writes and unique email rejects duplicates. Login, password/session workflows and platform access now use this identity. Future relations must target `settings.AUTH_USER_MODEL`.

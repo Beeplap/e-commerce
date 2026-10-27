@@ -2,6 +2,11 @@ import { apiRequest } from "@/lib/api/client";
 import { isUuid, record } from "@/lib/api/validation";
 import { pageParser } from "@/features/sellers/api";
 import type { Page } from "@/lib/api/types";
+import {
+  parseCurrencyScope,
+  reportCount,
+  reportMoney,
+} from "@/lib/api/reporting";
 
 export type LedgerEntryType =
   "SALE" | "COMMISSION" | "REFUND" | "PAYOUT" | "ADJUSTMENT";
@@ -83,6 +88,8 @@ export interface CommissionPlan {
 }
 
 export interface AdminFinanceSummary {
+  currency: string;
+  available_currencies: string[];
   total_gross_sales: string;
   total_commissions: string;
   total_available_balances: string;
@@ -211,16 +218,20 @@ export function parseCommissionPlan(value: unknown): CommissionPlan {
   };
 }
 
-export function parseAdminFinanceSummary(value: unknown): AdminFinanceSummary {
+export function parseAdminFinanceSummary(
+  value: unknown,
+  expectedCurrency?: string,
+): AdminFinanceSummary {
   const row = object(value);
   return {
-    total_gross_sales: String(row.total_gross_sales ?? "0.00"),
-    total_commissions: String(row.total_commissions ?? "0.00"),
-    total_available_balances: String(row.total_available_balances ?? "0.00"),
-    total_pending_balances: String(row.total_pending_balances ?? "0.00"),
-    total_paid_out: String(row.total_paid_out ?? "0.00"),
-    pending_payouts_count: Number(row.pending_payouts_count ?? 0),
-    active_plans_count: Number(row.active_plans_count ?? 0),
+    ...parseCurrencyScope(row, expectedCurrency),
+    total_gross_sales: reportMoney(row.total_gross_sales),
+    total_commissions: reportMoney(row.total_commissions),
+    total_available_balances: reportMoney(row.total_available_balances),
+    total_pending_balances: reportMoney(row.total_pending_balances),
+    total_paid_out: reportMoney(row.total_paid_out),
+    pending_payouts_count: reportCount(row.pending_payouts_count),
+    active_plans_count: reportCount(row.active_plans_count),
   };
 }
 
@@ -311,12 +322,16 @@ export async function requestPayout(
 
 export async function getAdminFinanceSummary(
   signal?: AbortSignal,
+  currency = "USD",
 ): Promise<AdminFinanceSummary> {
-  return apiRequest("/api/v1/admin/finance/summary", {
-    method: "GET",
-    signal,
-    parse: parseAdminFinanceSummary,
-  });
+  return apiRequest(
+    `/api/v1/admin/finance/summary?${new URLSearchParams({ currency })}`,
+    {
+      method: "GET",
+      signal,
+      parse: (value) => parseAdminFinanceSummary(value, currency),
+    },
+  );
 }
 
 export async function getAdminCommissionPlans(

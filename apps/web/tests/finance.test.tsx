@@ -99,6 +99,8 @@ const mockPlan: CommissionPlan = {
 };
 
 const mockAdminSummary: AdminFinanceSummary = {
+  currency: "USD",
+  available_currencies: ["NPR", "USD"],
   total_gross_sales: "250000.00",
   total_commissions: "25000.00",
   total_available_balances: "75000.00",
@@ -374,9 +376,12 @@ describe("Admin Finance UI", () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText("Platform Finance")).toBeInTheDocument();
+      expect(screen.getByText(/250,000/)).toBeInTheDocument();
     });
 
+    expect(
+      screen.getByRole("heading", { name: "Platform Finance" }),
+    ).toBeInTheDocument();
     expect(screen.getByText(/250,000/)).toBeInTheDocument();
     expect(screen.getByText(/25,000/)).toBeInTheDocument();
     expect(screen.getByText("3")).toBeInTheDocument(); // pending payouts count

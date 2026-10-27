@@ -8,6 +8,7 @@ from django.utils import timezone
 
 from apps.accounts.models import User
 from apps.finance.models import Payout, SellerBalance
+from apps.finance.reporting import reporting_currencies
 from apps.fulfillment.models import Refund, ReturnRequest
 from apps.inventory.models import Inventory
 from apps.orders.models import Order, OrderItem, SellerOrder
@@ -211,14 +212,17 @@ def get_seller_dashboard_metrics(
 def get_platform_dashboard_metrics(
     start_date: datetime | None = None,
     end_date: datetime | None = None,
+    currency: str = "USD",
 ) -> dict[str, Any]:
     """Calculate authoritative platform-wide dashboard metrics for Super Admins."""
+    currencies = reporting_currencies(currency)
     now = timezone.now()
     if not start_date or not end_date:
         start_date = start_date or (now - timedelta(days=30))
         end_date = end_date or now
 
     non_cancelled_seller_orders = SellerOrder.objects.filter(
+        order__currency=currency,
         created_at__gte=start_date,
         created_at__lte=end_date,
     ).exclude(status=SellerOrder.Status.CANCELLED)
@@ -231,6 +235,7 @@ def get_platform_dashboard_metrics(
     platform_revenue = financials["platform_revenue"] or Decimal("0.00")
 
     total_orders = Order.objects.filter(
+        currency=currency,
         created_at__gte=start_date,
         created_at__lte=end_date,
     ).count()
@@ -247,37 +252,41 @@ def get_platform_dashboard_metrics(
     customers_count = User.objects.filter(orders__isnull=False).distinct().count()
 
     refunds_count = Refund.objects.filter(
+        currency=currency,
+        seller_order__order__currency=currency,
         created_at__gte=start_date,
         created_at__lte=end_date,
     ).count()
     refund_rate = round((refunds_count / total_orders) * 100, 2) if total_orders > 0 else 0.0
 
     returns_count = ReturnRequest.objects.filter(
+        seller_order__order__currency=currency,
         requested_at__gte=start_date,
         requested_at__lte=end_date,
     ).count()
     return_rate = round((returns_count / total_orders) * 100, 2) if total_orders > 0 else 0.0
 
-    balances = SellerBalance.objects.aggregate(
+    balances = SellerBalance.objects.filter(currency=currency).aggregate(
         outstanding=Sum("current_balance"),
     )
     outstanding_seller_balances = balances["outstanding"] or Decimal("0.00")
 
     upcoming_payouts = Payout.objects.filter(
-        status__in=[Payout.Status.PENDING, Payout.Status.APPROVED]
+        currency=currency, status__in=[Payout.Status.PENDING, Payout.Status.APPROVED]
     ).aggregate(upcoming=Sum("amount"))["upcoming"] or Decimal("0.00")
 
     # Top categories
     top_categories_qs = (
         OrderItem.objects.filter(
+            seller_order__order__currency=currency,
             seller_order__created_at__gte=start_date,
             seller_order__created_at__lte=end_date,
             product__category__isnull=False,
         )
         .exclude(seller_order__status=SellerOrder.Status.CANCELLED)
         .values("product__category_id", "product__category__name")
-        .annotate(revenue=Sum("total"), orders_count=Count("seller_order_id", distinct=True))
-        .order_by("-revenue")[:5]
+        .annotate(revenue=Sum("total"), orders_count=Count("seller_order__order_id", distinct=True))
+        .order_by("-revenue", "product__category_id")[:5]
     )
     top_categories = [
         {
@@ -293,7 +302,7 @@ def get_platform_dashboard_metrics(
     top_sellers_qs = (
         non_cancelled_seller_orders.values("seller_id", "seller__display_name")
         .annotate(gross_sales=Sum("subtotal"), orders_count=Count("id"))
-        .order_by("-gross_sales")[:5]
+        .order_by("-gross_sales", "seller_id")[:5]
     )
     top_sellers = [
         {
@@ -312,7 +321,7 @@ def get_platform_dashboard_metrics(
         .annotate(
             gmv=Sum("subtotal"),
             platform_revenue=Sum("commission_total"),
-            orders_count=Count("id"),
+            orders_count=Count("order_id", distinct=True),
         )
         .order_by("date")
     )
@@ -327,6 +336,8 @@ def get_platform_dashboard_metrics(
     ]
 
     return {
+        "currency": currency,
+        "available_currencies": currencies,
         "date_range": {
             "start_date": start_date.isoformat(),
             "end_date": end_date.isoformat(),

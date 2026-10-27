@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
+import { ReportingCurrency } from "@/components/ui/reporting-currency";
 import { useAuth } from "@/features/auth/auth-provider";
 import { ForbiddenScreen } from "@/features/workspaces/forbidden-screen";
 import { hasPlatformPermission } from "@/lib/permissions";
@@ -28,34 +29,46 @@ export function AdminFinanceOverview() {
 }
 
 function FinanceDashboard() {
+  const [currency, setCurrency] = useState("USD");
   const loadSummary = useCallback(
-    (signal: AbortSignal) => getAdminFinanceSummary(signal),
-    [],
+    (signal: AbortSignal) => getAdminFinanceSummary(signal, currency),
+    [currency],
   );
 
-  const query = useApiQuery("admin:finance:summary", loadSummary);
-
-  if (query.kind === "loading") {
-    return <LoadingState />;
-  }
-
-  if (query.kind === "error") {
-    return <ApiErrorState error={query.error} onRetry={query.retry} />;
-  }
-
-  const summary: AdminFinanceSummary = query.data;
+  const query = useApiQuery(`admin:finance:summary:${currency}`, loadSummary);
 
   return (
     <div className="space-y-6">
       <PageHeader
         title="Platform Finance"
-        description="Balances, commissions and payouts."
+        description={`Amounts and pending payouts in ${currency}. Commission plans apply across currencies.`}
         actions={
-          <Link href="/admin/finance/payouts" className={primaryButton}>
-            View payouts
-          </Link>
+          <div className="flex flex-wrap items-center gap-3">
+            <ReportingCurrency
+              currency={currency}
+              currencies={
+                query.kind === "ready" ? query.data.available_currencies : null
+              }
+              onChange={setCurrency}
+            />
+            <Link href="/admin/finance/payouts" className={primaryButton}>
+              View payouts
+            </Link>
+          </div>
         }
       />
+      {query.kind === "loading" && <LoadingState />}
+      {query.kind === "error" && (
+        <ApiErrorState error={query.error} onRetry={query.retry} />
+      )}
+      {query.kind === "ready" && <FinanceSummaryContent summary={query.data} />}
+    </div>
+  );
+}
+
+function FinanceSummaryContent({ summary }: { summary: AdminFinanceSummary }) {
+  return (
+    <>
       <section
         aria-label="Payout work"
         className="flex flex-wrap items-center justify-between gap-4 border-y border-ui-border py-5"
@@ -90,14 +103,17 @@ function FinanceDashboard() {
               value: (
                 <Money
                   amount={summary.total_available_balances}
-                  currency="USD"
+                  currency={summary.currency}
                 />
               ),
             },
             {
               label: "Pending Balances",
               value: (
-                <Money amount={summary.total_pending_balances} currency="USD" />
+                <Money
+                  amount={summary.total_pending_balances}
+                  currency={summary.currency}
+                />
               ),
             },
           ]}
@@ -111,18 +127,29 @@ function FinanceDashboard() {
               {
                 label: "Total Gross Sales",
                 value: (
-                  <Money amount={summary.total_gross_sales} currency="USD" />
+                  <Money
+                    amount={summary.total_gross_sales}
+                    currency={summary.currency}
+                  />
                 ),
               },
               {
                 label: "Platform Commissions",
                 value: (
-                  <Money amount={summary.total_commissions} currency="USD" />
+                  <Money
+                    amount={summary.total_commissions}
+                    currency={summary.currency}
+                  />
                 ),
               },
               {
                 label: "Total Paid Out",
-                value: <Money amount={summary.total_paid_out} currency="USD" />,
+                value: (
+                  <Money
+                    amount={summary.total_paid_out}
+                    currency={summary.currency}
+                  />
+                ),
               },
             ]}
           />
@@ -161,6 +188,6 @@ function FinanceDashboard() {
           </Link>
         </div>
       </section>
-    </div>
+    </>
   );
 }

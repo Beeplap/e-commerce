@@ -1,5 +1,15 @@
 # Validation
 
+## Platform reporting currency repair
+
+`test_reporting_currency.py` exercises real PostgreSQL/API mixed USD/NPR summaries and analytics, omitted-currency defaults, zero-valued empty currencies, shared-category rankings, distinct parent order counts, historical snapshot currencies, malformed legacy labels, capability rejection, invalid/blank/repeated/unallowlisted query fields and invalid/reversed/oversized date ranges. Existing analytics query-budget limits are unchanged. Report fixtures explicitly use valid identities and the real category `orders_count` contract.
+
+`reporting.test.tsx` covers native selection, exact large decimal display, preserving currency across date presets, selector focus, loading/error recovery, obsolete responses, mismatched currency and malformed/incomplete financial evidence. Existing finance heading, amount, permission and dashboard assertions remain; the finance test waits for actual summary data now that its header remains visible during loading. New report parsers do not coerce incomplete reports into zero-valued success.
+
+The aggregate run exposed an existing cart rejection-focus timing race: the unchanged test passed alone, and `useCartActions` focuses the rendered error in a passive effect. Its assertion now waits for that same error to receive focus; confirmed quantity, disabled checkout and reload recovery assertions remain unchanged. No cart production code or focus requirement was altered.
+
+Chromium fixture checks cover `/admin` and `/admin/finance` at 375, 430, 768, 1024, 1440 and 1920px (12 route/viewport cases, 13 captures including rejected-currency recovery). Keyboard currency selection, visible focus, date-preset preservation, no document overflow, no page errors and no unexpected fixture requests passed. Representative mobile finance, mobile/desktop dashboard screenshots were inspected; the initial large GMV digit wrap was corrected. Harness/report/screenshots live in ignored `.artifacts/reporting-browser*`. Fixture browser evidence is separate from real PostgreSQL API evidence and does not establish live production or Firefox/Safari/assistive-technology acceptance.
+
 ## Settlement currency regressions
 
 `tests/test_finance_currency.py` covers NPR payment capture through settlement and payout, partial refunds, concurrent captures by different customers sharing one seller balance, disabled payment actors, currency/tenant mismatches, pre-charge rejection and PostgreSQL currency identity guards. A real backwards/forwards migration test constructs legacy inconsistent records under the old schema, restores the latest migrations in `finally`, and verifies unchanged historical money plus blocked new writes and a failing read-only audit. No trigger is disabled or financial history rewritten.

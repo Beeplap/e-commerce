@@ -8,7 +8,6 @@ import type {
   Notification,
   NotificationUnreadCount,
   SellerDashboardMetrics,
-  PlatformDashboardMetrics,
   Page,
   StorefrontCategory,
   StorefrontBrand,
@@ -48,6 +47,7 @@ import {
   record,
   strings,
 } from "./validation";
+import { parsePlatformDashboard } from "./reporting";
 
 export class ApiError extends Error {
   constructor(
@@ -491,18 +491,19 @@ export const adminApi = {
       body: { action, notes: notes ?? "" },
     }),
   dashboardMetrics: (
-    params?: { startDate?: string; endDate?: string },
+    params?: { startDate?: string; endDate?: string; currency?: string },
     signal?: AbortSignal,
   ) => {
     const search = new URLSearchParams();
     if (params?.startDate) search.set("start_date", params.startDate);
     if (params?.endDate) search.set("end_date", params.endDate);
+    search.set("currency", params?.currency ?? "USD");
     const qs = search.toString();
     const url = qs
       ? `/api/v1/admin/analytics/dashboard?${qs}`
       : "/api/v1/admin/analytics/dashboard";
     return apiRequest(url, {
-      parse: (v) => v as PlatformDashboardMetrics,
+      parse: (v) => parsePlatformDashboard(v, params?.currency ?? "USD"),
       signal,
     });
   },

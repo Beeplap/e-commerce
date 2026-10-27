@@ -9,6 +9,7 @@ from rest_framework.response import Response
 
 from apps.accounts.views import BrowserAPIView
 from apps.analytics.serializers import (
+    PlatformDashboardFilterSerializer,
     PlatformDashboardMetricsSerializer,
     SellerDashboardMetricsSerializer,
 )
@@ -58,21 +59,16 @@ class SellerDashboardMetricsView(BrowserAPIView):
 class PlatformDashboardMetricsView(BrowserAPIView):
     permission_classes = [PlatformCapabilityRequired]
     platform_capability = "platform.analytics.read"
-    allowed_query_parameters = frozenset({"start_date", "end_date"})
+    allowed_query_parameters = frozenset({"start_date", "end_date", "currency"})
 
     @extend_schema(
-        parameters=[START_PARAM, END_PARAM],
+        parameters=[PlatformDashboardFilterSerializer],
         responses={200: PlatformDashboardMetricsSerializer},
         tags=["Platform analytics"],
         operation_id="platform_dashboard_metrics",
     )
     def get(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        start_str = request.query_params.get("start_date")
-        end_str = request.query_params.get("end_date")
-        start_date, end_date = parse_date_range(start_str, end_str)
-
-        metrics = get_platform_dashboard_metrics(
-            start_date=start_date,
-            end_date=end_date,
-        )
+        filters = PlatformDashboardFilterSerializer(data=request.query_params)
+        filters.is_valid(raise_exception=True)
+        metrics = get_platform_dashboard_metrics(**filters.validated_data)
         return Response(metrics)

@@ -55,6 +55,8 @@ const mockSellerDashboard: SellerDashboardMetrics = {
 };
 
 const mockPlatformDashboard: PlatformDashboardMetrics = {
+  currency: "USD",
+  available_currencies: ["NPR", "USD"],
   date_range: {
     start_date: "2026-09-02T00:00:00Z",
     end_date: "2026-10-02T00:00:00Z",
@@ -74,15 +76,15 @@ const mockPlatformDashboard: PlatformDashboardMetrics = {
   new_seller_registrations: 5,
   top_categories: [
     {
-      id: "cat-1",
+      id: "30000000-0000-4000-8000-000000000001",
       name: "Electronics",
-      units_sold: 450,
+      orders_count: 450,
       revenue: "52000.00",
     },
   ],
   top_sellers: [
     {
-      id: "seller-1",
+      id: membership.seller.id,
       name: "Apex Electronics",
       gross_sales: "34000.00",
       orders_count: 310,
@@ -314,7 +316,7 @@ describe("dashboard redesign contracts", () => {
         ...mockPlatformDashboard,
         top_categories: [
           {
-            id: "cat-live",
+            id: "30000000-0000-4000-8000-000000000002",
             name: "Live category",
             revenue: "15.00",
             orders_count: 3,

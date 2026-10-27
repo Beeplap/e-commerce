@@ -24,6 +24,7 @@ import { hasPlatformPermission } from "@/lib/permissions";
 import { ForbiddenScreen } from "./forbidden-screen";
 import { useSeller } from "./seller-workspace";
 import { TrendChart } from "./trend-chart";
+import { ReportingCurrency } from "@/components/ui/reporting-currency";
 
 type PresetRange = "7d" | "30d" | "90d";
 function getDateRangeFromPreset(preset: PresetRange) {
@@ -436,13 +437,19 @@ export function AdminOverview() {
   const user = state.kind === "authenticated" ? state.user : null;
   const allowed = hasPlatformPermission(user, "platform.analytics.read");
   const [rangePreset, setRangePreset] = useState<PresetRange>("30d");
+  const [currency, setCurrency] = useState("USD");
   const loadMetrics = useCallback(
     (signal: AbortSignal) =>
-      adminApi.dashboardMetrics(getDateRangeFromPreset(rangePreset), signal),
-    [rangePreset],
+      adminApi.dashboardMetrics(
+        { ...getDateRangeFromPreset(rangePreset), currency },
+        signal,
+      ),
+    [rangePreset, currency],
   );
   const query = useApiQuery<PlatformDashboardMetrics>(
-    allowed && user ? `admin-dashboard:${user.id}:${rangePreset}` : null,
+    allowed && user
+      ? `admin-dashboard:${user.id}:${rangePreset}:${currency}`
+      : null,
     loadMetrics,
   );
   if (state.kind === "loading")
@@ -454,9 +461,19 @@ export function AdminOverview() {
     <>
       <PageHeader
         title="Platform workspace"
-        description="Marketplace operations and performance."
+        description={`Amounts and order activity in ${currency}. Seller and customer counts cover all currencies.`}
         actions={
-          <RangeButtonGroup current={rangePreset} onChange={setRangePreset} />
+          <div className="flex flex-wrap items-center gap-3">
+            <ReportingCurrency
+              key={user.id}
+              currency={currency}
+              currencies={
+                query.kind === "ready" ? query.data.available_currencies : null
+              }
+              onChange={setCurrency}
+            />
+            <RangeButtonGroup current={rangePreset} onChange={setRangePreset} />
+          </div>
         }
       />
       {query.kind === "loading" && (
@@ -500,7 +517,7 @@ export function AdminOverview() {
                   value: (
                     <Money
                       amount={query.data.upcoming_payouts}
-                      currency="USD"
+                      currency={query.data.currency}
                     />
                   ),
                   description: "Total of pending and approved payout requests",
@@ -514,7 +531,7 @@ export function AdminOverview() {
                   value: (
                     <Money
                       amount={query.data.outstanding_seller_balances}
-                      currency="USD"
+                      currency={query.data.currency}
                     />
                   ),
                   description: "Current seller balances",
@@ -535,17 +552,38 @@ export function AdminOverview() {
               items={[
                 {
                   label: "Platform GMV",
-                  value: <Money amount={query.data.gmv} currency="USD" />,
+                  value: (
+                    <span
+                      className={
+                        query.data.gmv.length > 12
+                          ? "text-xl leading-7"
+                          : undefined
+                      }
+                    >
+                      <Money
+                        amount={query.data.gmv}
+                        currency={query.data.currency}
+                      />
+                    </span>
+                  ),
                   primary: true,
                   hint: "Gross merchandise value",
                 },
                 {
                   label: "Platform Revenue",
                   value: (
-                    <Money
-                      amount={query.data.platform_revenue}
-                      currency="USD"
-                    />
+                    <span
+                      className={
+                        query.data.platform_revenue.length > 12
+                          ? "text-xl leading-7"
+                          : undefined
+                      }
+                    >
+                      <Money
+                        amount={query.data.platform_revenue}
+                        currency={query.data.currency}
+                      />
+                    </span>
                   ),
                   primary: true,
                   hint: "Commission revenue",
@@ -559,7 +597,7 @@ export function AdminOverview() {
                   value: (
                     <Money
                       amount={query.data.average_order_value}
-                      currency="USD"
+                      currency={query.data.currency}
                     />
                   ),
                 },
@@ -594,7 +632,7 @@ export function AdminOverview() {
             <TrendChart
               label="GMV"
               secondaryLabel="Platform revenue"
-              currency="USD"
+              currency={query.data.currency}
               points={query.data.sales_over_time.map((day) => ({
                 date: day.date,
                 value: day.gmv,
@@ -646,7 +684,10 @@ export function AdminOverview() {
                     heading: "Gross sales",
                     cell: (seller) => (
                       <span className="block text-right">
-                        <Money amount={seller.gross_sales} currency="USD" />
+                        <Money
+                          amount={seller.gross_sales}
+                          currency={query.data.currency}
+                        />
                       </span>
                     ),
                   },
@@ -673,7 +714,10 @@ export function AdminOverview() {
                     heading: "GMV",
                     cell: (category) => (
                       <span className="block text-right">
-                        <Money amount={category.revenue} currency="USD" />
+                        <Money
+                          amount={category.revenue}
+                          currency={query.data.currency}
+                        />
                       </span>
                     ),
                   },

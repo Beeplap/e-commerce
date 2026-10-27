@@ -12,6 +12,7 @@ from apps.finance.models import (
     SellerBalance,
     SellerLedgerEntry,
 )
+from apps.finance.reporting import reporting_currencies
 from apps.finance.services import ensure_seller_balance
 from apps.platform_access.models import PlatformAccess
 from apps.sellers.selectors import require_seller_access
@@ -72,25 +73,30 @@ def seller_payout_detail(actor: Any, seller_id: UUID, payout_id: UUID) -> Payout
     return payout
 
 
-def admin_finance_summary(actor: Any) -> dict[str, Any]:
+def admin_finance_summary(actor: Any, currency: str = "USD") -> dict[str, Any]:
     _require_platform_finance_read(actor)
+    currencies = reporting_currencies(currency)
 
     sales_total = SellerLedgerEntry.objects.filter(
-        entry_type=SellerLedgerEntry.EntryType.SALE
+        entry_type=SellerLedgerEntry.EntryType.SALE, currency=currency
     ).aggregate(total=Sum("amount"))["total"] or Decimal("0.00")
     comm_total = SellerLedgerEntry.objects.filter(
-        entry_type=SellerLedgerEntry.EntryType.COMMISSION
+        entry_type=SellerLedgerEntry.EntryType.COMMISSION, currency=currency
     ).aggregate(total=Sum("amount"))["total"] or Decimal("0.00")
-    balances_agg = SellerBalance.objects.aggregate(
+    balances_agg = SellerBalance.objects.filter(currency=currency).aggregate(
         current=Sum("current_balance"),
         pending=Sum("pending_balance"),
         paid_out=Sum("total_paid_out"),
     )
 
-    pending_payouts_count = Payout.objects.filter(status=Payout.Status.PENDING).count()
+    pending_payouts_count = Payout.objects.filter(
+        status=Payout.Status.PENDING, currency=currency
+    ).count()
     active_plans_count = CommissionPlan.objects.filter(is_active=True).count()
 
     return {
+        "currency": currency,
+        "available_currencies": currencies,
         "total_gross_sales": sales_total,
         "total_commissions": abs(comm_total),
         "total_available_balances": balances_agg["current"] or Decimal("0.00"),

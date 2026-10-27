@@ -167,7 +167,7 @@ export interface PlatformSalesOverTimePoint {
 export interface TopCategory {
   id: string;
   name: string;
-  units_sold: number;
+  orders_count: number;
   revenue: string;
 }
 
@@ -179,6 +179,8 @@ export interface TopSeller {
 }
 
 export interface PlatformDashboardMetrics {
+  currency: string;
+  available_currencies: string[];
   date_range: DateRange;
   gmv: string;
   platform_revenue: string;

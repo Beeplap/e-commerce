@@ -27,6 +27,13 @@ paths:
         login.
       parameters:
       - in: query
+        name: currency
+        schema:
+          type: string
+          default: USD
+          pattern: ^[A-Z]{3}$
+          minLength: 1
+      - in: query
         name: end_date
         schema:
           type: string
@@ -575,6 +582,14 @@ paths:
       operationId: admin_finance_summary
       description: CSRF applies even to anonymous unsafe browser requests, including
         login.
+      parameters:
+      - in: query
+        name: currency
+        schema:
+          type: string
+          default: USD
+          pattern: ^[A-Z]{3}$
+          minLength: 1
       tags:
       - Platform finance
       security:
@@ -5905,6 +5920,13 @@ components:
     AdminFinanceSummary:
       type: object
       properties:
+        currency:
+          type: string
+        available_currencies:
+          type: array
+          items:
+            type: string
+          maxItems: 256
         total_gross_sales:
           type: string
           format: decimal
@@ -5931,6 +5953,8 @@ components:
           type: integer
       required:
       - active_plans_count
+      - available_currencies
+      - currency
       - pending_payouts_count
       - total_available_balances
       - total_commissions
@@ -8893,6 +8917,13 @@ components:
     PlatformDashboardMetrics:
       type: object
       properties:
+        currency:
+          type: string
+        available_currencies:
+          type: array
+          items:
+            type: string
+          maxItems: 256
         date_range:
           $ref: '#/components/schemas/DateRange'
         gmv:
@@ -8937,8 +8968,10 @@ components:
             $ref: '#/components/schemas/PlatformSalesOverTimePoint'
       required:
       - active_sellers
+      - available_currencies
       - average_order_value
       - commission_revenue
+      - currency
       - customers_count
       - date_range
       - gmv
@@ -11794,15 +11827,15 @@ components:
           type: string
         name:
           type: string
-        units_sold:
+        orders_count:
           type: integer
         revenue:
           type: string
       required:
       - id
       - name
+      - orders_count
       - revenue
-      - units_sold
     TopProduct:
       type: object
       properties:

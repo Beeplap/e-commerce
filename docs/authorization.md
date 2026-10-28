@@ -1,5 +1,9 @@
 # Authorization
 
+## Placement recovery command
+
+`POST /api/v1/checkout/recover-placement/` explicitly allows guests with mandatory CSRF, then resolves and locks only the submitted cart within the active customer's carts or anonymous session-key/customer-less carts. It does not accept an order UUID or authority from an attempt reference. Successful replay evidence must also match the current Order customer identity; guest evidence can rebind only its customer-less order in the original cart session. Foreign carts/expired sessions return 404 without creating closure records. An inactive authenticated actor is denied after locking/revalidation; no platform or infrastructure-superuser bypass exists.
+
 ## Checkout payment recovery
 
 `GET /api/v1/checkout/orders/{order_id}/payment-state/` deliberately allows guest requests but applies the same Django-owned order scope as intent/confirmation. Signed-in users may read only `Order.customer == request.user`; anonymous users may read only customer-less orders already remembered in their server-side session. The URL UUID and pending replay key are identifiers, never authorization. There is no seller/platform/superuser bypass, guest order enumeration, address/contact read or browser-persisted access grant. Confirmation remains CSRF-protected even for anonymous requests. Session expiration removes guest recovery access.

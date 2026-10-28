@@ -22,6 +22,8 @@ from .serializers import (
     CustomerAddressOutputSerializer,
     PlaceOrderInputSerializer,
     PlaceOrderOutputSerializer,
+    RecoverPlacementInputSerializer,
+    RecoverPlacementOutputSerializer,
 )
 
 
@@ -151,7 +153,33 @@ class PlaceOrderView(BrowserAPIView):
             shipping_selections=data.get("shipping_selections"),
             coupon_code=data.get("coupon_code"),
             idempotency_key=data.get("idempotency_key"),
+            expected_cart_id=data.get("cart_id"),
         )
         if not request.user.is_authenticated:
             remember_guest_order(request, UUID(str(result["order_id"])))
         return Response(result, status=status.HTTP_201_CREATED)
+
+
+class RecoverPlacementView(BrowserAPIView):
+    permission_classes = [AllowAny]
+
+    @extend_schema(
+        request=RecoverPlacementInputSerializer,
+        responses={200: RecoverPlacementOutputSerializer},
+        description=(
+            "Find the committed order or permanently close an uncommitted attempt key in the "
+            "owned cart. Requires CSRF, including for guests. Never repeats placement or payment."
+        ),
+        tags=["Checkout"],
+        operation_id="checkout_recover_placement",
+    )
+    def post(self, request: Request) -> Response:
+        serializer = RecoverPlacementInputSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+        result = services.recover_placement(
+            request=request, cart_id=data["cart_id"], key=data["idempotency_key"]
+        )
+        if result["order_id"] is not None and not request.user.is_authenticated:
+            remember_guest_order(request, result["order_id"])
+        return Response(RecoverPlacementOutputSerializer(result).data)

@@ -1,5 +1,13 @@
 # Validation
 
+## Placement reload recovery regressions
+
+`test_placement_recovery.py` covers committed recovery without another reservation, idempotent closure and late-request rejection, refilled cart preservation, foreign/customer/guest/superuser/expired/disabled actor denial, lost guest binding restoration, replaced carts and guest merging, closure limits, explicit input/CSRF/query/method rejection, write failure with no false closure, PostgreSQL mutually exclusive/immutable/retained outcomes and both overlapping guest placement/recovery winners. Transactional cases restore migration-seeded roles with serialized rollback. Deferred deletion guards are explicitly forced when testing direct deletion versus Cart cascade.
+
+`placement-recovery.test.tsx` and the existing checkout tests cover form-to-remount recovery, original cart/key retention before dispatch, history-write failure, explicit no-auto-command checks, original payload replay, fresh CSRF, found/closed/foreign/failed/rate-limited states, duplicate clicks, unmounted responses, malformed references/evidence and explicit restart. Browser fixture evidence and final aggregate checks are recorded in `docs/progress.md`; real PostgreSQL behavior and fixture browser presentation remain separate evidence.
+
+`pnpm smoke:checkout-recovery` also runs in CI after the real auth proxy smoke. It creates only its own empty guest cart/session, checks anonymous CSRF, durable closure/replay, late-request rejection, cross-session denial, query/method/no-store behavior and deletes only those disposable records. It creates no order, stock reservation or payment. The helper requires DEBUG development settings and uses a fresh CSRF token per unsafe request. Cleanup failures propagate.
+
 ## Payment reload recovery regressions
 
 `tests/test_payment_recovery.py` exercises PostgreSQL-backed ownership-scoped reads before/after intent and capture, no gateway/state effects, exact replay once, original versus expired/foreign guest sessions, cross-customer/superuser denial, inactive sessions, terminal/processing/cancelled states, no-cache responses, CSRF preservation and query/method/UUID rejection. Existing payment integration and idempotency assertions remain unchanged.

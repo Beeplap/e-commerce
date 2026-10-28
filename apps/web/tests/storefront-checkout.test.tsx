@@ -448,6 +448,63 @@ describe("Checkout recovery and navigation", () => {
     ).toBe(1);
     expect(push).not.toHaveBeenCalled();
   });
+  it("recovers an ambiguous placement after remount without repeating its payload", async () => {
+    let attemptedKey = "";
+    const spy = api((url, init) => {
+      if (url.includes("/place-order/")) {
+        const body = JSON.parse(String(init?.body));
+        attemptedKey = body.idempotency_key;
+        expect(body.cart_id).toBe(mockCart.id);
+        expect(window.location.hash).toBe(
+          `#checkout_attempt=${mockCart.id}.${attemptedKey}`,
+        );
+        return json({}, 503);
+      }
+      if (url.includes("/recover-placement/")) {
+        expect(JSON.parse(String(init?.body))).toEqual({
+          cart_id: mockCart.id,
+          idempotency_key: attemptedKey,
+        });
+        return json({ status: "placed", order_id: mockOrder.id });
+      }
+    });
+    const first = render(tree(<CheckoutPage />));
+    fireEvent.click(await ready());
+    await screen.findByRole("button", { name: "Retry order confirmation" });
+    first.unmount();
+    render(tree(<CheckoutPage />));
+    fireEvent.click(
+      await screen.findByRole("button", { name: "Check original order" }),
+    );
+    expect(
+      await screen.findByRole("link", { name: "Continue to order" }),
+    ).toHaveAttribute("href", `/checkout/pay?order_id=${mockOrder.id}`);
+    expect(
+      spy.mock.calls.filter(([url]) => String(url).includes("/place-order/")),
+    ).toHaveLength(1);
+    expect(
+      screen.queryByRole("button", { name: /Confirm & place order/ }),
+    ).not.toBeInTheDocument();
+  });
+  it("does not place an order when the browser cannot retain its recovery reference", async () => {
+    const spy = api();
+    render(tree(<CheckoutPage />));
+    const button = await ready();
+    const replace = vi
+      .spyOn(window.history, "replaceState")
+      .mockImplementation(() => {
+        throw new Error("History unavailable");
+      });
+    try {
+      fireEvent.click(button);
+      await screen.findByText(/recovery reference could not be retained/);
+      expect(
+        spy.mock.calls.some(([url]) => String(url).includes("/place-order/")),
+      ).toBe(false);
+    } finally {
+      replace.mockRestore();
+    }
+  });
   it("retries an ambiguous placement with the exact same payload and checkout key", async () => {
     const bodies: Record<string, unknown>[] = [];
     api((url, init) => {
@@ -461,6 +518,8 @@ describe("Checkout recovery and navigation", () => {
       name: "Retry order confirmation",
     });
     expect(bodies[0]?.idempotency_key).toMatch(/^[a-z0-9-]{36}$/i);
+    expect(bodies[0]?.cart_id).toBe(mockCart.id);
+    expect(window.location.hash).toContain(String(bodies[0]?.idempotency_key));
     fireEvent.click(retry);
     fireEvent.click(retry);
     await waitFor(() =>
@@ -470,6 +529,7 @@ describe("Checkout recovery and navigation", () => {
     );
     expect(bodies).toHaveLength(2);
     expect(bodies[1]).toEqual(bodies[0]);
+    expect(window.location.hash).toBe("");
   });
   it("keeps recovery available when the cart was cleared by the ambiguous placement", async () => {
     let submitted = false;

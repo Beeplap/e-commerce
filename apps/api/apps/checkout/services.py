@@ -11,13 +11,19 @@ from uuid import UUID
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.db.models import Q
-from rest_framework.exceptions import APIException, NotFound, PermissionDenied, ValidationError
+from rest_framework.exceptions import (
+    APIException,
+    NotFound,
+    PermissionDenied,
+    Throttled,
+    ValidationError,
+)
 from rest_framework.request import Request
 
 from apps.cart.models import Cart, CartItem
 from apps.cart.services import get_cart_currency, get_or_create_cart, get_variant_available_stock
 from apps.catalog.models import Product, ProductVariant
-from apps.checkout.models import CheckoutAttempt, CustomerAddress
+from apps.checkout.models import CheckoutAttempt, CheckoutAttemptCancellation, CustomerAddress
 from apps.events.services import publish_outbox_event
 from apps.finance.services import calculate_commission
 from apps.fulfillment.models import ShippingMethod, ShippingRate
@@ -35,6 +41,51 @@ class CheckoutConflict(APIException):
     status_code = 409
     default_detail = "This checkout key was already used with different order details."
     default_code = "checkout_conflict"
+
+
+MAX_CANCELLED_CHECKOUT_ATTEMPTS = 1000
+
+
+@transaction.atomic
+def recover_placement(*, request: Request, cart_id: UUID, key: str) -> dict[str, Any]:
+    """Resolve a lost placement or close its key before any late request can commit.
+
+    Actor -> owned Cart locks match placement. Recovery does not repeat a payload,
+    cancel a business order, modify cart items or reserve/release inventory.
+    """
+    user = getattr(request, "user", None)
+    authenticated = bool(user and user.is_authenticated)
+    carts = Cart.objects.select_for_update()
+    expected_customer = None
+    if authenticated and user is not None:
+        user = User.objects.select_for_update().filter(pk=user.pk, is_active=True).first()
+        if user is None:
+            raise PermissionDenied("Authentication required.")
+        expected_customer = user.pk
+        carts = carts.filter(user=user)
+    else:
+        session_key = request._request.session.session_key
+        if not session_key:
+            raise NotFound()
+        carts = carts.filter(user__isnull=True, session_key=session_key)
+    cart = carts.filter(pk=cart_id).first()
+    if cart is None:
+        raise NotFound()
+    if not re.fullmatch(r"[A-Za-z0-9_-]{16,128}", key):
+        raise ValidationError({"idempotency_key": "Use a 16-128 character checkout key."})
+    previous = CheckoutAttempt.objects.filter(cart=cart, key=key).select_related("order").first()
+    if previous is not None:
+        # Revalidate identity even for inconsistent legacy replay evidence.
+        if previous.order.customer_id != expected_customer:
+            raise NotFound()
+        return {"status": "placed", "order_id": previous.order_id}
+    cancelled = CheckoutAttemptCancellation.objects.filter(cart=cart)
+    if not cancelled.filter(key=key).exists():
+        if cancelled.count() >= MAX_CANCELLED_CHECKOUT_ATTEMPTS:
+            # Do not evict safety records or report a cancellation that was not persisted.
+            raise Throttled(detail="Checkout recovery limit reached. Contact support.")
+        CheckoutAttemptCancellation.objects.create(cart=cart, key=key)
+    return {"status": "cancelled", "order_id": None}
 
 
 # ---------------------------------------------------------------------------
@@ -447,6 +498,7 @@ def place_order(
     shipping_selections: dict[str, str] | None = None,
     coupon_code: str | None = None,
     idempotency_key: str | None = None,
+    expected_cart_id: UUID | None = None,
 ) -> dict[str, Any]:
     """
     Atomically places customer order across multiple sellers:
@@ -466,8 +518,16 @@ def place_order(
         if user is None:
             raise PermissionDenied("Authentication required.")
 
-    cart = get_or_create_cart(request)
-    cart = Cart.objects.select_for_update().get(pk=cart.pk)
+    resolved_cart = get_or_create_cart(request)
+    cart = Cart.objects.select_for_update().filter(pk=resolved_cart.pk).first()
+    if cart is None:
+        raise CheckoutConflict(
+            "The cart changed. Check the original checkout before starting again."
+        )
+    if expected_cart_id is not None and cart.pk != expected_cart_id:
+        raise CheckoutConflict(
+            "The cart changed. Check the original checkout before starting again."
+        )
     key = (idempotency_key or "").strip()
     if key and not re.fullmatch(r"[A-Za-z0-9_-]{16,128}", key):
         raise ValidationError({"idempotency_key": "Use a 16-128 character checkout key."})
@@ -492,6 +552,8 @@ def place_order(
             if previous.request_digest != request_digest:
                 raise CheckoutConflict()
             return dict(previous.response)
+        if CheckoutAttemptCancellation.objects.filter(cart=cart, key=key).exists():
+            raise CheckoutConflict("This checkout attempt was closed. Start a new checkout.")
 
     seller_ids = cart.items.values_list("variant__product__seller_id", flat=True)
     list(Seller.objects.select_for_update().filter(pk__in=seller_ids).order_by("pk"))

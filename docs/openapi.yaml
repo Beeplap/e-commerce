@@ -2349,6 +2349,30 @@ paths:
               schema:
                 $ref: '#/components/schemas/CheckoutQuoteOutput'
           description: ''
+  /api/v1/checkout/recover-placement/:
+    post:
+      operationId: checkout_recover_placement
+      description: Find the committed order or permanently close an uncommitted attempt
+        key in the owned cart. Requires CSRF, including for guests. Never repeats
+        placement or payment.
+      tags:
+      - Checkout
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecoverPlacementInput'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecoverPlacementOutput'
+          description: ''
   /api/v1/customer/addresses/:
     get:
       operationId: customer_addresses_list
@@ -8893,6 +8917,10 @@ components:
     PlaceOrderInput:
       type: object
       properties:
+        cart_id:
+          type: string
+          format: uuid
+          nullable: true
         shipping_address:
           type: object
           additionalProperties: {}
@@ -9791,6 +9819,38 @@ components:
           nullable: true
       required:
       - return_item_id
+    RecoverPlacementInput:
+      type: object
+      properties:
+        cart_id:
+          type: string
+          format: uuid
+        idempotency_key:
+          type: string
+          pattern: ^[A-Za-z0-9_-]{16,128}$
+      required:
+      - cart_id
+      - idempotency_key
+    RecoverPlacementOutput:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/RecoverPlacementOutputStatusEnum'
+        order_id:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+      - order_id
+      - status
+    RecoverPlacementOutputStatusEnum:
+      enum:
+      - placed
+      - cancelled
+      type: string
+      description: |-
+        * `placed` - placed
+        * `cancelled` - cancelled
     Refund:
       type: object
       properties:

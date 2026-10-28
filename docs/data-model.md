@@ -1,5 +1,9 @@
 # Data model
 
+## Closed placement attempts
+
+Additive `checkout.0003_checkoutattemptcancellation` adds UUID-keyed `CheckoutAttemptCancellation(cart, key, created_at)` with unique `(cart, key)` and no request payload. It also adds PostgreSQL outcome/immutability guards to existing successful `CheckoutAttempt` evidence. Both outcomes serialize on Cart; a key cannot be successful and closed. Replay/cancellation updates are rejected. Deleting either kind of evidence is rejected at commit while its Cart remains; Cart cascades remain supported, including guest merging. New browser requests include their original cart UUID to prevent deleted/replaced carts from reopening old requests. No Order, inventory, financial or private-address schema is rewritten. Retain evidence throughout the Cart lifetime; do not implement TTL eviction of these safety records. Closure creation is bounded at 1,000 per Cart and otherwise fails closed.
+
 ## Payment recovery evidence
 
 Payment recovery introduces no table, migration or stored credential. It reads the existing Order and latest Payment under a short Order lock, producing a consistent bounded projection. The pending Payment's existing idempotency key may be returned only to its authorized customer/guest session for exact confirmation replay. Terminal/processing/cancelled attempts have no resume key. No financial or inventory history is rewritten and no recovery read creates payment transactions.

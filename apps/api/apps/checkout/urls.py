@@ -4,6 +4,11 @@ from . import views
 
 urlpatterns = [
     re_path(
+        r"^checkout/recover-placement/?$",
+        views.RecoverPlacementView.as_view(),
+        name="checkout-recover-placement",
+    ),
+    re_path(
         r"^checkout/addresses/?$",
         views.CustomerAddressListView.as_view(),
         name="checkout-addresses-list",

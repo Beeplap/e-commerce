@@ -536,6 +536,7 @@ export interface CheckoutQuoteInput {
 }
 
 export interface PlaceOrderInput {
+  cart_id?: string;
   shipping_address?: Partial<CustomerAddress>;
   address_id?: string | null;
   billing_address?: Partial<CustomerAddress> | null;
@@ -544,6 +545,10 @@ export interface PlaceOrderInput {
   coupon_code?: string | null;
   idempotency_key?: string | null;
 }
+
+export type PlacementRecovery =
+  | { status: "placed"; order_id: string }
+  | { status: "cancelled"; order_id: null };
 
 export type PaymentStatus =
   "pending" | "authorized" | "captured" | "failed" | "refunded";

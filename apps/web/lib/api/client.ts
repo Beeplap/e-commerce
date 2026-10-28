@@ -39,6 +39,7 @@ import {
   parseMembershipPage,
   parsePayment,
   parseOrderPaymentState,
+  parsePlacementRecovery,
   parseUser,
   parseCustomerProfile,
   parseCustomerOrderList,
@@ -670,6 +671,12 @@ export const promotionsApi = {
 };
 
 export const checkoutApi = {
+  recoverPlacement: (cartId: string, key: string) =>
+    apiRequest("/api/v1/checkout/recover-placement/", {
+      method: "POST",
+      parse: parsePlacementRecovery,
+      body: { cart_id: cartId, idempotency_key: key },
+    }),
   addresses: (signal?: AbortSignal) =>
     apiRequest("/api/v1/checkout/addresses/", {
       parse: (v) => v as CustomerAddress[],

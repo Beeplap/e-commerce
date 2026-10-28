@@ -7,6 +7,7 @@ import type {
   CustomerReturnRecord,
   CustomerReviewRecord,
   Page,
+  PlacementRecovery,
   OrderPaymentState,
   PaymentRecord,
   PaymentStatus,
@@ -35,6 +36,15 @@ export function isUuid(value: unknown): value is string {
 
 function invalidResponse(): never {
   throw new Error("The server returned an unexpected response.");
+}
+
+export function parsePlacementRecovery(value: unknown): PlacementRecovery {
+  if (!record(value)) return invalidResponse();
+  if (value.status === "placed" && isUuid(value.order_id))
+    return { status: "placed", order_id: value.order_id };
+  if (value.status === "cancelled" && value.order_id === null)
+    return { status: "cancelled", order_id: null };
+  return invalidResponse();
 }
 
 const PAYMENT_STATUSES: readonly PaymentStatus[] = [

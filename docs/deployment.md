@@ -1,5 +1,9 @@
 # Production deployment architecture
 
+## Placement recovery rollout
+
+Apply `checkout.0003_checkoutattemptcancellation` before deploying this backend, then deploy the frontend. It is additive, contains no private draft payload and does not rewrite existing orders/finance. PostgreSQL guards preserve replay/closure evidence for the Cart lifetime; deferred delete constraints intentionally support Django guest-cart cascades. Do not prune individual records or disable these triggers. A Cart reaching 1,000 closed keys requires operator review; API 429 is not proof of closure. Keep no-store/same-origin/session/CSRF policies. Browser recovery references are fragments, not HTTP query parameters or tokens. Losing a fragment or the original guest session requires ordinary order/support recovery; no external provider or session-independent recovery is introduced.
+
 ## Payment recovery rollout
 
 Deploy the backend payment-state read before the updated checkout frontend. This maintenance requires no migration, dependency, secret or gateway change. Preserve same-origin `/api/v1/*` routing, `no-store` responses and HttpOnly Django sessions; never cache this order/key projection at ingress. Existing guest session expiration intentionally removes recovery access. Mock charging is still disabled in production. This does not establish hosted-provider reconciliation or uncertain placement recovery after a hard reload.

@@ -102,6 +102,7 @@ class CheckoutQuoteInputSerializer(StrictSerializer):
 
 
 class PlaceOrderInputSerializer(StrictSerializer):
+    cart_id = serializers.UUIDField(required=False, allow_null=True, default=None)
     shipping_address = serializers.DictField(required=False, default=dict)
     address_id = serializers.UUIDField(required=False, allow_null=True, default=None)
     billing_address = serializers.DictField(required=False, allow_null=True, default=None)
@@ -141,3 +142,13 @@ class PlaceOrderOutputSerializer(serializers.Serializer[Any]):
     payment_status = serializers.CharField()
     seller_orders = PlacedSellerOrderSerializer(many=True)
     payment_instructions = serializers.DictField()
+
+
+class RecoverPlacementInputSerializer(StrictSerializer):
+    cart_id = serializers.UUIDField()
+    idempotency_key = serializers.RegexField(regex=r"^[A-Za-z0-9_-]{16,128}$")
+
+
+class RecoverPlacementOutputSerializer(serializers.Serializer[Any]):
+    status = serializers.ChoiceField(choices=["placed", "cancelled"])
+    order_id = serializers.UUIDField(allow_null=True)

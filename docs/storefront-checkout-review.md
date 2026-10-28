@@ -1,5 +1,9 @@
 # Checkout visual experience — Phase 41
 
+## October 28 placement-recovery addendum
+
+Hard-reload recovery now retains only cart/attempt identifiers in a browser fragment before dispatch. On reload, a gated explicit recovery command finds the original committed order or durably closes the uncommitted key so a late request cannot place it. It does not replay addresses/payloads, cancel a business order or charge. A found order links to its existing server-scoped payment page; a closed attempt requires explicit restart and a fresh quote. Errors/foreign sessions/limits keep new placement blocked. This resolves the previous hard-reload limit when the fragment and original session remain available. The ivory/copper shell and payment/CSRF/tenant boundaries remain intact. Earlier Phase 41/maintenance evidence below remains historical.
+
 ## October 27 maintenance addendum
 
 The Phase 41 evidence below is historical. Subsequent backend maintenance implemented Cart-scoped placement idempotency, correct currency/shipping and proxy behavior. This maintenance resolves guest payment/confirmation reloads with a new minimal, session/customer-scoped read-only payment-state endpoint. Pending attempts recover their original key, captured attempts need no new payment command, and cancelled/failed/refunded/processing orders cannot offer another payment. Guest review no longer creates an intent. Guest access still requires the original Django session; URL claims never establish a charge or ownership. No card data/key/authority is persisted in browser storage. Hard-reload recovery of an uncertain _placement_ remains separate because the original placement payload/key is still only in memory.

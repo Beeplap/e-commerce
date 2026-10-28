@@ -30,6 +30,22 @@ class CheckoutAttempt(models.Model):
         ]
 
 
+class CheckoutAttemptCancellation(models.Model):
+    """A closed replay key. Retain for the lifetime of its cart to reject late placement."""
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    cart = models.ForeignKey(
+        "cart.Cart", on_delete=models.CASCADE, related_name="cancelled_checkout_attempts"
+    )
+    key = models.CharField(max_length=128)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["cart", "key"], name="checkout_cancel_cart_key_unique"),
+        ]
+
+
 class CustomerAddress(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(

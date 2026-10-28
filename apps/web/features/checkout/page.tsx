@@ -24,6 +24,11 @@ import {
 import { addressesEvidence, placedEvidence, quoteEvidence } from "./evidence";
 import { useCheckoutSession } from "./session";
 import { CheckoutSummary } from "./summary";
+import {
+  PlacementRecoveryGate,
+  retainPlacementReference,
+  clearPlacementReference,
+} from "./placement-recovery";
 
 export function CheckoutContent() {
   const { state, refresh } = useAuth();
@@ -44,10 +49,13 @@ export function CheckoutContent() {
       </div>
     );
   return (
-    <CheckoutForm
+    <PlacementRecoveryGate
       key={state.kind === "authenticated" ? state.user.id : "guest"}
-      email={state.kind === "authenticated" ? state.user.email : null}
-    />
+    >
+      <CheckoutForm
+        email={state.kind === "authenticated" ? state.user.email : null}
+      />
+    </PlacementRecoveryGate>
   );
 }
 function CheckoutForm({ email: accountEmail }: { email: string | null }) {
@@ -201,7 +209,7 @@ function CheckoutForm({ email: accountEmail }: { email: string | null }) {
       );
       return;
     }
-    if (!quote || isLoading || unavailable) {
+    if (!cart || !quote || isLoading || unavailable) {
       setSubmitError(
         "Review a current delivery quote and resolve stock issues before placing your order.",
       );
@@ -209,9 +217,18 @@ function CheckoutForm({ email: accountEmail }: { email: string | null }) {
     }
     const attempt: PlaceOrderInput = {
       ...payload,
+      cart_id: cart.id,
       ...(!accountEmail ? { customer_email: email.trim() } : {}),
       idempotency_key: crypto.randomUUID(),
     };
+    try {
+      retainPlacementReference(cart.id, attempt.idempotency_key!);
+    } catch {
+      setSubmitError(
+        "The checkout recovery reference could not be retained. Reload this page before placing an order.",
+      );
+      return;
+    }
     placementAttempt.current = attempt;
     await place(attempt);
   };
@@ -227,6 +244,7 @@ function CheckoutForm({ email: accountEmail }: { email: string | null }) {
       received = true;
       const order = placedEvidence(result);
       if (!alive.current) return;
+      clearPlacementReference();
       setPlacementAccepted(true);
       setUncertain(true);
       rememberPlacement(order);

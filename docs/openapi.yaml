@@ -6607,12 +6607,48 @@ components:
       description: |-
         * `ok` - OK
         * `error` - Error
+    CheckoutAddressInput:
+      type: object
+      properties:
+        full_name:
+          type: string
+          maxLength: 120
+        phone:
+          type: string
+          maxLength: 32
+        line1:
+          type: string
+          maxLength: 255
+        line2:
+          type: string
+          default: ''
+          maxLength: 255
+        city:
+          type: string
+          maxLength: 100
+        state:
+          type: string
+          maxLength: 100
+        postal_code:
+          type: string
+          maxLength: 32
+        country:
+          type: string
+          default: US
+          maxLength: 2
+          minLength: 2
+      required:
+      - city
+      - full_name
+      - line1
+      - phone
+      - postal_code
+      - state
     CheckoutQuoteInput:
       type: object
       properties:
         shipping_address:
-          type: object
-          additionalProperties: {}
+          $ref: '#/components/schemas/QuoteAddressInput'
         address_id:
           type: string
           format: uuid
@@ -7279,6 +7315,7 @@ components:
           type: string
           default: US
           maxLength: 2
+          minLength: 2
         is_default:
           type: boolean
           default: false
@@ -8635,6 +8672,7 @@ components:
           type: string
           default: US
           maxLength: 2
+          minLength: 2
         is_default:
           type: boolean
           default: false
@@ -8936,15 +8974,14 @@ components:
           nullable: true
           description: Expected owned cart. New cart-bound placements require quote_token.
         shipping_address:
-          type: object
-          additionalProperties: {}
+          $ref: '#/components/schemas/CheckoutAddressInput'
         address_id:
           type: string
           format: uuid
           nullable: true
         billing_address:
-          type: object
-          additionalProperties: {}
+          allOf:
+          - $ref: '#/components/schemas/CheckoutAddressInput'
           nullable: true
         customer_email:
           nullable: true
@@ -9771,6 +9808,36 @@ components:
       - mock
       type: string
       description: '* `mock` - mock'
+    QuoteAddressInput:
+      type: object
+      properties:
+        full_name:
+          type: string
+          maxLength: 120
+        phone:
+          type: string
+          maxLength: 32
+        line1:
+          type: string
+          maxLength: 255
+        line2:
+          type: string
+          default: ''
+          maxLength: 255
+        city:
+          type: string
+          maxLength: 100
+        state:
+          type: string
+          maxLength: 100
+        postal_code:
+          type: string
+          maxLength: 32
+        country:
+          type: string
+          default: US
+          maxLength: 2
+          minLength: 2
     Readiness:
       type: object
       properties:

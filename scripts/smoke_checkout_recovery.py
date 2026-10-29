@@ -1,4 +1,4 @@
-"""Check guest placement recovery through the real local Next.js proxy.
+"""Check guest placement recovery and address input through the real Next.js proxy.
 
 Creates and deletes only its own empty guest cart/session. Never creates an order,
 reserves inventory or calls a gateway. Requires migrated local PostgreSQL/dev servers.
@@ -34,7 +34,7 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
 def send(
     client: urllib.request.OpenerDirector,
     path: str,
-    body: dict[str, str] | None = None,
+    body: dict[str, Any] | None = None,
     *,
     csrf: bool = True,
 ) -> tuple[int, Any]:
@@ -97,6 +97,32 @@ def main() -> None:
         )
         assert send(foreign, RECOVER, body)[0] == 404
         assert send(client, RECOVER)[0] == 405
+        # Reject malformed nested evidence, rather than merely failing later
+        # because this disposable Cart is empty.
+        address = {
+            "full_name": "Proxy Test",
+            "phone": "+15551234567",
+            "line1": "123 Test Street",
+            "city": "Austin",
+            "state": "TX",
+            "postal_code": "78701",
+            "country": "US",
+        }
+        for path, field, invalid in (
+            ("place-order", "shipping_address", {**address, "full_name": None}),
+            ("place-order", "billing_address", {**address, "phone": 123}),
+            ("quote", "shipping_address", {**address, "line1": "x" * 256}),
+            ("quote", "shipping_address", {**address, "untrusted_metadata": "discard-me"}),
+        ):
+            code, value = send(
+                client,
+                f"/api/v1/checkout/{path}/",
+                {"shipping_address": address, field: invalid},
+            )
+            assert code == 400 and field in value
+            assert "discard-me" not in json.dumps(value)
+        assert not owned.items.exists()
+        assert not CheckoutAttempt.objects.filter(cart=owned).exists()
     finally:
         if cart_id is not None and session_key is not None:
             carts = Cart.objects.filter(pk=cart_id, user__isnull=True, session_key=session_key)
@@ -108,8 +134,8 @@ def main() -> None:
             Session.objects.filter(session_key=session_key).delete()
             assert not CheckoutAttemptCancellation.objects.filter(cart_id=cart_id).exists()
     print(
-        "PASS: proxied guest recovery, CSRF, one durable closure, "
-        "late placement rejection, isolation and cleanup."
+        "PASS: proxied guest recovery, CSRF, durable closure, late rejection, "
+        "isolation, strict address inputs and cleanup."
     )
 
 

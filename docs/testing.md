@@ -1,5 +1,11 @@
 # Validation
 
+## Checkout address input regressions
+
+`test_checkout_address_inputs.py` reproduces four previously accepted malformed placements, then covers null/numeric/object/list/boolean/control values, field limits at all address entry points, complete shipping/billing requirements versus partial estimates, country format, unknown nested keys, exact maximum lengths/Unicode, normalized separate billing, null-billing fallback, saved partial updates and foreign ownership, direct-service bypass attempts, guest CSRF and original valid replay evidence. A fixed digest from the pre-hardening wire contract prevents accidental normalization before idempotency lookup; valid exact retries still replay after review expiry without consuming a refilled cart. Negative cases retain business-write assertions.
+
+`pnpm smoke:checkout-recovery` additionally checks malformed nested shipping/billing/quote evidence through the real Next.js proxy, requiring field-specific 400 responses and no echoed arbitrary metadata. These checks use only the smoke test's own empty Cart/session, retain fresh CSRF/redirect/no-store checks and verify no placement evidence or cart-item changes. They run in the existing CI proxy step. This backend-only maintenance changes no frontend layout; no new visual acceptance is claimed.
+
 ## Reviewed quote regression coverage
 
 `test_checkout_review.py` covers exact reviewed placement, expired successful replay with a refilled cart, changed price/quantity/address/shipping method/rate/coupon, missing/tampered/expired/oversized evidence, stale saved-address snapshots, digest privacy, cross-customer/guest transfer, original guest-session placement/replay, sufficient changing stock, changed-token replay conflict, real anonymous CSRF denial and simultaneous reviewed submissions. Rejected reviews assert no order/reservation/redemption/outbox effects. Existing recovery concurrency and database-retention tests now supply genuine signed evidence without relaxing their assertions.

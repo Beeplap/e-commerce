@@ -23,8 +23,10 @@ from rest_framework.request import Request
 from apps.cart.models import Cart, CartItem
 from apps.cart.services import get_cart_currency, get_or_create_cart, get_variant_available_stock
 from apps.catalog.models import Product, ProductVariant
+from apps.checkout.address_inputs import validate_address
 from apps.checkout.models import CheckoutAttempt, CheckoutAttemptCancellation, CustomerAddress
 from apps.checkout.review import ReviewConflict, address_snapshot, verify_review
+from apps.checkout.serializers import CustomerAddressInputSerializer
 from apps.events.services import publish_outbox_event
 from apps.finance.services import calculate_commission
 from apps.fulfillment.models import ShippingMethod, ShippingRate
@@ -113,44 +115,9 @@ def get_customer_address(user: Any, address_id: UUID) -> CustomerAddress:
 def create_customer_address(user: Any, data: dict[str, Any]) -> CustomerAddress:
     if not user or not user.is_authenticated:
         raise ValidationError({"detail": "Authentication required to save addresses."})
-
-    full_name = str(data.get("full_name", "")).strip()
-    phone = str(data.get("phone", "")).strip()
-    line1 = str(data.get("line1", "")).strip()
-    line2 = str(data.get("line2", "")).strip()
-    city = str(data.get("city", "")).strip()
-    state = str(data.get("state", "")).strip()
-    postal_code = str(data.get("postal_code", "")).strip()
-    country = str(data.get("country", "US")).strip().upper()
-    is_default = bool(data.get("is_default", False))
-
-    if not full_name:
-        raise ValidationError({"full_name": "Full name is required."})
-    if not phone:
-        raise ValidationError({"phone": "Phone number is required."})
-    if not line1:
-        raise ValidationError({"line1": "Street address is required."})
-    if not city:
-        raise ValidationError({"city": "City is required."})
-    if not state:
-        raise ValidationError({"state": "State is required."})
-    if not postal_code:
-        raise ValidationError({"postal_code": "Postal code is required."})
-    if len(country) != 2:
-        raise ValidationError({"country": "Country must be a 2-letter ISO code."})
-
-    address = CustomerAddress(
-        user=user,
-        full_name=full_name,
-        phone=phone,
-        line1=line1,
-        line2=line2,
-        city=city,
-        state=state,
-        postal_code=postal_code,
-        country=country,
-        is_default=is_default,
-    )
+    serializer = CustomerAddressInputSerializer(data=data)
+    serializer.is_valid(raise_exception=True)
+    address = CustomerAddress(user=user, **serializer.validated_data)
     address.save()
     return address
 
@@ -158,55 +125,10 @@ def create_customer_address(user: Any, data: dict[str, Any]) -> CustomerAddress:
 @transaction.atomic
 def update_customer_address(user: Any, address_id: UUID, data: dict[str, Any]) -> CustomerAddress:
     address = get_customer_address(user, address_id)
-
-    if "full_name" in data:
-        name = str(data["full_name"]).strip()
-        if not name:
-            raise ValidationError({"full_name": "Full name cannot be empty."})
-        address.full_name = name
-
-    if "phone" in data:
-        phone = str(data["phone"]).strip()
-        if not phone:
-            raise ValidationError({"phone": "Phone cannot be empty."})
-        address.phone = phone
-
-    if "line1" in data:
-        line1 = str(data["line1"]).strip()
-        if not line1:
-            raise ValidationError({"line1": "Street address cannot be empty."})
-        address.line1 = line1
-
-    if "line2" in data:
-        address.line2 = str(data["line2"]).strip()
-
-    if "city" in data:
-        city = str(data["city"]).strip()
-        if not city:
-            raise ValidationError({"city": "City cannot be empty."})
-        address.city = city
-
-    if "state" in data:
-        state = str(data["state"]).strip()
-        if not state:
-            raise ValidationError({"state": "State cannot be empty."})
-        address.state = state
-
-    if "postal_code" in data:
-        pc = str(data["postal_code"]).strip()
-        if not pc:
-            raise ValidationError({"postal_code": "Postal code cannot be empty."})
-        address.postal_code = pc
-
-    if "country" in data:
-        c = str(data["country"]).strip().upper()
-        if len(c) != 2:
-            raise ValidationError({"country": "Country must be a 2-letter ISO code."})
-        address.country = c
-
-    if "is_default" in data:
-        address.is_default = bool(data["is_default"])
-
+    serializer = CustomerAddressInputSerializer(data=data, partial=True)
+    serializer.is_valid(raise_exception=True)
+    for field, value in serializer.validated_data.items():
+        setattr(address, field, value)
     address.save()
     return address
 
@@ -309,6 +231,7 @@ def calculate_checkout_quote(
     Computes real-time checkout quote with multi-seller shipping options,
     coupon discount evaluation, taxes, and grand totals.
     """
+    shipping_address = validate_address(shipping_address, estimate=True)
     items = (
         items
         if items is not None
@@ -603,48 +526,20 @@ def place_order(
             "country": address_obj.country,
         }
     elif shipping_address_data:
-        full_name = str(shipping_address_data.get("full_name", "")).strip()
-        phone = str(shipping_address_data.get("phone", "")).strip()
-        line1 = str(shipping_address_data.get("line1", "")).strip()
-        line2 = str(shipping_address_data.get("line2", "")).strip()
-        city = str(shipping_address_data.get("city", "")).strip()
-        state = str(shipping_address_data.get("state", "")).strip()
-        postal_code = str(shipping_address_data.get("postal_code", "")).strip()
-        country = str(shipping_address_data.get("country", "US")).strip().upper()
-
-        if not full_name:
-            raise ValidationError({"shipping_address.full_name": "Full name is required."})
-        if not phone:
-            raise ValidationError({"shipping_address.phone": "Phone number is required."})
-        if not line1:
-            raise ValidationError({"shipping_address.line1": "Street address is required."})
-        if not city:
-            raise ValidationError({"shipping_address.city": "City is required."})
-        if not state:
-            raise ValidationError({"shipping_address.state": "State is required."})
-        if not postal_code:
-            raise ValidationError({"shipping_address.postal_code": "Postal code is required."})
-        if len(country) != 2:
-            raise ValidationError(
-                {"shipping_address.country": "Country must be a 2-letter ISO code."}
-            )
-
-        shipping_address = {
-            "full_name": full_name,
-            "phone": phone,
-            "line1": line1,
-            "line2": line2,
-            "city": city,
-            "state": state,
-            "postal_code": postal_code,
-            "country": country,
-        }
+        shipping_address = shipping_address_data
     else:
         raise ValidationError(
             {"shipping_address": "Either address_id or shipping_address is required."}
         )
 
-    billing_address = billing_address_data or shipping_address
+    # Also validate saved destinations and direct service callers. Never copy an
+    # arbitrary billing dictionary into a historical order snapshot.
+    shipping_address = validate_address(shipping_address)
+    billing_address = (
+        validate_address(billing_address_data, field="billing_address")
+        if billing_address_data is not None
+        else dict(shipping_address)
+    )
 
     # Customer email
     final_email = ""

@@ -1,5 +1,7 @@
 # Authorization
 
+Shared address input schemas grant no authority. Saved-address reads/updates/deletes and saved destinations at placement remain owner-scoped, including direct service calls. Inline shipping/billing/quote objects reject caller-supplied user, seller, address identity and default flags; `is_default` is explicitly available only in the personal address-book input. Knowing an address UUID or passing valid fields never grants another customer's address access.
+
 Quote `quote_token` is consistency evidence only. Cart ownership, saved-address ownership, active account/seller/product checks and existing guest session order bindings remain authoritative. The reviewed digest includes Cart UUID/customer identity; transferring evidence to another owned or guest Cart fails. Cart-bound new placement requires evidence even when the caller knows an idempotency key. Successful replay and recovery remain scoped to the original authorized Cart/session. No platform/superuser bypass is introduced.
 
 ## Placement recovery command

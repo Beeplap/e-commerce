@@ -1,5 +1,7 @@
 # Data model
 
+Checkout address input hardening adds no column, constraint or migration and does not rewrite historical snapshots. New shipping/billing snapshots use only full_name (120), phone/postal_code (32), line1/line2 (255), city/state (100) and a two-letter uppercase country code. Text values retain valid Unicode; line2 defaults to an empty string and omitted country retains the existing US default. Omitted/null billing copies validated shipping. Arbitrary billing metadata is rejected. Existing replay digests retain exact valid request evidence before snapshot normalization.
+
 Reviewed checkout adds no table or migration. A 15-minute signed keyed digest travels from quote to placement in memory. `CheckoutAttempt.request_digest` includes `quote_token` only when present, preserving pre-existing successful replay digests. Orders and order lines consume one cart-item snapshot, and drift is rejected before business writes. Existing PostgreSQL replay/closure retention, exclusivity and immutability remain unchanged.
 
 ## Closed placement attempts

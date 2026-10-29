@@ -1,5 +1,11 @@
 # Architecture
 
+## Checkout address contracts (October 29 maintenance)
+
+`checkout/address_inputs.py` defines bounded, string-only, allowlisted address schemas shared by quote, placement and saved-address services. Country codes use two ASCII letters normalized to uppercase. Quote destinations may be partial for estimates; order shipping and explicit billing must be complete. Null/omitted billing copies the validated shipping snapshot. Saved-address patches validate only supplied fields and never reset omitted destination values. Services validate independently of views, including saved destinations before placement.
+
+Address API field adapters validate shape but retain the original valid request dictionary for placement digest calculation. Normalized values are used only for business snapshots after successful replay lookup. Do not return normalized/default-filled dictionaries from those adapters without a versioned replay migration: doing so would invalidate valid existing retries (including omitted line2, whitespace and lowercase country). A fixed pre-hardening digest and exact/expired reviewed replay regressions enforce this boundary. Malformed historical payloads no longer pass request validation; their owners can use the existing minimal cart/key recovery command instead. Historical orders and saved records are not silently rewritten.
+
 ## Reviewed checkout binding (October 29 maintenance)
 
 The quote endpoint returns a 15-minute `quote_token` using Django's timestamp signer over a keyed HMAC of the cart/customer identity, normalized destination and exact reviewed line/seller/selected-delivery/coupon/monetary evidence. The opaque token contains no address or other private draft values. Sorting makes row ordering immaterial; stock counts and unselected delivery offers are excluded. This is review evidence, never an authorization credential, price reservation or stock guarantee.

@@ -5,17 +5,14 @@ from typing import Any
 from rest_framework import serializers
 
 from apps.accounts.serializers import StrictSerializer
+from apps.checkout.address_inputs import (
+    AddressObjectField,
+    CheckoutAddressInput,
+    QuoteAddressObjectField,
+)
 
 
-class CustomerAddressInputSerializer(StrictSerializer):
-    full_name = serializers.CharField(max_length=120, required=True)
-    phone = serializers.CharField(max_length=32, required=True)
-    line1 = serializers.CharField(max_length=255, required=True)
-    line2 = serializers.CharField(max_length=255, required=False, allow_blank=True, default="")
-    city = serializers.CharField(max_length=100, required=True)
-    state = serializers.CharField(max_length=100, required=True)
-    postal_code = serializers.CharField(max_length=32, required=True)
-    country = serializers.CharField(max_length=2, required=False, default="US")
+class CustomerAddressInputSerializer(CheckoutAddressInput):
     is_default = serializers.BooleanField(required=False, default=False)
 
 
@@ -96,7 +93,7 @@ class CheckoutQuoteOutputSerializer(serializers.Serializer[Any]):
 
 
 class CheckoutQuoteInputSerializer(StrictSerializer):
-    shipping_address = serializers.DictField(required=False, default=dict)
+    shipping_address = QuoteAddressObjectField(required=False, default=dict)
     address_id = serializers.UUIDField(required=False, allow_null=True, default=None)
     shipping_selections = serializers.DictField(
         child=serializers.CharField(), required=False, default=dict
@@ -119,9 +116,11 @@ class PlaceOrderInputSerializer(StrictSerializer):
         default=None,
         help_text="Expected owned cart. New cart-bound placements require quote_token.",
     )
-    shipping_address = serializers.DictField(required=False, default=dict)
+    shipping_address = AddressObjectField(required=False, default=dict)
     address_id = serializers.UUIDField(required=False, allow_null=True, default=None)
-    billing_address = serializers.DictField(required=False, allow_null=True, default=None)
+    billing_address = AddressObjectField(
+        required=False, allow_null=True, allow_empty=False, default=None
+    )
     customer_email = serializers.EmailField(
         required=False, allow_blank=True, allow_null=True, default=None
     )

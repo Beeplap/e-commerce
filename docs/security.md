@@ -1,5 +1,9 @@
 # Security model
 
+## Strict checkout address inputs
+
+Quotes, placements and saved-address commands reject non-string values, C0/DEL control characters, oversized fields, unsupported nested keys and malformed two-letter country formats. Complete order shipping/billing snapshots contain only the eight explicit address fields; billing dictionaries cannot retain arbitrary metadata or system fields. Partial quotes are estimates and cannot substitute for complete placement data. Shared service validation prevents internal callers from bypassing the input contract. Errors do not echo submitted private values; failed input cannot create orders, reservations, redemptions or outbox records. Existing auth, anonymous CSRF, ownership, tenant and signed-review policies remain authoritative. This is structural validation, not postal-address verification.
+
 ## Checkout review integrity
 
 Cart-bound storefront placement requires signed, short-lived quote evidence. Only a keyed digest and timestamp are exposed; signed JSON containing private address fields is deliberately avoided. Django still resolves the owned Cart and saved address, validates active actors/sellers/products, checks current stock under locks and enforces CSRF for guests and signed-in customers. A copied review token grants no cart/order access. The token stays in the in-memory request snapshot, never URL fragments, cookies or browser storage. Expired/altered/drifted review cannot create business writes. Exact committed replays are resolved before expiry checks, and durable closure protects a fresh review from late original requests. Legacy callers without `cart_id` retain live-price placement compatibility; they must opt into both review fields to obtain this additional consistency guarantee.

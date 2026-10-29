@@ -13,6 +13,8 @@ from apps.cart.models import Cart, CartItem
 from apps.cart.services import merge_guest_cart_into_user_cart
 from apps.checkout import services
 from apps.checkout.models import CheckoutAttempt, CheckoutAttemptCancellation
+from apps.checkout.review import issue_review
+from apps.checkout.services import calculate_checkout_quote
 from apps.events.models import OutboxEvent
 from apps.inventory.models import InventoryTransaction
 from apps.orders.models import Order
@@ -34,7 +36,12 @@ def setup() -> dict[str, Any]:
 
 
 def payload(cart: Cart, key: str = KEY) -> dict[str, Any]:
+    token = None
+    if cart.items.exists():
+        quote = calculate_checkout_quote(cart=cart, shipping_address=ADDRESS, customer=cart.user)
+        token = issue_review(cart, ADDRESS, quote)
     return {
+        "quote_token": token,
         "cart_id": str(cart.pk),
         "idempotency_key": key,
         "shipping_address": ADDRESS,

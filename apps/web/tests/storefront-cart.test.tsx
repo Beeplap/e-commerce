@@ -544,7 +544,9 @@ describe("Cart page and provider", () => {
     fireEvent.click(
       screen.getByRole("button", { name: `Remove ${item.product_title}` }),
     );
-    expect(await screen.findByText("Cannot update now")).toHaveFocus();
+    await waitFor(() =>
+      expect(screen.getByText("Cannot update now")).toHaveFocus(),
+    );
     expect(screen.getByText(item.product_title)).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Clear Entire Cart" }));
     await waitFor(() =>
@@ -553,7 +555,9 @@ describe("Cart page and provider", () => {
         expect.any(Object),
       ),
     );
-    expect(await screen.findByText("Cannot update now")).toHaveFocus();
+    await waitFor(() =>
+      expect(screen.getByText("Cannot update now")).toHaveFocus(),
+    );
   });
   it("moves focus to confirmed removal after the trigger disappears", async () => {
     setup((url, init) => (init?.method === "DELETE" ? json(empty) : undefined));

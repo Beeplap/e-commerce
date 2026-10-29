@@ -77,8 +77,13 @@ class CouponSummarySerializer(serializers.Serializer[Any]):
     discount_amount = serializers.CharField()
     error_message = serializers.CharField(allow_null=True)
 
+    def get_fields(self) -> dict[str, Any]:
+        # Document the existing wire field without shadowing Serializer.is_valid().
+        return {**super().get_fields(), "is_valid": serializers.BooleanField()}
+
 
 class CheckoutQuoteOutputSerializer(serializers.Serializer[Any]):
+    quote_token = serializers.CharField(max_length=256)
     total_items = serializers.IntegerField()
     subtotal = serializers.CharField()
     shipping_total = serializers.CharField()
@@ -102,7 +107,18 @@ class CheckoutQuoteInputSerializer(StrictSerializer):
 
 
 class PlaceOrderInputSerializer(StrictSerializer):
-    cart_id = serializers.UUIDField(required=False, allow_null=True, default=None)
+    quote_token = serializers.CharField(
+        max_length=256,
+        required=False,
+        allow_null=True,
+        help_text="Signed review, valid for 15 minutes. Required with cart_id for new orders.",
+    )
+    cart_id = serializers.UUIDField(
+        required=False,
+        allow_null=True,
+        default=None,
+        help_text="Expected owned cart. New cart-bound placements require quote_token.",
+    )
     shipping_address = serializers.DictField(required=False, default=dict)
     address_id = serializers.UUIDField(required=False, allow_null=True, default=None)
     billing_address = serializers.DictField(required=False, allow_null=True, default=None)

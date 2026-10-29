@@ -1,5 +1,7 @@
 # Authorization
 
+Quote `quote_token` is consistency evidence only. Cart ownership, saved-address ownership, active account/seller/product checks and existing guest session order bindings remain authoritative. The reviewed digest includes Cart UUID/customer identity; transferring evidence to another owned or guest Cart fails. Cart-bound new placement requires evidence even when the caller knows an idempotency key. Successful replay and recovery remain scoped to the original authorized Cart/session. No platform/superuser bypass is introduced.
+
 ## Placement recovery command
 
 `POST /api/v1/checkout/recover-placement/` explicitly allows guests with mandatory CSRF, then resolves and locks only the submitted cart within the active customer's carts or anonymous session-key/customer-less carts. It does not accept an order UUID or authority from an attempt reference. Successful replay evidence must also match the current Order customer identity; guest evidence can rebind only its customer-less order in the original cart session. Foreign carts/expired sessions return 404 without creating closure records. An inactive authenticated actor is denied after locking/revalidation; no platform or infrastructure-superuser bypass exists.

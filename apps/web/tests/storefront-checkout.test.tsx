@@ -127,6 +127,14 @@ const form = (onCaptured = vi.fn()) => (
 );
 
 describe("Checkout presentation evidence", () => {
+  it.each([undefined, "", "invalid", "x".repeat(257), "<script>".repeat(20)])(
+    "rejects missing or malformed review evidence %s",
+    (quote_token) => {
+      expect(() =>
+        quoteEvidence({ ...mockQuote, quote_token }, mockCart, {}),
+      ).toThrow();
+    },
+  );
   it("recognizes Django's authorized order state without calling it paid", () => {
     expect(
       customerOrderEvidence(
@@ -265,6 +273,118 @@ describe("Checkout presentation evidence", () => {
 });
 
 describe("Checkout recovery and navigation", () => {
+  it("reloads the current cart before refreshing a mismatched quote", async () => {
+    const nextCart = structuredClone(mockCart);
+    nextCart.total_items = nextCart.sellers[0]!.item_count = 1;
+    nextCart.subtotal = nextCart.sellers[0]!.subtotal = "25.00";
+    nextCart.sellers[0]!.items[0]!.quantity = 1;
+    nextCart.sellers[0]!.items[0]!.line_subtotal = "25.00";
+    const nextQuote = structuredClone(mockQuote);
+    nextQuote.total_items = nextQuote.sellers[0]!.items[0]!.quantity = 1;
+    nextQuote.subtotal = nextQuote.sellers[0]!.subtotal = "25.00";
+    nextQuote.sellers[0]!.items[0]!.line_subtotal = "25.00";
+    nextQuote.grand_total = nextQuote.sellers[0]!.total = "30.00";
+    let cartReads = 0;
+    api((url) => {
+      if (url.includes("/cart/"))
+        return json(++cartReads === 1 ? mockCart : nextCart);
+      if (url.includes("/quote/")) return json(nextQuote);
+    });
+    render(tree(<CheckoutPage />));
+    fireEvent.click(
+      await screen.findByRole("button", { name: "Refresh quote" }),
+    );
+    await waitFor(() =>
+      expect(
+        screen.getByRole("button", { name: /Confirm & place order/ }),
+      ).toBeEnabled(),
+    );
+    expect(cartReads).toBe(2);
+    expect(screen.getByTestId("checkout-summary-total")).toHaveTextContent(
+      "30.00 USD",
+    );
+  });
+  it.each(["cancelled", "placed", "unavailable"])(
+    "blocks changed reviews until the original attempt is checked (%s)",
+    async (outcome) => {
+      const bodies: Record<string, unknown>[] = [];
+      let checked = false;
+      api((url, init) => {
+        if (url.includes("/place-order/")) {
+          bodies.push(JSON.parse(String(init?.body)));
+          expect(bodies.at(-1)?.quote_token).toBe(mockQuote.quote_token);
+          expect(bodies.at(-1)?.shipping_address).toEqual({
+            full_name: mockAddresses[0]!.full_name,
+            phone: mockAddresses[0]!.phone,
+            line1: mockAddresses[0]!.line1,
+            line2: mockAddresses[0]!.line2,
+            city: mockAddresses[0]!.city,
+            state: mockAddresses[0]!.state,
+            postal_code: mockAddresses[0]!.postal_code,
+            country: mockAddresses[0]!.country,
+          });
+          return bodies.length === 1
+            ? json(
+                {
+                  quote_token: [
+                    "Your order review changed or expired. Review it again.",
+                  ],
+                },
+                409,
+              )
+            : json(mockPlacedOrder, 201);
+        }
+        if (url.includes("/recover-placement/")) {
+          checked = true;
+          expect(JSON.parse(String(init?.body))).toEqual({
+            cart_id: mockCart.id,
+            idempotency_key: bodies[0]!.idempotency_key,
+          });
+          return outcome === "unavailable"
+            ? json({ detail: "Recovery unavailable" }, 503)
+            : json({
+                status: outcome,
+                order_id: outcome === "placed" ? mockOrder.id : null,
+              });
+        }
+      });
+      render(tree(<CheckoutPage />));
+      fireEvent.click(await ready());
+      const review = await screen.findByRole("button", {
+        name: "Review changes safely",
+      });
+      expect(
+        screen.getByRole("button", { name: /Confirm & place order/ }),
+      ).toBeDisabled();
+      expect(checked).toBe(false);
+      fireEvent.click(review);
+      fireEvent.click(
+        await screen.findByRole("button", { name: "Check original order" }),
+      );
+      if (outcome === "cancelled") {
+        fireEvent.click(
+          await screen.findByRole("button", { name: "Start checkout again" }),
+        );
+        fireEvent.click(await ready());
+        await waitFor(() => expect(push).toHaveBeenCalled());
+        expect(bodies).toHaveLength(2);
+        expect(bodies[1]!.idempotency_key).not.toBe(bodies[0]!.idempotency_key);
+      } else {
+        if (outcome === "placed")
+          expect(
+            await screen.findByRole("link", { name: "Continue to order" }),
+          ).toHaveAttribute("href", `/checkout/pay?order_id=${mockOrder.id}`);
+        else
+          await screen.findByText(
+            "The service is temporarily unavailable. Please try again.",
+          );
+        expect(
+          screen.queryByRole("button", { name: /Confirm & place order/ }),
+        ).not.toBeInTheDocument();
+        expect(bodies).toHaveLength(1);
+      }
+    },
+  );
   it("discards a late old-address quote after a newer address has been accepted", async () => {
     let first = true;
     let release: ((value: Response) => void) | undefined;

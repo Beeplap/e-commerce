@@ -24,6 +24,7 @@ from apps.cart.models import Cart, CartItem
 from apps.cart.services import get_cart_currency, get_or_create_cart, get_variant_available_stock
 from apps.catalog.models import Product, ProductVariant
 from apps.checkout.models import CheckoutAttempt, CheckoutAttemptCancellation, CustomerAddress
+from apps.checkout.review import ReviewConflict, address_snapshot, verify_review
 from apps.events.services import publish_outbox_event
 from apps.finance.services import calculate_commission
 from apps.fulfillment.models import ShippingMethod, ShippingRate
@@ -302,18 +303,23 @@ def calculate_checkout_quote(
     shipping_selections: dict[str, str] | None = None,
     coupon_code: str | None = None,
     customer: Any = None,
+    items: list[CartItem] | None = None,
 ) -> dict[str, Any]:
     """
     Computes real-time checkout quote with multi-seller shipping options,
     coupon discount evaluation, taxes, and grand totals.
     """
-    items = list(
-        cart.items.select_related(
-            "variant",
-            "variant__product",
-            "variant__product__seller",
-            "variant__product__category",
-        ).all()
+    items = (
+        items
+        if items is not None
+        else list(
+            cart.items.select_related(
+                "variant",
+                "variant__product",
+                "variant__product__seller",
+                "variant__product__category",
+            ).all()
+        )
     )
 
     if not items:
@@ -499,6 +505,7 @@ def place_order(
     coupon_code: str | None = None,
     idempotency_key: str | None = None,
     expected_cart_id: UUID | None = None,
+    quote_token: str | None = None,
 ) -> dict[str, Any]:
     """
     Atomically places customer order across multiple sellers:
@@ -531,16 +538,20 @@ def place_order(
     key = (idempotency_key or "").strip()
     if key and not re.fullmatch(r"[A-Za-z0-9_-]{16,128}", key):
         raise ValidationError({"idempotency_key": "Use a 16-128 character checkout key."})
+    request_evidence = {
+        "shipping_address": shipping_address_data or {},
+        "address_id": address_id,
+        "billing_address": billing_address_data,
+        "customer_email": customer_email,
+        "shipping_selections": shipping_selections or {},
+        "coupon_code": coupon_code,
+    }
+    # Preserve the digest of pre-review successful attempts during rolling upgrades.
+    if quote_token is not None:
+        request_evidence["quote_token"] = quote_token
     request_digest = hashlib.sha256(
         json.dumps(
-            {
-                "shipping_address": shipping_address_data or {},
-                "address_id": address_id,
-                "billing_address": billing_address_data,
-                "customer_email": customer_email,
-                "shipping_selections": shipping_selections or {},
-                "coupon_code": coupon_code,
-            },
+            request_evidence,
             sort_keys=True,
             default=str,
             separators=(",", ":"),
@@ -554,6 +565,11 @@ def place_order(
             return dict(previous.response)
         if CheckoutAttemptCancellation.objects.filter(cart=cart, key=key).exists():
             raise CheckoutConflict("This checkout attempt was closed. Start a new checkout.")
+
+    # Cart-bound browser placement always requires evidence of the displayed review.
+    # Legacy callers without cart_id retain their existing live-price contract.
+    if expected_cart_id is not None and not quote_token:
+        raise ReviewConflict()
 
     seller_ids = cart.items.values_list("variant__product__seller_id", flat=True)
     list(Seller.objects.select_for_update().filter(pk__in=seller_ids).order_by("pk"))
@@ -712,7 +728,16 @@ def place_order(
         shipping_selections=shipping_selections,
         coupon_code=coupon_code,
         customer=user,
+        items=cart_items,
     )
+    if quote_token is not None:
+        verify_review(quote_token, cart, shipping_address, quote)
+        if (
+            address_id
+            and shipping_address_data
+            and address_snapshot(shipping_address_data) != address_snapshot(shipping_address)
+        ):
+            raise ReviewConflict()
 
     clean_code = (coupon_code or "").strip().upper()
     valid_coupon_obj: Coupon | None = None

@@ -95,6 +95,8 @@ export function quoteEvidence(
     );
   if (
     !isRecord(value) ||
+    typeof value.quote_token !== "string" ||
+    !/^[A-Za-z0-9_:-]{80,256}$/.test(value.quote_token) ||
     !isCount(value.total_items) ||
     value.total_items !== cart.total_items ||
     !currencyValid(value.currency) ||

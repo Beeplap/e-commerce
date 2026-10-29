@@ -74,6 +74,7 @@ export const mockAddresses: CustomerAddress[] = [
 ];
 
 export const mockQuote: CheckoutQuote = {
+  quote_token: "a".repeat(64) + ":timestamp:" + "b".repeat(43),
   total_items: 2,
   subtotal: "50.00",
   shipping_total: "5.00",

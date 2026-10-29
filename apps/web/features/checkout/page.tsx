@@ -90,6 +90,7 @@ function CheckoutForm({ email: accountEmail }: { email: string | null }) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [uncertain, setUncertain] = useState(false);
+  const [reviewChanged, setReviewChanged] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const placementAttempt = useRef<PlaceOrderInput | null>(null);
   const [placementAccepted, setPlacementAccepted] = useState(false);
@@ -139,7 +140,25 @@ function CheckoutForm({ email: accountEmail }: { email: string | null }) {
     (newAddress && Object.keys(addressErrors(address)).length === 0),
   );
   const payload = chosenAddress
-    ? { address_id: chosenAddress.id, shipping_selections: selections }
+    ? {
+        address_id: chosenAddress.id,
+        shipping_address: Object.fromEntries(
+          [
+            "full_name",
+            "phone",
+            "line1",
+            "line2",
+            "city",
+            "state",
+            "postal_code",
+            "country",
+          ].map((field) => [
+            field,
+            chosenAddress[field as keyof CustomerAddress],
+          ]),
+        ),
+        shipping_selections: selections,
+      }
     : {
         shipping_address: Object.fromEntries(
           Object.entries(address).map(([key, value]) => [key, value.trim()]),
@@ -218,6 +237,7 @@ function CheckoutForm({ email: accountEmail }: { email: string | null }) {
     const attempt: PlaceOrderInput = {
       ...payload,
       cart_id: cart.id,
+      quote_token: quote.quote_token,
       ...(!accountEmail ? { customer_email: email.trim() } : {}),
       idempotency_key: crypto.randomUUID(),
     };
@@ -272,6 +292,15 @@ function CheckoutForm({ email: accountEmail }: { email: string | null }) {
         );
       } else {
         setSubmitError(errorMessage(error));
+        if (error.status === 409 && error.fields.quote_token) {
+          setSubmitError(
+            "Your order review changed or expired. Check the original attempt before reviewing the current items, delivery, address, and total.",
+          );
+          // A previous response may have been lost. Close/recover the same key
+          // durably before allowing a fresh quote or another order attempt.
+          setUncertain(true);
+          setReviewChanged(true);
+        }
         const emailErrors = error.fields.customer_email;
         if (emailErrors)
           setErrors((previous) => ({
@@ -294,11 +323,15 @@ function CheckoutForm({ email: accountEmail }: { email: string | null }) {
         type="button"
         busy={submitting}
         onClick={() => {
+          if (reviewChanged) {
+            window.dispatchEvent(new HashChangeEvent("hashchange"));
+            return;
+          }
           const attempt = placementAttempt.current;
           if (attempt) void place(attempt);
         }}
       >
-        Retry order confirmation
+        {reviewChanged ? "Review changes safely" : "Retry order confirmation"}
       </StorefrontButton>
     ) : null;
   if (retryPlacement && (status !== "ready" || !cart?.total_items))
@@ -306,8 +339,9 @@ function CheckoutForm({ email: accountEmail }: { email: string | null }) {
       <div className="sf-checkout-state" role="alert" ref={alert} tabIndex={-1}>
         <p>{submitError}</p>
         <p>
-          This retries the original order details and cannot place a second
-          order.
+          {reviewChanged
+            ? "Check or close the original attempt before starting another order."
+            : "This retries the original order details and cannot place a second order."}
         </p>
         {retryPlacement}
       </div>
@@ -514,7 +548,18 @@ function CheckoutForm({ email: accountEmail }: { email: string | null }) {
                 <p>{current.error}</p>
                 <StorefrontButton
                   variant="secondary"
-                  onClick={() => setQuoteAttempt((value) => value + 1)}
+                  onClick={() =>
+                    void refreshCart()
+                      .then(() => {
+                        if (!alive.current) return;
+                        setQuoteAttempt((value) => value + 1);
+                        if (accountEmail && !newAddress)
+                          setAddressAttempt((value) => value + 1);
+                      })
+                      .catch((error: unknown) => {
+                        if (alive.current) setSubmitError(errorMessage(error));
+                      })
+                  }
                 >
                   Refresh quote
                 </StorefrontButton>

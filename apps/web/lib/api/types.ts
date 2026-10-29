@@ -486,6 +486,7 @@ export interface CheckoutQuoteSeller {
 }
 
 export interface CheckoutQuote {
+  quote_token: string;
   total_items: number;
   subtotal: string;
   shipping_total: string;
@@ -536,6 +537,7 @@ export interface CheckoutQuoteInput {
 }
 
 export interface PlaceOrderInput {
+  quote_token?: string;
   cart_id?: string;
   shipping_address?: Partial<CustomerAddress>;
   address_id?: string | null;

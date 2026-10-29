@@ -6661,6 +6661,9 @@ components:
     CheckoutQuoteOutput:
       type: object
       properties:
+        quote_token:
+          type: string
+          maxLength: 256
         total_items:
           type: integer
         subtotal:
@@ -6686,6 +6689,7 @@ components:
       - currency
       - discount_total
       - grand_total
+      - quote_token
       - sellers
       - shipping_total
       - subtotal
@@ -7096,10 +7100,13 @@ components:
         error_message:
           type: string
           nullable: true
+        is_valid:
+          type: boolean
       required:
       - code
       - discount_amount
       - error_message
+      - is_valid
       - valid
     CouponValidationResult:
       type: object
@@ -8917,10 +8924,17 @@ components:
     PlaceOrderInput:
       type: object
       properties:
+        quote_token:
+          type: string
+          nullable: true
+          description: Signed review, valid for 15 minutes. Required with cart_id
+            for new orders.
+          maxLength: 256
         cart_id:
           type: string
           format: uuid
           nullable: true
+          description: Expected owned cart. New cart-bound placements require quote_token.
         shipping_address:
           type: object
           additionalProperties: {}

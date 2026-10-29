@@ -1,5 +1,7 @@
 # UI phase selector
 
+October 29 maintenance adds changed-review guidance and safe existing-attempt recovery within the completed checkout UI. The ivory/copper theme and completed roadmap remain unchanged; validation evidence and rollout/legacy API compatibility are recorded in `docs/progress.md`. No new numbered phase is started.
+
 STOREFRONT VISUAL OVERHAUL COMPLETE
 
 Phase 46 and the storefront visual roadmap are complete and integrated into `main`. The initial PostgreSQL validation limitation was resolved by subsequent full checks and [successful GitHub validation](https://github.com/Beeplap/e-commerce/actions/runs/38031684273). Historical visual-review limits remain documented in `docs/storefront-final-review.md`.

@@ -15,6 +15,7 @@ from apps.cart.services import get_or_create_cart
 from apps.payments.services import remember_guest_order
 
 from . import services
+from .review import ReviewConflict, address_snapshot, issue_review
 from .serializers import (
     CheckoutQuoteInputSerializer,
     CheckoutQuoteOutputSerializer,
@@ -127,6 +128,13 @@ class CheckoutQuoteView(BrowserAPIView):
             coupon_code=data.get("coupon_code"),
             customer=user,
         )
+        if (
+            address_id
+            and data.get("shipping_address")
+            and address_snapshot(data["shipping_address"]) != address_snapshot(shipping_address)
+        ):
+            raise ReviewConflict()
+        quote["quote_token"] = issue_review(cart, shipping_address, quote)
         return Response(quote, status=status.HTTP_200_OK)
 
 
@@ -154,6 +162,7 @@ class PlaceOrderView(BrowserAPIView):
             coupon_code=data.get("coupon_code"),
             idempotency_key=data.get("idempotency_key"),
             expected_cart_id=data.get("cart_id"),
+            quote_token=data.get("quote_token"),
         )
         if not request.user.is_authenticated:
             remember_guest_order(request, UUID(str(result["order_id"])))

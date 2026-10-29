@@ -1,5 +1,7 @@
 # Data model
 
+Reviewed checkout adds no table or migration. A 15-minute signed keyed digest travels from quote to placement in memory. `CheckoutAttempt.request_digest` includes `quote_token` only when present, preserving pre-existing successful replay digests. Orders and order lines consume one cart-item snapshot, and drift is rejected before business writes. Existing PostgreSQL replay/closure retention, exclusivity and immutability remain unchanged.
+
 ## Closed placement attempts
 
 Additive `checkout.0003_checkoutattemptcancellation` adds UUID-keyed `CheckoutAttemptCancellation(cart, key, created_at)` with unique `(cart, key)` and no request payload. It also adds PostgreSQL outcome/immutability guards to existing successful `CheckoutAttempt` evidence. Both outcomes serialize on Cart; a key cannot be successful and closed. Replay/cancellation updates are rejected. Deleting either kind of evidence is rejected at commit while its Cart remains; Cart cascades remain supported, including guest merging. New browser requests include their original cart UUID to prevent deleted/replaced carts from reopening old requests. No Order, inventory, financial or private-address schema is rewritten. Retain evidence throughout the Cart lifetime; do not implement TTL eviction of these safety records. Closure creation is bounded at 1,000 per Cart and otherwise fails closed.

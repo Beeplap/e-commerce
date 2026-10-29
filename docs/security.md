@@ -1,5 +1,9 @@
 # Security model
 
+## Checkout review integrity
+
+Cart-bound storefront placement requires signed, short-lived quote evidence. Only a keyed digest and timestamp are exposed; signed JSON containing private address fields is deliberately avoided. Django still resolves the owned Cart and saved address, validates active actors/sellers/products, checks current stock under locks and enforces CSRF for guests and signed-in customers. A copied review token grants no cart/order access. The token stays in the in-memory request snapshot, never URL fragments, cookies or browser storage. Expired/altered/drifted review cannot create business writes. Exact committed replays are resolved before expiry checks, and durable closure protects a fresh review from late original requests. Legacy callers without `cart_id` retain live-price placement compatibility; they must opt into both review fields to obtain this additional consistency guarantee.
+
 ## Placement recovery security (October 28)
 
 Recovery is an explicit unsafe command and requires fresh CSRF for anonymous and authenticated callers. Both cart UUID and attempt key are validated and scoped to the current active customer or original server-session guest cart before inspecting evidence. Known UUIDs/keys, foreign guest sessions, platform/superuser flags and changed identities do not grant access. Only a verified placed outcome returns an order UUID; no contact/address/order contents are returned. Guest recovery restores only the order binding evidenced by that same owned Cart.

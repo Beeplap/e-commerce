@@ -1,5 +1,11 @@
 # Validation
 
+## Reviewed quote regression coverage
+
+`test_checkout_review.py` covers exact reviewed placement, expired successful replay with a refilled cart, changed price/quantity/address/shipping method/rate/coupon, missing/tampered/expired/oversized evidence, stale saved-address snapshots, digest privacy, cross-customer/guest transfer, original guest-session placement/replay, sufficient changing stock, changed-token replay conflict, real anonymous CSRF denial and simultaneous reviewed submissions. Rejected reviews assert no order/reservation/redemption/outbox effects. Existing recovery concurrency and database-retention tests now supply genuine signed evidence without relaxing their assertions.
+
+Checkout component tests reject missing/malformed/oversized evidence and exercise changed-review recovery through found, durably closed and unavailable outcomes. They verify the original cart/key, displayed saved destination, frozen placement, original successful replay payload and fresh keys only after verified closure. A cached-cart/new-quantity quote mismatch requires Cart reload before a fresh review can enable confirmation. Full-flow fixtures use the new field while preserving payment payload/privacy assertions. Aggregate checks and six-width fixture evidence are recorded in progress; live provider and other-browser acceptance remain separate.
+
 ## Placement reload recovery regressions
 
 `test_placement_recovery.py` covers committed recovery without another reservation, idempotent closure and late-request rejection, refilled cart preservation, foreign/customer/guest/superuser/expired/disabled actor denial, lost guest binding restoration, replaced carts and guest merging, closure limits, explicit input/CSRF/query/method rejection, write failure with no false closure, PostgreSQL mutually exclusive/immutable/retained outcomes and both overlapping guest placement/recovery winners. Transactional cases restore migration-seeded roles with serialized rollback. Deferred deletion guards are explicitly forced when testing direct deletion versus Cart cascade.

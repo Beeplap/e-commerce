@@ -1,5 +1,9 @@
 # Checkout visual experience — Phase 41
 
+## October 29 reviewed-order maintenance
+
+The current storefront sends the displayed saved-address snapshot and the signed quote review with its cart-bound placement. Changed/expired review freezes the form and offers “Review changes safely”; this enters the existing explicit original-attempt recovery gate. A found order continues to its existing payment status. Durable closure permits an explicit fresh checkout with current cart, saved addresses, delivery and totals. Failed/foreign recovery keeps placement blocked. Quote refresh also reloads displayed saved addresses. The token remains in memory and is excluded from recovery fragments and browser storage. The ivory/copper design is preserved. Legacy consumers without cart-bound requests retain the live-price compatibility contract documented in architecture.
+
 ## October 28 placement-recovery addendum
 
 Hard-reload recovery now retains only cart/attempt identifiers in a browser fragment before dispatch. On reload, a gated explicit recovery command finds the original committed order or durably closes the uncommitted key so a late request cannot place it. It does not replay addresses/payloads, cancel a business order or charge. A found order links to its existing server-scoped payment page; a closed attempt requires explicit restart and a fresh quote. Errors/foreign sessions/limits keep new placement blocked. This resolves the previous hard-reload limit when the fragment and original session remain available. The ivory/copper shell and payment/CSRF/tenant boundaries remain intact. Earlier Phase 41/maintenance evidence below remains historical.

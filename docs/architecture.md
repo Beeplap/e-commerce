@@ -1,5 +1,13 @@
 # Architecture
 
+## Reviewed checkout binding (October 29 maintenance)
+
+The quote endpoint returns a 15-minute `quote_token` using Django's timestamp signer over a keyed HMAC of the cart/customer identity, normalized destination and exact reviewed line/seller/selected-delivery/coupon/monetary evidence. The opaque token contains no address or other private draft values. Sorting makes row ordering immaterial; stock counts and unselected delivery offers are excluded. This is review evidence, never an authorization credential, price reservation or stock guarantee.
+
+New placements carrying `cart_id` must supply this token. Placement checks existing successful replay/closed-key evidence first, then compares a fresh quote before business writes. Exact successful retries remain valid after token expiry and cart refill. Including a token changes the request digest; omitting it preserves existing successful digests during deployment. Older API consumers omitting `cart_id` retain their existing live-price contract for compatibility; migrate them to both fields before removing that contract. All current storefront placement supplies both fields, including guest checkout.
+
+Placement calculates from the same cart-item snapshot used for order lines, under the existing Cart/Seller/inventory locks. Product services already coordinate edits through Seller locks. Saved-address checkout also submits the displayed destination snapshot: a quote rejects a mismatch against its owner-scoped saved address, and placement binds that resolved destination. A changed/expired review returns 409 without creating orders, reservations, redemptions or outbox events. The UI blocks placement and routes explicit review recovery through the existing durable key-closure gate, then remounts a fresh cart/address/quote review. It never swaps an uncertain attempt's token or key in place.
+
 ## Placement recovery after reload (October 28)
 
 Before dispatching a keyed placement, the browser retains only the authorized cart UUID and attempt identifier in `#checkout_attempt=<cart>.<key>`. The fragment survives a reload and is excluded from HTTP requests/Referer; it is not a credential or authorization grant. Addresses, email, checkout payloads, card data and payment keys remain out of browser storage/navigation. A failed fragment write prevents dispatch. New browser placements also send `cart_id`; Django compares it to the resolved owned cart, so cart replacement/guest merging cannot reinterpret an old request against a new cart. The field is additive for older API consumers.
